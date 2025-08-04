@@ -1,7 +1,7 @@
 import { Phone, Mail, MapPin, MessageCircle } from 'lucide-react';
 
 interface FooterProps {
-  language: 'ru' | 'en';
+  language: 'ru' | 'en' | 'uz';
 }
 
 const Footer = ({ language }: FooterProps) => {
@@ -46,6 +46,27 @@ const Footer = ({ language }: FooterProps) => {
         'Installation & Setup',
         'Staff Training',
         'Technical Support',
+      ]
+    },
+    uz: {
+      company: 'Med Service Centre',
+      description: "O'zbekistonda tibbiy asbob-uskunalar va xizmatlarning yetakchi integratori",
+      quickLinks: 'Tezkor havolalar',
+      contacts: 'Aloqa',
+      services: 'Xizmatlar',
+      address: 'Toshkent, O\'zbekiston',
+      rights: 'Barcha huquqlar himoyalangan',
+      links: [
+        { name: 'Katalog', href: '/catalog' },
+        { name: 'Xizmatlar', href: '/services' },
+        { name: 'Loyihalar', href: '/cases' },
+        { name: 'Kompaniya haqida', href: '/about' },
+      ],
+      servicesList: [
+        'Uskunalar yetkazib berish',
+        "O'rnatish va sozlash",
+        'Xodimlarni o\'qitish',
+        'Texnik xizmat ko\'rsatish',
       ]
     }
   };

@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import ROICalculator from '@/components/Calculator/ROICalculator';
 
 interface HomeProps {
-  language: 'ru' | 'en';
+  language: 'ru' | 'en' | 'uz';
 }
 
 const Home = ({ language }: HomeProps) => {
@@ -113,6 +113,55 @@ const Home = ({ language }: HomeProps) => {
           }
         ]
       }
+    },
+    uz: {
+      hero: {
+        title: 'Med Service Centre',
+        subtitle: "O'zbekistondagi yetakchi tibbiy asbob-uskunalar integratori",
+        description: "Tibbiy asbob-uskunalarni yetkazib berish, o'rnatish, xodimlarni o'qitish va texnik xizmat ko'rsatish. 8 yillik tajriba va 300+ muvaffaqiyatli loyihalar.",
+        cta: 'ROI hisoblash',
+        experience: '8 yil tajriba',
+        projects: '300+ loyiha',
+        clients: 'Mamnun mijozlar'
+      },
+      categories: {
+        title: 'Asbob-uskunalar toifalari',
+        subtitle: 'Barcha tibbiy yo\'nalishlar uchun keng assortimentdagi tibbiy asbob-uskunalar',
+        items: [
+          { name: 'Diagnostika uskunalari', count: '150+ mahsulot', icon: '🔬' },
+          { name: 'Jarrohlik uskunalari', count: '80+ mahsulot', icon: '⚕️' },
+          { name: 'Reabilitatsiya uskunalari', count: '60+ mahsulot', icon: '🏥' },
+          { name: 'Laboratoriya uskunalari', count: '90+ mahsulot', icon: '🧪' },
+          { name: 'Stomatologiya uskunalari', count: '70+ mahsulot', icon: '🦷' },
+          { name: 'Oftalmologiya uskunalari', count: '40+ mahsulot', icon: '👁️' },
+        ]
+      },
+      advantages: {
+        title: 'Nega bizni tanlaydilar',
+        subtitle: 'Tibbiy masalalarni hal qilishda kompleks yondashuv',
+        items: [
+          {
+            icon: Shield,
+            title: 'Sifat kafolati',
+            description: 'Biz faqat yetakchi jahon ishlab chiqaruvchilarning sertifikatlangan uskunalari bilan ishlaymiz'
+          },
+          {
+            icon: Headphones,
+            title: '24/7 xizmat',
+            description: 'Kundalik texnik yordam va har qanday savollarni tezkor hal qilish'
+          },
+          {
+            icon: Zap,
+            title: 'Tezkor o\'rnatish',
+            description: 'Professional muhandislar jamoasi tez o\'rnatish va sozlashni ta\'minlaydi'
+          },
+          {
+            icon: Globe,
+            title: "Butun O'zbekiston bo'yicha logistika",
+            description: 'Mamlakatning istalgan hududiga uskunalarni yetkazib berish va o\'rnatish'
+          }
+        ]
+      }
     }
   };
 
@@ -203,12 +252,14 @@ const Home = ({ language }: HomeProps) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="font-heading text-3xl lg:text-4xl font-bold text-msc-primary mb-4">
-              {language === 'ru' ? 'Рассчитайте окупаемость' : 'Calculate Your ROI'}
+              {language === 'ru' ? 'Рассчитайте окупаемость' : language === 'en' ? 'Calculate Your ROI' : 'ROI ni hisoblang'}
             </h2>
             <p className="text-lg text-msc-text-light max-w-2xl mx-auto">
               {language === 'ru' 
                 ? 'Узнайте, за какой период окупится ваше медицинское оборудование'
-                : 'Find out how long it will take for your medical equipment to pay for itself'
+                : language === 'en'
+                ? 'Find out how long it will take for your medical equipment to pay for itself'
+                : 'Tibbiy asbob-uskunangiz qancha vaqtda o\'zini oqlashini bilib oling'
               }
             </p>
           </div>

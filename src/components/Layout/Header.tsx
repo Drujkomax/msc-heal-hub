@@ -1,11 +1,17 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Globe } from 'lucide-react';
+import { Menu, X, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 interface HeaderProps {
-  language: 'ru' | 'en';
-  onLanguageChange: (lang: 'ru' | 'en') => void;
+  language: 'ru' | 'en' | 'uz';
+  onLanguageChange: (lang: 'ru' | 'en' | 'uz') => void;
 }
 
 const Header = ({ language, onLanguageChange }: HeaderProps) => {
@@ -28,8 +34,22 @@ const Header = ({ language, onLanguageChange }: HeaderProps) => {
       { name: 'Cases', href: '/cases' },
       { name: 'About', href: '/about' },
       { name: 'Contacts', href: '/contacts' },
+    ],
+    uz: [
+      { name: 'Bosh sahifa', href: '/' },
+      { name: 'Katalog', href: '/catalog' },
+      { name: 'Xizmatlar', href: '/services' },
+      { name: 'Loyihalar', href: '/cases' },
+      { name: 'Kompaniya haqida', href: '/about' },
+      { name: 'Aloqa', href: '/contacts' },
     ]
   };
+
+  const languages = [
+    { code: 'ru' as const, name: 'Русский', flag: '🇷🇺' },
+    { code: 'en' as const, name: 'English', flag: '🇺🇸' },
+    { code: 'uz' as const, name: "O'zbekcha", flag: '🇺🇿' },
+  ];
 
   const isActive = (href: string) => location.pathname === href;
 
@@ -65,15 +85,31 @@ const Header = ({ language, onLanguageChange }: HeaderProps) => {
 
           {/* Language Toggle & Mobile Menu */}
           <div className="flex items-center space-x-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => onLanguageChange(language === 'ru' ? 'en' : 'ru')}
-              className="text-msc-text hover:text-msc-accent"
-            >
-              <Globe className="w-4 h-4 mr-1" />
-              {language.toUpperCase()}
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-msc-text hover:text-msc-accent"
+                >
+                  {languages.find(lang => lang.code === language)?.flag}
+                  <span className="ml-1">{language.toUpperCase()}</span>
+                  <ChevronDown className="w-3 h-3 ml-1" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {languages.map((lang) => (
+                  <DropdownMenuItem
+                    key={lang.code}
+                    onClick={() => onLanguageChange(lang.code)}
+                    className="cursor-pointer"
+                  >
+                    <span className="mr-2">{lang.flag}</span>
+                    {lang.name}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
 
             {/* Mobile menu button */}
             <Button

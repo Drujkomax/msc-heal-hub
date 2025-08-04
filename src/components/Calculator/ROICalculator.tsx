@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Calculator, TrendingUp, DollarSign, Clock } from 'lucide-react';
 
 interface ROICalculatorProps {
-  language: 'ru' | 'en';
+  language: 'ru' | 'en' | 'uz';
 }
 
 const ROICalculator = ({ language }: ROICalculatorProps) => {
@@ -53,6 +53,23 @@ const ROICalculator = ({ language }: ROICalculatorProps) => {
       good: 'Good ROI',
       acceptable: 'Acceptable ROI',
       slow: 'Slow ROI'
+    },
+    uz: {
+      title: 'ROI Kalkulyatori',
+      subtitle: 'Tibbiy asbob-uskunalardan daromadni hisoblang',
+      equipmentPrice: 'Uskunalar narxi',
+      proceduresMonth: 'Oylik protseduralar',
+      profitProcedure: 'Prоtseduradan foyda',
+      paybackPeriod: 'O\'zini oqlash muddati',
+      monthlyProfit: 'Oylik foyda',
+      yearlyProfit: 'Yillik foyda',
+      months: 'oy',
+      currency: '$',
+      calculate: 'Hisoblash',
+      excellent: 'A\'lo darajada foydali!',
+      good: 'Yaxshi foydalanish',
+      acceptable: 'Qabul qilinadigan foyda',
+      slow: 'Sekin foydalanish'
     }
   };
 
