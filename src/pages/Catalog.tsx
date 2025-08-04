@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search, Filter, Heart, Eye } from "lucide-react";
+import ultrasoundImage from "@/assets/ultrasound-machine.jpg";
 
 interface CatalogProps {
   language: 'ru' | 'en' | 'uz';
@@ -59,7 +60,7 @@ const products: Product[] = [
     },
     category: "diagnostic",
     price: "от 1 800 000 ₽",
-    image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=300&fit=crop",
+    image: ultrasoundImage,
     features: {
       ru: ["4D визуализация", "Допплеровское исследование", "Портативность"],
       en: ["4D visualization", "Doppler examination", "Portability"],
