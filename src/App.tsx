@@ -10,6 +10,7 @@ import Home from "./pages/Home";
 import Catalog from "./pages/Catalog";
 import ProductDetail from "./pages/ProductDetail";
 import Services from "./pages/Services";
+import Contacts from "./pages/Contacts";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -33,7 +34,7 @@ const App = () => {
                 <Route path="/services" element={<Services language={language} />} />
                 <Route path="/cases" element={<div className="py-20 text-center">Cases Page - Coming Soon</div>} />
                 <Route path="/about" element={<div className="py-20 text-center">About Page - Coming Soon</div>} />
-                <Route path="/contacts" element={<div className="py-20 text-center">Contacts Page - Coming Soon</div>} />
+                <Route path="/contacts" element={<Contacts language={language} />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
