@@ -6,42 +6,45 @@
 
 @layer base {
   :root {
-    /* MSC Brand Colors - based on company logo */
-    --msc-primary: 231 45% 20%; /* Navy blue from logo */
-    --msc-accent: 210 50% 85%; /* Light blue accent */
-    --msc-bg: 240 9% 98%; /* Off-white background */
-    --msc-text: 231 45% 15%; /* Dark navy for text */
-    --msc-text-light: 220 13% 50%; /* Gray text */
-    --msc-ornament: 0 0% 92%; /* Light gray for ornament borders */
+    /* Eastern Spring Colors - inspired by cherry blossoms and eternal spring */
+    --msc-primary: 340 75% 35%; /* Deep cherry blossom pink */
+    --msc-accent: 160 45% 75%; /* Soft jade green */
+    --msc-bg: 30 80% 97%; /* Warm cream background */
+    --msc-text: 340 60% 25%; /* Rich plum for text */
+    --msc-text-light: 25 20% 55%; /* Warm gray text */
+    --msc-ornament: 45 60% 85%; /* Golden silk ornament borders */
+    --msc-spring-gold: 45 95% 70%; /* Bright golden accent */
+    --msc-cherry: 350 85% 75%; /* Light cherry blossom */
+    --msc-jade: 160 35% 65%; /* Deeper jade */
     
-    /* Semantic tokens based on MSC logo colors */
-    --background: 240 9% 98%; /* Light background */
-    --foreground: 231 45% 15%; /* Dark navy text */
+    /* Semantic tokens based on Eastern Spring palette */
+    --background: 30 80% 97%; /* Warm cream background */
+    --foreground: 340 60% 25%; /* Rich plum text */
 
     --card: 0 0% 100%;
-    --card-foreground: 231 45% 15%;
+    --card-foreground: 340 60% 25%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 231 45% 15%;
+    --popover-foreground: 340 60% 25%;
 
-    --primary: 231 45% 20%; /* Logo navy blue */
+    --primary: 340 75% 35%; /* Deep cherry blossom pink */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 50% 95%; /* Very light blue */
-    --secondary-foreground: 231 45% 20%;
+    --secondary: 350 70% 92%; /* Very light cherry */
+    --secondary-foreground: 340 60% 25%;
 
-    --muted: 220 13% 95%;
-    --muted-foreground: 220 13% 50%;
+    --muted: 30 40% 94%;
+    --muted-foreground: 25 20% 55%;
 
-    --accent: 210 50% 85%; /* Light blue from logo theme */
-    --accent-foreground: 231 45% 20%;
+    --accent: 160 45% 75%; /* Soft jade green */
+    --accent-foreground: 340 60% 25%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 13% 88%;
-    --input: 220 13% 88%;
-    --ring: 210 50% 85%;
+    --border: 45 40% 85%;
+    --input: 45 40% 85%;
+    --ring: 160 45% 75%;
 
     --radius: 0.75rem;
 
@@ -63,33 +66,33 @@
   }
 
   .dark {
-    --background: 231 45% 8%; /* Dark navy background */
-    --foreground: 210 50% 90%; /* Light text */
+    --background: 340 30% 12%; /* Deep plum background */
+    --foreground: 350 85% 85%; /* Light cherry text */
 
-    --card: 231 45% 12%;
-    --card-foreground: 210 50% 90%;
+    --card: 340 35% 15%;
+    --card-foreground: 350 85% 85%;
 
-    --popover: 231 45% 12%;
-    --popover-foreground: 210 50% 90%;
+    --popover: 340 35% 15%;
+    --popover-foreground: 350 85% 85%;
 
-    --primary: 210 50% 85%; /* Light blue for dark mode */
-    --primary-foreground: 231 45% 15%;
+    --primary: 350 85% 75%; /* Light cherry for dark mode */
+    --primary-foreground: 340 60% 15%;
 
-    --secondary: 231 45% 15%;
-    --secondary-foreground: 210 50% 85%;
+    --secondary: 340 45% 20%;
+    --secondary-foreground: 350 85% 75%;
 
-    --muted: 231 45% 15%;
-    --muted-foreground: 220 13% 65%;
+    --muted: 340 35% 18%;
+    --muted-foreground: 25 20% 65%;
 
-    --accent: 210 50% 75%; /* Lighter accent for dark mode */
-    --accent-foreground: 231 45% 15%;
+    --accent: 160 35% 65%; /* Deeper jade for dark mode */
+    --accent-foreground: 350 85% 85%;
 
     --destructive: 0 62% 50%;
-    --destructive-foreground: 210 50% 90%;
+    --destructive-foreground: 350 85% 85%;
 
-    --border: 231 45% 20%;
-    --input: 231 45% 20%;
-    --ring: 210 50% 75%;
+    --border: 340 30% 25%;
+    --input: 340 30% 25%;
+    --ring: 160 35% 65%;
     
     --sidebar-background: 231 45% 10%;
     --sidebar-foreground: 210 50% 85%;
