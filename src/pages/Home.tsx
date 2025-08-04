@@ -172,16 +172,26 @@ const Home = ({ language }: HomeProps) => {
               </Button>
             </div>
 
-            {/* Hero Animation */}
+            {/* Hero Animation - Logo Video */}
             <div className="flex justify-center lg:justify-end">
-              <div className="relative">
-                <div className="w-64 h-64 lg:w-80 lg:h-80 bg-gradient-to-br from-msc-accent to-white/20 hexagon-border animate-glow" />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="text-4xl lg:text-6xl font-bold mb-2">MSC</div>
-                    <div className="text-sm lg:text-base opacity-80">Medical Excellence</div>
+              <div className="relative w-64 h-64 lg:w-80 lg:h-80">
+                <video 
+                  autoPlay 
+                  loop 
+                  muted 
+                  playsInline
+                  className="w-full h-full object-contain"
+                >
+                  <source src="/logo-animation.mp4" type="video/mp4" />
+                  <source src="/logo-animation.webm" type="video/webm" />
+                  {/* Fallback if video doesn't load */}
+                  <div className="w-full h-full bg-gradient-to-br from-msc-accent to-white/20 hexagon-border animate-glow flex items-center justify-center">
+                    <div className="text-center text-white">
+                      <div className="text-4xl lg:text-6xl font-bold mb-2">MSC</div>
+                      <div className="text-sm lg:text-base opacity-80">Medical Excellence</div>
+                    </div>
                   </div>
-                </div>
+                </video>
               </div>
             </div>
           </div>
