@@ -231,7 +231,7 @@ const Services = ({ language }: ServicesProps) => {
     <div className="min-h-screen bg-background py-20">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold text-foreground mb-6">
+          <h1 className="text-5xl font-heading font-bold text-foreground mb-6">
             {currentContent.title}
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">

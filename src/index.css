@@ -128,6 +128,11 @@
     font-family: 'Cinzel Decorative', sans-serif;
   }
   
+  /* Apply decorative font to all headings */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Cinzel Decorative', serif;
+  }
+  
   /* MSC Hexagon Pattern & Animations */
   .hexagon {
     clip-path: polygon(30% 0%, 70% 0%, 100% 50%, 70% 100%, 30% 100%, 0% 50%);

@@ -205,7 +205,7 @@ const Catalog = ({ language }: CatalogProps) => {
       {/* Header */}
       <div className="bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 py-16">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+          <h1 className="text-4xl md:text-5xl font-heading font-bold text-foreground mb-4">
             {translations.title[language]}
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
