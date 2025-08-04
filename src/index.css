@@ -116,16 +116,16 @@
 
   body {
     @apply bg-background text-foreground font-sans;
-    font-family: 'Peduncle', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Cinzel Decorative', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   }
   
   /* Typography - MSC Brand Fonts */
   .font-heading {
-    font-family: 'Times New Roman', serif;
+    font-family: 'Cinzel Decorative', serif;
   }
   
   .font-body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Cinzel Decorative', sans-serif;
   }
   
   /* MSC Hexagon Pattern & Animations */
