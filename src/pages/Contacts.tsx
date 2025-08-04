@@ -115,8 +115,8 @@ const Contacts = ({ language }: ContactsProps) => {
           {/* Phone */}
           <Card className="hover:shadow-lg transition-shadow duration-300 cursor-pointer" onClick={handlePhoneClick}>
             <CardContent className="p-8 text-center">
-              <div className="w-16 h-16 bg-msc-primary rounded-full flex items-center justify-center mx-auto mb-4">
-                <Phone className="w-8 h-8 text-white" />
+              <div className="w-12 h-12 bg-msc-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                <Phone className="w-5 h-5 text-white" />
               </div>
               <h3 className="font-semibold text-xl text-foreground mb-2">{t.phone}</h3>
               <p className="text-msc-primary text-lg font-medium">+998 (71) 237-33-08</p>
@@ -126,8 +126,8 @@ const Contacts = ({ language }: ContactsProps) => {
           {/* Email */}
           <Card className="hover:shadow-lg transition-shadow duration-300 cursor-pointer" onClick={handleEmailClick}>
             <CardContent className="p-8 text-center">
-              <div className="w-16 h-16 bg-msc-primary rounded-full flex items-center justify-center mx-auto mb-4">
-                <Mail className="w-8 h-8 text-white" />
+              <div className="w-12 h-12 bg-msc-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                <Mail className="w-5 h-5 text-white" />
               </div>
               <h3 className="font-semibold text-xl text-foreground mb-2">{t.email}</h3>
               <p className="text-msc-primary text-lg font-medium">info@medsc.uz</p>
@@ -137,8 +137,8 @@ const Contacts = ({ language }: ContactsProps) => {
           {/* Address */}
           <Card className="hover:shadow-lg transition-shadow duration-300">
             <CardContent className="p-8 text-center">
-              <div className="w-16 h-16 bg-msc-primary rounded-full flex items-center justify-center mx-auto mb-4">
-                <MapPin className="w-8 h-8 text-white" />
+              <div className="w-12 h-12 bg-msc-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                <MapPin className="w-5 h-5 text-white" />
               </div>
               <h3 className="font-semibold text-xl text-foreground mb-2">{t.address}</h3>
               <p className="text-muted-foreground text-lg">{t.fullAddress}</p>
@@ -170,8 +170,8 @@ const Contacts = ({ language }: ContactsProps) => {
           {/* Working Hours */}
           <Card className="hover:shadow-lg transition-shadow duration-300">
             <CardContent className="p-8 text-center">
-              <div className="w-16 h-16 bg-msc-primary rounded-full flex items-center justify-center mx-auto mb-4">
-                <div className="w-8 h-8 bg-white rounded text-msc-primary font-bold flex items-center justify-center text-sm">
+              <div className="w-12 h-12 bg-msc-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-6 h-6 bg-white rounded text-msc-primary font-bold flex items-center justify-center text-xs">
                   9-6
                 </div>
               </div>
@@ -187,32 +187,32 @@ const Contacts = ({ language }: ContactsProps) => {
         {/* Social Networks Row */}
         <div className="mb-16">
           <h3 className="font-semibold text-2xl text-foreground text-center mb-8">{t.socialNetworks}</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto">
+          <div className="flex flex-wrap justify-center gap-4 max-w-4xl mx-auto">
             <Button 
               variant="outline" 
               size="lg"
-              className="h-16 justify-center space-x-3 text-lg"
+              className="h-12 justify-center space-x-2 text-base px-6"
               onClick={handleFacebookClick}
             >
-              <Facebook className="w-6 h-6" />
+              <Facebook className="w-4 h-4" />
               <span>Facebook</span>
             </Button>
             <Button 
               variant="outline" 
               size="lg"
-              className="h-16 justify-center space-x-3 text-lg"
+              className="h-12 justify-center space-x-2 text-base px-6"
               onClick={handleInstagramClick}
             >
-              <Instagram className="w-6 h-6" />
+              <Instagram className="w-4 h-4" />
               <span>Instagram</span>
             </Button>
             <Button 
               variant="outline" 
               size="lg"
-              className="h-16 justify-center space-x-3 text-lg"
+              className="h-12 justify-center space-x-2 text-base px-6"
               onClick={handleYouTubeClick}
             >
-              <Youtube className="w-6 h-6" />
+              <Youtube className="w-4 h-4" />
               <span>YouTube</span>
             </Button>
           </div>
