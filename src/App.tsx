@@ -19,8 +19,6 @@ import AdminLayout from "./features/admin/components/AdminLayout";
 import Dashboard from "./features/admin/pages/Dashboard";
 import Clients from "./features/crm/pages/Clients";
 import AdminProducts from "./features/products/pages/AdminProducts";
-import Deals from "./features/crm/pages/Deals";
-import Tasks from "./features/crm/pages/Tasks";
 
 const queryClient = new QueryClient();
 
@@ -55,8 +53,6 @@ const App = () => {
                   <Route index element={<Dashboard />} />
                   <Route path="clients" element={<Clients />} />
                   <Route path="products" element={<AdminProducts />} />
-                  <Route path="deals" element={<Deals />} />
-                  <Route path="tasks" element={<Tasks />} />
                 </Route>
                 
                 {/* Auth Pages */}

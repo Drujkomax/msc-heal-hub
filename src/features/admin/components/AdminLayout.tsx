@@ -22,8 +22,6 @@ const AdminLayout = () => {
     { name: t('admin.dashboard'), href: '/admin', icon: BarChart3 },
     { name: t('admin.clients'), href: '/admin/clients', icon: Users },
     { name: t('admin.products'), href: '/admin/products', icon: ShoppingBag },
-    { name: t('admin.deals'), href: '/admin/deals', icon: FileText },
-    { name: t('admin.tasks'), href: '/admin/tasks', icon: CheckSquare },
   ];
 
   const isActive = (href: string) => {

@@ -113,8 +113,7 @@ const Clients = () => {
                   <div>
                     <CardTitle className="text-lg">{client.name}</CardTitle>
                     {client.company && (
-                      <p className="text-sm text-muted-foreground flex items-center">
-                        <Building className="w-4 h-4 mr-1" />
+                      <p className="text-sm text-muted-foreground">
                         {client.company}
                       </p>
                     )}

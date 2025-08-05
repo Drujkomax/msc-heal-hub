@@ -19,56 +19,51 @@ const mockProducts = [
     id: 1,
     name: 'УЗИ аппарат Mindray DC-40',
     category: 'Диагностическое оборудование',
-    price: 45000000,
-    status: 'available',
-    stock: 5,
-    image: '/placeholder.svg'
+    description: 'Современный ультразвуковой аппарат с высокой четкостью изображения',
+    image: '/placeholder.svg',
+    status: 'active'
   },
   {
     id: 2,
-    name: 'Рентген система Samsung GC80',
-    category: 'Рентгеновское оборудование',
-    price: 85000000,
-    status: 'available',
-    stock: 2,
-    image: '/placeholder.svg'
+    name: 'Рентген система Samsung XGEO GR40',
+    category: 'Рентгенология',
+    description: 'Цифровая рентгеновская система нового поколения',
+    image: '/placeholder.svg',
+    status: 'active'
   },
   {
     id: 3,
-    name: 'Анализатор крови Sysmex XN-1000',
+    name: 'Лабораторный анализатор Sysmex',
     category: 'Лабораторное оборудование',
-    price: 120000000,
-    status: 'out_of_stock',
-    stock: 0,
-    image: '/placeholder.svg'
+    description: 'Автоматический анализатор крови',
+    image: '/placeholder.svg',
+    status: 'draft'
   },
   {
     id: 4,
-    name: 'МРТ Siemens Magnetom',
-    category: 'Томографы',
-    price: 450000000,
-    status: 'pre_order',
-    stock: 1,
-    image: '/placeholder.svg'
+    name: 'МРТ система Siemens',
+    category: 'Томография',
+    description: 'Магнитно-резонансная томография высокого разрешения',
+    image: '/placeholder.svg',
+    status: 'active'
   }
 ];
 
 const AdminProducts = () => {
   const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'available' | 'out_of_stock' | 'pre_order'>('all');
 
   const getStatusBadge = (status: string) => {
     const variants = {
-      available: 'default',
-      out_of_stock: 'destructive',
-      pre_order: 'secondary',
+      active: 'default',
+      draft: 'secondary',
+      archived: 'outline',
     } as const;
     
     const labels = {
-      available: t('products.status.available'),
-      out_of_stock: t('products.status.outOfStock'),
-      pre_order: t('products.status.preOrder'),
+      active: 'Активный',
+      draft: 'Черновик',
+      archived: 'Архив',
     };
 
     return (
@@ -78,12 +73,10 @@ const AdminProducts = () => {
     );
   };
 
-  const filteredProducts = mockProducts.filter(product => {
-    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         product.category.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === 'all' || product.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
+  const filteredProducts = mockProducts.filter(product =>
+    product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    product.category.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="space-y-6">
@@ -97,6 +90,49 @@ const AdminProducts = () => {
           <Plus className="w-4 h-4 mr-2" />
           {t('products.addProduct')}
         </Button>
+      </div>
+
+      {/* Statistics */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center space-x-2">
+              <Package className="w-8 h-8 text-blue-600" />
+              <div>
+                <p className="text-sm text-muted-foreground">Всего товаров</p>
+                <p className="text-2xl font-bold">{mockProducts.length}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center space-x-2">
+              <Package className="w-8 h-8 text-green-600" />
+              <div>
+                <p className="text-sm text-muted-foreground">Активные</p>
+                <p className="text-2xl font-bold">
+                  {mockProducts.filter(p => p.status === 'active').length}
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center space-x-2">
+              <Package className="w-8 h-8 text-gray-600" />
+              <div>
+                <p className="text-sm text-muted-foreground">Черновики</p>
+                <p className="text-2xl font-bold">
+                  {mockProducts.filter(p => p.status === 'draft').length}
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Filters */}
@@ -114,36 +150,6 @@ const AdminProducts = () => {
                 />
               </div>
             </div>
-            <div className="flex gap-2">
-              <Button
-                variant={statusFilter === 'all' ? 'default' : 'outline'}
-                onClick={() => setStatusFilter('all')}
-                size="sm"
-              >
-                {t('common.all')}
-              </Button>
-              <Button
-                variant={statusFilter === 'available' ? 'default' : 'outline'}
-                onClick={() => setStatusFilter('available')}
-                size="sm"
-              >
-                {t('products.status.available')}
-              </Button>
-              <Button
-                variant={statusFilter === 'out_of_stock' ? 'default' : 'outline'}
-                onClick={() => setStatusFilter('out_of_stock')}
-                size="sm"
-              >
-                {t('products.status.outOfStock')}
-              </Button>
-              <Button
-                variant={statusFilter === 'pre_order' ? 'default' : 'outline'}
-                onClick={() => setStatusFilter('pre_order')}
-                size="sm"
-              >
-                {t('products.status.preOrder')}
-              </Button>
-            </div>
           </div>
         </CardContent>
       </Card>
@@ -153,29 +159,23 @@ const AdminProducts = () => {
         {filteredProducts.map((product) => (
           <Card key={product.id} className="hover:shadow-md transition-shadow">
             <CardHeader className="pb-4">
-              <div className="aspect-video bg-muted rounded-md flex items-center justify-center mb-4">
-                <Package className="w-12 h-12 text-muted-foreground" />
+              <div className="aspect-video w-full bg-gray-100 rounded-md mb-4 flex items-center justify-center">
+                <Package className="w-12 h-12 text-gray-400" />
               </div>
-              <div className="flex justify-between items-start">
-                <div className="space-y-2">
-                  <CardTitle className="text-lg leading-tight">{product.name}</CardTitle>
-                  <p className="text-sm text-muted-foreground">{product.category}</p>
-                  {getStatusBadge(product.status)}
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <CardTitle className="text-lg">{product.name}</CardTitle>
+                  <p className="text-sm text-muted-foreground mt-1">{product.category}</p>
                 </div>
+                {getStatusBadge(product.status)}
               </div>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">{t('products.price')}:</span>
-                  <span className="font-semibold">{product.price.toLocaleString()} {t('products.sum')}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">{t('products.stock')}:</span>
-                  <span className={`font-medium ${product.stock === 0 ? 'text-destructive' : ''}`}>
-                    {product.stock} {t('products.pieces')}
-                  </span>
-                </div>
+              <div className="space-y-3">
+                <p className="text-sm text-muted-foreground line-clamp-2">
+                  {product.description}
+                </p>
+                
                 <div className="flex space-x-2 pt-2">
                   <Button variant="outline" size="sm" className="flex-1">
                     <Eye className="w-4 h-4 mr-1" />
@@ -184,9 +184,6 @@ const AdminProducts = () => {
                   <Button variant="outline" size="sm" className="flex-1">
                     <Edit className="w-4 h-4 mr-1" />
                     {t('common.edit')}
-                  </Button>
-                  <Button variant="outline" size="sm">
-                    <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>
               </div>
