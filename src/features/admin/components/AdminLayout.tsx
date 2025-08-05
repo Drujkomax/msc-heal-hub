@@ -13,7 +13,8 @@ import {
   BarChart3,
   LogOut,
   Home,
-  MessageSquare
+  MessageSquare,
+  Settings
 } from 'lucide-react';
 
 const AdminLayout = () => {
@@ -24,6 +25,7 @@ const AdminLayout = () => {
     { name: t('admin.dashboard'), href: '/admin', icon: BarChart3 },
     { name: t('admin.clients'), href: '/admin/clients', icon: Users },
     { name: t('admin.products'), href: '/admin/products', icon: ShoppingBag },
+    { name: 'Услуги', href: '/admin/services', icon: Settings },
     { name: t('admin.contacts'), href: '/admin/contacts', icon: MessageSquare },
   ];
 
@@ -94,7 +96,7 @@ const AdminLayout = () => {
                 <LanguageSwitcher />
                 <Badge variant="secondary">{t('admin.role')}</Badge>
                 <div className="text-sm text-muted-foreground">
-                  admin@example.com
+                  admin
                 </div>
               </div>
             </div>

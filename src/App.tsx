@@ -19,6 +19,7 @@ import AdminLayout from "./features/admin/components/AdminLayout";
 import Dashboard from "./features/admin/pages/Dashboard";
 import Clients from "./features/crm/pages/Clients";
 import AdminProducts from "./features/products/pages/AdminProducts";
+import AdminServices from "./features/admin/pages/AdminServices";
 import AdminContacts from "./features/admin/pages/AdminContacts";
 import Auth from "./pages/Auth";
 
@@ -43,6 +44,7 @@ const App = () => {
               <Route index element={<Dashboard />} />
               <Route path="clients" element={<Clients />} />
               <Route path="products" element={<AdminProducts />} />
+              <Route path="services" element={<AdminServices />} />
               <Route path="contacts" element={<AdminContacts />} />
             </Route>
 
