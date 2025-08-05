@@ -16,18 +16,18 @@ const RequireAuth = ({ children, requiredRole = 'user' }: RequireAuthProps) => {
 
   useEffect(() => {
     if (!authLoading && !roleLoading) {
-      // Избегаем бесконечного редиректа - не перенаправляем если уже на странице авторизации
-      if (location.pathname === '/auth') {
+      // Избегаем бесконечного редиректа - не перенаправляем если уже на админской странице
+      if (location.pathname.startsWith('/admin')) {
         return;
       }
 
       if (!user) {
-        navigate('/auth', { replace: true });
+        navigate('/admin', { replace: true });
         return;
       }
 
       if (requiredRole === 'admin' && role !== 'admin') {
-        navigate('/auth', { replace: true });
+        navigate('/admin', { replace: true });
         return;
       }
     }

@@ -14,13 +14,7 @@ import Contacts from "./pages/Contacts";
 import NotFound from "./pages/NotFound";
 
 // Admin Components
-import RequireAuth from "./features/auth/components/RequireAuth";
-import AdminLayout from "./features/admin/components/AdminLayout";
-import Dashboard from "./features/admin/pages/Dashboard";
-import Clients from "./features/crm/pages/Clients";
-import AdminProducts from "./features/products/pages/AdminProducts";
-import AdminServices from "./features/admin/pages/AdminServices";
-import AdminContacts from "./features/admin/pages/AdminContacts";
+import AdminWrapper from "./features/admin/components/AdminWrapper";
 
 
 const queryClient = new QueryClient();
@@ -36,17 +30,7 @@ const App = () => {
         <BrowserRouter>
           <Routes>
             {/* Admin Routes - Standalone Layout */}
-            <Route path="/admin" element={
-              <RequireAuth requiredRole="admin">
-                <AdminLayout />
-              </RequireAuth>
-            }>
-              <Route index element={<Dashboard />} />
-              <Route path="clients" element={<Clients />} />
-              <Route path="products" element={<AdminProducts />} />
-              <Route path="services" element={<AdminServices />} />
-              <Route path="contacts" element={<AdminContacts />} />
-            </Route>
+                    <Route path="/admin/*" element={<AdminWrapper />} />
 
             {/* Public Routes - With Header/Footer */}
             <Route path="/*" element={
