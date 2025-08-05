@@ -1,0 +1,117 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "add": "Add",
+    "search": "Search",
+    "filter": "Filter",
+    "all": "All",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close"
+  },
+  "navigation": {
+    "home": "Home",
+    "services": "Services",
+    "catalog": "Catalog",
+    "contacts": "Contacts",
+    "admin": "Admin Panel"
+  },
+  "admin": {
+    "title": "Admin Panel",
+    "dashboard": "Dashboard",
+    "clients": "Clients",
+    "products": "Products",
+    "deals": "Deals",
+    "tasks": "Tasks",
+    "logout": "Logout",
+    "toWebsite": "To Website",
+    "role": "Administrator"
+  },
+  "products": {
+    "title": "Products",
+    "subtitle": "Product catalog management",
+    "addProduct": "Add Product",
+    "searchPlaceholder": "Search products...",
+    "category": "Category",
+    "price": "Price",
+    "stock": "Stock",
+    "status": {
+      "available": "Available",
+      "outOfStock": "Out of Stock",
+      "preOrder": "Pre-order"
+    },
+    "notFound": "No products found",
+    "sum": "sum",
+    "pieces": "pcs."
+  },
+  "clients": {
+    "title": "Clients",
+    "subtitle": "Client database management",
+    "addClient": "Add Client",
+    "searchPlaceholder": "Search clients...",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "company": "Company",
+    "lastContact": "Last Contact",
+    "notFound": "No clients found"
+  },
+  "deals": {
+    "title": "Deals",
+    "subtitle": "Deal management",
+    "addDeal": "Add Deal",
+    "searchPlaceholder": "Search deals...",
+    "client": "Client",
+    "amount": "Amount",
+    "stage": "Stage",
+    "probability": "Probability",
+    "closeDate": "Close Date",
+    "stages": {
+      "lead": "Lead",
+      "qualified": "Qualified",
+      "proposal": "Proposal",
+      "negotiation": "Negotiation",
+      "closed": "Closed"
+    },
+    "notFound": "No deals found"
+  },
+  "tasks": {
+    "title": "Tasks",
+    "subtitle": "Task management",
+    "addTask": "Add Task",
+    "searchPlaceholder": "Search tasks...",
+    "description": "Description",
+    "assignee": "Assignee",
+    "dueDate": "Due Date",
+    "priority": "Priority",
+    "status": {
+      "pending": "Pending",
+      "inProgress": "In Progress",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "priorities": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High",
+      "urgent": "Urgent"
+    },
+    "notFound": "No tasks found"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "System overview",
+    "totalClients": "Total Clients",
+    "totalDeals": "Total Deals",
+    "revenue": "Revenue",
+    "pendingTasks": "Pending Tasks"
+  }
+}

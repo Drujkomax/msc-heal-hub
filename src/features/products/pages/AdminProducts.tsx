@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -53,6 +54,7 @@ const mockProducts = [
 ];
 
 const AdminProducts = () => {
+  const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'available' | 'out_of_stock' | 'pre_order'>('all');
 
@@ -64,9 +66,9 @@ const AdminProducts = () => {
     } as const;
     
     const labels = {
-      available: 'В наличии',
-      out_of_stock: 'Нет в наличии',
-      pre_order: 'Под заказ',
+      available: t('products.status.available'),
+      out_of_stock: t('products.status.outOfStock'),
+      pre_order: t('products.status.preOrder'),
     };
 
     return (
@@ -88,12 +90,12 @@ const AdminProducts = () => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-3xl font-bold">Товары</h2>
-          <p className="text-muted-foreground">Управление каталогом товаров</p>
+          <h2 className="text-3xl font-bold">{t('products.title')}</h2>
+          <p className="text-muted-foreground">{t('products.subtitle')}</p>
         </div>
         <Button>
           <Plus className="w-4 h-4 mr-2" />
-          Добавить товар
+          {t('products.addProduct')}
         </Button>
       </div>
 
@@ -105,7 +107,7 @@ const AdminProducts = () => {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                 <Input
-                  placeholder="Поиск товаров..."
+                  placeholder={t('products.searchPlaceholder')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"
@@ -118,28 +120,28 @@ const AdminProducts = () => {
                 onClick={() => setStatusFilter('all')}
                 size="sm"
               >
-                Все
+                {t('common.all')}
               </Button>
               <Button
                 variant={statusFilter === 'available' ? 'default' : 'outline'}
                 onClick={() => setStatusFilter('available')}
                 size="sm"
               >
-                В наличии
+                {t('products.status.available')}
               </Button>
               <Button
                 variant={statusFilter === 'out_of_stock' ? 'default' : 'outline'}
                 onClick={() => setStatusFilter('out_of_stock')}
                 size="sm"
               >
-                Нет в наличии
+                {t('products.status.outOfStock')}
               </Button>
               <Button
                 variant={statusFilter === 'pre_order' ? 'default' : 'outline'}
                 onClick={() => setStatusFilter('pre_order')}
                 size="sm"
               >
-                Под заказ
+                {t('products.status.preOrder')}
               </Button>
             </div>
           </div>
@@ -165,23 +167,23 @@ const AdminProducts = () => {
             <CardContent>
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">Цена:</span>
-                  <span className="font-semibold">{product.price.toLocaleString()} сум</span>
+                  <span className="text-sm text-muted-foreground">{t('products.price')}:</span>
+                  <span className="font-semibold">{product.price.toLocaleString()} {t('products.sum')}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">Остаток:</span>
+                  <span className="text-sm text-muted-foreground">{t('products.stock')}:</span>
                   <span className={`font-medium ${product.stock === 0 ? 'text-destructive' : ''}`}>
-                    {product.stock} шт.
+                    {product.stock} {t('products.pieces')}
                   </span>
                 </div>
                 <div className="flex space-x-2 pt-2">
                   <Button variant="outline" size="sm" className="flex-1">
                     <Eye className="w-4 h-4 mr-1" />
-                    Просмотр
+                    {t('common.view')}
                   </Button>
                   <Button variant="outline" size="sm" className="flex-1">
                     <Edit className="w-4 h-4 mr-1" />
-                    Изменить
+                    {t('common.edit')}
                   </Button>
                   <Button variant="outline" size="sm">
                     <Trash2 className="w-4 h-4" />
@@ -196,7 +198,7 @@ const AdminProducts = () => {
       {filteredProducts.length === 0 && (
         <Card>
           <CardContent className="p-8 text-center">
-            <p className="text-muted-foreground">Товары не найдены</p>
+            <p className="text-muted-foreground">{t('products.notFound')}</p>
           </CardContent>
         </Card>
       )}

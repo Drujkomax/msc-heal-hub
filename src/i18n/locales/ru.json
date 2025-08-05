@@ -1,0 +1,117 @@
+{
+  "common": {
+    "loading": "Загрузка...",
+    "error": "Ошибка",
+    "success": "Успешно",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "delete": "Удалить",
+    "edit": "Изменить",
+    "view": "Просмотр",
+    "add": "Добавить",
+    "search": "Поиск",
+    "filter": "Фильтр",
+    "all": "Все",
+    "back": "Назад",
+    "next": "Далее",
+    "previous": "Предыдущий",
+    "close": "Закрыть"
+  },
+  "navigation": {
+    "home": "Главная",
+    "services": "Услуги",
+    "catalog": "Каталог",
+    "contacts": "Контакты",
+    "admin": "Админ-панель"
+  },
+  "admin": {
+    "title": "Админ-панель",
+    "dashboard": "Дашборд",
+    "clients": "Клиенты",
+    "products": "Товары",
+    "deals": "Сделки",
+    "tasks": "Задачи",
+    "logout": "Выйти",
+    "toWebsite": "На сайт",
+    "role": "Администратор"
+  },
+  "products": {
+    "title": "Товары",
+    "subtitle": "Управление каталогом товаров",
+    "addProduct": "Добавить товар",
+    "searchPlaceholder": "Поиск товаров...",
+    "category": "Категория",
+    "price": "Цена",
+    "stock": "Остаток",
+    "status": {
+      "available": "В наличии",
+      "outOfStock": "Нет в наличии",
+      "preOrder": "Под заказ"
+    },
+    "notFound": "Товары не найдены",
+    "sum": "сум",
+    "pieces": "шт."
+  },
+  "clients": {
+    "title": "Клиенты",
+    "subtitle": "Управление клиентской базой",
+    "addClient": "Добавить клиента",
+    "searchPlaceholder": "Поиск клиентов...",
+    "name": "Имя",
+    "email": "Email",
+    "phone": "Телефон",
+    "company": "Компания",
+    "lastContact": "Последний контакт",
+    "notFound": "Клиенты не найдены"
+  },
+  "deals": {
+    "title": "Сделки",
+    "subtitle": "Управление сделками",
+    "addDeal": "Добавить сделку",
+    "searchPlaceholder": "Поиск сделок...",
+    "client": "Клиент",
+    "amount": "Сумма",
+    "stage": "Этап",
+    "probability": "Вероятность",
+    "closeDate": "Дата закрытия",
+    "stages": {
+      "lead": "Лид",
+      "qualified": "Квалифицирован",
+      "proposal": "Предложение",
+      "negotiation": "Переговоры",
+      "closed": "Закрыта"
+    },
+    "notFound": "Сделки не найдены"
+  },
+  "tasks": {
+    "title": "Задачи",
+    "subtitle": "Управление задачами",
+    "addTask": "Добавить задачу",
+    "searchPlaceholder": "Поиск задач...",
+    "description": "Описание",
+    "assignee": "Исполнитель",
+    "dueDate": "Срок",
+    "priority": "Приоритет",
+    "status": {
+      "pending": "В ожидании",
+      "inProgress": "В работе",
+      "completed": "Завершена",
+      "cancelled": "Отменена"
+    },
+    "priorities": {
+      "low": "Низкий",
+      "medium": "Средний",
+      "high": "Высокий",
+      "urgent": "Срочный"
+    },
+    "notFound": "Задачи не найдены"
+  },
+  "dashboard": {
+    "title": "Дашборд",
+    "subtitle": "Обзор системы",
+    "totalClients": "Всего клиентов",
+    "totalDeals": "Всего сделок",
+    "revenue": "Выручка",
+    "pendingTasks": "Задачи в работе"
+  }
+}

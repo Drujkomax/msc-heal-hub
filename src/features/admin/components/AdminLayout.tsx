@@ -1,7 +1,9 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import LanguageSwitcher from '@/components/common/LanguageSwitcher';
 import { 
   Users, 
   ShoppingBag, 
@@ -14,13 +16,14 @@ import {
 
 const AdminLayout = () => {
   const location = useLocation();
+  const { t } = useTranslation();
   
   const navigation = [
-    { name: 'Дашборд', href: '/admin', icon: BarChart3 },
-    { name: 'Клиенты', href: '/admin/clients', icon: Users },
-    { name: 'Товары', href: '/admin/products', icon: ShoppingBag },
-    { name: 'Сделки', href: '/admin/deals', icon: FileText },
-    { name: 'Задачи', href: '/admin/tasks', icon: CheckSquare },
+    { name: t('admin.dashboard'), href: '/admin', icon: BarChart3 },
+    { name: t('admin.clients'), href: '/admin/clients', icon: Users },
+    { name: t('admin.products'), href: '/admin/products', icon: ShoppingBag },
+    { name: t('admin.deals'), href: '/admin/deals', icon: FileText },
+    { name: t('admin.tasks'), href: '/admin/tasks', icon: CheckSquare },
   ];
 
   const isActive = (href: string) => {
@@ -40,7 +43,7 @@ const AdminLayout = () => {
               <div className="w-8 h-8 bg-primary rounded flex items-center justify-center">
                 <span className="text-primary-foreground font-bold">A</span>
               </div>
-              <span className="font-semibold text-lg">Админ-панель</span>
+              <span className="font-semibold text-lg">{t('admin.title')}</span>
             </div>
 
             <nav className="space-y-2">
@@ -69,12 +72,12 @@ const AdminLayout = () => {
               <Link to="/">
                 <Button variant="outline" className="w-full justify-start">
                   <Home className="w-4 h-4 mr-2" />
-                  На сайт
+                  {t('admin.toWebsite')}
                 </Button>
               </Link>
               <Button variant="ghost" className="w-full justify-start text-muted-foreground">
                 <LogOut className="w-4 h-4 mr-2" />
-                Выйти
+                {t('admin.logout')}
               </Button>
             </div>
           </div>
@@ -86,11 +89,12 @@ const AdminLayout = () => {
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-2xl font-semibold text-foreground">
-                  {navigation.find(nav => isActive(nav.href))?.name || 'Админ-панель'}
+                  {navigation.find(nav => isActive(nav.href))?.name || t('admin.title')}
                 </h1>
               </div>
               <div className="flex items-center space-x-4">
-                <Badge variant="secondary">Администратор</Badge>
+                <LanguageSwitcher />
+                <Badge variant="secondary">{t('admin.role')}</Badge>
                 <div className="text-sm text-muted-foreground">
                   admin@example.com
                 </div>

@@ -1,0 +1,117 @@
+{
+  "common": {
+    "loading": "Yuklanmoqda...",
+    "error": "Xato",
+    "success": "Muvaffaqiyat",
+    "save": "Saqlash",
+    "cancel": "Bekor qilish",
+    "delete": "O'chirish",
+    "edit": "Tahrirlash",
+    "view": "Ko'rish",
+    "add": "Qo'shish",
+    "search": "Qidiruv",
+    "filter": "Filtr",
+    "all": "Barchasi",
+    "back": "Orqaga",
+    "next": "Keyingi",
+    "previous": "Avvalgi",
+    "close": "Yopish"
+  },
+  "navigation": {
+    "home": "Bosh sahifa",
+    "services": "Xizmatlar",
+    "catalog": "Katalog",
+    "contacts": "Kontaktlar",
+    "admin": "Admin panel"
+  },
+  "admin": {
+    "title": "Admin panel",
+    "dashboard": "Dashboard",
+    "clients": "Mijozlar",
+    "products": "Mahsulotlar",
+    "deals": "Bitimlar",
+    "tasks": "Vazifalar",
+    "logout": "Chiqish",
+    "toWebsite": "Saytga",
+    "role": "Administrator"
+  },
+  "products": {
+    "title": "Mahsulotlar",
+    "subtitle": "Mahsulot katalogini boshqarish",
+    "addProduct": "Mahsulot qo'shish",
+    "searchPlaceholder": "Mahsulotlarni qidirish...",
+    "category": "Kategoriya",
+    "price": "Narx",
+    "stock": "Qoldiq",
+    "status": {
+      "available": "Mavjud",
+      "outOfStock": "Mavjud emas",
+      "preOrder": "Buyurtma bo'yicha"
+    },
+    "notFound": "Mahsulotlar topilmadi",
+    "sum": "so'm",
+    "pieces": "dona"
+  },
+  "clients": {
+    "title": "Mijozlar",
+    "subtitle": "Mijozlar bazasini boshqarish",
+    "addClient": "Mijoz qo'shish",
+    "searchPlaceholder": "Mijozlarni qidirish...",
+    "name": "Ism",
+    "email": "Email",
+    "phone": "Telefon",
+    "company": "Kompaniya",
+    "lastContact": "Oxirgi aloqa",
+    "notFound": "Mijozlar topilmadi"
+  },
+  "deals": {
+    "title": "Bitimlar",
+    "subtitle": "Bitimlarni boshqarish",
+    "addDeal": "Bitim qo'shish",
+    "searchPlaceholder": "Bitimlarni qidirish...",
+    "client": "Mijoz",
+    "amount": "Summa",
+    "stage": "Bosqich",
+    "probability": "Ehtimol",
+    "closeDate": "Yopish sanasi",
+    "stages": {
+      "lead": "Lead",
+      "qualified": "Malakali",
+      "proposal": "Taklif",
+      "negotiation": "Muzokaralar",
+      "closed": "Yopilgan"
+    },
+    "notFound": "Bitimlar topilmadi"
+  },
+  "tasks": {
+    "title": "Vazifalar",
+    "subtitle": "Vazifalarni boshqarish",
+    "addTask": "Vazifa qo'shish",
+    "searchPlaceholder": "Vazifalarni qidirish...",
+    "description": "Tavsif",
+    "assignee": "Ijrochi",
+    "dueDate": "Muddat",
+    "priority": "Ustuvorlik",
+    "status": {
+      "pending": "Kutilmoqda",
+      "inProgress": "Ishlanmoqda",
+      "completed": "Tugallangan",
+      "cancelled": "Bekor qilingan"
+    },
+    "priorities": {
+      "low": "Past",
+      "medium": "O'rta",
+      "high": "Yuqori",
+      "urgent": "Shoshilinch"
+    },
+    "notFound": "Vazifalar topilmadi"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Tizim ko'rinishi",
+    "totalClients": "Jami mijozlar",
+    "totalDeals": "Jami bitimlar",
+    "revenue": "Daromad",
+    "pendingTasks": "Ishlanayotgan vazifalar"
+  }
+}
