@@ -30,7 +30,7 @@ const Auth = () => {
           .single();
         
         if (roleData?.role === 'admin') {
-          navigate('/admin');
+          navigate('/admin/dashboard');
         }
       }
     };
@@ -58,7 +58,7 @@ const Auth = () => {
           title: 'Успешно',
           description: 'Вы успешно вошли в систему',
         });
-        navigate('/admin');
+        navigate('/admin/dashboard');
       }
     } catch (error) {
       toast({
