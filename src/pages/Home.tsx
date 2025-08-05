@@ -214,13 +214,23 @@ const Home = ({ language }: HomeProps) => {
                 </div>
               </div>
 
-              <Button
-                size="lg"
-                className="bg-msc-accent hover:bg-msc-accent/90 text-white font-semibold px-8 py-4 text-lg"
-              >
-                {t.hero.cta}
-                <ArrowRight className="ml-2 w-5 h-5" />
-              </Button>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button
+                  size="lg"
+                  className="bg-msc-accent hover:bg-msc-accent/90 text-white font-semibold px-8 py-4 text-lg"
+                >
+                  {t.hero.cta}
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-white/30 text-white hover:bg-white/10 hover:text-white px-8 py-4 text-lg"
+                >
+                  {language === 'ru' ? 'Получить консультацию' : language === 'en' ? 'Get Consultation' : 'Maslahat olish'}
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Button>
+              </div>
             </div>
 
             {/* Hero Animation - Logo Video */}
@@ -268,6 +278,20 @@ const Home = ({ language }: HomeProps) => {
           
           <div className="flex justify-center">
             <ROICalculator language={language} />
+          </div>
+          
+          {/* Call to Action after Calculator */}
+          <div className="text-center mt-12">
+            <Button
+              size="lg"
+              className="bg-msc-primary hover:bg-msc-primary/90 text-white font-semibold px-8 py-4 text-lg"
+            >
+              {language === 'ru' ? 'Запросить коммерческое предложение' : language === 'en' ? 'Request Commercial Offer' : 'Tijoriy taklif so\'rash'}
+              <ArrowRight className="ml-2 w-5 h-5" />
+            </Button>
+            <p className="text-sm text-msc-text-light mt-2">
+              {language === 'ru' ? 'Получите персональное предложение за 24 часа' : language === 'en' ? 'Get a personalized offer within 24 hours' : '24 soat ichida shaxsiy taklif oling'}
+            </p>
           </div>
         </div>
       </section>
@@ -320,6 +344,40 @@ const Home = ({ language }: HomeProps) => {
                 <p className="text-msc-text-light">{advantage.description}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Final Call to Action */}
+      <section className="py-20 bg-gradient-to-br from-msc-primary to-msc-accent text-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="font-heading text-3xl lg:text-4xl font-bold mb-4">
+            {language === 'ru' ? 'Готовы начать сотрудничество?' : language === 'en' ? 'Ready to Start Cooperation?' : 'Hamkorlikni boshlashga tayyormisiz?'}
+          </h2>
+          <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
+            {language === 'ru' 
+              ? 'Свяжитесь с нами сегодня и получите профессиональную консультацию по выбору медицинского оборудования'
+              : language === 'en'
+              ? 'Contact us today and get professional consultation on choosing medical equipment'
+              : 'Bugun biz bilan bog\'laning va tibbiy asbob-uskunalarni tanlash bo\'yicha professional maslahat oling'
+            }
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button
+              size="lg"
+              className="bg-white text-msc-primary hover:bg-white/90 font-semibold px-8 py-4 text-lg"
+            >
+              {language === 'ru' ? 'Оставить заявку' : language === 'en' ? 'Submit Request' : 'Ariza qoldirish'}
+              <ArrowRight className="ml-2 w-5 h-5" />
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              className="border-white/30 text-white hover:bg-white/10 hover:text-white px-8 py-4 text-lg"
+            >
+              {language === 'ru' ? 'Связаться с менеджером' : language === 'en' ? 'Contact Manager' : 'Menejer bilan bog\'lanish'}
+              <ArrowRight className="ml-2 w-5 h-5" />
+            </Button>
           </div>
         </div>
       </section>
