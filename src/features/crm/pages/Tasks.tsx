@@ -1,72 +1,87 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { useToast } from '@/hooks/use-toast';
+import { useTasks } from '@/hooks/useTasks';
+import { useClients } from '@/hooks/useClients';
+import { useDeals } from '@/hooks/useDeals';
+import AddTaskDialog from '@/features/crm/components/AddTaskDialog';
 import { 
   Search, 
-  Plus, 
-  Calendar,
-  User,
-  Building,
   Edit,
   Trash2,
+  Eye,
   CheckCircle,
-  Clock
+  Clock,
+  AlertCircle,
+  User,
+  Calendar,
+  FileText
 } from 'lucide-react';
 
-// Моковые данные задач
-const mockTasks = [
-  {
-    id: 1,
-    title: 'Презентация УЗИ оборудования',
-    description: 'Провести презентацию нового УЗИ аппарата для клиента',
-    client: 'ООО "МедЦентр Плюс"',
-    assignee: 'Иванов А.П.',
-    priority: 'high',
-    status: 'in_progress',
-    dueDate: '2024-01-25',
-    createdDate: '2024-01-15'
-  },
-  {
-    id: 2,
-    title: 'Подготовка коммерческого предложения',
-    description: 'Составить КП на лабораторное оборудование',
-    client: 'Республиканская больница',
-    assignee: 'Петрова М.И.',
-    priority: 'medium',
-    status: 'pending',
-    dueDate: '2024-01-30',
-    createdDate: '2024-01-18'
-  },
-  {
-    id: 3,
-    title: 'Техническая консультация',
-    description: 'Консультация по возможностям рентген системы',
-    client: 'Диагностический центр "Здоровье"',
-    assignee: 'Сидоров Д.А.',
-    priority: 'low',
-    status: 'completed',
-    dueDate: '2024-01-20',
-    createdDate: '2024-01-10'
-  },
-  {
-    id: 4,
-    title: 'Планирование установки МРТ',
-    description: 'Обсудить требования к помещению для установки МРТ',
-    client: 'Областная больница',
-    assignee: 'Козлов И.В.',
-    priority: 'high',
-    status: 'pending',
-    dueDate: '2024-02-05',
-    createdDate: '2024-01-20'
-  }
-];
-
 const Tasks = () => {
+  const { t } = useTranslation();
+  const { toast } = useToast();
+  const { tasks, loading, addTask, deleteTask, completeTask } = useTasks();
+  const { getClientById } = useClients();
+  const { getDealById } = useDeals();
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'in_progress' | 'completed'>('all');
-  const [priorityFilter, setPriorityFilter] = useState<'all' | 'high' | 'medium' | 'low'>('all');
+
+  const filteredTasks = tasks.filter(task =>
+    task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    task.description?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const handleAddTask = async (taskData: Parameters<typeof addTask>[0]) => {
+    try {
+      await addTask(taskData);
+      toast({
+        title: t('common.success'),
+        description: 'Задача успешно добавлена',
+      });
+    } catch (error) {
+      toast({
+        title: t('common.error'),
+        description: 'Ошибка при добавлении задачи',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handleDeleteTask = async (id: string) => {
+    try {
+      await deleteTask(id);
+      toast({
+        title: t('common.success'),
+        description: 'Задача успешно удалена',
+      });
+    } catch (error) {
+      toast({
+        title: t('common.error'),
+        description: 'Ошибка при удалении задачи',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handleCompleteTask = async (id: string) => {
+    try {
+      await completeTask(id);
+      toast({
+        title: t('common.success'),
+        description: 'Задача отмечена как выполненная',
+      });
+    } catch (error) {
+      toast({
+        title: t('common.error'),
+        description: 'Ошибка при обновлении задачи',
+        variant: 'destructive',
+      });
+    }
+  };
 
   const getStatusBadge = (status: string) => {
     const variants = {
@@ -108,14 +123,6 @@ const Tasks = () => {
     );
   };
 
-  const filteredTasks = mockTasks.filter(task => {
-    const matchesSearch = task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         task.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         task.assignee.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === 'all' || task.status === statusFilter;
-    const matchesPriority = priorityFilter === 'all' || task.priority === priorityFilter;
-    return matchesSearch && matchesStatus && matchesPriority;
-  });
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -136,10 +143,7 @@ const Tasks = () => {
           <h2 className="text-3xl font-bold">Задачи</h2>
           <p className="text-muted-foreground">Управление задачами и активностями</p>
         </div>
-        <Button>
-          <Plus className="w-4 h-4 mr-2" />
-          Создать задачу
-        </Button>
+        <AddTaskDialog onAddTask={handleAddTask} />
       </div>
 
       {/* Summary Cards */}

@@ -1,12 +1,19 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { useTranslation } from 'react-i18next';
+import { useClients } from '@/hooks/useClients';
+import { useDeals } from '@/hooks/useDeals';
+import { useTasks } from '@/hooks/useTasks';
 import { 
   Users, 
-  ShoppingBag, 
+  DollarSign, 
   FileText, 
   TrendingUp,
+  Calendar,
+  AlertCircle,
+  CheckCircle,
   Clock,
-  CheckCircle
+  ShoppingBag
 } from 'lucide-react';
 
 // Моковые данные для дашборда
