@@ -1,0 +1,161 @@
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/components/ui/use-toast';
+import { Save, Phone, Mail, MapPin, Clock, MessageSquare } from 'lucide-react';
+
+const AdminContacts = () => {
+  const { t } = useTranslation();
+  const { toast } = useToast();
+
+  const [contactData, setContactData] = useState({
+    phone: '+998 90 123 45 67',
+    email: 'info@msc-uzbekistan.com',
+    address: 'Ташкент, Узбекистан',
+    workingHours: 'Пн-Пт: 9:00-18:00',
+    telegram: '@msc_uzbekistan',
+    whatsapp: '+998901234567',
+    facebook: 'MSC Uzbekistan',
+    instagram: '@msc_uzbekistan',
+    youtube: 'MSC Uzbekistan Channel',
+  });
+
+  const handleInputChange = (field: string, value: string) => {
+    setContactData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSave = () => {
+    // TODO: Implement save functionality with Supabase
+    toast({
+      title: t('admin.contactsSaved'),
+      description: t('admin.contactsSavedDesc'),
+    });
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-3xl font-bold">{t('admin.contacts')}</h1>
+        <Button onClick={handleSave} className="gap-2">
+          <Save className="w-4 h-4" />
+          {t('admin.save')}
+        </Button>
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-2">
+        {/* Main Contact Information */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Phone className="w-5 h-5" />
+              {t('admin.mainContacts')}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label htmlFor="phone">{t('admin.phone')}</Label>
+              <Input
+                id="phone"
+                value={contactData.phone}
+                onChange={(e) => handleInputChange('phone', e.target.value)}
+                placeholder="+998 90 123 45 67"
+              />
+            </div>
+            <div>
+              <Label htmlFor="email">{t('admin.email')}</Label>
+              <Input
+                id="email"
+                type="email"
+                value={contactData.email}
+                onChange={(e) => handleInputChange('email', e.target.value)}
+                placeholder="info@company.com"
+              />
+            </div>
+            <div>
+              <Label htmlFor="address">{t('admin.address')}</Label>
+              <Textarea
+                id="address"
+                value={contactData.address}
+                onChange={(e) => handleInputChange('address', e.target.value)}
+                placeholder="Адрес офиса"
+                rows={3}
+              />
+            </div>
+            <div>
+              <Label htmlFor="workingHours">{t('admin.workingHours')}</Label>
+              <Input
+                id="workingHours"
+                value={contactData.workingHours}
+                onChange={(e) => handleInputChange('workingHours', e.target.value)}
+                placeholder="Пн-Пт: 9:00-18:00"
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Social Media */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <MessageSquare className="w-5 h-5" />
+              {t('admin.socialMedia')}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label htmlFor="telegram">Telegram</Label>
+              <Input
+                id="telegram"
+                value={contactData.telegram}
+                onChange={(e) => handleInputChange('telegram', e.target.value)}
+                placeholder="@username"
+              />
+            </div>
+            <div>
+              <Label htmlFor="whatsapp">WhatsApp</Label>
+              <Input
+                id="whatsapp"
+                value={contactData.whatsapp}
+                onChange={(e) => handleInputChange('whatsapp', e.target.value)}
+                placeholder="+998901234567"
+              />
+            </div>
+            <div>
+              <Label htmlFor="facebook">Facebook</Label>
+              <Input
+                id="facebook"
+                value={contactData.facebook}
+                onChange={(e) => handleInputChange('facebook', e.target.value)}
+                placeholder="Page Name"
+              />
+            </div>
+            <div>
+              <Label htmlFor="instagram">Instagram</Label>
+              <Input
+                id="instagram"
+                value={contactData.instagram}
+                onChange={(e) => handleInputChange('instagram', e.target.value)}
+                placeholder="@username"
+              />
+            </div>
+            <div>
+              <Label htmlFor="youtube">YouTube</Label>
+              <Input
+                id="youtube"
+                value={contactData.youtube}
+                onChange={(e) => handleInputChange('youtube', e.target.value)}
+                placeholder="Channel Name"
+              />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+};
+
+export default AdminContacts;

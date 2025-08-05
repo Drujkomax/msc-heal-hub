@@ -19,6 +19,7 @@ import AdminLayout from "./features/admin/components/AdminLayout";
 import Dashboard from "./features/admin/pages/Dashboard";
 import Clients from "./features/crm/pages/Clients";
 import AdminProducts from "./features/products/pages/AdminProducts";
+import AdminContacts from "./features/admin/pages/AdminContacts";
 
 const queryClient = new QueryClient();
 
@@ -31,40 +32,41 @@ const App = () => {
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <div className="min-h-screen flex flex-col">
-            <Header language={language} onLanguageChange={setLanguage} />
-            <main className="flex-1">
-              <Routes>
-                {/* Public Routes */}
-                <Route path="/" element={<Home language={language} />} />
-                <Route path="/catalog" element={<Catalog language={language} />} />
-                <Route path="/product/:id" element={<ProductDetail language={language} />} />
-                <Route path="/services" element={<Services language={language} />} />
-                <Route path="/cases" element={<div className="py-20 text-center">Cases Page - Coming Soon</div>} />
-                <Route path="/about" element={<div className="py-20 text-center">About Page - Coming Soon</div>} />
-                <Route path="/contacts" element={<Contacts language={language} />} />
-                
-                {/* Admin Routes */}
-                <Route path="/admin" element={
-                  <RequireAuth requiredRole="manager">
-                    <AdminLayout />
-                  </RequireAuth>
-                }>
-                  <Route index element={<Dashboard />} />
-                  <Route path="clients" element={<Clients />} />
-                  <Route path="products" element={<AdminProducts />} />
-                </Route>
-                
-                {/* Auth Pages */}
-                <Route path="/login" element={<div className="py-20 text-center">Login Page - Coming Soon</div>} />
-                <Route path="/access-denied" element={<div className="py-20 text-center">Access Denied</div>} />
-                
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </main>
-            <Footer language={language} />
-          </div>
+          <Routes>
+            {/* Admin Routes - Standalone Layout */}
+            <Route path="/admin" element={
+              <RequireAuth requiredRole="manager">
+                <AdminLayout />
+              </RequireAuth>
+            }>
+              <Route index element={<Dashboard />} />
+              <Route path="clients" element={<Clients />} />
+              <Route path="products" element={<AdminProducts />} />
+              <Route path="contacts" element={<AdminContacts />} />
+            </Route>
+
+            {/* Public Routes - With Header/Footer */}
+            <Route path="/*" element={
+              <div className="min-h-screen flex flex-col">
+                <Header language={language} onLanguageChange={setLanguage} />
+                <main className="flex-1">
+                  <Routes>
+                    <Route path="/" element={<Home language={language} />} />
+                    <Route path="/catalog" element={<Catalog language={language} />} />
+                    <Route path="/product/:id" element={<ProductDetail language={language} />} />
+                    <Route path="/services" element={<Services language={language} />} />
+                    <Route path="/cases" element={<div className="py-20 text-center">Cases Page - Coming Soon</div>} />
+                    <Route path="/about" element={<div className="py-20 text-center">About Page - Coming Soon</div>} />
+                    <Route path="/contacts" element={<Contacts language={language} />} />
+                    <Route path="/login" element={<div className="py-20 text-center">Login Page - Coming Soon</div>} />
+                    <Route path="/access-denied" element={<div className="py-20 text-center">Access Denied</div>} />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </main>
+                <Footer language={language} />
+              </div>
+            } />
+          </Routes>
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>

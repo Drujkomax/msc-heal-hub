@@ -11,7 +11,8 @@ import {
   CheckSquare, 
   BarChart3,
   LogOut,
-  Home
+  Home,
+  MessageSquare
 } from 'lucide-react';
 
 const AdminLayout = () => {
@@ -22,6 +23,7 @@ const AdminLayout = () => {
     { name: t('admin.dashboard'), href: '/admin', icon: BarChart3 },
     { name: t('admin.clients'), href: '/admin/clients', icon: Users },
     { name: t('admin.products'), href: '/admin/products', icon: ShoppingBag },
+    { name: t('admin.contacts'), href: '/admin/contacts', icon: MessageSquare },
   ];
 
   const isActive = (href: string) => {
