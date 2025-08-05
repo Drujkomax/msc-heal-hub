@@ -20,6 +20,7 @@ import Dashboard from "./features/admin/pages/Dashboard";
 import Clients from "./features/crm/pages/Clients";
 import AdminProducts from "./features/products/pages/AdminProducts";
 import AdminContacts from "./features/admin/pages/AdminContacts";
+import Auth from "./pages/Auth";
 
 const queryClient = new QueryClient();
 
@@ -35,7 +36,7 @@ const App = () => {
           <Routes>
             {/* Admin Routes - Standalone Layout */}
             <Route path="/admin" element={
-              <RequireAuth requiredRole="manager">
+              <RequireAuth requiredRole="admin">
                 <AdminLayout />
               </RequireAuth>
             }>
@@ -58,7 +59,8 @@ const App = () => {
                     <Route path="/cases" element={<div className="py-20 text-center">Cases Page - Coming Soon</div>} />
                     <Route path="/about" element={<div className="py-20 text-center">About Page - Coming Soon</div>} />
                     <Route path="/contacts" element={<Contacts language={language} />} />
-                    <Route path="/login" element={<div className="py-20 text-center">Login Page - Coming Soon</div>} />
+                    <Route path="/auth" element={<Auth />} />
+                    <Route path="/login" element={<Auth />} />
                     <Route path="/access-denied" element={<div className="py-20 text-center">Access Denied</div>} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>

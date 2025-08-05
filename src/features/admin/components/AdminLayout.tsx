@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import LanguageSwitcher from '@/components/common/LanguageSwitcher';
+import LogoutButton from '@/components/auth/LogoutButton';
 import { 
   Users, 
   ShoppingBag, 
@@ -75,10 +76,7 @@ const AdminLayout = () => {
                   {t('admin.toWebsite')}
                 </Button>
               </Link>
-              <Button variant="ghost" className="w-full justify-start text-muted-foreground">
-                <LogOut className="w-4 h-4 mr-2" />
-                {t('admin.logout')}
-              </Button>
+              <LogoutButton />
             </div>
           </div>
         </div>

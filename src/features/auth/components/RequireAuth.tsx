@@ -1,36 +1,42 @@
-import { ReactNode } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
+import { useUserRole } from '@/hooks/useUserRole';
 
 interface RequireAuthProps {
-  children: ReactNode;
-  requiredRole?: 'user' | 'manager' | 'admin';
+  children: React.ReactNode;
+  requiredRole?: 'admin' | 'user';
 }
 
-// Временная заглушка для аутентификации - позже заменим на Supabase Auth
-const mockAuth = {
-  isLoggedIn: true, // Для тестирования ставим true
-  user: {
-    id: '1',
-    email: 'admin@example.com',
-    role: 'admin' as const
-  }
-};
+const RequireAuth = ({ children, requiredRole = 'user' }: RequireAuthProps) => {
+  const { user, loading: authLoading } = useAuth();
+  const { role, loading: roleLoading } = useUserRole();
+  const navigate = useNavigate();
 
-const RequireAuth = ({ children, requiredRole }: RequireAuthProps) => {
-  const location = useLocation();
+  useEffect(() => {
+    if (!authLoading && !roleLoading) {
+      if (!user) {
+        navigate('/auth');
+        return;
+      }
 
-  if (!mockAuth.isLoggedIn) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
-  }
-
-  if (requiredRole) {
-    const roleHierarchy = { user: 1, manager: 2, admin: 3 };
-    const userRoleLevel = roleHierarchy[mockAuth.user.role];
-    const requiredRoleLevel = roleHierarchy[requiredRole];
-
-    if (userRoleLevel < requiredRoleLevel) {
-      return <Navigate to="/access-denied" replace />;
+      if (requiredRole === 'admin' && role !== 'admin') {
+        navigate('/access-denied');
+        return;
+      }
     }
+  }, [user, role, authLoading, roleLoading, navigate, requiredRole]);
+
+  if (authLoading || roleLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (!user || (requiredRole === 'admin' && role !== 'admin')) {
+    return null;
   }
 
   return <>{children}</>;
