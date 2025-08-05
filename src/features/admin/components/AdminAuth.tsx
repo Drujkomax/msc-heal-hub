@@ -6,9 +6,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useToast } from '@/hooks/use-toast';
 
 const AdminAuth = () => {
   const { t } = useTranslation();
+  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -21,16 +23,33 @@ const AdminAuth = () => {
     try {
       const { supabase } = await import('@/integrations/supabase/client');
       
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
       
       if (error) {
         setError(error.message);
+        toast({
+          variant: "destructive",
+          title: "Ошибка входа",
+          description: error.message,
+        });
+      } else {
+        toast({
+          title: "Успешно",
+          description: "Вход выполнен успешно",
+        });
+        // Перенаправление будет обработано автоматически через useAuth и AdminWrapper
       }
     } catch (err) {
-      setError('Произошла ошибка при входе');
+      const errorMessage = 'Произошла ошибка при входе';
+      setError(errorMessage);
+      toast({
+        variant: "destructive",
+        title: "Ошибка",
+        description: errorMessage,
+      });
     } finally {
       setIsLoading(false);
     }
