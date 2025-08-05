@@ -21,7 +21,7 @@ import Clients from "./features/crm/pages/Clients";
 import AdminProducts from "./features/products/pages/AdminProducts";
 import AdminServices from "./features/admin/pages/AdminServices";
 import AdminContacts from "./features/admin/pages/AdminContacts";
-import Auth from "./pages/Auth";
+
 
 const queryClient = new QueryClient();
 
@@ -61,8 +61,6 @@ const App = () => {
                     <Route path="/cases" element={<div className="py-20 text-center">Cases Page - Coming Soon</div>} />
                     <Route path="/about" element={<div className="py-20 text-center">About Page - Coming Soon</div>} />
                     <Route path="/contacts" element={<Contacts language={language} />} />
-                    <Route path="/auth" element={<Auth />} />
-                    <Route path="/login" element={<Auth />} />
                     
                     <Route path="*" element={<NotFound />} />
                   </Routes>
