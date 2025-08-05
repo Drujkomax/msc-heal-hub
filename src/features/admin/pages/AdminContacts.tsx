@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { Save, Phone, Mail, MapPin, Clock, MessageSquare } from 'lucide-react';
 
 const AdminContacts = () => {
@@ -62,7 +62,7 @@ const AdminContacts = () => {
                 id="phone"
                 value={contactData.phone}
                 onChange={(e) => handleInputChange('phone', e.target.value)}
-                placeholder="+998 90 123 45 67"
+                placeholder={t('admin.phone')}
               />
             </div>
             <div>
@@ -72,7 +72,7 @@ const AdminContacts = () => {
                 type="email"
                 value={contactData.email}
                 onChange={(e) => handleInputChange('email', e.target.value)}
-                placeholder="info@company.com"
+                placeholder={t('admin.email')}
               />
             </div>
             <div>
@@ -81,7 +81,7 @@ const AdminContacts = () => {
                 id="address"
                 value={contactData.address}
                 onChange={(e) => handleInputChange('address', e.target.value)}
-                placeholder="Адрес офиса"
+                placeholder={t('admin.address')}
                 rows={3}
               />
             </div>
@@ -91,7 +91,7 @@ const AdminContacts = () => {
                 id="workingHours"
                 value={contactData.workingHours}
                 onChange={(e) => handleInputChange('workingHours', e.target.value)}
-                placeholder="Пн-Пт: 9:00-18:00"
+                placeholder={t('admin.workingHours')}
               />
             </div>
           </CardContent>

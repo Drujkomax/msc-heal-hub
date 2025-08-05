@@ -29,11 +29,21 @@
     "dashboard": "Dashboard",
     "clients": "Mijozlar",
     "products": "Mahsulotlar",
+    "contacts": "Kontaktlar",
     "deals": "Bitimlar",
     "tasks": "Vazifalar",
     "logout": "Chiqish",
     "toWebsite": "Saytga",
-    "role": "Administrator"
+    "role": "Administrator",
+    "save": "Saqlash",
+    "mainContacts": "Asosiy kontaktlar",
+    "socialMedia": "Ijtimoiy tarmoqlar",
+    "phone": "Telefon",
+    "email": "Email",
+    "address": "Manzil",
+    "workingHours": "Ish vaqti",
+    "contactsSaved": "Kontaktlar saqlandi",
+    "contactsSavedDesc": "Kontakt ma'lumotlari muvaffaqiyatli yangilandi"
   },
   "products": {
     "title": "Mahsulotlar",

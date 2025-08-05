@@ -29,11 +29,21 @@
     "dashboard": "Дашборд",
     "clients": "Клиенты",
     "products": "Товары",
+    "contacts": "Контакты",
     "deals": "Сделки",
     "tasks": "Задачи",
     "logout": "Выйти",
     "toWebsite": "На сайт",
-    "role": "Администратор"
+    "role": "Администратор",
+    "save": "Сохранить",
+    "mainContacts": "Основные контакты",
+    "socialMedia": "Социальные сети",
+    "phone": "Телефон",
+    "email": "Email",
+    "address": "Адрес",
+    "workingHours": "Часы работы",
+    "contactsSaved": "Контакты сохранены",
+    "contactsSavedDesc": "Контактная информация была успешно обновлена"
   },
   "products": {
     "title": "Товары",
