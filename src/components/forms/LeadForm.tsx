@@ -4,15 +4,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import { Phone, User, MessageSquare, Send } from 'lucide-react';
-import formBackground from '@/assets/form-background.jpg';
+import { Phone, User, MessageSquare, Send, X } from 'lucide-react';
 
-interface ConsultationFormProps {
+interface LeadFormProps {
   language: 'ru' | 'en' | 'uz';
   onClose?: () => void;
 }
 
-const ConsultationForm: React.FC<ConsultationFormProps> = ({ language, onClose }) => {
+const LeadForm: React.FC<LeadFormProps> = ({ language, onClose }) => {
   const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: '',
@@ -24,11 +23,15 @@ const ConsultationForm: React.FC<ConsultationFormProps> = ({ language, onClose }
 
   const texts = {
     ru: {
-      title: 'Форма консультации',
+      title: 'Получить консультацию',
+      subtitle: 'От расчета до запуска — 14 дней',
+      description: 'Полный цикл: КП → поставка → установка → обучение',
       name: 'Ваше имя',
       phone: 'Телефон',
       equipmentType: 'Тип оборудования',
       submit: 'Отправить заявку',
+      trust1: 'Ответ в течение часа',
+      trust2: 'Лицензия Минздрава РУз',
       equipmentTypes: {
         ultrasound: 'УЗИ оборудование',
         xray: 'Рентген оборудование',
@@ -39,11 +42,15 @@ const ConsultationForm: React.FC<ConsultationFormProps> = ({ language, onClose }
       }
     },
     en: {
-      title: 'Consultation Form',
+      title: 'Get Consultation',
+      subtitle: 'From calculation to launch — 14 days',
+      description: 'Full cycle: Quote → Supply → Installation → Training',
       name: 'Your name',
       phone: 'Phone',
       equipmentType: 'Equipment type',
       submit: 'Submit request',
+      trust1: 'Response within an hour',
+      trust2: 'Ministry of Health license',
       equipmentTypes: {
         ultrasound: 'Ultrasound equipment',
         xray: 'X-ray equipment',
@@ -54,11 +61,15 @@ const ConsultationForm: React.FC<ConsultationFormProps> = ({ language, onClose }
       }
     },
     uz: {
-      title: 'Maslahat shakli',
+      title: 'Maslahat olish',
+      subtitle: 'Hisoblashdan ishga tushirishgacha — 14 kun',
+      description: 'To\'liq tsikl: KP → yetkazish → o\'rnatish → o\'qitish',
       name: 'Ismingiz',
       phone: 'Telefon',
       equipmentType: 'Asbob-uskuna turi',
       submit: 'Ariza jo\'natish',
+      trust1: 'Bir soat ichida javob',
+      trust2: 'Sog\'liqni saqlash vazirligi litsenziyasi',
       equipmentTypes: {
         ultrasound: 'Ultratovush asboblari',
         xray: 'Rentgen asboblari',
@@ -115,46 +126,42 @@ const ConsultationForm: React.FC<ConsultationFormProps> = ({ language, onClose }
   };
 
   return (
-    <div 
-      className="relative w-full max-w-lg mx-auto min-h-screen overflow-hidden"
-      style={{
-        backgroundImage: `url(${formBackground})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat'
-      }}
-    >
-      {/* Overlay for better text readability */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40" />
-      
-      {/* Form Content */}
-      {/* Trust elements and slogan */}
-      <div className="relative z-10 bg-white/95 backdrop-blur-sm text-msc-primary p-6 rounded-t-2xl shadow-xl mx-6 mt-auto">
-        <div className="text-center space-y-3">
-          <h3 className="font-heading text-xl font-bold">От расчета до запуска — 14 дней</h3>
-          <p className="text-sm text-msc-text/80">Полный цикл: КП → поставка → установка → обучение</p>
-        </div>
-        <div className="flex justify-center gap-6 mt-4 text-sm text-msc-text">
-          <div className="flex items-center gap-2">
-            <span className="text-lg">⚡</span>
-            <span>Ответ в течение часа</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-lg">🛡️</span>
-            <span>Лицензия Минздрава РУз</span>
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+      <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl animate-in slide-in-from-bottom-4">
+        {/* Header */}
+        <div className="relative bg-gradient-to-r from-msc-primary to-msc-accent text-white p-6 rounded-t-2xl">
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 text-white/80 hover:text-white transition-colors"
+          >
+            <X className="w-6 h-6" />
+          </button>
+          
+          <div className="text-center">
+            <h2 className="font-heading text-2xl font-bold mb-2 flex items-center justify-center gap-2">
+              <MessageSquare className="w-6 h-6" />
+              {t.title}
+            </h2>
+            <p className="text-white/90 text-sm">{t.subtitle}</p>
+            <p className="text-white/80 text-xs mt-1">{t.description}</p>
           </div>
         </div>
-      </div>
 
-      {/* Form Container */}
-      <div className="relative z-10 bg-white/95 backdrop-blur-sm rounded-b-2xl shadow-xl mx-6 mb-auto">
-        <div className="text-center py-6 px-6 border-b border-msc-primary/10">
-          <h2 className="font-heading text-2xl font-bold flex items-center justify-center gap-2 text-msc-primary">
-            <MessageSquare className="w-6 h-6" />
-            {t.title}
-          </h2>
+        {/* Trust Elements */}
+        <div className="bg-msc-primary/5 p-4 border-b">
+          <div className="flex justify-center gap-6 text-sm text-msc-text">
+            <div className="flex items-center gap-2">
+              <span className="text-lg">⚡</span>
+              <span>{t.trust1}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-lg">🛡️</span>
+              <span>{t.trust2}</span>
+            </div>
+          </div>
         </div>
-        
+
+        {/* Form */}
         <div className="p-6">
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Name */}
@@ -168,7 +175,7 @@ const ConsultationForm: React.FC<ConsultationFormProps> = ({ language, onClose }
                 value={formData.name}
                 onChange={(e) => handleInputChange('name', e.target.value)}
                 required
-                className="border-msc-primary/20 focus:border-msc-accent transition-colors rounded-xl bg-white/90"
+                className="border-msc-primary/20 focus:border-msc-accent transition-colors"
                 placeholder={t.name}
               />
             </div>
@@ -185,7 +192,7 @@ const ConsultationForm: React.FC<ConsultationFormProps> = ({ language, onClose }
                 value={formData.phone}
                 onChange={(e) => handleInputChange('phone', e.target.value)}
                 required
-                className="border-msc-primary/20 focus:border-msc-accent transition-colors rounded-xl bg-white/90"
+                className="border-msc-primary/20 focus:border-msc-accent transition-colors"
                 placeholder="+998 XX XXX XX XX"
               />
             </div>
@@ -194,7 +201,7 @@ const ConsultationForm: React.FC<ConsultationFormProps> = ({ language, onClose }
             <div className="space-y-2">
               <Label className="text-msc-text font-medium">{t.equipmentType} *</Label>
               <Select value={formData.equipmentType} onValueChange={(value) => handleInputChange('equipmentType', value)} required>
-                <SelectTrigger className="border-msc-primary/20 focus:border-msc-accent rounded-xl bg-white/90">
+                <SelectTrigger className="border-msc-primary/20 focus:border-msc-accent">
                   <SelectValue placeholder={t.equipmentType} />
                 </SelectTrigger>
                 <SelectContent>
@@ -209,7 +216,7 @@ const ConsultationForm: React.FC<ConsultationFormProps> = ({ language, onClose }
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-gradient-to-r from-msc-primary to-msc-accent hover:from-msc-primary/90 hover:to-msc-accent/90 text-white font-semibold py-6 text-lg transition-all duration-300 shadow-lg mt-6 rounded-xl"
+              className="w-full bg-gradient-to-r from-msc-primary to-msc-accent hover:from-msc-primary/90 hover:to-msc-accent/90 text-white font-semibold py-6 text-lg transition-all duration-300 shadow-lg mt-6"
             >
               {isSubmitting ? (
                 <div className="flex items-center gap-2">
@@ -230,4 +237,4 @@ const ConsultationForm: React.FC<ConsultationFormProps> = ({ language, onClose }
   );
 };
 
-export default ConsultationForm;
+export default LeadForm;
