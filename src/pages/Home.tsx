@@ -2,7 +2,9 @@ import { useState, useEffect } from 'react';
 import { ArrowRight, CheckCircle, Zap, Shield, Headphones, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import ROICalculator from '@/components/Calculator/ROICalculator';
+import ConsultationForm from '@/components/forms/ConsultationForm';
 
 interface HomeProps {
   language: 'ru' | 'en' | 'uz';
@@ -10,6 +12,7 @@ interface HomeProps {
 
 const Home = ({ language }: HomeProps) => {
   const [isVisible, setIsVisible] = useState(false);
+  const [showConsultationForm, setShowConsultationForm] = useState(false);
 
   useEffect(() => {
     setIsVisible(true);
@@ -222,13 +225,23 @@ const Home = ({ language }: HomeProps) => {
                   {t.hero.cta}
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
-                <Button
-                  size="lg"
-                  className="bg-white text-msc-primary hover:bg-white/90 font-semibold px-8 py-4 text-lg"
-                >
-                  {language === 'ru' ? 'Получить консультацию' : language === 'en' ? 'Get Consultation' : 'Maslahat olish'}
-                  <ArrowRight className="ml-2 w-5 h-5" />
-                </Button>
+                <Dialog open={showConsultationForm} onOpenChange={setShowConsultationForm}>
+                  <DialogTrigger asChild>
+                    <Button
+                      size="lg"
+                      className="bg-white text-msc-primary hover:bg-white/90 font-semibold px-8 py-4 text-lg"
+                    >
+                      {language === 'ru' ? 'Получить консультацию' : language === 'en' ? 'Get Consultation' : 'Maslahat olish'}
+                      <ArrowRight className="ml-2 w-5 h-5" />
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0 border-0">
+                    <ConsultationForm 
+                      language={language} 
+                      onClose={() => setShowConsultationForm(false)} 
+                    />
+                  </DialogContent>
+                </Dialog>
               </div>
             </div>
 
@@ -281,13 +294,23 @@ const Home = ({ language }: HomeProps) => {
           
           {/* Call to Action after Calculator */}
           <div className="text-center mt-12">
-            <Button
-              size="lg"
-              className="bg-msc-accent hover:bg-msc-accent/90 text-white font-semibold px-8 py-4 text-lg shadow-lg"
-            >
-              {language === 'ru' ? 'Запросить коммерческое предложение' : language === 'en' ? 'Request Commercial Offer' : 'Tijoriy taklif so\'rash'}
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
+            <Dialog open={showConsultationForm} onOpenChange={setShowConsultationForm}>
+              <DialogTrigger asChild>
+                <Button
+                  size="lg"
+                  className="bg-msc-accent hover:bg-msc-accent/90 text-white font-semibold px-8 py-4 text-lg shadow-lg"
+                >
+                  {language === 'ru' ? 'Запросить коммерческое предложение' : language === 'en' ? 'Request Commercial Offer' : 'Tijoriy taklif so\'rash'}
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0 border-0">
+                <ConsultationForm 
+                  language={language} 
+                  onClose={() => setShowConsultationForm(false)} 
+                />
+              </DialogContent>
+            </Dialog>
             <p className="text-sm text-msc-text-light mt-2">
               {language === 'ru' ? 'Получите персональное предложение за 24 часа' : language === 'en' ? 'Get a personalized offer within 24 hours' : '24 soat ichida shaxsiy taklif oling'}
             </p>
@@ -362,21 +385,40 @@ const Home = ({ language }: HomeProps) => {
             }
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button
-              size="lg"
-              className="bg-white text-msc-primary hover:bg-white/90 font-semibold px-8 py-4 text-lg"
-            >
-              {language === 'ru' ? 'Оставить заявку' : language === 'en' ? 'Submit Request' : 'Ariza qoldirish'}
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-white text-white hover:bg-white hover:text-msc-primary px-8 py-4 text-lg transition-all duration-300"
-            >
-              {language === 'ru' ? 'Связаться с менеджером' : language === 'en' ? 'Contact Manager' : 'Menejer bilan bog\'lanish'}
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
+            <Dialog open={showConsultationForm} onOpenChange={setShowConsultationForm}>
+              <DialogTrigger asChild>
+                <Button
+                  size="lg"
+                  className="bg-white text-msc-primary hover:bg-white/90 font-semibold px-8 py-4 text-lg"
+                >
+                  {language === 'ru' ? 'Оставить заявку' : language === 'en' ? 'Submit Request' : 'Ariza qoldirish'}
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0 border-0">
+                <ConsultationForm 
+                  language={language} 
+                  onClose={() => setShowConsultationForm(false)} 
+                />
+              </DialogContent>
+            </Dialog>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-white text-white hover:bg-white hover:text-msc-primary px-8 py-4 text-lg transition-all duration-300"
+                >
+                  {language === 'ru' ? 'Связаться с менеджером' : language === 'en' ? 'Contact Manager' : 'Menejer bilan bog\'lanish'}
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0 border-0">
+                <ConsultationForm 
+                  language={language} 
+                />
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
       </section>
