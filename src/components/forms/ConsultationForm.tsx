@@ -17,14 +17,8 @@ const ConsultationForm: React.FC<ConsultationFormProps> = ({ language, onClose }
   const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: '',
-    email: '',
     phone: '',
-    company: '',
-    position: '',
-    equipmentType: '',
-    budget: '',
-    message: '',
-    preferredContact: 'phone'
+    equipmentType: ''
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -157,14 +151,8 @@ const ConsultationForm: React.FC<ConsultationFormProps> = ({ language, onClose }
       // Reset form
       setFormData({
         name: '',
-        email: '',
         phone: '',
-        company: '',
-        position: '',
-        equipmentType: '',
-        budget: '',
-        message: '',
-        preferredContact: 'phone'
+        equipmentType: ''
       });
 
       if (onClose) onClose();
@@ -184,148 +172,87 @@ const ConsultationForm: React.FC<ConsultationFormProps> = ({ language, onClose }
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto shadow-xl border-0 bg-white/95 backdrop-blur-sm">
-      <CardHeader className="text-center bg-gradient-to-r from-msc-primary to-msc-accent text-white rounded-t-lg">
-        <CardTitle className="font-heading text-2xl lg:text-3xl flex items-center justify-center gap-2">
-          <MessageSquare className="w-6 h-6" />
+    <Card className="w-full max-w-lg mx-auto shadow-2xl border-0 bg-white/95 backdrop-blur-sm">
+      {/* Trust elements and slogan */}
+      <div className="bg-gradient-to-r from-msc-primary to-msc-accent text-white p-4 rounded-t-lg">
+        <div className="text-center space-y-2">
+          <h3 className="font-heading text-xl font-bold">От расчета до запуска — 14 дней</h3>
+          <p className="text-sm text-white/90">Полный цикл: КП → поставка → установка → обучение</p>
+        </div>
+        <div className="flex justify-center gap-6 mt-4 text-sm">
+          <div className="flex items-center gap-1">
+            <span>⚡</span>
+            <span>Ответ в течение часа</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span>🛡️</span>
+            <span>Лицензия Минздрава РУз</span>
+          </div>
+        </div>
+      </div>
+
+      <CardHeader className="text-center pb-4">
+        <CardTitle className="font-heading text-xl lg:text-2xl flex items-center justify-center gap-2 text-msc-text">
+          <MessageSquare className="w-5 h-5" />
           {t.title}
         </CardTitle>
-        <CardDescription className="text-white/90 text-lg">
-          {t.subtitle}
-        </CardDescription>
       </CardHeader>
       
-      <CardContent className="p-6">
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Personal Information */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="name" className="flex items-center gap-2 text-msc-text font-medium">
-                <User className="w-4 h-4" />
-                {t.name} *
-              </Label>
-              <Input
-                id="name"
-                value={formData.name}
-                onChange={(e) => handleInputChange('name', e.target.value)}
-                required
-                className="border-msc-primary/20 focus:border-msc-accent transition-colors"
-                placeholder={t.name}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="email" className="flex items-center gap-2 text-msc-text font-medium">
-                <Mail className="w-4 h-4" />
-                {t.email} *
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                value={formData.email}
-                onChange={(e) => handleInputChange('email', e.target.value)}
-                required
-                className="border-msc-primary/20 focus:border-msc-accent transition-colors"
-                placeholder={t.email}
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="phone" className="flex items-center gap-2 text-msc-text font-medium">
-                <Phone className="w-4 h-4" />
-                {t.phone} *
-              </Label>
-              <Input
-                id="phone"
-                type="tel"
-                value={formData.phone}
-                onChange={(e) => handleInputChange('phone', e.target.value)}
-                required
-                className="border-msc-primary/20 focus:border-msc-accent transition-colors"
-                placeholder="+998 XX XXX XX XX"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="company" className="flex items-center gap-2 text-msc-text font-medium">
-                <Building className="w-4 h-4" />
-                {t.company}
-              </Label>
-              <Input
-                id="company"
-                value={formData.company}
-                onChange={(e) => handleInputChange('company', e.target.value)}
-                className="border-msc-primary/20 focus:border-msc-accent transition-colors"
-                placeholder={t.company}
-              />
-            </div>
-          </div>
-
-          {/* Equipment and Budget */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label className="text-msc-text font-medium">{t.equipmentType}</Label>
-              <Select value={formData.equipmentType} onValueChange={(value) => handleInputChange('equipmentType', value)}>
-                <SelectTrigger className="border-msc-primary/20 focus:border-msc-accent">
-                  <SelectValue placeholder={t.equipmentType} />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.entries(t.equipmentTypes).map(([key, value]) => (
-                    <SelectItem key={key} value={key}>{value}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label className="text-msc-text font-medium">{t.budget}</Label>
-              <Select value={formData.budget} onValueChange={(value) => handleInputChange('budget', value)}>
-                <SelectTrigger className="border-msc-primary/20 focus:border-msc-accent">
-                  <SelectValue placeholder={t.budget} />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.entries(t.budgets).map(([key, value]) => (
-                    <SelectItem key={key} value={key}>{value}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          {/* Preferred Contact Method */}
+      <CardContent className="p-6 pt-0">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Name */}
           <div className="space-y-2">
-            <Label className="text-msc-text font-medium">{t.preferredContact}</Label>
-            <Select value={formData.preferredContact} onValueChange={(value) => handleInputChange('preferredContact', value)}>
+            <Label htmlFor="name" className="flex items-center gap-2 text-msc-text font-medium">
+              <User className="w-4 h-4" />
+              {t.name} *
+            </Label>
+            <Input
+              id="name"
+              value={formData.name}
+              onChange={(e) => handleInputChange('name', e.target.value)}
+              required
+              className="border-msc-primary/20 focus:border-msc-accent transition-colors"
+              placeholder={t.name}
+            />
+          </div>
+
+          {/* Phone */}
+          <div className="space-y-2">
+            <Label htmlFor="phone" className="flex items-center gap-2 text-msc-text font-medium">
+              <Phone className="w-4 h-4" />
+              {t.phone} *
+            </Label>
+            <Input
+              id="phone"
+              type="tel"
+              value={formData.phone}
+              onChange={(e) => handleInputChange('phone', e.target.value)}
+              required
+              className="border-msc-primary/20 focus:border-msc-accent transition-colors"
+              placeholder="+998 XX XXX XX XX"
+            />
+          </div>
+
+          {/* Equipment Type */}
+          <div className="space-y-2">
+            <Label className="text-msc-text font-medium">{t.equipmentType} *</Label>
+            <Select value={formData.equipmentType} onValueChange={(value) => handleInputChange('equipmentType', value)} required>
               <SelectTrigger className="border-msc-primary/20 focus:border-msc-accent">
-                <SelectValue />
+                <SelectValue placeholder={t.equipmentType} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="phone">{t.contactPhone}</SelectItem>
-                <SelectItem value="email">{t.contactEmail}</SelectItem>
-                <SelectItem value="whatsapp">{t.contactWhatsApp}</SelectItem>
+                {Object.entries(t.equipmentTypes).map(([key, value]) => (
+                  <SelectItem key={key} value={key}>{value}</SelectItem>
+                ))}
               </SelectContent>
             </Select>
-          </div>
-
-          {/* Message */}
-          <div className="space-y-2">
-            <Label htmlFor="message" className="text-msc-text font-medium">{t.message}</Label>
-            <Textarea
-              id="message"
-              value={formData.message}
-              onChange={(e) => handleInputChange('message', e.target.value)}
-              className="border-msc-primary/20 focus:border-msc-accent transition-colors min-h-[100px]"
-              placeholder={t.message}
-            />
           </div>
 
           {/* Submit Button */}
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-gradient-to-r from-msc-primary to-msc-accent hover:from-msc-primary/90 hover:to-msc-accent/90 text-white font-semibold py-6 text-lg transition-all duration-300 shadow-lg"
+            className="w-full bg-gradient-to-r from-msc-primary to-msc-accent hover:from-msc-primary/90 hover:to-msc-accent/90 text-white font-semibold py-6 text-lg transition-all duration-300 shadow-lg mt-6"
           >
             {isSubmitting ? (
               <div className="flex items-center gap-2">
