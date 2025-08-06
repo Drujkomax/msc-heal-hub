@@ -128,104 +128,102 @@ const ConsultationForm: React.FC<ConsultationFormProps> = ({ language, onClose }
       <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40" />
       
       {/* Form Content */}
-      <div className="relative z-10 flex flex-col justify-center min-h-screen p-6">
-        {/* Trust elements and slogan */}
-        <div className="bg-white/95 backdrop-blur-sm text-msc-primary p-6 rounded-t-2xl shadow-xl">
-          <div className="text-center space-y-3">
-            <h3 className="font-heading text-xl font-bold">От расчета до запуска — 14 дней</h3>
-            <p className="text-sm text-msc-text/80">Полный цикл: КП → поставка → установка → обучение</p>
+      {/* Trust elements and slogan */}
+      <div className="relative z-10 bg-white/95 backdrop-blur-sm text-msc-primary p-6 rounded-t-2xl shadow-xl mx-6 mt-auto">
+        <div className="text-center space-y-3">
+          <h3 className="font-heading text-xl font-bold">От расчета до запуска — 14 дней</h3>
+          <p className="text-sm text-msc-text/80">Полный цикл: КП → поставка → установка → обучение</p>
+        </div>
+        <div className="flex justify-center gap-6 mt-4 text-sm text-msc-text">
+          <div className="flex items-center gap-2">
+            <span className="text-lg">⚡</span>
+            <span>Ответ в течение часа</span>
           </div>
-          <div className="flex justify-center gap-6 mt-4 text-sm text-msc-text">
-            <div className="flex items-center gap-2">
-              <span className="text-lg">⚡</span>
-              <span>Ответ в течение часа</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-lg">🛡️</span>
-              <span>Лицензия Минздрава РУз</span>
-            </div>
+          <div className="flex items-center gap-2">
+            <span className="text-lg">🛡️</span>
+            <span>Лицензия Минздрава РУз</span>
           </div>
         </div>
+      </div>
 
-        {/* Form Container */}
-        <div className="bg-white/95 backdrop-blur-sm rounded-b-2xl shadow-xl">
-          <div className="text-center py-6 px-6 border-b border-msc-primary/10">
-            <h2 className="font-heading text-2xl font-bold flex items-center justify-center gap-2 text-msc-primary">
-              <MessageSquare className="w-6 h-6" />
-              {t.title}
-            </h2>
-          </div>
-          
-          <div className="p-6">
-            <form onSubmit={handleSubmit} className="space-y-5">
-              {/* Name */}
-              <div className="space-y-2">
-                <Label htmlFor="name" className="flex items-center gap-2 text-msc-text font-medium">
-                  <User className="w-4 h-4" />
-                  {t.name} *
-                </Label>
-                <Input
-                  id="name"
-                  value={formData.name}
-                  onChange={(e) => handleInputChange('name', e.target.value)}
-                  required
-                  className="border-msc-primary/20 focus:border-msc-accent transition-colors rounded-xl bg-white/90"
-                  placeholder={t.name}
-                />
-              </div>
+      {/* Form Container */}
+      <div className="relative z-10 bg-white/95 backdrop-blur-sm rounded-b-2xl shadow-xl mx-6 mb-auto">
+        <div className="text-center py-6 px-6 border-b border-msc-primary/10">
+          <h2 className="font-heading text-2xl font-bold flex items-center justify-center gap-2 text-msc-primary">
+            <MessageSquare className="w-6 h-6" />
+            {t.title}
+          </h2>
+        </div>
+        
+        <div className="p-6">
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Name */}
+            <div className="space-y-2">
+              <Label htmlFor="name" className="flex items-center gap-2 text-msc-text font-medium">
+                <User className="w-4 h-4" />
+                {t.name} *
+              </Label>
+              <Input
+                id="name"
+                value={formData.name}
+                onChange={(e) => handleInputChange('name', e.target.value)}
+                required
+                className="border-msc-primary/20 focus:border-msc-accent transition-colors rounded-xl bg-white/90"
+                placeholder={t.name}
+              />
+            </div>
 
-              {/* Phone */}
-              <div className="space-y-2">
-                <Label htmlFor="phone" className="flex items-center gap-2 text-msc-text font-medium">
-                  <Phone className="w-4 h-4" />
-                  {t.phone} *
-                </Label>
-                <Input
-                  id="phone"
-                  type="tel"
-                  value={formData.phone}
-                  onChange={(e) => handleInputChange('phone', e.target.value)}
-                  required
-                  className="border-msc-primary/20 focus:border-msc-accent transition-colors rounded-xl bg-white/90"
-                  placeholder="+998 XX XXX XX XX"
-                />
-              </div>
+            {/* Phone */}
+            <div className="space-y-2">
+              <Label htmlFor="phone" className="flex items-center gap-2 text-msc-text font-medium">
+                <Phone className="w-4 h-4" />
+                {t.phone} *
+              </Label>
+              <Input
+                id="phone"
+                type="tel"
+                value={formData.phone}
+                onChange={(e) => handleInputChange('phone', e.target.value)}
+                required
+                className="border-msc-primary/20 focus:border-msc-accent transition-colors rounded-xl bg-white/90"
+                placeholder="+998 XX XXX XX XX"
+              />
+            </div>
 
-              {/* Equipment Type */}
-              <div className="space-y-2">
-                <Label className="text-msc-text font-medium">{t.equipmentType} *</Label>
-                <Select value={formData.equipmentType} onValueChange={(value) => handleInputChange('equipmentType', value)} required>
-                  <SelectTrigger className="border-msc-primary/20 focus:border-msc-accent rounded-xl bg-white/90">
-                    <SelectValue placeholder={t.equipmentType} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Object.entries(t.equipmentTypes).map(([key, value]) => (
-                      <SelectItem key={key} value={key}>{value}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+            {/* Equipment Type */}
+            <div className="space-y-2">
+              <Label className="text-msc-text font-medium">{t.equipmentType} *</Label>
+              <Select value={formData.equipmentType} onValueChange={(value) => handleInputChange('equipmentType', value)} required>
+                <SelectTrigger className="border-msc-primary/20 focus:border-msc-accent rounded-xl bg-white/90">
+                  <SelectValue placeholder={t.equipmentType} />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(t.equipmentTypes).map(([key, value]) => (
+                    <SelectItem key={key} value={key}>{value}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-              {/* Submit Button */}
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full bg-gradient-to-r from-msc-primary to-msc-accent hover:from-msc-primary/90 hover:to-msc-accent/90 text-white font-semibold py-6 text-lg transition-all duration-300 shadow-lg mt-6 rounded-xl"
-              >
-                {isSubmitting ? (
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    {language === 'ru' ? 'Отправка...' : language === 'en' ? 'Sending...' : 'Jo\'natilmoqda...'}
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-2">
-                    <Send className="w-5 h-5" />
-                    {t.submit}
-                  </div>
-                )}
-              </Button>
-            </form>
-          </div>
+            {/* Submit Button */}
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full bg-gradient-to-r from-msc-primary to-msc-accent hover:from-msc-primary/90 hover:to-msc-accent/90 text-white font-semibold py-6 text-lg transition-all duration-300 shadow-lg mt-6 rounded-xl"
+            >
+              {isSubmitting ? (
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  {language === 'ru' ? 'Отправка...' : language === 'en' ? 'Sending...' : 'Jo\'natilmoqda...'}
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <Send className="w-5 h-5" />
+                  {t.submit}
+                </div>
+              )}
+            </Button>
+          </form>
         </div>
       </div>
     </div>
