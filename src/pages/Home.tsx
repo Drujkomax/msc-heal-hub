@@ -224,8 +224,7 @@ const Home = ({ language }: HomeProps) => {
                 </Button>
                 <Button
                   size="lg"
-                  variant="outline"
-                  className="border-white/30 text-white hover:bg-white/10 hover:text-white px-8 py-4 text-lg"
+                  className="bg-white text-msc-primary hover:bg-white/90 font-semibold px-8 py-4 text-lg"
                 >
                   {language === 'ru' ? 'Получить консультацию' : language === 'en' ? 'Get Consultation' : 'Maslahat olish'}
                   <ArrowRight className="ml-2 w-5 h-5" />
@@ -284,7 +283,7 @@ const Home = ({ language }: HomeProps) => {
           <div className="text-center mt-12">
             <Button
               size="lg"
-              className="bg-msc-primary hover:bg-msc-primary/90 text-white font-semibold px-8 py-4 text-lg"
+              className="bg-msc-accent hover:bg-msc-accent/90 text-white font-semibold px-8 py-4 text-lg shadow-lg"
             >
               {language === 'ru' ? 'Запросить коммерческое предложение' : language === 'en' ? 'Request Commercial Offer' : 'Tijoriy taklif so\'rash'}
               <ArrowRight className="ml-2 w-5 h-5" />
@@ -373,7 +372,7 @@ const Home = ({ language }: HomeProps) => {
             <Button
               size="lg"
               variant="outline"
-              className="border-white/30 text-white hover:bg-white/10 hover:text-white px-8 py-4 text-lg"
+              className="border-white text-white hover:bg-white hover:text-msc-primary px-8 py-4 text-lg transition-all duration-300"
             >
               {language === 'ru' ? 'Связаться с менеджером' : language === 'en' ? 'Contact Manager' : 'Menejer bilan bog\'lanish'}
               <ArrowRight className="ml-2 w-5 h-5" />
