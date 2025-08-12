@@ -98,30 +98,11 @@ const ROICalculator = ({ language }: ROICalculatorProps) => {
     return t.slow;
   };
 
-  // Sync sliders with manual inputs
-  useEffect(() => {
-    const priceValue = parseFloat(manualPrice) || 0;
-    if (priceValue >= 1000 && priceValue <= 500000) {
-      setPrice([priceValue]);
-    }
-  }, [manualPrice]);
+  // Two-way synchronization is handled inline in onChange and onValueChange handlers.
 
-  useEffect(() => {
-    const procValue = parseFloat(manualProcedures) || 0;
-    if (procValue >= 1 && procValue <= 1000) {
-      setProcedures([procValue]);
-    }
-  }, [manualProcedures]);
-
-  useEffect(() => {
-    const marginValue = parseFloat(manualMargin) || 0;
-    if (marginValue >= 1 && marginValue <= 1000) {
-      setMargin([marginValue]);
-    }
-  }, [manualMargin]);
 
   return (
-    <Card className="w-full max-w-4xl bg-white/95 backdrop-blur-sm border-2 border-msc-accent/20 shadow-xl">
+    <Card className="w-full max-w-4xl bg-white/95 backdrop-blur-sm border-2 border-msc-accent/20 shadow-xl animate-fade-in hover-scale transition-transform">
       <CardHeader className="text-center">
         <div className="flex items-center justify-center space-x-2 mb-2">
           <Calculator className="w-8 h-8 text-msc-accent" />
@@ -141,9 +122,12 @@ const ROICalculator = ({ language }: ROICalculatorProps) => {
             <div className="space-y-2">
               <Slider
                 value={price}
-                onValueChange={setPrice}
+                onValueChange={(v) => {
+                  setPrice(v);
+                  setManualPrice(String(v[0] ?? 0));
+                }}
                 max={500000}
-                min={1000}
+                min={0}
                 step={1000}
                 className="w-full"
               />
@@ -152,8 +136,18 @@ const ROICalculator = ({ language }: ROICalculatorProps) => {
                 <Input
                   type="number"
                   value={manualPrice}
-                  onChange={(e) => setManualPrice(e.target.value)}
-                  min={1000}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setManualPrice(val);
+                    const n = parseFloat(val);
+                    if (isNaN(n)) {
+                      setPrice([0]);
+                    } else {
+                      const clamped = Math.min(500000, Math.max(0, n));
+                      setPrice([clamped]);
+                    }
+                  }}
+                  min={0}
                   max={500000}
                   className="border-msc-accent/30 focus:border-msc-accent"
                 />
@@ -167,17 +161,30 @@ const ROICalculator = ({ language }: ROICalculatorProps) => {
             <div className="space-y-2">
               <Slider
                 value={procedures}
-                onValueChange={setProcedures}
+                onValueChange={(v) => {
+                  setProcedures(v);
+                  setManualProcedures(String(v[0] ?? 0));
+                }}
                 max={1000}
-                min={1}
+                min={0}
                 step={1}
                 className="w-full"
               />
               <Input
                 type="number"
                 value={manualProcedures}
-                onChange={(e) => setManualProcedures(e.target.value)}
-                min={1}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setManualProcedures(val);
+                  const n = parseFloat(val);
+                  if (isNaN(n)) {
+                    setProcedures([0]);
+                  } else {
+                    const clamped = Math.min(1000, Math.max(0, n));
+                    setProcedures([clamped]);
+                  }
+                }}
+                min={0}
                 max={1000}
                 className="border-msc-accent/30 focus:border-msc-accent"
               />
@@ -190,9 +197,12 @@ const ROICalculator = ({ language }: ROICalculatorProps) => {
             <div className="space-y-2">
               <Slider
                 value={margin}
-                onValueChange={setMargin}
+                onValueChange={(v) => {
+                  setMargin(v);
+                  setManualMargin(String(v[0] ?? 0));
+                }}
                 max={1000}
-                min={1}
+                min={0}
                 step={1}
                 className="w-full"
               />
@@ -201,8 +211,18 @@ const ROICalculator = ({ language }: ROICalculatorProps) => {
                 <Input
                   type="number"
                   value={manualMargin}
-                  onChange={(e) => setManualMargin(e.target.value)}
-                  min={1}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setManualMargin(val);
+                    const n = parseFloat(val);
+                    if (isNaN(n)) {
+                      setMargin([0]);
+                    } else {
+                      const clamped = Math.min(1000, Math.max(0, n));
+                      setMargin([clamped]);
+                    }
+                  }}
+                  min={0}
                   max={1000}
                   className="border-msc-accent/30 focus:border-msc-accent"
                 />
@@ -214,7 +234,7 @@ const ROICalculator = ({ language }: ROICalculatorProps) => {
         {/* Results */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6 bg-gradient-to-r from-msc-primary/5 to-msc-accent/5 rounded-lg">
           {/* Payback Period */}
-          <div className="text-center p-4 bg-white rounded-lg shadow-sm">
+          <div className="text-center p-4 bg-white rounded-lg shadow-sm hover-scale transition-shadow">
             <Clock className="w-8 h-8 mx-auto mb-2 text-msc-accent" />
             <h3 className="font-semibold text-msc-text mb-1">{t.paybackPeriod}</h3>
             <p className={`text-3xl font-bold ${getROIColor(months)}`}>
@@ -226,7 +246,7 @@ const ROICalculator = ({ language }: ROICalculatorProps) => {
           </div>
 
           {/* Monthly Profit */}
-          <div className="text-center p-4 bg-white rounded-lg shadow-sm">
+          <div className="text-center p-4 bg-white rounded-lg shadow-sm hover-scale transition-shadow">
             <DollarSign className="w-8 h-8 mx-auto mb-2 text-msc-accent" />
             <h3 className="font-semibold text-msc-text mb-1">{t.monthlyProfit}</h3>
             <p className="text-2xl font-bold text-msc-primary">
@@ -235,7 +255,7 @@ const ROICalculator = ({ language }: ROICalculatorProps) => {
           </div>
 
           {/* Yearly Profit */}
-          <div className="text-center p-4 bg-white rounded-lg shadow-sm">
+          <div className="text-center p-4 bg-white rounded-lg shadow-sm hover-scale transition-shadow">
             <TrendingUp className="w-8 h-8 mx-auto mb-2 text-msc-accent" />
             <h3 className="font-semibold text-msc-text mb-1">{t.yearlyProfit}</h3>
             <p className="text-2xl font-bold text-msc-primary">
