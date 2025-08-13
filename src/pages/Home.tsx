@@ -164,24 +164,24 @@ const Home = ({ language }: HomeProps) => {
         subtitle: 'Tibbiy masalalarni hal qilishda kompleks yondashuv',
         items: [
           {
-            icon: Shield,
+            icon: WhyWarrantyIcon,
             title: 'Sifat kafolati',
             description: 'Biz faqat yetakchi jahon ishlab chiqaruvchilarning sertifikatlangan uskunalari bilan ishlaymiz'
           },
           {
-            icon: Headphones,
+            icon: WhySupportIcon,
             title: '24/7 xizmat',
             description: 'Kundalik texnik yordam va har qanday savollarni tezkor hal qilish'
           },
           {
-            icon: Zap,
-            title: 'Tezkor o\'rnatish',
-            description: 'Professional muhandislar jamoasi tez o\'rnatish va sozlashni ta\'minlaydi'
+            icon: WhyInstallationIcon,
+            title: "Tezkor o'rnatish",
+            description: "Professional muhandislar jamoasi tez o'rnatish va sozlashni ta'minlaydi"
           },
           {
-            icon: Globe,
+            icon: WhyLogisticsIcon,
             title: "Butun O'zbekiston bo'yicha logistika",
-            description: 'Mamlakatning istalgan hududiga uskunalarni yetkazib berish va o\'rnatish'
+            description: "Mamlakatning istalgan hududiga uskunalarni yetkazib berish va o'rnatish"
           }
         ]
       }
