@@ -45,3 +45,10 @@ export const isValidUzbekPhoneLength = (phone: string): boolean => {
   const phoneDigits = digits.startsWith('998') ? digits.slice(3) : digits;
   return phoneDigits.length <= 9;
 };
+
+// Проверяет, является ли номер полным (9 цифр)
+export const isCompleteUzbekPhone = (phone: string): boolean => {
+  const digits = phone.replace(/\D/g, '');
+  const phoneDigits = digits.startsWith('998') ? digits.slice(3) : digits;
+  return phoneDigits.length === 9;
+};

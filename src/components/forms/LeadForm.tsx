@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { useLeads } from '@/hooks/useLeads';
-import { formatUzbekPhoneNumber, validateUzbekPhoneNumber, getFullUzbekPhoneNumber, isValidUzbekPhoneLength } from '@/lib/phoneValidation';
+import { formatUzbekPhoneNumber, validateUzbekPhoneNumber, getFullUzbekPhoneNumber, isValidUzbekPhoneLength, isCompleteUzbekPhone } from '@/lib/phoneValidation';
 import { Phone, User, MessageSquare, Send, X } from 'lucide-react';
 
 interface LeadFormProps {
@@ -95,13 +95,23 @@ const LeadForm: React.FC<LeadFormProps> = ({ language, onClose }) => {
       const formatted = formatUzbekPhoneNumber(value);
       setFormData(prev => ({ ...prev, [field]: formatted }));
       
-      // Validate phone number
-      if (formatted && !validateUzbekPhoneNumber(formatted)) {
-        setPhoneError(language === 'ru' 
-          ? 'Неверный формат номера' 
-          : language === 'en' 
-          ? 'Invalid phone format' 
-          : 'Noto\'g\'ri telefon formati');
+      // Only show error if user has entered something and it's not complete or invalid
+      if (formatted.length > 0) {
+        if (!isCompleteUzbekPhone(formatted)) {
+          setPhoneError(language === 'ru' 
+            ? 'Номер должен содержать 9 цифр' 
+            : language === 'en' 
+            ? 'Number must contain 9 digits' 
+            : 'Raqam 9 ta raqamdan iborat bo\'lishi kerak');
+        } else if (!validateUzbekPhoneNumber(formatted)) {
+          setPhoneError(language === 'ru' 
+            ? 'Неверный формат номера' 
+            : language === 'en' 
+            ? 'Invalid phone format' 
+            : 'Noto\'g\'ri telefon formati');
+        } else {
+          setPhoneError('');
+        }
       } else {
         setPhoneError('');
       }
@@ -114,12 +124,12 @@ const LeadForm: React.FC<LeadFormProps> = ({ language, onClose }) => {
     e.preventDefault();
     
     // Validate phone number before submission
-    if (formData.phone && !validateUzbekPhoneNumber(formData.phone)) {
+    if (formData.phone && (!isCompleteUzbekPhone(formData.phone) || !validateUzbekPhoneNumber(formData.phone))) {
       setPhoneError(language === 'ru' 
-        ? 'Неверный формат номера' 
+        ? 'Введите корректный узбекский номер' 
         : language === 'en' 
-        ? 'Invalid phone format' 
-        : 'Noto\'g\'ri telefon formati');
+        ? 'Enter a valid Uzbek number' 
+        : 'To\'g\'ri O\'zbek raqamini kiriting');
       return;
     }
 
@@ -241,7 +251,7 @@ const LeadForm: React.FC<LeadFormProps> = ({ language, onClose }) => {
                   required
                   className={`border-msc-primary/20 focus:border-msc-accent transition-colors pl-20 ${phoneError ? 'border-red-500' : ''}`}
                   placeholder="XX XXX XX XX"
-                  maxLength={11} // 9 digits + 2 spaces
+                  maxLength={12} // 9 digits + 3 spaces (XX XXX XX XX)
                 />
                 {phoneError && (
                   <p className="text-red-500 text-xs mt-1">{phoneError}</p>
