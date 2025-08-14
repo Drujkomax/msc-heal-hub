@@ -158,7 +158,7 @@ const LeadForm: React.FC<LeadFormProps> = ({
     }
   };
   return <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl animate-in slide-in-from-bottom-4">
+      <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl animate-in slide-in-from-bottom-4">
         {/* Header */}
         <div className="relative bg-gradient-to-r from-msc-primary to-msc-accent text-white p-4 rounded-t-2xl">
           <button onClick={onClose} className="absolute top-3 right-3 text-white/80 hover:text-white transition-colors">
