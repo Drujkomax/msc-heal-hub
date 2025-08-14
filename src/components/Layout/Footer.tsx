@@ -145,10 +145,24 @@ const Footer = ({ language }: FooterProps) => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-white/20 mt-8 pt-6 text-center">
-          <p className="text-white/60 text-sm">
-            © 2024 {t.company}. {t.rights}
-          </p>
+        <div className="border-t border-white/20 mt-8 pt-6">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p className="text-white/60 text-sm">
+              © 2024 {t.company}. {t.rights}
+            </p>
+            <div className="flex gap-4 text-sm">
+              <a 
+                href="/Условия использования и дисклеймер Med Service Centre.docx" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-white/60 hover:text-msc-accent transition-colors"
+              >
+                {language === 'ru' ? 'Условия использования' : 
+                 language === 'en' ? 'Terms of Use' : 
+                 'Foydalanish shartlari'}
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </footer>
