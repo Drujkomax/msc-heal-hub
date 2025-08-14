@@ -377,7 +377,7 @@ const Home = ({ language }: HomeProps) => {
             <Button
               size="lg"
               variant="outline"
-              className="border-white text-white hover:bg-white hover:text-msc-primary px-8 py-4 text-lg transition-all duration-300"
+              className="border-white text-black hover:bg-white hover:text-msc-primary px-8 py-4 text-lg transition-all duration-300"
               onClick={() => setShowConsultationForm(true)}
             >
               {language === 'ru' ? 'Связаться с менеджером' : language === 'en' ? 'Contact Manager' : 'Menejer bilan bog\'lanish'}
