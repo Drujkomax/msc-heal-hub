@@ -147,3 +147,41 @@ export const useAdminProducts = () => {
     refetch: fetchProducts
   };
 };
+
+export const useProduct = (id: string) => {
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchProduct = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('id', id)
+        .eq('status', 'active')
+        .maybeSingle();
+
+      if (error) throw error;
+      setProduct(data as unknown as Product);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Произошла ошибка');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (id) {
+      fetchProduct();
+    }
+  }, [id]);
+
+  return {
+    product,
+    loading,
+    error,
+    refetch: fetchProduct
+  };
+};
