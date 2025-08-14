@@ -179,12 +179,8 @@ const LeadForm: React.FC<LeadFormProps> = ({
           <div className="text-center">
             <h3 className="text-sm font-semibold text-msc-text">
               Получите консультацию на тему<br />
-              <span className="text-msc-primary font-bold drop-shadow-lg shadow-msc-primary/50">
-                "Как эффективно окупить оборудование{" "}
-                <span className="relative inline-block overflow-hidden">
-                  <span className="animate-[typewriter_3s_ease-in-out_infinite] inline-block whitespace-nowrap">в 2025</span>
-                </span>
-                {" "}году?"
+              <span className="text-msc-primary font-bold">
+                "Как эффективно окупить оборудование в 2025 году?"
               </span>
             </h3>
           </div>
