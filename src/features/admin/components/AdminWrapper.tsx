@@ -6,6 +6,8 @@ import AdminLayout from './AdminLayout';
 import Dashboard from '../pages/Dashboard';
 import Clients from '../../crm/pages/Clients';
 import AdminProducts from '../../products/pages/AdminProducts';
+import AddProduct from '../../products/pages/AddProduct';
+import EditProduct from '../../products/pages/EditProduct';
 import AdminServices from '../pages/AdminServices';
 import AdminContacts from '../pages/AdminContacts';
 
@@ -40,6 +42,8 @@ const AdminWrapper = () => {
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="clients" element={<Clients />} />
         <Route path="products" element={<AdminProducts />} />
+        <Route path="products/add" element={<AddProduct />} />
+        <Route path="products/edit/:id" element={<EditProduct />} />
         <Route path="services" element={<AdminServices />} />
         <Route path="contacts" element={<AdminContacts />} />
       </Route>

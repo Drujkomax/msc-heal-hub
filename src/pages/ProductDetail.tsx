@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -49,7 +48,8 @@ const translations = {
   successMessage: { ru: "Заявка отправлена! Мы свяжемся с вами в ближайшее время.", en: "Request sent! We will contact you soon.", uz: "So'rov yuborildi! Biz tez orada siz bilan bog'lanamiz." },
   productNotFound: { ru: "Товар не найден", en: "Product not found", uz: "Mahsulot topilmadi" },
   loading: { ru: "Загружаем товар...", en: "Loading product...", uz: "Mahsulot yuklanmoqda..." },
-  error: { ru: "Ошибка загрузки", en: "Loading error", uz: "Yuklash xatosi" }
+  error: { ru: "Ошибка загрузки", en: "Loading error", uz: "Yuklash xatosi" },
+  keyFeatures: { ru: "Ключевые особенности", en: "Key Features", uz: "Asosiy xususiyatlar" }
 };
 
 const ProductDetail = ({ language }: ProductDetailProps) => {
@@ -58,6 +58,7 @@ const ProductDetail = ({ language }: ProductDetailProps) => {
   const { toast } = useToast();
   const [isFavorite, setIsFavorite] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     companyName: '',
     contactPerson: '',
@@ -137,146 +138,201 @@ const ProductDetail = ({ language }: ProductDetailProps) => {
         </Button>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          {/* Product Image */}
-          <div className="relative">
-            {product.images?.cover ? (
-              <img
-                src={product.images.cover}
-                alt={product.name[language]}
-                className="w-full h-96 object-cover rounded-lg"
-                onError={(e) => {
-                  e.currentTarget.src = '/placeholder.svg';
-                }}
-              />
-            ) : (
-              <div className="w-full h-96 bg-muted rounded-lg flex items-center justify-center">
-                <Package className="w-24 h-24 text-muted-foreground" />
+          {/* Product Images */}
+          <div className="space-y-4">
+            {/* Main Image */}
+            <div className="relative aspect-square rounded-lg overflow-hidden bg-muted">
+              {product.images?.cover || selectedImage ? (
+                <img
+                  src={selectedImage || product.images.cover}
+                  alt={product.name[language]}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.src = '/placeholder.svg';
+                  }}
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <Package className="w-24 h-24 text-muted-foreground" />
+                </div>
+              )}
+              <div className="absolute top-4 right-4 flex gap-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="bg-background/80 backdrop-blur-sm"
+                  onClick={() => setIsFavorite(!isFavorite)}
+                >
+                  <Heart 
+                    className={`h-4 w-4 ${isFavorite ? 'fill-red-500 text-red-500' : ''}`} 
+                  />
+                </Button>
+              </div>
+              <div className="absolute top-4 left-4">
+                <Badge variant={product.in_stock ? "default" : "secondary"}>
+                  {product.in_stock ? translations.inStock[language] : translations.outOfStock[language]}
+                </Badge>
+              </div>
+            </div>
+
+            {/* Gallery */}
+            {product.images?.gallery && product.images.gallery.length > 0 && (
+              <div className="grid grid-cols-4 gap-2">
+                {/* Cover as first thumbnail */}
+                {product.images.cover && (
+                  <div 
+                    className={`aspect-square rounded-lg overflow-hidden bg-muted cursor-pointer border-2 transition-colors ${
+                      !selectedImage ? 'border-primary' : 'border-transparent hover:border-primary/50'
+                    }`}
+                    onClick={() => setSelectedImage(null)}
+                  >
+                    <img
+                      src={product.images.cover}
+                      alt={`${product.name[language]} - основное изображение`}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = '/placeholder.svg';
+                      }}
+                    />
+                  </div>
+                )}
+                
+                {/* Gallery images */}
+                {product.images.gallery.map((image, index) => (
+                  <div 
+                    key={index} 
+                    className={`aspect-square rounded-lg overflow-hidden bg-muted cursor-pointer border-2 transition-colors ${
+                      selectedImage === image ? 'border-primary' : 'border-transparent hover:border-primary/50'
+                    }`}
+                    onClick={() => setSelectedImage(image)}
+                  >
+                    <img
+                      src={image}
+                      alt={`${product.name[language]} - изображение ${index + 1}`}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = '/placeholder.svg';
+                      }}
+                    />
+                  </div>
+                ))}
               </div>
             )}
-            <div className="absolute top-4 right-4 flex gap-2">
-              <Button
-                size="sm"
-                variant="outline"
-                className="bg-background/80 backdrop-blur-sm"
-                onClick={() => setIsFavorite(!isFavorite)}
-              >
-                <Heart 
-                  className={`h-4 w-4 ${isFavorite ? 'fill-red-500 text-red-500' : ''}`} 
-                />
-              </Button>
-            </div>
-            <div className="absolute top-4 left-4">
-              <Badge variant={product.in_stock ? "default" : "secondary"}>
-                {product.in_stock ? translations.inStock[language] : translations.outOfStock[language]}
-              </Badge>
-            </div>
           </div>
 
           {/* Product Info */}
-          <div>
-            <h1 className="text-3xl font-bold text-foreground mb-4">
-              {product.name[language]}
-            </h1>
-            <p className="text-lg text-muted-foreground mb-6">
-              {product.description[language]}
-            </p>
-            <div className="mb-4">
-              <Badge variant="outline" className="text-sm">
-                {getCategoryLabel(product.category, language)}
-              </Badge>
+          <div className="space-y-6">
+            <div>
+              <h1 className="text-3xl font-bold text-foreground mb-2">
+                {product.name[language]}
+              </h1>
+              <div className="mb-4">
+                <Badge variant="outline" className="text-sm">
+                  {getCategoryLabel(product.category, language)}
+                </Badge>
+              </div>
+              <p className="text-lg text-muted-foreground">
+                {product.description[language]}
+              </p>
             </div>
 
-            <div className="space-y-4">
-              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button size="lg" className="w-full">
-                    <FileText className="h-4 w-4 mr-2" />
-                    {translations.requestQuote[language]}
+            {/* Features */}
+            {product.features && product.features[language] && product.features[language].length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-xl">
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                        <span className="text-primary font-medium text-sm">✓</span>
+                      </div>
+                      {translations.keyFeatures[language]}
+                    </div>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid gap-3">
+                    {product.features[language].map((feature, index) => (
+                      <div key={index} className="flex items-start gap-3 p-3 rounded-lg bg-muted/30">
+                        <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0" />
+                        <span className="text-foreground leading-relaxed">{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* CTA Button */}
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button size="lg" className="w-full bg-primary hover:bg-primary/90">
+                  <FileText className="h-5 w-5 mr-2" />
+                  {translations.requestQuote[language]}
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle>{translations.requestQuoteTitle[language]}</DialogTitle>
+                  <DialogDescription>
+                    {translations.requestQuoteDesc[language]}
+                  </DialogDescription>
+                </DialogHeader>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div>
+                    <Label htmlFor="companyName">{translations.companyName[language]}</Label>
+                    <Input
+                      id="companyName"
+                      value={formData.companyName}
+                      onChange={(e) => setFormData({...formData, companyName: e.target.value})}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="contactPerson">{translations.contactPerson[language]}</Label>
+                    <Input
+                      id="contactPerson"
+                      value={formData.contactPerson}
+                      onChange={(e) => setFormData({...formData, contactPerson: e.target.value})}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="phone">{translations.phone[language]}</Label>
+                    <Input
+                      id="phone"
+                      type="tel"
+                      value={formData.phone}
+                      onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="email">{translations.email[language]}</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => setFormData({...formData, email: e.target.value})}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="message">{translations.message[language]}</Label>
+                    <Textarea
+                      id="message"
+                      value={formData.message}
+                      onChange={(e) => setFormData({...formData, message: e.target.value})}
+                      rows={3}
+                    />
+                  </div>
+                  <Button type="submit" className="w-full">
+                    {translations.submit[language]}
                   </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-md">
-                  <DialogHeader>
-                    <DialogTitle>{translations.requestQuoteTitle[language]}</DialogTitle>
-                    <DialogDescription>
-                      {translations.requestQuoteDesc[language]}
-                    </DialogDescription>
-                  </DialogHeader>
-                  <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                      <Label htmlFor="companyName">{translations.companyName[language]}</Label>
-                      <Input
-                        id="companyName"
-                        value={formData.companyName}
-                        onChange={(e) => setFormData({...formData, companyName: e.target.value})}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="contactPerson">{translations.contactPerson[language]}</Label>
-                      <Input
-                        id="contactPerson"
-                        value={formData.contactPerson}
-                        onChange={(e) => setFormData({...formData, contactPerson: e.target.value})}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="phone">{translations.phone[language]}</Label>
-                      <Input
-                        id="phone"
-                        type="tel"
-                        value={formData.phone}
-                        onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="email">{translations.email[language]}</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={(e) => setFormData({...formData, email: e.target.value})}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="message">{translations.message[language]}</Label>
-                      <Textarea
-                        id="message"
-                        value={formData.message}
-                        onChange={(e) => setFormData({...formData, message: e.target.value})}
-                        rows={3}
-                      />
-                    </div>
-                    <Button type="submit" className="w-full">
-                      {translations.submit[language]}
-                    </Button>
-                  </form>
-                </DialogContent>
-              </Dialog>
-            </div>
+                </form>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
-
-        {/* Product Details */}
-        <Card>
-          <CardContent className="p-6">
-            {product.features && product.features[language] && product.features[language].length > 0 && (
-              <div>
-                <h3 className="text-xl font-semibold mb-4">{translations.features[language]}</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {product.features[language].map((feature, index) => (
-                    <div key={index} className="flex items-center py-2 border-b border-border">
-                      <span className="w-2 h-2 bg-primary rounded-full mr-3"></span>
-                      <span className="text-foreground">{feature}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
       </div>
     </div>
   );

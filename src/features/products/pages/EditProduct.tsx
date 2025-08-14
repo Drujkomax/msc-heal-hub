@@ -1,0 +1,419 @@
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
+import { ArrowLeft, Save, Loader2 } from 'lucide-react';
+import { useProducts, useProduct } from '@/hooks/useProducts';
+import { useToast } from '@/hooks/use-toast';
+import { ImageUpload } from '@/components/common/ProductImageUpload';
+
+const categories = [
+  { value: 'diagnostic', label: 'Диагностическое оборудование' },
+  { value: 'surgical', label: 'Хирургическое оборудование' },
+  { value: 'monitoring', label: 'Мониторинг' },
+  { value: 'laboratory', label: 'Лабораторное оборудование' },
+  { value: 'rehabilitation', label: 'Реабилитационное оборудование' },
+  { value: 'dental', label: 'Стоматологическое оборудование' },
+  { value: 'ophthalmology', label: 'Офтальмологическое оборудование' },
+  { value: 'furniture', label: 'Медицинская мебель' }
+];
+
+const statusOptions = [
+  { value: 'active', label: 'Активный' },
+  { value: 'draft', label: 'Черновик' },
+  { value: 'archived', label: 'Архив' }
+];
+
+const EditProduct = () => {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const { updateProduct } = useProducts();
+  const { product, loading: productLoading, error } = useProduct(id || '');
+  const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
+
+  const [formData, setFormData] = useState({
+    name: { ru: '', en: '', uz: '' },
+    description: { ru: '', en: '', uz: '' },
+    category: '',
+    status: 'draft',
+    in_stock: true,
+    features: { ru: [''], en: [''], uz: [''] },
+    images: { cover: null, gallery: [] }
+  });
+
+  useEffect(() => {
+    if (product) {
+      setFormData({
+        name: product.name,
+        description: product.description,
+        category: product.category,
+        status: product.status,
+        in_stock: product.in_stock,
+        features: product.features || { ru: [''], en: [''], uz: [''] },
+        images: product.images || { cover: null, gallery: [] }
+      });
+    }
+  }, [product]);
+
+  if (productLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="flex items-center space-x-2">
+          <Loader2 className="h-8 w-8 animate-spin" />
+          <span className="text-lg">Загружаем товар...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !product) {
+    return (
+      <div className="text-center py-16">
+        <h2 className="text-2xl font-bold text-destructive mb-2">Ошибка загрузки</h2>
+        <p className="text-muted-foreground">{error || 'Товар не найден'}</p>
+        <Button onClick={() => navigate('/admin/products')} className="mt-4">
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Назад к товарам
+        </Button>
+      </div>
+    );
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.name.ru.trim() || !formData.description.ru.trim() || !formData.category) {
+      toast({
+        variant: 'destructive',
+        title: 'Ошибка валидации',
+        description: 'Заполните все обязательные поля'
+      });
+      return;
+    }
+
+    setLoading(true);
+    
+    try {
+      await updateProduct(id!, {
+        name: formData.name,
+        description: formData.description,
+        category: formData.category,
+        status: formData.status as 'active' | 'draft' | 'archived',
+        in_stock: formData.in_stock,
+        features: formData.features,
+        images: formData.images
+      });
+
+      toast({
+        title: 'Успешно!',
+        description: 'Товар обновлен успешно'
+      });
+      
+      navigate('/admin/products');
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Ошибка',
+        description: error instanceof Error ? error.message : 'Не удалось обновить товар'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const addFeature = (lang: 'ru' | 'en' | 'uz') => {
+    setFormData(prev => ({
+      ...prev,
+      features: {
+        ...prev.features,
+        [lang]: [...prev.features[lang], '']
+      }
+    }));
+  };
+
+  const updateFeature = (lang: 'ru' | 'en' | 'uz', index: number, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      features: {
+        ...prev.features,
+        [lang]: prev.features[lang].map((feature, i) => i === index ? value : feature)
+      }
+    }));
+  };
+
+  const removeFeature = (lang: 'ru' | 'en' | 'uz', index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      features: {
+        ...prev.features,
+        [lang]: prev.features[lang].filter((_, i) => i !== index)
+      }
+    }));
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <Button 
+            variant="outline" 
+            onClick={() => navigate('/admin/products')}
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Назад к товарам
+          </Button>
+          <div>
+            <h1 className="text-3xl font-bold">Редактировать товар</h1>
+            <p className="text-muted-foreground">{product.name.ru}</p>
+          </div>
+        </div>
+        
+        <Button 
+          type="submit" 
+          form="product-form"
+          disabled={loading}
+          size="lg"
+        >
+          {loading ? (
+            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+          ) : (
+            <Save className="w-4 h-4 mr-2" />
+          )}
+          Сохранить изменения
+        </Button>
+      </div>
+
+      <form id="product-form" onSubmit={handleSubmit} className="space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Main Content */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Basic Information */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Основная информация</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Names */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <Label htmlFor="name-ru">Название (RU) *</Label>
+                    <Input
+                      id="name-ru"
+                      value={formData.name.ru}
+                      onChange={(e) => setFormData(prev => ({
+                        ...prev,
+                        name: { ...prev.name, ru: e.target.value }
+                      }))}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="name-en">Название (EN)</Label>
+                    <Input
+                      id="name-en"
+                      value={formData.name.en}
+                      onChange={(e) => setFormData(prev => ({
+                        ...prev,
+                        name: { ...prev.name, en: e.target.value }
+                      }))}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="name-uz">Название (UZ)</Label>
+                    <Input
+                      id="name-uz"
+                      value={formData.name.uz}
+                      onChange={(e) => setFormData(prev => ({
+                        ...prev,
+                        name: { ...prev.name, uz: e.target.value }
+                      }))}
+                    />
+                  </div>
+                </div>
+
+                {/* Descriptions */}
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="desc-ru">Описание (RU) *</Label>
+                    <Textarea
+                      id="desc-ru"
+                      value={formData.description.ru}
+                      onChange={(e) => setFormData(prev => ({
+                        ...prev,
+                        description: { ...prev.description, ru: e.target.value }
+                      }))}
+                      rows={3}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="desc-en">Описание (EN)</Label>
+                    <Textarea
+                      id="desc-en"
+                      value={formData.description.en}
+                      onChange={(e) => setFormData(prev => ({
+                        ...prev,
+                        description: { ...prev.description, en: e.target.value }
+                      }))}
+                      rows={3}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="desc-uz">Описание (UZ)</Label>
+                    <Textarea
+                      id="desc-uz"
+                      value={formData.description.uz}
+                      onChange={(e) => setFormData(prev => ({
+                        ...prev,
+                        description: { ...prev.description, uz: e.target.value }
+                      }))}
+                      rows={3}
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Images */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Изображения</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ImageUpload
+                  images={formData.images}
+                  onImagesChange={(images) => setFormData(prev => ({
+                    ...prev,
+                    images
+                  }))}
+                />
+              </CardContent>
+            </Card>
+
+            {/* Features */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Характеристики</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {(['ru', 'en', 'uz'] as const).map((lang) => (
+                  <div key={lang} className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <Label>
+                        Характеристики ({lang.toUpperCase()})
+                        {lang === 'ru' && ' *'}
+                      </Label>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => addFeature(lang)}
+                      >
+                        Добавить
+                      </Button>
+                    </div>
+                    {formData.features[lang].map((feature, index) => (
+                      <div key={index} className="flex gap-2">
+                        <Input
+                          value={feature}
+                          onChange={(e) => updateFeature(lang, index, e.target.value)}
+                          placeholder={`Характеристика ${index + 1}`}
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => removeFeature(lang, index)}
+                        >
+                          Удалить
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* Settings */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Настройки</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label htmlFor="category">Категория *</Label>
+                  <Select 
+                    value={formData.category} 
+                    onValueChange={(value) => setFormData(prev => ({
+                      ...prev,
+                      category: value
+                    }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Выберите категорию" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {categories.map((category) => (
+                        <SelectItem key={category.value} value={category.value}>
+                          {category.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label htmlFor="status">Статус</Label>
+                  <Select 
+                    value={formData.status} 
+                    onValueChange={(value) => setFormData(prev => ({
+                      ...prev,
+                      status: value
+                    }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {statusOptions.map((status) => (
+                        <SelectItem key={status.value} value={status.value}>
+                          {status.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="in-stock"
+                    checked={formData.in_stock}
+                    onCheckedChange={(checked) => setFormData(prev => ({
+                      ...prev,
+                      in_stock: checked
+                    }))}
+                  />
+                  <Label htmlFor="in-stock">В наличии</Label>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+export default EditProduct;

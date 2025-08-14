@@ -13,8 +13,7 @@ import {
   Loader2
 } from 'lucide-react';
 import { useAdminProducts, Product } from '@/hooks/useProducts';
-import { AddProductDialog } from '../components/AddProductDialog';
-import { EditProductDialog } from '../components/EditProductDialog';
+import { useNavigate } from 'react-router-dom';
 
 const getCategoryLabel = (category: string) => {
   const categoryLabels = {
@@ -33,8 +32,8 @@ const getCategoryLabel = (category: string) => {
 
 const AdminProducts = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const { products, loading, error } = useAdminProducts();
 
   const getStatusBadge = (status: string) => {
@@ -92,7 +91,9 @@ const AdminProducts = () => {
           <h2 className="text-3xl font-bold">{t('products.title')}</h2>
           <p className="text-muted-foreground">{t('products.subtitle')}</p>
         </div>
-        <AddProductDialog />
+        <Button onClick={() => navigate('/admin/products/add')}>
+          Добавить товар
+        </Button>
       </div>
 
       {/* Statistics */}
@@ -193,7 +194,12 @@ const AdminProducts = () => {
                 </p>
                 
                   <div className="flex space-x-2 pt-2">
-                    <Button variant="outline" size="sm" className="flex-1">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="flex-1"
+                      onClick={() => navigate(`/product/${product.id}`)}
+                    >
                       <Eye className="w-4 h-4 mr-1" />
                       {t('common.view')}
                     </Button>
@@ -201,7 +207,7 @@ const AdminProducts = () => {
                       variant="outline" 
                       size="sm" 
                       className="flex-1"
-                      onClick={() => setEditingProduct(product)}
+                      onClick={() => navigate(`/admin/products/edit/${product.id}`)}
                     >
                       <Edit className="w-4 h-4 mr-1" />
                       {t('common.edit')}
@@ -220,12 +226,6 @@ const AdminProducts = () => {
           </CardContent>
         </Card>
       )}
-
-      <EditProductDialog 
-        product={editingProduct}
-        open={!!editingProduct}
-        onOpenChange={(open) => !open && setEditingProduct(null)}
-      />
     </div>
   );
 };
