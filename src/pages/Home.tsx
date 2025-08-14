@@ -22,7 +22,7 @@ const Home = ({ language }: HomeProps) => {
       hero: {
         title: 'Med Service Centre',
         subtitle: 'Ведущий интегратор медицинского оборудования в Узбекистане',
-        description: 'Поставка, инсталляция, обучение персонала и техническое обслуживание медицинского оборудования с 8-летним опытом и 300+ успешными проектами.',
+        description: 'Поставка, инсталляция,\nобучение персонала\nи техническое обслуживание\nмедицинского оборудования.',
         cta: 'Рассчитать ROI',
         experience: '8 лет опыта',
         projects: '300+ проектов',
@@ -71,7 +71,7 @@ const Home = ({ language }: HomeProps) => {
       hero: {
         title: 'Med Service Centre',
         subtitle: 'Leading medical equipment integrator in Uzbekistan',
-        description: 'Supply, installation, staff training and technical support of medical equipment with 8 years of experience and 300+ successful projects.',
+        description: 'Supply, installation,\nstaff training\nand technical support\nof medical equipment.',
         cta: 'Calculate ROI',
         experience: '8 years experience',
         projects: '300+ projects',
@@ -120,7 +120,7 @@ const Home = ({ language }: HomeProps) => {
       hero: {
         title: 'Med Service Centre',
         subtitle: "O'zbekistondagi yetakchi tibbiy uskunalar integratori",
-        description: "Biz 8 yillik tajribaga ega bo'lib, 300+ muvaffaqiyatli loyiha va yuzlab mamnun mijozlar bilan faxrlanamiz. Faoliyatimiz tibbiy uskunalarni yetkazib berish, o'rnatish, xodimlarni o'qitish va texnik xizmat ko'rsatishni qamrab oladi.",
+        description: "Tibbiy uskunalarni yetkazib berish,\no'rnatish, xodimlarni o'qitish\nva texnik xizmat ko'rsatish.",
         cta: 'ROI hisoblagich',
         experience: 'Yillik tajriba',
         projects: 'Muvaffaqiyatli loyiha',
@@ -195,7 +195,7 @@ const Home = ({ language }: HomeProps) => {
                 <p className="text-xl lg:text-2xl text-white/90 font-medium">
                   {t.hero.subtitle}
                 </p>
-                <p className="text-lg text-white/80 max-w-xl">
+                <p className="text-lg text-white/80 max-w-xl whitespace-pre-line">
                   {t.hero.description}
                 </p>
               </div>
