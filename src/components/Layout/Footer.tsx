@@ -152,7 +152,7 @@ const Footer = ({ language }: FooterProps) => {
             </p>
             <div className="flex gap-4 text-sm">
               <a 
-                href="/Условия использования и дисклеймер Med Service Centre.docx" 
+                href="/Условия%20использования%20и%20дисклеймер%20Med%20Service%20Centre.docx" 
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-white/60 hover:text-msc-accent transition-colors"
