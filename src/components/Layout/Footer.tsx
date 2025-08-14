@@ -81,9 +81,11 @@ const Footer = ({ language }: FooterProps) => {
           {/* Company Info */}
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-msc-accent to-white/20 hexagon flex items-center justify-center p-2">
-                <img src="/lovable-uploads/ea1f50a2-d3d1-418f-b6ce-f6e08a722162.png" alt="MSC Logo" className="w-full h-full object-contain" />
-              </div>
+              <img 
+                src="/lovable-uploads/f5c3dd5e-1f26-44b2-b83a-e44ca979092f.png" 
+                alt="MSC Logo" 
+                className="w-16 h-16 object-contain" 
+              />
               <div>
                 <h3 className="font-heading text-xl font-bold">{t.company}</h3>
                 <p className="text-sm text-white/80">8 лет опыта • 300+ проектов</p>
