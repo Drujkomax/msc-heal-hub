@@ -19,9 +19,9 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				'heading': ['Times New Roman', 'Times', 'serif'],
-				'body': ['Times New Roman', 'Times', 'serif'],
-				'sans': ['Times New Roman', 'Times', 'Inter', 'system-ui', 'serif'],
+				'heading': ['OmniglotFont', 'Inter', 'sans-serif'],
+				'body': ['OmniglotFont', 'Inter', 'sans-serif'],
+				'sans': ['OmniglotFont', 'Inter', 'system-ui', 'sans-serif'],
 			},
 			colors: {
 				// MSC Brand Colors

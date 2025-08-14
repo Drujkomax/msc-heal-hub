@@ -2,20 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Times New Roman Fonts */
+/* OmniglotFont */
 @font-face {
-  font-family: 'Times New Roman';
-  src: url('/fonts/timesnewromanpsmt.ttf') format('truetype');
+  font-family: 'OmniglotFont';
+  src: url('/fonts/OmniglotFont.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Times New Roman';
-  src: url('/fonts/timesnewromanps_italicmt.ttf') format('truetype');
-  font-weight: normal;
-  font-style: italic;
   font-display: swap;
 }
 
@@ -124,21 +116,21 @@
 
   body {
     @apply bg-background text-foreground font-sans;
-    font-family: 'Times New Roman', 'Times', serif;
+    font-family: 'OmniglotFont', 'Inter', sans-serif;
   }
   
   /* Typography - MSC Brand Fonts */
   .font-heading {
-    font-family: 'Times New Roman', 'Times', serif;
+    font-family: 'OmniglotFont', 'Inter', sans-serif;
   }
   
   .font-body {
-    font-family: 'Times New Roman', 'Times', serif;
+    font-family: 'OmniglotFont', 'Inter', sans-serif;
   }
   
-  /* Apply Times New Roman to all headings */
+  /* Apply OmniglotFont to all headings */
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Times New Roman', 'Times', serif;
+    font-family: 'OmniglotFont', 'Inter', sans-serif;
   }
   
   /* MSC Hexagon Pattern & Animations */
