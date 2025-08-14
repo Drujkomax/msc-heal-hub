@@ -160,6 +160,15 @@ const Footer = ({ language }: FooterProps) => {
                  language === 'en' ? 'Terms of Use' : 
                  'Foydalanish shartlari'}
               </a>
+              <a 
+                href="/Каталог (1).pdf" 
+                download
+                className="text-white/60 hover:text-msc-accent transition-colors"
+              >
+                {language === 'ru' ? 'Каталог MSC' : 
+                 language === 'en' ? 'MSC Catalog' : 
+                 'MSC Katalogi'}
+              </a>
             </div>
           </div>
         </div>
