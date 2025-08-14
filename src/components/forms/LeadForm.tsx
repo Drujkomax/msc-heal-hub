@@ -7,24 +7,27 @@ import { useToast } from '@/hooks/use-toast';
 import { useLeads } from '@/hooks/useLeads';
 import { formatUzbekPhoneNumber, validateUzbekPhoneNumber, getFullUzbekPhoneNumber, isValidUzbekPhoneLength, isCompleteUzbekPhone } from '@/lib/phoneValidation';
 import { Phone, User, MessageSquare, Send, X } from 'lucide-react';
-
 interface LeadFormProps {
   language: 'ru' | 'en' | 'uz';
   onClose?: () => void;
 }
-
-const LeadForm: React.FC<LeadFormProps> = ({ language, onClose }) => {
-  const { toast } = useToast();
-  const { addLead } = useLeads();
+const LeadForm: React.FC<LeadFormProps> = ({
+  language,
+  onClose
+}) => {
+  const {
+    toast
+  } = useToast();
+  const {
+    addLead
+  } = useLeads();
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
     equipmentType: ''
   });
-
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [phoneError, setPhoneError] = useState('');
-
   const texts = {
     ru: {
       title: 'Получить консультацию',
@@ -84,31 +87,24 @@ const LeadForm: React.FC<LeadFormProps> = ({ language, onClose }) => {
       }
     }
   };
-
   const t = texts[language];
-
   const handleInputChange = (field: string, value: string) => {
     if (field === 'phone') {
       // Format and validate phone number
       if (!isValidUzbekPhoneLength(value)) return; // Prevent input beyond max length
-      
+
       const formatted = formatUzbekPhoneNumber(value);
-      setFormData(prev => ({ ...prev, [field]: formatted }));
-      
+      setFormData(prev => ({
+        ...prev,
+        [field]: formatted
+      }));
+
       // Only show error if user has entered something and it's not complete or invalid
       if (formatted.length > 0) {
         if (!isCompleteUzbekPhone(formatted)) {
-          setPhoneError(language === 'ru' 
-            ? 'Номер должен содержать 9 цифр' 
-            : language === 'en' 
-            ? 'Number must contain 9 digits' 
-            : 'Raqam 9 ta raqamdan iborat bo\'lishi kerak');
+          setPhoneError(language === 'ru' ? 'Номер должен содержать 9 цифр' : language === 'en' ? 'Number must contain 9 digits' : 'Raqam 9 ta raqamdan iborat bo\'lishi kerak');
         } else if (!validateUzbekPhoneNumber(formatted)) {
-          setPhoneError(language === 'ru' 
-            ? 'Неверный формат номера' 
-            : language === 'en' 
-            ? 'Invalid phone format' 
-            : 'Noto\'g\'ri telefon formati');
+          setPhoneError(language === 'ru' ? 'Неверный формат номера' : language === 'en' ? 'Invalid phone format' : 'Noto\'g\'ri telefon formati');
         } else {
           setPhoneError('');
         }
@@ -116,25 +112,21 @@ const LeadForm: React.FC<LeadFormProps> = ({ language, onClose }) => {
         setPhoneError('');
       }
     } else {
-      setFormData(prev => ({ ...prev, [field]: value }));
+      setFormData(prev => ({
+        ...prev,
+        [field]: value
+      }));
     }
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validate phone number before submission
     if (formData.phone && (!isCompleteUzbekPhone(formData.phone) || !validateUzbekPhoneNumber(formData.phone))) {
-      setPhoneError(language === 'ru' 
-        ? 'Введите корректный узбекский номер' 
-        : language === 'en' 
-        ? 'Enter a valid Uzbek number' 
-        : 'To\'g\'ri O\'zbek raqamini kiriting');
+      setPhoneError(language === 'ru' ? 'Введите корректный узбекский номер' : language === 'en' ? 'Enter a valid Uzbek number' : 'To\'g\'ri O\'zbek raqamini kiriting');
       return;
     }
-
     setIsSubmitting(true);
-
     try {
       await addLead({
         name: formData.name,
@@ -143,48 +135,32 @@ const LeadForm: React.FC<LeadFormProps> = ({ language, onClose }) => {
         source: 'website_form',
         stage: 'new'
       });
-      
       toast({
         title: language === 'ru' ? 'Заявка отправлена!' : language === 'en' ? 'Request sent!' : 'Ariza jo\'natildi!',
-        description: language === 'ru' 
-          ? 'Мы свяжемся с вами в ближайшее время' 
-          : language === 'en' 
-          ? 'We will contact you soon' 
-          : 'Tez orada siz bilan bog\'lanamiz',
+        description: language === 'ru' ? 'Мы свяжемся с вами в ближайшее время' : language === 'en' ? 'We will contact you soon' : 'Tez orada siz bilan bog\'lanamiz'
       });
-
       setFormData({
         name: '',
         phone: '',
         equipmentType: ''
       });
       setPhoneError('');
-
       if (onClose) onClose();
     } catch (error) {
       toast({
         title: language === 'ru' ? 'Ошибка!' : language === 'en' ? 'Error!' : 'Xatolik!',
-        description: language === 'ru' 
-          ? 'Не удалось отправить заявку' 
-          : language === 'en' 
-          ? 'Failed to send request' 
-          : 'Arizani jo\'natib bo\'lmadi',
-        variant: 'destructive',
+        description: language === 'ru' ? 'Не удалось отправить заявку' : language === 'en' ? 'Failed to send request' : 'Arizani jo\'natib bo\'lmadi',
+        variant: 'destructive'
       });
     } finally {
       setIsSubmitting(false);
     }
   };
-
-  return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+  return <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl animate-in slide-in-from-bottom-4">
         {/* Header */}
         <div className="relative bg-gradient-to-r from-msc-primary to-msc-accent text-white p-6 rounded-t-2xl">
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 text-white/80 hover:text-white transition-colors"
-          >
+          <button onClick={onClose} className="absolute top-4 right-4 text-white/80 hover:text-white transition-colors">
             <X className="w-6 h-6" />
           </button>
           
@@ -193,7 +169,7 @@ const LeadForm: React.FC<LeadFormProps> = ({ language, onClose }) => {
               <MessageSquare className="w-6 h-6" />
               {t.title}
             </h2>
-            <p className="text-white/90 text-sm">{t.subtitle}</p>
+            
             <p className="text-white/80 text-xs mt-1">{t.description}</p>
           </div>
         </div>
@@ -221,14 +197,7 @@ const LeadForm: React.FC<LeadFormProps> = ({ language, onClose }) => {
                 <User className="w-4 h-4" />
                 {t.name} *
               </Label>
-              <Input
-                id="name"
-                value={formData.name}
-                onChange={(e) => handleInputChange('name', e.target.value)}
-                required
-                className="border-msc-primary/20 focus:border-msc-accent transition-all duration-200 h-11"
-                placeholder={t.name}
-              />
+              <Input id="name" value={formData.name} onChange={e => handleInputChange('name', e.target.value)} required className="border-msc-primary/20 focus:border-msc-accent transition-all duration-200 h-11" placeholder={t.name} />
             </div>
 
             {/* Phone */}
@@ -243,62 +212,39 @@ const LeadForm: React.FC<LeadFormProps> = ({ language, onClose }) => {
                   <span className="text-msc-text font-medium">+998</span>
                   <div className="w-px h-4 bg-msc-primary/20 mx-1"></div>
                 </div>
-                <Input
-                  id="phone"
-                  type="tel"
-                  value={formData.phone}
-                  onChange={(e) => handleInputChange('phone', e.target.value)}
-                  required
-                  className={`border-msc-primary/20 focus:border-msc-accent transition-all duration-200 pl-24 h-11 ${phoneError ? 'border-red-500' : ''}`}
-                  placeholder="XX XXX XX XX"
-                  maxLength={12}
-                />
-                {phoneError && (
-                  <p className="text-red-500 text-xs mt-1 animate-in slide-in-from-top-1 duration-200">
+                <Input id="phone" type="tel" value={formData.phone} onChange={e => handleInputChange('phone', e.target.value)} required className={`border-msc-primary/20 focus:border-msc-accent transition-all duration-200 pl-24 h-11 ${phoneError ? 'border-red-500' : ''}`} placeholder="XX XXX XX XX" maxLength={12} />
+                {phoneError && <p className="text-red-500 text-xs mt-1 animate-in slide-in-from-top-1 duration-200">
                     {phoneError}
-                  </p>
-                )}
+                  </p>}
               </div>
             </div>
 
             {/* Equipment Type */}
             <div className="space-y-1">
               <Label className="text-msc-text font-medium">{t.equipmentType} *</Label>
-              <Select value={formData.equipmentType} onValueChange={(value) => handleInputChange('equipmentType', value)} required>
+              <Select value={formData.equipmentType} onValueChange={value => handleInputChange('equipmentType', value)} required>
                 <SelectTrigger className="border-msc-primary/20 focus:border-msc-accent h-11 transition-all duration-200">
                   <SelectValue placeholder={t.equipmentType} />
                 </SelectTrigger>
                 <SelectContent>
-                  {Object.entries(t.equipmentTypes).map(([key, value]) => (
-                    <SelectItem key={key} value={key}>{value}</SelectItem>
-                  ))}
+                  {Object.entries(t.equipmentTypes).map(([key, value]) => <SelectItem key={key} value={key}>{value}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
 
             {/* Submit Button */}
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full bg-gradient-to-r from-msc-primary to-msc-accent hover:from-msc-primary/90 hover:to-msc-accent/90 text-white font-semibold py-5 text-lg transition-all duration-300 shadow-lg mt-4"
-            >
-              {isSubmitting ? (
-                <div className="flex items-center gap-2">
+            <Button type="submit" disabled={isSubmitting} className="w-full bg-gradient-to-r from-msc-primary to-msc-accent hover:from-msc-primary/90 hover:to-msc-accent/90 text-white font-semibold py-5 text-lg transition-all duration-300 shadow-lg mt-4">
+              {isSubmitting ? <div className="flex items-center gap-2">
                   <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   {language === 'ru' ? 'Отправка...' : language === 'en' ? 'Sending...' : 'Jo\'natilmoqda...'}
-                </div>
-              ) : (
-                <div className="flex items-center gap-2">
+                </div> : <div className="flex items-center gap-2">
                   <Send className="w-5 h-5" />
                   {t.submit}
-                </div>
-              )}
+                </div>}
             </Button>
           </form>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default LeadForm;
