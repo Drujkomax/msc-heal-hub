@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/hooks/use-toast';
 import { useLeads } from '@/hooks/useLeads';
 import { formatUzbekPhoneNumber, validateUzbekPhoneNumber, getFullUzbekPhoneNumber, isValidUzbekPhoneLength, isCompleteUzbekPhone } from '@/lib/phoneValidation';
-import { Phone, User, MessageSquare, Send, X } from 'lucide-react';
+import { Phone, User, MessageSquare, Send, X, Settings } from 'lucide-react';
 interface LeadFormProps {
   language: 'ru' | 'en' | 'uz';
   onClose?: () => void;
@@ -221,7 +221,10 @@ const LeadForm: React.FC<LeadFormProps> = ({
 
             {/* Equipment Type */}
             <div className="space-y-1">
-              <Label className="text-msc-text font-medium">{t.equipmentType} *</Label>
+              <Label className="flex items-center gap-2 text-msc-text font-medium">
+                <Settings className="w-4 h-4" />
+                {t.equipmentType} *
+              </Label>
               <Select value={formData.equipmentType} onValueChange={value => handleInputChange('equipmentType', value)} required>
                 <SelectTrigger className="border-msc-primary/20 focus:border-msc-accent h-11 transition-all duration-200">
                   <SelectValue placeholder={t.equipmentType} />
