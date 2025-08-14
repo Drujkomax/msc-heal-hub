@@ -208,7 +208,7 @@ const Leads = () => {
                   )}
                   <div className="flex items-center text-xs md:text-sm text-muted-foreground">
                     <Calendar className="w-3 h-3 md:w-4 md:h-4 mr-2" />
-                    <span>Создан: {new Date(lead.created_at).toLocaleDateString('ru-RU')}</span>
+                    <span>Создан: {new Date(lead.created_at).toLocaleDateString('ru-RU')} в {new Date(lead.created_at).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}</span>
                   </div>
                   
                   {lead.notes && (
