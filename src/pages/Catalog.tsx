@@ -5,164 +5,38 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Filter, Heart, Eye } from "lucide-react";
-import ultrasoundImage from "@/assets/ultrasound-machine.jpg";
+import { Search, Filter, Heart, Eye, Loader2 } from "lucide-react";
+import { useProducts } from '@/hooks/useProducts';
 
 interface CatalogProps {
   language: 'ru' | 'en' | 'uz';
 }
 
-interface Product {
-  id: number;
-  name: { ru: string; en: string; uz: string };
-  description: { ru: string; en: string; uz: string };
-  category: string;
-  price: string;
-  image: string;
-  features: { ru: string[]; en: string[]; uz: string[] };
-  inStock: boolean;
-}
-
-const products: Product[] = [
-  {
-    id: 1,
-    name: { 
-      ru: "Цифровой рентген-аппарат DR-X1", 
-      en: "Digital X-Ray System DR-X1", 
-      uz: "Raqamli rentgen apparati DR-X1" 
-    },
-    description: { 
-      ru: "Современная цифровая рентгенография с высоким разрешением", 
-      en: "Modern digital radiography with high resolution", 
-      uz: "Yuqori aniqlikdagi zamonaviy raqamli rentgenografiya" 
-    },
-    category: "diagnostic",
-    price: "от 2 500 000 ₽",
-    image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=300&fit=crop",
-    features: {
-      ru: ["Высокое качество изображения", "Низкая доза излучения", "Быстрая обработка"],
-      en: ["High image quality", "Low radiation dose", "Fast processing"],
-      uz: ["Yuqori surat sifati", "Past radiatsiya dozasi", "Tez ishlov berish"]
-    },
-    inStock: true
-  },
-  {
-    id: 2,
-    name: { 
-      ru: "УЗИ-сканер ProScan 3000", 
-      en: "Ultrasound Scanner ProScan 3000", 
-      uz: "UZI skaneri ProScan 3000" 
-    },
-    description: { 
-      ru: "Профессиональный ультразвуковой сканер для всех видов исследований", 
-      en: "Professional ultrasound scanner for all types of examinations", 
-      uz: "Barcha turdagi tekshiruvlar uchun professional ultratovush skaneri" 
-    },
-    category: "diagnostic",
-    price: "от 1 800 000 ₽",
-    image: ultrasoundImage,
-    features: {
-      ru: ["4D визуализация", "Допплеровское исследование", "Портативность"],
-      en: ["4D visualization", "Doppler examination", "Portability"],
-      uz: ["4D vizualizatsiya", "Doppler tekshiruvi", "Ko'chma"]
-    },
-    inStock: true
-  },
-  {
-    id: 3,
-    name: { 
-      ru: "Хирургический стол OT-2000", 
-      en: "Surgical Table OT-2000", 
-      uz: "Jarrohlik stoli OT-2000" 
-    },
-    description: { 
-      ru: "Многофункциональный операционный стол с электрическим приводом", 
-      en: "Multifunctional operating table with electric drive", 
-      uz: "Elektr haydovchili ko'p funksiyali operatsiya stoli" 
-    },
-    category: "surgical",
-    price: "от 950 000 ₽",
-    image: "https://images.unsplash.com/photo-1551190822-a9333d879b1f?w=400&h=300&fit=crop",
-    features: {
-      ru: ["Электрическая регулировка", "Рентгенопрозрачность", "Простота управления"],
-      en: ["Electric adjustment", "Radiolucent", "Easy control"],
-      uz: ["Elektr sozlash", "Rentgen o'tkazuvchan", "Oson boshqarish"]
-    },
-    inStock: true
-  },
-  {
-    id: 4,
-    name: { 
-      ru: "Анестезиологическая станция AS-500", 
-      en: "Anesthesia Station AS-500", 
-      uz: "Anesteziologik stansiya AS-500" 
-    },
-    description: { 
-      ru: "Современная анестезиологическая станция с мониторингом", 
-      en: "Modern anesthesia station with monitoring", 
-      uz: "Monitoring bilan zamonaviy anesteziologik stansiya" 
-    },
-    category: "surgical",
-    price: "от 3 200 000 ₽",
-    image: "https://images.unsplash.com/photo-1530497610245-94d3c16cda28?w=400&h=300&fit=crop",
-    features: {
-      ru: ["Точное дозирование", "Мониторинг пациента", "Сенсорный экран"],
-      en: ["Precise dosing", "Patient monitoring", "Touch screen"],
-      uz: ["Aniq dozalash", "Bemor monitoringi", "Sensorli ekran"]
-    },
-    inStock: false
-  },
-  {
-    id: 5,
-    name: { 
-      ru: "Электрокардиограф ECG-12", 
-      en: "Electrocardiograph ECG-12", 
-      uz: "Elektrokardiograf ECG-12" 
-    },
-    description: { 
-      ru: "12-канальный ЭКГ с автоматической интерпретацией", 
-      en: "12-channel ECG with automatic interpretation", 
-      uz: "Avtomatik talqin bilan 12 kanalli EKG" 
-    },
-    category: "monitoring",
-    price: "от 280 000 ₽",
-    image: "https://images.unsplash.com/photo-1559757175-0eb30cd8c063?w=400&h=300&fit=crop",
-    features: {
-      ru: ["12 отведений", "Автоматический анализ", "Печать отчетов"],
-      en: ["12 leads", "Automatic analysis", "Report printing"],
-      uz: ["12 ta o'tkazgich", "Avtomatik tahlil", "Hisobot chop etish"]
-    },
-    inStock: true
-  },
-  {
-    id: 6,
-    name: { 
-      ru: "Реанимационная кровать ICU-Pro", 
-      en: "ICU Bed ICU-Pro", 
-      uz: "Reanimatsiya karavoti ICU-Pro" 
-    },
-    description: { 
-      ru: "Функциональная кровать для отделения интенсивной терапии", 
-      en: "Functional bed for intensive care unit", 
-      uz: "Intensiv terapiya bo'limi uchun funktsional karават" 
-    },
-    category: "furniture",
-    price: "от 420 000 ₽",
-    image: "https://images.unsplash.com/photo-1504813184591-01572f98c85f?w=400&h=300&fit=crop",
-    features: {
-      ru: ["Электрические приводы", "Весы встроенные", "Боковые ограждения"],
-      en: ["Electric drives", "Built-in scales", "Side rails"],
-      uz: ["Elektr haydovchilar", "O'rnatilgan tarozilar", "Yon panjaralar"]
-    },
-    inStock: true
-  }
-];
+// Categories with tags for equipment
+const getCategoryTag = (category: string, language: 'ru' | 'en' | 'uz') => {
+  const categoryTags = {
+    diagnostic: { ru: 'Диагностическое', en: 'Diagnostic', uz: 'Diagnostika' },
+    surgical: { ru: 'Хирургическое', en: 'Surgical', uz: 'Jarrohlik' },
+    monitoring: { ru: 'Мониторинг', en: 'Monitoring', uz: 'Monitoring' },
+    laboratory: { ru: 'Лабораторное', en: 'Laboratory', uz: 'Laboratoriya' },
+    rehabilitation: { ru: 'Реабилитационное', en: 'Rehabilitation', uz: 'Reabilitatsiya' },
+    dental: { ru: 'Стоматологическое', en: 'Dental', uz: 'Stomatologiya' },
+    ophthalmology: { ru: 'Офтальмологическое', en: 'Ophthalmology', uz: 'Oftalmologiya' },
+    furniture: { ru: 'Медицинская мебель', en: 'Medical Furniture', uz: 'Tibbiy mebel' }
+  };
+  
+  return categoryTags[category as keyof typeof categoryTags]?.[language] || category;
+};
 
 const categories = {
   all: { ru: "Все категории", en: "All categories", uz: "Barcha kategoriyalar" },
   diagnostic: { ru: "Диагностическое оборудование", en: "Diagnostic Equipment", uz: "Diagnostika uskunalari" },
   surgical: { ru: "Хирургическое оборудование", en: "Surgical Equipment", uz: "Jarrohlik uskunalari" },
   monitoring: { ru: "Мониторинг", en: "Monitoring", uz: "Monitoring" },
+  laboratory: { ru: "Лабораторное оборудование", en: "Laboratory Equipment", uz: "Laboratoriya uskunalari" },
+  rehabilitation: { ru: "Реабилитационное оборудование", en: "Rehabilitation Equipment", uz: "Reabilitatsiya uskunalari" },
+  dental: { ru: "Стоматологическое оборудование", en: "Dental Equipment", uz: "Stomatologiya uskunalari" },
+  ophthalmology: { ru: "Офтальмологическое оборудование", en: "Ophthalmology Equipment", uz: "Oftalmologiya uskunalari" },
   furniture: { ru: "Медицинская мебель", en: "Medical Furniture", uz: "Tibbiy mebel" }
 };
 
@@ -183,7 +57,9 @@ const Catalog = ({ language }: CatalogProps) => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [favorites, setFavorites] = useState<number[]>([]);
+  const [favorites, setFavorites] = useState<string[]>([]);
+  
+  const { products, loading, error } = useProducts();
 
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name[language].toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -192,13 +68,35 @@ const Catalog = ({ language }: CatalogProps) => {
     return matchesSearch && matchesCategory;
   });
 
-  const toggleFavorite = (productId: number) => {
+  const toggleFavorite = (productId: string) => {
     setFavorites(prev => 
       prev.includes(productId) 
         ? prev.filter(id => id !== productId)
         : [...prev, productId]
     );
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 flex items-center justify-center">
+        <div className="flex items-center space-x-2">
+          <Loader2 className="h-8 w-8 animate-spin" />
+          <span className="text-lg">Загружаем каталог...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-destructive mb-2">Ошибка загрузки</h2>
+          <p className="text-muted-foreground">{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
@@ -252,7 +150,7 @@ const Catalog = ({ language }: CatalogProps) => {
               <Card key={product.id} className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
                 <div className="relative overflow-hidden rounded-t-lg">
                   <img
-                    src={product.image}
+                    src={product.image || '/placeholder.svg'}
                     alt={product.name[language]}
                     className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                   />
@@ -268,9 +166,12 @@ const Catalog = ({ language }: CatalogProps) => {
                       />
                     </Button>
                   </div>
-                  <div className="absolute top-4 left-4">
-                    <Badge variant={product.inStock ? "default" : "secondary"}>
-                      {product.inStock ? translations.inStock[language] : translations.outOfStock[language]}
+                  <div className="absolute top-4 left-4 flex gap-2">
+                    <Badge variant={product.in_stock ? "default" : "secondary"}>
+                      {product.in_stock ? translations.inStock[language] : translations.outOfStock[language]}
+                    </Badge>
+                    <Badge variant="outline">
+                      {getCategoryTag(product.category, language)}
                     </Badge>
                   </div>
                 </div>
@@ -278,21 +179,22 @@ const Catalog = ({ language }: CatalogProps) => {
                 <CardHeader>
                   <CardTitle className="text-lg">{product.name[language]}</CardTitle>
                   <CardDescription>{product.description[language]}</CardDescription>
-                  <div className="text-xl font-bold text-primary">{product.price}</div>
                 </CardHeader>
                 
                 <CardContent>
-                  <div className="mb-4">
-                    <h4 className="font-medium mb-2">{translations.features[language]}:</h4>
-                    <ul className="text-sm text-muted-foreground space-y-1">
-                      {product.features[language].map((feature, index) => (
-                        <li key={index} className="flex items-center">
-                          <span className="w-1.5 h-1.5 bg-primary rounded-full mr-2"></span>
-                          {feature}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                  {product.features && product.features[language] && product.features[language].length > 0 && (
+                    <div className="mb-4">
+                      <h4 className="font-medium mb-2">{translations.features[language]}:</h4>
+                      <ul className="text-sm text-muted-foreground space-y-1">
+                        {product.features[language].map((feature, index) => (
+                          <li key={index} className="flex items-center">
+                            <span className="w-1.5 h-1.5 bg-primary rounded-full mr-2"></span>
+                            {feature}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                   
                   <div className="flex gap-2">
                     <Button 

@@ -6,52 +6,34 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { 
   Search, 
-  Plus, 
   Edit,
   Trash2,
   Eye,
-  Package
+  Package,
+  Loader2
 } from 'lucide-react';
+import { useAdminProducts } from '@/hooks/useProducts';
+import { AddProductDialog } from '../components/AddProductDialog';
 
-// Моковые данные товаров
-const mockProducts = [
-  {
-    id: 1,
-    name: 'УЗИ аппарат Mindray DC-40',
-    category: 'Диагностическое оборудование',
-    description: 'Современный ультразвуковой аппарат с высокой четкостью изображения',
-    image: '/placeholder.svg',
-    status: 'active'
-  },
-  {
-    id: 2,
-    name: 'Рентген система Samsung XGEO GR40',
-    category: 'Рентгенология',
-    description: 'Цифровая рентгеновская система нового поколения',
-    image: '/placeholder.svg',
-    status: 'active'
-  },
-  {
-    id: 3,
-    name: 'Лабораторный анализатор Sysmex',
-    category: 'Лабораторное оборудование',
-    description: 'Автоматический анализатор крови',
-    image: '/placeholder.svg',
-    status: 'draft'
-  },
-  {
-    id: 4,
-    name: 'МРТ система Siemens',
-    category: 'Томография',
-    description: 'Магнитно-резонансная томография высокого разрешения',
-    image: '/placeholder.svg',
-    status: 'active'
-  }
-];
+const getCategoryLabel = (category: string) => {
+  const categoryLabels = {
+    diagnostic: 'Диагностическое',
+    surgical: 'Хирургическое',
+    monitoring: 'Мониторинг',
+    laboratory: 'Лабораторное',
+    rehabilitation: 'Реабилитационное',
+    dental: 'Стоматологическое',
+    ophthalmology: 'Офтальмологическое',
+    furniture: 'Медицинская мебель'
+  };
+  
+  return categoryLabels[category as keyof typeof categoryLabels] || category;
+};
 
 const AdminProducts = () => {
   const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
+  const { products, loading, error } = useAdminProducts();
 
   const getStatusBadge = (status: string) => {
     const variants = {
@@ -73,10 +55,32 @@ const AdminProducts = () => {
     );
   };
 
-  const filteredProducts = mockProducts.filter(product =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    product.category.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredProducts = products.filter(product =>
+    product.name.ru.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    product.name.en.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    product.name.uz.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    getCategoryLabel(product.category).toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="flex items-center space-x-2">
+          <Loader2 className="h-8 w-8 animate-spin" />
+          <span className="text-lg">Загружаем товары...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-16">
+        <h2 className="text-2xl font-bold text-destructive mb-2">Ошибка загрузки</h2>
+        <p className="text-muted-foreground">{error}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -86,10 +90,7 @@ const AdminProducts = () => {
           <h2 className="text-3xl font-bold">{t('products.title')}</h2>
           <p className="text-muted-foreground">{t('products.subtitle')}</p>
         </div>
-        <Button>
-          <Plus className="w-4 h-4 mr-2" />
-          {t('products.addProduct')}
-        </Button>
+        <AddProductDialog />
       </div>
 
       {/* Statistics */}
@@ -100,7 +101,7 @@ const AdminProducts = () => {
               <Package className="w-8 h-8 text-blue-600" />
               <div>
                 <p className="text-sm text-muted-foreground">Всего товаров</p>
-                <p className="text-2xl font-bold">{mockProducts.length}</p>
+                <p className="text-2xl font-bold">{products.length}</p>
               </div>
             </div>
           </CardContent>
@@ -113,7 +114,7 @@ const AdminProducts = () => {
               <div>
                 <p className="text-sm text-muted-foreground">Активные</p>
                 <p className="text-2xl font-bold">
-                  {mockProducts.filter(p => p.status === 'active').length}
+                  {products.filter(p => p.status === 'active').length}
                 </p>
               </div>
             </div>
@@ -127,7 +128,7 @@ const AdminProducts = () => {
               <div>
                 <p className="text-sm text-muted-foreground">Черновики</p>
                 <p className="text-2xl font-bold">
-                  {mockProducts.filter(p => p.status === 'draft').length}
+                  {products.filter(p => p.status === 'draft').length}
                 </p>
               </div>
             </div>
@@ -164,16 +165,21 @@ const AdminProducts = () => {
               </div>
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <CardTitle className="text-lg">{product.name}</CardTitle>
-                  <p className="text-sm text-muted-foreground mt-1">{product.category}</p>
+                  <CardTitle className="text-lg">{product.name.ru}</CardTitle>
+                  <p className="text-sm text-muted-foreground mt-1">{getCategoryLabel(product.category)}</p>
                 </div>
-                {getStatusBadge(product.status)}
+                <div className="flex flex-col gap-1">
+                  {getStatusBadge(product.status)}
+                  <Badge variant="outline" className="text-xs">
+                    {getCategoryLabel(product.category)}
+                  </Badge>
+                </div>
               </div>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
                 <p className="text-sm text-muted-foreground line-clamp-2">
-                  {product.description}
+                  {product.description.ru}
                 </p>
                 
                 <div className="flex space-x-2 pt-2">
