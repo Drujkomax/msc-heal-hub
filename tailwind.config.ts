@@ -19,9 +19,9 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				'heading': ['Cinzel Decorative', 'serif'],
-				'body': ['Cinzel Decorative', 'sans-serif'],
-				'sans': ['Cinzel Decorative', 'Inter', 'system-ui', 'sans-serif'],
+				'heading': ['Times New Roman', 'Times', 'serif'],
+				'body': ['Times New Roman', 'Times', 'serif'],
+				'sans': ['Times New Roman', 'Times', 'Inter', 'system-ui', 'serif'],
 			},
 			colors: {
 				// MSC Brand Colors
