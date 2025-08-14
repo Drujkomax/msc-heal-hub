@@ -102,7 +102,7 @@ export type Database = {
           description: Json
           features: Json | null
           id: string
-          image: string | null
+          images: Json | null
           in_stock: boolean
           name: Json
           status: string
@@ -116,7 +116,7 @@ export type Database = {
           description: Json
           features?: Json | null
           id?: string
-          image?: string | null
+          images?: Json | null
           in_stock?: boolean
           name: Json
           status?: string
@@ -130,7 +130,7 @@ export type Database = {
           description?: Json
           features?: Json | null
           id?: string
-          image?: string | null
+          images?: Json | null
           in_stock?: boolean
           name?: Json
           status?: string

@@ -150,9 +150,9 @@ const Catalog = ({ language }: CatalogProps) => {
             {filteredProducts.map((product) => (
               <Card key={product.id} className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
                 <div className="relative overflow-hidden rounded-t-lg">
-                  {product.image ? (
+                  {product.images?.cover ? (
                     <img
-                      src={product.image}
+                      src={product.images.cover}
                       alt={product.name[language]}
                       className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                       onError={(e) => {

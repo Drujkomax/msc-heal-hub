@@ -162,8 +162,16 @@ const AdminProducts = () => {
         {filteredProducts.map((product) => (
           <Card key={product.id} className="hover:shadow-md transition-shadow">
             <CardHeader className="pb-4">
-              <div className="aspect-video w-full bg-gray-100 rounded-md mb-4 flex items-center justify-center">
-                <Package className="w-12 h-12 text-gray-400" />
+              <div className="aspect-video w-full bg-gray-100 rounded-md mb-4 flex items-center justify-center overflow-hidden">
+                {product.images?.cover ? (
+                  <img 
+                    src={product.images.cover} 
+                    alt={product.name.ru}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <Package className="w-12 h-12 text-gray-400" />
+                )}
               </div>
               <div className="flex items-start justify-between">
                 <div className="flex-1">
