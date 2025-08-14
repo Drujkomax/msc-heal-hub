@@ -13,7 +13,7 @@ const Footer = ({ language }: FooterProps) => {
       quickLinks: 'Быстрые ссылки',
       contacts: 'Контакты',
       services: 'Услуги',
-      address: 'г. Ташкент, Узбекистан',
+      address: 'г. Ташкент, Мирзо Улугбекский р-н, ул. Асака, 32',
       rights: 'Все права защищены',
       links: [
         { name: 'Каталог', href: '/catalog' },
@@ -34,7 +34,7 @@ const Footer = ({ language }: FooterProps) => {
       quickLinks: 'Quick Links',
       contacts: 'Contacts',
       services: 'Services',
-      address: 'Tashkent, Uzbekistan',
+      address: 'Tashkent, Mirzo Ulugbek district, Asaka street, 32',
       rights: 'All rights reserved',
       links: [
         { name: 'Catalog', href: '/catalog' },
@@ -55,7 +55,7 @@ const Footer = ({ language }: FooterProps) => {
       quickLinks: 'Tezkor havolalar',
       contacts: 'Aloqa',
       services: 'Xizmatlar',
-      address: 'Toshkent, O\'zbekiston',
+      address: 'Toshkent sh., Mirzo Ulug\'bek tumani, Asaka ko\'chasi, 32',
       rights: 'Barcha huquqlar himoyalangan',
       links: [
         { name: 'Katalog', href: '/catalog' },
