@@ -232,7 +232,7 @@ const QuoteRequestForm: React.FC<QuoteRequestFormProps> = ({
               <div className="text-center">
                 <h3 className="text-sm font-semibold text-msc-text flex items-center justify-center gap-2">
                   <span className="text-lg">🎁</span>
-                  Бонусом получите статью на тему "Покупать или арендовывать оборудование?"
+                  Бонусом получите статью на тему<br />"Покупать или арендовывать оборудование?"
                 </h3>
               </div>
             </div>
