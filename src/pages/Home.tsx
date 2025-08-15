@@ -187,7 +187,7 @@ const Home = ({ language }: HomeProps) => {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Hero Content */}
-            <div className={`space-y-8 ${isVisible ? 'animate-reveal' : ''}`}>
+            <div className={`max-w-2xl space-y-8 ${isVisible ? 'animate-reveal' : ''}`}>
               <div className="space-y-4">
                 <h1 className="font-heading text-6xl lg:text-8xl font-bold leading-tight">
                   {t.hero.title.split(' ').map((word, index) => (
@@ -197,7 +197,7 @@ const Home = ({ language }: HomeProps) => {
                 <p className="text-xl lg:text-2xl text-white/90 font-medium">
                   {t.hero.subtitle}
                 </p>
-                <p className="text-lg text-white/80 max-w-xl whitespace-pre-line">
+                <p className="text-lg text-white/80 whitespace-pre-line">
                   {t.hero.description}
                 </p>
               </div>
@@ -221,7 +221,7 @@ const Home = ({ language }: HomeProps) => {
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button
                   size="lg"
-                  className="bg-msc-accent hover:bg-msc-accent/90 text-white font-semibold px-8 py-4 text-lg"
+                  className="bg-msc-accent hover:bg-msc-accent/90 text-white font-semibold px-8 py-4 text-lg flex-1 sm:flex-none sm:min-w-[240px]"
                   onClick={() => {
                     const calculatorSection = document.querySelector('#roi-calculator-section');
                     calculatorSection?.scrollIntoView({ behavior: 'smooth' });
@@ -232,7 +232,7 @@ const Home = ({ language }: HomeProps) => {
                 </Button>
                 <Button
                   size="lg"
-                  className="bg-white text-msc-primary hover:bg-white/90 font-semibold px-8 py-4 text-lg"
+                  className="bg-white text-msc-primary hover:bg-white/90 font-semibold px-8 py-4 text-lg flex-1 sm:flex-none sm:min-w-[240px]"
                   onClick={() => setShowConsultationForm(true)}
                 >
                   {language === 'ru' ? 'Получить консультацию' : language === 'en' ? 'Get Consultation' : 'Maslahat olish'}
