@@ -189,8 +189,10 @@ const Home = ({ language }: HomeProps) => {
             {/* Hero Content */}
             <div className={`space-y-8 ${isVisible ? 'animate-reveal' : ''}`}>
               <div className="space-y-4">
-                <h1 className="font-heading text-7xl lg:text-9xl font-bold leading-tight">
-                  {t.hero.title}
+                <h1 className="font-heading text-6xl lg:text-8xl font-bold leading-tight">
+                  {t.hero.title.split(' ').map((word, index) => (
+                    <span key={index} className="block">{word}</span>
+                  ))}
                 </h1>
                 <p className="text-xl lg:text-2xl text-white/90 font-medium">
                   {t.hero.subtitle}
