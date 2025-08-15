@@ -253,9 +253,6 @@ const Home = ({ language }: HomeProps) => {
                   />
                 </div>
                 
-                {/* Orbital ring */}
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 h-72 lg:w-80 lg:h-80 border border-white/30 rounded-full"></div>
-                
                 {/* Process Icons positioned evenly around the logo */}
                 
                 {/* КП - Top (0°) */}
