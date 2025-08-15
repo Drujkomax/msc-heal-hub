@@ -156,21 +156,21 @@ const Catalog = ({ language }: CatalogProps) => {
             <p className="text-xl text-muted-foreground">{translations.noProducts[language]}</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
             {filteredProducts.map((product) => (
               <Card key={product.id} className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                <div className="relative overflow-hidden rounded-t-lg">
+                <div className="relative overflow-hidden rounded-t-lg aspect-[1080/1350]">
                   {product.images?.cover ? (
                     <img
                       src={product.images.cover}
                       alt={product.name[language]}
-                      className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       onError={(e) => {
                         e.currentTarget.src = '/placeholder.svg';
                       }}
                     />
                   ) : (
-                    <div className="w-full h-48 bg-muted flex items-center justify-center">
+                    <div className="w-full h-full bg-muted flex items-center justify-center">
                       <Package className="w-16 h-16 text-muted-foreground" />
                     </div>
                   )}
