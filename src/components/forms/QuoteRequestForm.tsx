@@ -230,11 +230,9 @@ const QuoteRequestForm: React.FC<QuoteRequestFormProps> = ({
           {product && (
             <div className="bg-gradient-to-r from-msc-primary/10 to-msc-accent/10 p-3 border-b">
               <div className="text-center">
-                <h3 className="text-sm font-semibold text-msc-text">
-                  Запрос КП для:<br />
-                  <span className="text-msc-primary font-bold">
-                    {product.name[language]}
-                  </span>
+                <h3 className="text-sm font-semibold text-msc-text flex items-center justify-center gap-2">
+                  <span className="text-lg">🎁</span>
+                  Бонусом получите статью на тему "Покупать или арендовывать оборудование?"
                 </h3>
               </div>
             </div>
