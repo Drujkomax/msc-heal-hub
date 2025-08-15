@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, CheckCircle, Zap, Shield, Headphones, Globe, Stethoscope, Scissors, Heart, TestTube, Smile, Eye, FileText, Truck, Settings, GraduationCap, Wrench } from 'lucide-react';
+import { ArrowRight, CheckCircle, Zap, Shield, Headphones, Globe, Stethoscope, Scissors, Heart, TestTube, Smile, Eye, FileText, Truck, Settings, GraduationCap, Wrench, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import ROICalculator from '@/components/Calculator/ROICalculator';
@@ -256,73 +256,87 @@ const Home = ({ language }: HomeProps) => {
                 {/* Process Icons positioned around the logo */}
                 
                 {/* КП - Top */}
-                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-2">
-                  <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20 text-center min-w-[100px]">
+                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-4">
+                  <div className="text-center">
                     <div className="w-10 h-10 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto mb-2">
                       <FileText className="w-5 h-5 text-white" />
                     </div>
-                    <span className="text-white text-xs font-medium">
+                    <span className="text-white text-xs font-medium block">
                       {language === 'ru' ? 'КП' : language === 'en' ? 'Quote' : 'Taklif'}
                     </span>
                   </div>
                   {/* Connection line */}
-                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-px h-8 bg-gradient-to-b from-white/40 to-transparent"></div>
+                  <div className="absolute top-12 left-1/2 transform -translate-x-1/2 w-px h-12 bg-gradient-to-b from-white/60 to-white/20"></div>
                 </div>
                 
                 {/* Поставка - Top Right */}
-                <div className="absolute top-8 right-4 transform translate-x-2 -translate-y-2">
-                  <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20 text-center min-w-[100px]">
+                <div className="absolute top-6 right-6 transform translate-x-4 -translate-y-4">
+                  <div className="text-center">
                     <div className="w-10 h-10 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto mb-2">
                       <Truck className="w-5 h-5 text-white" />
                     </div>
-                    <span className="text-white text-xs font-medium">
+                    <span className="text-white text-xs font-medium block">
                       {language === 'ru' ? 'Поставка' : language === 'en' ? 'Supply' : 'Yetkazish'}
                     </span>
                   </div>
                   {/* Connection line */}
-                  <div className="absolute bottom-2 left-2 w-6 h-6 border-l border-b border-white/40 transform rotate-45"></div>
+                  <div className="absolute bottom-0 left-0 w-8 h-8 border-l-2 border-b-2 border-white/40 transform rotate-45 origin-bottom-left"></div>
                 </div>
                 
-                {/* Установка - Right */}
-                <div className="absolute top-1/2 right-0 transform translate-x-2 -translate-y-1/2">
-                  <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20 text-center min-w-[100px]">
+                {/* Установка - Bottom Right */}
+                <div className="absolute bottom-6 right-6 transform translate-x-4 translate-y-4">
+                  <div className="text-center">
                     <div className="w-10 h-10 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto mb-2">
                       <Settings className="w-5 h-5 text-white" />
                     </div>
-                    <span className="text-white text-xs font-medium">
+                    <span className="text-white text-xs font-medium block">
                       {language === 'ru' ? 'Установка' : language === 'en' ? 'Installation' : 'O\'rnatish'}
                     </span>
                   </div>
                   {/* Connection line */}
-                  <div className="absolute top-1/2 left-0 transform -translate-y-1/2 -translate-x-4 w-4 h-px bg-gradient-to-l from-white/40 to-transparent"></div>
+                  <div className="absolute top-0 left-0 w-8 h-8 border-l-2 border-t-2 border-white/40 transform -rotate-45 origin-top-left"></div>
                 </div>
                 
-                {/* Обучение - Bottom Right */}
-                <div className="absolute bottom-8 right-4 transform translate-x-2 translate-y-2">
-                  <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20 text-center min-w-[100px]">
+                {/* Обучение - Bottom */}
+                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-4">
+                  <div className="text-center">
                     <div className="w-10 h-10 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto mb-2">
                       <GraduationCap className="w-5 h-5 text-white" />
                     </div>
-                    <span className="text-white text-xs font-medium">
+                    <span className="text-white text-xs font-medium block">
                       {language === 'ru' ? 'Обучение' : language === 'en' ? 'Training' : 'O\'qitish'}
                     </span>
                   </div>
                   {/* Connection line */}
-                  <div className="absolute top-2 left-2 w-6 h-6 border-l border-t border-white/40 transform -rotate-45"></div>
+                  <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 w-px h-12 bg-gradient-to-t from-white/60 to-white/20"></div>
                 </div>
                 
-                {/* Сервис - Bottom */}
-                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-2">
-                  <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20 text-center min-w-[100px]">
+                {/* Сервис - Bottom Left */}
+                <div className="absolute bottom-6 left-6 transform -translate-x-4 translate-y-4">
+                  <div className="text-center">
                     <div className="w-10 h-10 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto mb-2">
                       <Wrench className="w-5 h-5 text-white" />
                     </div>
-                    <span className="text-white text-xs font-medium">
+                    <span className="text-white text-xs font-medium block">
                       {language === 'ru' ? 'Сервис' : language === 'en' ? 'Service' : 'Xizmat'}
                     </span>
                   </div>
                   {/* Connection line */}
-                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 w-px h-8 bg-gradient-to-t from-white/40 to-transparent"></div>
+                  <div className="absolute top-0 right-0 w-8 h-8 border-r-2 border-t-2 border-white/40 transform rotate-45 origin-top-right"></div>
+                </div>
+                
+                {/* Окупаемость - Top Left */}
+                <div className="absolute top-6 left-6 transform -translate-x-4 -translate-y-4">
+                  <div className="text-center">
+                    <div className="w-10 h-10 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto mb-2">
+                      <TrendingUp className="w-5 h-5 text-white" />
+                    </div>
+                    <span className="text-white text-xs font-medium block">
+                      {language === 'ru' ? 'Окупаемость' : language === 'en' ? 'ROI' : 'Rentabellik'}
+                    </span>
+                  </div>
+                  {/* Connection line */}
+                  <div className="absolute bottom-0 right-0 w-8 h-8 border-r-2 border-b-2 border-white/40 transform -rotate-45 origin-bottom-right"></div>
                 </div>
               </div>
             </div>
