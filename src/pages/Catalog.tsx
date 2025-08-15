@@ -9,6 +9,7 @@ import { Search, Filter, Heart, Eye, Loader2, Package } from "lucide-react";
 import { useProducts } from '@/hooks/useProducts';
 import { toast } from 'sonner';
 import { getCountryFlag } from '@/utils/countries';
+import QuoteRequestForm from '@/components/forms/QuoteRequestForm';
 
 interface CatalogProps {
   language: 'ru' | 'en' | 'uz';
@@ -59,6 +60,8 @@ const Catalog = ({ language }: CatalogProps) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || 'all');
   const [favorites, setFavorites] = useState<string[]>([]);
+  const [showQuoteForm, setShowQuoteForm] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
   
   const { products, loading, error } = useProducts();
 
@@ -229,8 +232,8 @@ const Catalog = ({ language }: CatalogProps) => {
                     <Button 
                       variant="outline"
                       onClick={() => {
-                        // Implement contact form or quote request
-                        toast.success('Запрос отправлен! Мы свяжемся с вами в ближайшее время.');
+                        setSelectedProduct(product);
+                        setShowQuoteForm(true);
                       }}
                     >
                       {translations.requestQuote[language]}
@@ -242,6 +245,18 @@ const Catalog = ({ language }: CatalogProps) => {
           </div>
         )}
       </div>
+
+      {/* Quote Request Form */}
+      {showQuoteForm && (
+        <QuoteRequestForm
+          language={language}
+          product={selectedProduct}
+          onClose={() => {
+            setShowQuoteForm(false);
+            setSelectedProduct(null);
+          }}
+        />
+      )}
     </div>
   );
 };
