@@ -39,7 +39,7 @@ const QuoteRequestForm: React.FC<QuoteRequestFormProps> = ({
 
   const texts = {
     ru: {
-      title: 'Запрос коммерческого предложения',
+      title: product ? `Получить КП по ${product.name.ru}` : 'Запрос коммерческого предложения',
       subtitle: 'Получите индивидуальное КП с ценами и условиями',
       description: 'Детальное КП → цены → сроки → условия доставки',
       name: 'Ваше имя',
@@ -63,7 +63,7 @@ const QuoteRequestForm: React.FC<QuoteRequestFormProps> = ({
       }
     },
     en: {
-      title: 'Commercial Proposal Request',
+      title: product ? `Get Quote for ${product.name.en}` : 'Commercial Proposal Request',
       subtitle: 'Get personalized quote with prices and terms',
       description: 'Detailed quote → prices → delivery terms → conditions',
       name: 'Your name',
@@ -87,7 +87,7 @@ const QuoteRequestForm: React.FC<QuoteRequestFormProps> = ({
       }
     },
     uz: {
-      title: 'Tijorat taklifini so\'rash',
+      title: product ? `${product.name.uz} uchun KP olish` : 'Tijorat taklifini so\'rash',
       subtitle: 'Shaxsiy narxlar va shartlar bilan taklif oling',
       description: 'Batafsil taklif → narxlar → yetkazish → shartlar',
       name: 'Ismingiz',
