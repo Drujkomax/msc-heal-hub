@@ -113,12 +113,18 @@ const Catalog = ({ language }: CatalogProps) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
       {/* Header */}
-      <div className="bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 py-16">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl font-heading font-bold text-foreground mb-4">
+      <div 
+        className="relative py-16 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: `url('/lovable-uploads/b2e18245-6dd0-4f0b-9350-278c51dd482a.png')`
+        }}
+      >
+        <div className="absolute inset-0 bg-black/50"></div>
+        <div className="container mx-auto px-4 text-center relative z-10">
+          <h1 className="text-4xl md:text-5xl font-heading font-bold text-white mb-4">
             {translations.title[language]}
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-white/90 max-w-2xl mx-auto">
             {translations.subtitle[language]}
           </p>
         </div>
