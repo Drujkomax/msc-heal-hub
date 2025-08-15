@@ -59,7 +59,7 @@ const Catalog = ({ language }: CatalogProps) => {
   const [searchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || 'all');
-  const [favorites, setFavorites] = useState<string[]>([]);
+  
   const [showQuoteForm, setShowQuoteForm] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   
@@ -80,13 +80,6 @@ const Catalog = ({ language }: CatalogProps) => {
     return matchesSearch && matchesCategory;
   });
 
-  const toggleFavorite = (productId: string) => {
-    setFavorites(prev => 
-      prev.includes(productId) 
-        ? prev.filter(id => id !== productId)
-        : [...prev, productId]
-    );
-  };
 
   if (loading) {
     return (
@@ -181,18 +174,6 @@ const Catalog = ({ language }: CatalogProps) => {
                       <Package className="w-16 h-16 text-muted-foreground" />
                     </div>
                   )}
-                  <div className="absolute top-4 right-4 flex gap-2">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="bg-background/80 backdrop-blur-sm"
-                      onClick={() => toggleFavorite(product.id)}
-                    >
-                      <Heart 
-                        className={`h-4 w-4 ${favorites.includes(product.id) ? 'fill-red-500 text-red-500' : ''}`} 
-                      />
-                    </Button>
-                  </div>
                   <div className="absolute top-4 left-4">
                     <Badge variant="default">
                       {getCategoryTag(product.category, language)}
