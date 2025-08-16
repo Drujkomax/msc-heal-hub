@@ -279,8 +279,8 @@ const Home = ({ language }: HomeProps) => {
                       >
                         <div className="text-center animate-[counter-rotate_20s_linear_infinite]">
                           <div className="relative">
-                            <div className="w-20 h-20 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto shadow-lg hover:scale-110 transition-transform">
-                              <IconComponent className="w-12 h-12 text-white" />
+                            <div className="w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto shadow-lg hover:scale-110 transition-transform">
+                              <IconComponent className="w-8 h-8 sm:w-10 sm:h-10 lg:w-14 lg:h-14 text-white" />
                             </div>
                             <span className="text-white text-sm font-medium block whitespace-nowrap absolute top-full left-1/2 transform -translate-x-1/2 mt-2">
                               {item.label}
