@@ -194,4 +194,14 @@
       opacity: 1;
     }
   }
+  
+  /* Counter-rotate animation for keeping icons upright during orbital rotation */
+  @keyframes counter-rotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(-360deg);
+    }
+  }
 }
