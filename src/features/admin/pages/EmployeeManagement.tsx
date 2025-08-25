@@ -8,14 +8,17 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import EditEmployeeModal from '@/features/admin/components/EditEmployeeModal';
+import ViewEmployeeModal from '@/features/admin/components/ViewEmployeeModal';
 import { 
   Users, 
   Plus, 
   Search, 
   UserCheck,
   Shield,
-  Settings,
-  Loader2
+  Loader2,
+  Edit,
+  Eye
 } from 'lucide-react';
 
 interface Employee {
@@ -38,6 +41,9 @@ const EmployeeManagement = () => {
     email: '',
     role: 'salesperson'
   });
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
 
   const roles = [
     { value: 'salesperson', label: 'Продавец', color: 'bg-blue-100 text-blue-800' },
@@ -128,28 +134,14 @@ const EmployeeManagement = () => {
     }
   };
 
-  const handleUpdateRole = async (employeeId: string, newRole: string) => {
-    try {
-      const { error } = await supabase
-        .from('user_roles')
-        .update({ role: newRole as 'admin' | 'salesperson' | 'sales_manager' })
-        .eq('user_id', employeeId);
+  const handleEditEmployee = (employee: Employee) => {
+    setSelectedEmployee(employee);
+    setIsEditModalOpen(true);
+  };
 
-      if (error) throw error;
-
-      toast({
-        title: 'Успешно',
-        description: 'Роль сотрудника обновлена',
-      });
-
-      fetchEmployees();
-    } catch (error: any) {
-      toast({
-        title: 'Ошибка',
-        description: error.message || 'Ошибка при обновлении роли',
-        variant: 'destructive',
-      });
-    }
+  const handleViewEmployee = (employee: Employee) => {
+    setSelectedEmployee(employee);
+    setIsViewModalOpen(true);
   };
 
   const filteredEmployees = employees.filter(employee => {
@@ -349,22 +341,26 @@ const EmployeeManagement = () => {
                         {roleInfo.label}
                       </Badge>
                       
-                      <Select 
-                        value={employee.role || ''} 
-                        onValueChange={(value) => handleUpdateRole(employee.id, value)}
-                      >
-                        <SelectTrigger className="w-[160px]">
-                          <Settings className="w-4 h-4 mr-2" />
-                          <SelectValue placeholder="Изменить роль" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-background z-50">
-                          {roles.map(role => (
-                            <SelectItem key={role.value} value={role.value}>
-                              {role.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleEditEmployee(employee)}
+                          className="flex items-center gap-1"
+                        >
+                          <Edit className="w-4 h-4" />
+                          Редактировать
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleViewEmployee(employee)}
+                          className="flex items-center gap-1"
+                        >
+                          <Eye className="w-4 h-4" />
+                          Просмотр
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </CardContent>
@@ -373,6 +369,26 @@ const EmployeeManagement = () => {
           })
         )}
       </div>
+
+      {/* Модальные окна */}
+      <EditEmployeeModal
+        employee={selectedEmployee}
+        isOpen={isEditModalOpen}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          setSelectedEmployee(null);
+        }}
+        onUpdate={fetchEmployees}
+      />
+
+      <ViewEmployeeModal
+        employee={selectedEmployee}
+        isOpen={isViewModalOpen}
+        onClose={() => {
+          setIsViewModalOpen(false);
+          setSelectedEmployee(null);
+        }}
+      />
     </div>
   );
 };

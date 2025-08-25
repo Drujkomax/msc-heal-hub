@@ -1,0 +1,299 @@
+import { useState, useEffect } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { supabase } from '@/integrations/supabase/client';
+import { 
+  Activity, 
+  Users, 
+  TrendingUp, 
+  Calendar,
+  Loader2,
+  Target,
+  FileText
+} from 'lucide-react';
+
+interface Employee {
+  id: string;
+  email: string;
+  role?: string;
+  created_at: string;
+}
+
+interface ActivityLog {
+  id: string;
+  action: string;
+  target_type?: string;
+  target_id?: string;
+  created_at: string;
+  details?: any;
+}
+
+interface EmployeeStats {
+  totalLeads: number;
+  activeLeads: number;
+  closedLeads: number;
+  conversionRate: number;
+}
+
+interface ViewEmployeeModalProps {
+  employee: Employee | null;
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const ViewEmployeeModal = ({ employee, isOpen, onClose }: ViewEmployeeModalProps) => {
+  const [loading, setLoading] = useState(false);
+  const [activityLogs, setActivityLogs] = useState<ActivityLog[]>([]);
+  const [stats, setStats] = useState<EmployeeStats>({
+    totalLeads: 0,
+    activeLeads: 0,
+    closedLeads: 0,
+    conversionRate: 0
+  });
+
+  useEffect(() => {
+    if (employee && isOpen) {
+      fetchEmployeeData();
+    }
+  }, [employee, isOpen]);
+
+  const fetchEmployeeData = async () => {
+    if (!employee) return;
+
+    setLoading(true);
+    try {
+      // Получаем логи активности
+      const { data: logs, error: logsError } = await supabase
+        .from('user_activity_logs')
+        .select('*')
+        .eq('user_id', employee.id)
+        .order('created_at', { ascending: false })
+        .limit(50);
+
+      if (logsError) {
+        console.error('Error fetching activity logs:', logsError);
+      } else {
+        setActivityLogs(logs || []);
+      }
+
+      // Получаем статистику по лидам
+      const { data: leadsData, error: leadsError } = await supabase
+        .from('leads')
+        .select('id, stage, closed_at')
+        .eq('assigned_to', employee.id);
+
+      if (leadsError) {
+        console.error('Error fetching leads:', leadsError);
+      } else {
+        const totalLeads = leadsData?.length || 0;
+        const closedLeads = leadsData?.filter(lead => lead.closed_at).length || 0;
+        const activeLeads = totalLeads - closedLeads;
+        const conversionRate = totalLeads > 0 ? (closedLeads / totalLeads) * 100 : 0;
+
+        setStats({
+          totalLeads,
+          activeLeads,
+          closedLeads,
+          conversionRate
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching employee data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getRoleLabel = (role?: string) => {
+    const roles: Record<string, string> = {
+      'salesperson': 'Продавец',
+      'sales_manager': 'Менеджер продаж',
+      'admin': 'Администратор'
+    };
+    return roles[role || ''] || 'Не назначена';
+  };
+
+  const getActionLabel = (action: string) => {
+    const actions: Record<string, string> = {
+      'login': 'Вход в систему',
+      'logout': 'Выход из системы',
+      'lead_create': 'Создание лида',
+      'lead_update': 'Обновление лида',
+      'lead_assign': 'Назначение лида',
+      'lead_close': 'Закрытие лида'
+    };
+    return actions[action] || action;
+  };
+
+  if (!employee) return null;
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="bg-background max-w-4xl max-h-[80vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <Users className="h-5 w-5" />
+            Просмотр сотрудника
+          </DialogTitle>
+        </DialogHeader>
+
+        {loading ? (
+          <div className="flex items-center justify-center py-8">
+            <Loader2 className="h-6 w-6 animate-spin mr-2" />
+            Загрузка данных...
+          </div>
+        ) : (
+          <div className="space-y-6">
+            {/* Основная информация */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Основная информация</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-muted-foreground">Email</p>
+                    <p className="font-medium">{employee.email}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Должность</p>
+                    <Badge variant="secondary">
+                      {getRoleLabel(employee.role)}
+                    </Badge>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Дата добавления</p>
+                    <p className="font-medium">
+                      {new Date(employee.created_at).toLocaleDateString('ru-RU')}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Статус</p>
+                    <Badge variant="outline" className="text-green-600 border-green-600">
+                      Активен
+                    </Badge>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Tabs defaultValue="stats" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="stats" className="flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4" />
+                  Статистика
+                </TabsTrigger>
+                <TabsTrigger value="activity" className="flex items-center gap-2">
+                  <Activity className="h-4 w-4" />
+                  История активности
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="stats" className="space-y-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <Card>
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-2">
+                        <Target className="h-5 w-5 text-blue-600" />
+                        <div>
+                          <p className="text-sm text-muted-foreground">Всего лидов</p>
+                          <p className="text-2xl font-bold">{stats.totalLeads}</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-2">
+                        <Users className="h-5 w-5 text-green-600" />
+                        <div>
+                          <p className="text-sm text-muted-foreground">Активные</p>
+                          <p className="text-2xl font-bold">{stats.activeLeads}</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-2">
+                        <TrendingUp className="h-5 w-5 text-purple-600" />
+                        <div>
+                          <p className="text-sm text-muted-foreground">Закрытые</p>
+                          <p className="text-2xl font-bold">{stats.closedLeads}</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-2">
+                        <TrendingUp className="h-5 w-5 text-orange-600" />
+                        <div>
+                          <p className="text-sm text-muted-foreground">Конверсия</p>
+                          <p className="text-2xl font-bold">{stats.conversionRate.toFixed(1)}%</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="activity" className="space-y-4">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <FileText className="h-5 w-5" />
+                      История активности
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {activityLogs.length === 0 ? (
+                      <div className="text-center py-8">
+                        <Activity className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                        <p className="text-muted-foreground">Нет записей активности</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-3 max-h-96 overflow-y-auto">
+                        {activityLogs.map((log) => (
+                          <div key={log.id} className="flex items-start gap-3 p-3 border rounded-lg">
+                            <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
+                            <div className="flex-1">
+                              <div className="flex items-center justify-between">
+                                <p className="font-medium">{getActionLabel(log.action)}</p>
+                                <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                                  <Calendar className="h-3 w-3" />
+                                  {new Date(log.created_at).toLocaleDateString('ru-RU')} {new Date(log.created_at).toLocaleTimeString('ru-RU')}
+                                </div>
+                              </div>
+                              {log.target_type && (
+                                <p className="text-sm text-muted-foreground">
+                                  Тип: {log.target_type}
+                                </p>
+                              )}
+                              {log.details && (
+                                <p className="text-sm text-muted-foreground">
+                                  {JSON.stringify(log.details)}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
+          </div>
+        )}
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+export default ViewEmployeeModal;

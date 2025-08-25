@@ -62,9 +62,7 @@ export function AdminSidebar() {
       conditionalItems.push({ name: 'Сотрудники', href: '/admin/employees', icon: Users, permission: null });
     }
 
-    if (role === 'admin' || role === 'director') {
-      conditionalItems.push({ name: 'Системные пользователи', href: '/admin/users', icon: Settings, permission: null });
-    }
+    // Убираем "Системные пользователи" - это дубль раздела "Сотрудники"
 
     return [...baseItems, ...conditionalItems];
   };
