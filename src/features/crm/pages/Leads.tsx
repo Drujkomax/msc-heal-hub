@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,6 +7,10 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { useLeads } from '@/hooks/useLeads';
+import { useUserPermissions } from '@/hooks/useUserPermissions';
+import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/integrations/supabase/client';
+import RoleBasedAccess from '@/components/auth/RoleBasedAccess';
 import { 
   Search, 
   Edit,
@@ -21,9 +25,12 @@ import {
 
 const Leads = () => {
   const { toast } = useToast();
-  const { leads, loading, deleteLead, changeLeadStage } = useLeads();
+  const { leads, loading, deleteLead, changeLeadStage, refetch } = useLeads();
+  const { hasPermission, role } = useUserPermissions();
+  const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [stageFilter, setStageFilter] = useState<string>('all');
+  const [employees, setEmployees] = useState<Array<{id: string, email: string, role: string}>>([]);
 
   const stages = {
     new: { label: 'Новый', color: 'bg-blue-500' },
@@ -35,7 +42,39 @@ const Leads = () => {
     lost: { label: 'Потерян', color: 'bg-red-500' }
   };
 
+  useEffect(() => {
+    if (hasPermission('assign_leads')) {
+      fetchEmployees();
+    }
+  }, [hasPermission]);
+
+  const fetchEmployees = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('user_roles')
+        .select('user_id, role')
+        .eq('role', 'salesperson');
+
+      if (error) throw error;
+      
+      const employeesData = data?.map(item => ({
+        id: item.user_id,
+        email: `user-${item.user_id.slice(0, 8)}@company.com`,
+        role: item.role
+      })) || [];
+      
+      setEmployees(employeesData);
+    } catch (error) {
+      console.error('Error fetching employees:', error);
+    }
+  };
+
   const filteredLeads = leads.filter(lead => {
+    // Продавцы видят только назначенных им лидов
+    if (role === 'salesperson' && lead.assigned_to !== user?.id) {
+      return false;
+    }
+
     const matchesSearch = 
       lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       lead.phone?.includes(searchTerm) ||
@@ -73,6 +112,33 @@ const Leads = () => {
       toast({
         title: 'Ошибка',
         description: 'Ошибка при обновлении статуса',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handleAssignLead = async (leadId: string, assigneeId: string) => {
+    try {
+      const { error } = await supabase
+        .from('leads')
+        .update({ 
+          assigned_to: assigneeId,
+          assigned_by: user?.id 
+        })
+        .eq('id', leadId);
+
+      if (error) throw error;
+
+      toast({
+        title: 'Успешно',
+        description: 'Лид назначен сотруднику',
+      });
+      refetch();
+    } catch (error) {
+      console.error('Error assigning lead:', error);
+      toast({
+        title: 'Ошибка',
+        description: 'Ошибка при назначении лида',
         variant: 'destructive',
       });
     }
@@ -202,28 +268,51 @@ const Leads = () => {
                     </div>
                   )}
 
-                  {/* Stage Change */}
-                  <div className="space-y-2">
-                    <Label className="text-xs font-medium">Изменить статус:</Label>
-                    <Select 
-                      value={lead.stage} 
-                      onValueChange={(value) => handleStageChange(lead.id, value)}
-                    >
-                      <SelectTrigger className="h-8 text-xs">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {Object.entries(stages).map(([stage, config]) => (
-                          <SelectItem key={stage} value={stage}>
-                            <div className="flex items-center space-x-2">
-                              <div className={`w-2 h-2 rounded-full ${config.color}`} />
-                              <span>{config.label}</span>
-                            </div>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                   {/* Stage Change */}
+                   <div className="space-y-2">
+                     <Label className="text-xs font-medium">Изменить статус:</Label>
+                     <Select 
+                       value={lead.stage} 
+                       onValueChange={(value) => handleStageChange(lead.id, value)}
+                     >
+                       <SelectTrigger className="h-8 text-xs">
+                         <SelectValue />
+                       </SelectTrigger>
+                       <SelectContent>
+                         {Object.entries(stages).map(([stage, config]) => (
+                           <SelectItem key={stage} value={stage}>
+                             <div className="flex items-center space-x-2">
+                               <div className={`w-2 h-2 rounded-full ${config.color}`} />
+                               <span>{config.label}</span>
+                             </div>
+                           </SelectItem>
+                         ))}
+                       </SelectContent>
+                     </Select>
+                   </div>
+
+                   {/* Lead Assignment */}
+                   <RoleBasedAccess permissions={['assign_leads']}>
+                     <div className="space-y-2">
+                       <Label className="text-xs font-medium">Назначить продавцу:</Label>
+                       <Select 
+                         value={lead.assigned_to || ''} 
+                         onValueChange={(value) => handleAssignLead(lead.id, value)}
+                       >
+                         <SelectTrigger className="h-8 text-xs">
+                           <SelectValue placeholder="Выберите продавца" />
+                         </SelectTrigger>
+                         <SelectContent>
+                           <SelectItem value="">Не назначен</SelectItem>
+                           {employees.map((employee) => (
+                             <SelectItem key={employee.id} value={employee.id}>
+                               {employee.email}
+                             </SelectItem>
+                           ))}
+                         </SelectContent>
+                       </Select>
+                     </div>
+                   </RoleBasedAccess>
 
                   <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 pt-2">
                     <Button variant="outline" size="sm" className="flex-1 text-xs">
@@ -234,14 +323,16 @@ const Leads = () => {
                       <Edit className="w-3 h-3 md:w-4 md:h-4 mr-1" />
                       Редактировать
                     </Button>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      onClick={() => handleDeleteLead(lead.id)}
-                      className="sm:flex-none"
-                    >
-                      <Trash2 className="w-3 h-3 md:w-4 md:h-4" />
-                    </Button>
+                     <RoleBasedAccess permissions={['manage_all_leads']}>
+                       <Button 
+                         variant="outline" 
+                         size="sm" 
+                         onClick={() => handleDeleteLead(lead.id)}
+                         className="sm:flex-none"
+                       >
+                         <Trash2 className="w-3 h-3 md:w-4 md:h-4" />
+                       </Button>
+                     </RoleBasedAccess>
                 </div>
                 </div>
               </CardContent>

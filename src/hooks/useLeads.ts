@@ -9,6 +9,7 @@ export interface Lead {
   stage: string;
   notes?: string;
   assigned_to?: string;
+  assigned_by?: string;
   created_at: string;
   updated_at: string;
   closed_at?: string;

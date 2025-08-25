@@ -10,6 +10,7 @@ import AddProduct from '../../products/pages/AddProduct';
 import EditProduct from '../../products/pages/EditProduct';
 import AdminServices from '../pages/AdminServices';
 import AdminContacts from '../pages/AdminContacts';
+import Employees from '../pages/Employees';
 
 const AdminWrapper = () => {
   const { user, loading: authLoading } = useAuth();
@@ -27,8 +28,9 @@ const AdminWrapper = () => {
     );
   }
 
-  // Если пользователь не авторизован или не админ - показываем форму входа
-  if (!user || role !== 'admin') {
+  // Если пользователь не авторизован или не имеет административных прав - показываем форму входа
+  const allowedRoles = ['admin', 'sales_manager', 'director', 'salesperson'];
+  if (!user || !allowedRoles.includes(role || '')) {
     console.log('Showing AdminAuth because:', { hasUser: !!user, role });
     return <AdminAuth />;
   }
@@ -46,6 +48,7 @@ const AdminWrapper = () => {
         <Route path="products/edit/:id" element={<EditProduct />} />
         <Route path="services" element={<AdminServices />} />
         <Route path="contacts" element={<AdminContacts />} />
+        <Route path="employees" element={<Employees />} />
       </Route>
     </Routes>
   );

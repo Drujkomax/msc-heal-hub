@@ -48,6 +48,7 @@ export type Database = {
       }
       leads: {
         Row: {
+          assigned_by: string | null
           assigned_to: string | null
           closed_at: string | null
           company: string | null
@@ -63,6 +64,7 @@ export type Database = {
           value: number | null
         }
         Insert: {
+          assigned_by?: string | null
           assigned_to?: string | null
           closed_at?: string | null
           company?: string | null
@@ -78,6 +80,7 @@ export type Database = {
           value?: number | null
         }
         Update: {
+          assigned_by?: string | null
           assigned_to?: string | null
           closed_at?: string | null
           company?: string | null
@@ -142,6 +145,42 @@ export type Database = {
         }
         Relationships: []
       }
+      user_activity_logs: {
+        Row: {
+          action: string
+          created_at: string
+          details: Json | null
+          id: string
+          ip_address: unknown | null
+          target_id: string | null
+          target_type: string | null
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          ip_address?: unknown | null
+          target_id?: string | null
+          target_type?: string | null
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          ip_address?: unknown | null
+          target_id?: string | null
+          target_type?: string | null
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string | null
@@ -168,9 +207,20 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_user_role: {
+        Args: { _user_id: string }
+        Returns: Database["public"]["Enums"]["app_role"]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      has_role_level: {
+        Args: {
+          _min_role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
         Returns: boolean

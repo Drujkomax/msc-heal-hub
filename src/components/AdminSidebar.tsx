@@ -4,6 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import LanguageSwitcher from '@/components/common/LanguageSwitcher';
 import LogoutButton from '@/components/auth/LogoutButton';
+import { useUserRole } from '@/hooks/useUserRole';
+import { useUserPermissions } from '@/hooks/useUserPermissions';
+import RoleBasedAccess from '@/components/auth/RoleBasedAccess';
 import {
   Sidebar,
   SidebarContent,
@@ -28,14 +31,37 @@ import {
 export function AdminSidebar() {
   const { t } = useTranslation();
   const location = useLocation();
-  
-  const navigation = [
-    { name: t('admin.dashboard'), href: '/admin', icon: BarChart3 },
-    { name: 'Лиды', href: '/admin/leads', icon: Users },
-    { name: t('admin.products'), href: '/admin/products', icon: ShoppingBag },
-    { name: 'Услуги', href: '/admin/services', icon: Settings },
-    { name: t('admin.contacts'), href: '/admin/contacts', icon: MessageSquare },
-  ];
+  const { role } = useUserRole();
+  const { hasPermission } = useUserPermissions();
+
+  const getNavigationItems = () => {
+    const baseItems = [
+      { name: t('admin.dashboard'), href: '/admin', icon: BarChart3, permission: null },
+      { name: 'Лиды', href: '/admin/leads', icon: Users, permission: null },
+    ];
+
+    const conditionalItems = [];
+
+    if (hasPermission('manage_products')) {
+      conditionalItems.push({ name: t('admin.products'), href: '/admin/products', icon: ShoppingBag, permission: 'manage_products' });
+    }
+
+    if (hasPermission('manage_services')) {
+      conditionalItems.push({ name: 'Услуги', href: '/admin/services', icon: Settings, permission: 'manage_services' });
+    }
+
+    if (hasPermission('manage_contacts')) {
+      conditionalItems.push({ name: t('admin.contacts'), href: '/admin/contacts', icon: MessageSquare, permission: 'manage_contacts' });
+    }
+
+    if (role === 'director') {
+      conditionalItems.push({ name: 'Сотрудники', href: '/admin/employees', icon: Users, permission: null });
+    }
+
+    return [...baseItems, ...conditionalItems];
+  };
+
+  const navigation = getNavigationItems();
 
   const isActive = (href: string) => {
     if (href === '/admin') {
@@ -93,7 +119,11 @@ export function AdminSidebar() {
           <div className="flex items-center justify-between">
             <LanguageSwitcher />
             <Badge variant="secondary" className="text-xs">
-              {t('admin.role')}
+              {role === 'director' ? 'Директор' :
+               role === 'sales_manager' ? 'Администратор' :
+               role === 'admin' ? 'Администратор' :
+               role === 'salesperson' ? 'Продавец' :
+               t('admin.role')}
             </Badge>
           </div>
           <Link to="/">
