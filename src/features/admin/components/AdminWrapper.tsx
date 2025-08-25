@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useUserRole } from '@/hooks/useUserRole';
+import RegisterWithInvite from '@/pages/RegisterWithInvite';
 import AdminAuth from './AdminAuth';
 import AdminLayout from './AdminLayout';
 import Dashboard from '../pages/Dashboard';
@@ -41,6 +42,7 @@ const AdminWrapper = () => {
   // Если авторизован и админ - показываем админскую панель
   return (
     <Routes>
+      <Route path="register/:inviteId" element={<RegisterWithInvite />} />
       <Route path="login" element={<AdminAuth />} />
       <Route path="/*" element={<AdminLayout />}>
         <Route index element={<Dashboard />} />

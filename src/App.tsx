@@ -13,6 +13,7 @@ import Services from "./pages/Services";
 import Contacts from "./pages/Contacts";
 import NotFound from "./pages/NotFound";
 import AuthPage from "./pages/Auth";
+import RegisterWithInvite from "./pages/RegisterWithInvite";
 
 // Admin Components
 import AdminWrapper from "./features/admin/components/AdminWrapper";

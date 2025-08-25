@@ -36,7 +36,6 @@ const EmployeeManagement = () => {
   const [addingEmployee, setAddingEmployee] = useState(false);
   const [newEmployee, setNewEmployee] = useState({
     email: '',
-    password: '',
     role: 'salesperson'
   });
 
@@ -86,19 +85,10 @@ const EmployeeManagement = () => {
   const handleAddEmployee = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!newEmployee.email || !newEmployee.password) {
+    if (!newEmployee.email || !newEmployee.role) {
       toast({
         title: 'Ошибка',
         description: 'Заполните все поля',
-        variant: 'destructive',
-      });
-      return;
-    }
-
-    if (newEmployee.password.length < 6) {
-      toast({
-        title: 'Ошибка',
-        description: 'Пароль должен содержать минимум 6 символов',
         variant: 'destructive',
       });
       return;
@@ -107,42 +97,30 @@ const EmployeeManagement = () => {
     setAddingEmployee(true);
     
     try {
-      // Создаем пользователя
-      const { data, error } = await supabase.auth.signUp({
-        email: newEmployee.email,
-        password: newEmployee.password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/admin/login`
-        }
+      // Создаем приглашение через нашу функцию
+      const { data, error } = await supabase.rpc('create_user_invite', {
+        invite_email: newEmployee.email,
+        invite_role: newEmployee.role as 'admin' | 'salesperson' | 'sales_manager'
       });
 
       if (error) throw error;
 
-      // Добавляем роль
-      if (data.user) {
-        const { error: roleError } = await supabase
-          .from('user_roles')
-          .insert({
-            user_id: data.user.id,
-            role: newEmployee.role as 'admin' | 'salesperson' | 'sales_manager'
-          });
-
-        if (roleError) throw roleError;
-      }
+      const inviteData = data as { invite_id: string };
 
       toast({
-        title: 'Успешно',
-        description: 'Сотрудник добавлен в систему',
+        title: 'Приглашение отправлено',
+        description: `Сотрудник может зарегистрироваться по ссылке: /admin/register/${inviteData.invite_id}`,
+        duration: 10000,
       });
 
       setIsAddEmployeeOpen(false);
-      setNewEmployee({ email: '', password: '', role: 'salesperson' });
+      setNewEmployee({ email: '', role: 'salesperson' });
       fetchEmployees();
     } catch (error: any) {
-      console.error('Error adding employee:', error);
+      console.error('Error creating invite:', error);
       toast({
         title: 'Ошибка',
-        description: error.message || 'Ошибка при добавлении сотрудника',
+        description: error.message || 'Ошибка при создании приглашения',
         variant: 'destructive',
       });
     } finally {
@@ -226,19 +204,6 @@ const EmployeeManagement = () => {
                   value={newEmployee.email}
                   onChange={(e) => setNewEmployee(prev => ({ ...prev, email: e.target.value }))}
                   placeholder="employee@medservice.uz"
-                  required
-                  disabled={addingEmployee}
-                />
-              </div>
-              <div>
-                <Label htmlFor="password">Временный пароль</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={newEmployee.password}
-                  onChange={(e) => setNewEmployee(prev => ({ ...prev, password: e.target.value }))}
-                  placeholder="Минимум 6 символов"
-                  minLength={6}
                   required
                   disabled={addingEmployee}
                 />

@@ -246,9 +246,20 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      accept_invite: {
+        Args: { invite_id: string; user_password: string }
+        Returns: Json
+      }
       archive_lead: {
         Args: { lead_id: string; user_id: string }
         Returns: undefined
+      }
+      create_user_invite: {
+        Args: {
+          invite_email: string
+          invite_role: Database["public"]["Enums"]["app_role"]
+        }
+        Returns: Json
       }
       get_user_role: {
         Args: { _user_id: string }
