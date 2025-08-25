@@ -15,6 +15,7 @@ import NotFound from "./pages/NotFound";
 import AuthPage from "./pages/Auth";
 import RegisterWithInvite from "./pages/RegisterWithInvite";
 import CreateFirstDirector from "./pages/CreateFirstDirector";
+import DirectorRegistration from "./pages/DirectorRegistration";
 
 // Admin Components
 import AdminWrapper from "./features/admin/components/AdminWrapper";
@@ -43,6 +44,7 @@ const App = () => {
                   <Routes>
                     <Route path="/" element={<Home language={language} />} />
                     <Route path="/setup-director" element={<CreateFirstDirector />} />
+                    <Route path="/director-registration" element={<DirectorRegistration />} />
                     <Route path="/auth" element={<AuthPage />} />
                     <Route path="/catalog" element={<Catalog language={language} />} />
                     <Route path="/product/:id" element={<ProductDetail language={language} />} />

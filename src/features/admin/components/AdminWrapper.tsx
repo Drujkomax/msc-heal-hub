@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useUserRole } from '@/hooks/useUserRole';
 import RegisterWithInvite from '@/pages/RegisterWithInvite';
+import DirectorRegistration from '@/pages/DirectorRegistration';
 import AdminAuth from './AdminAuth';
 import AdminLayout from './AdminLayout';
 import Dashboard from '../pages/Dashboard';
@@ -30,6 +31,17 @@ const AdminWrapper = () => {
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
+  }
+
+  // Показываем страницу регистрации по приглашению без проверки авторизации
+  const currentPath = window.location.pathname;
+  if (currentPath.includes('/admin/register/')) {
+    return <RegisterWithInvite />;
+  }
+  
+  // Показываем страницу регистрации директора без проверки авторизации  
+  if (currentPath === '/admin/director-registration') {
+    return <DirectorRegistration />;
   }
 
   // Если пользователь не авторизован или не имеет административных прав - показываем форму входа

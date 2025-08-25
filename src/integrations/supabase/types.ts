@@ -293,6 +293,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      register_specific_director: {
+        Args: { director_email: string; user_id: string }
+        Returns: Json
+      }
     }
     Enums: {
       app_role: "admin" | "user" | "director" | "sales_manager" | "salesperson"
