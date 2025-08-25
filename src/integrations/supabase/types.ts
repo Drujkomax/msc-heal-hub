@@ -48,6 +48,9 @@ export type Database = {
       }
       leads: {
         Row: {
+          archived: boolean | null
+          archived_at: string | null
+          archived_by: string | null
           assigned_by: string | null
           assigned_to: string | null
           closed_at: string | null
@@ -64,6 +67,9 @@ export type Database = {
           value: number | null
         }
         Insert: {
+          archived?: boolean | null
+          archived_at?: string | null
+          archived_by?: string | null
           assigned_by?: string | null
           assigned_to?: string | null
           closed_at?: string | null
@@ -80,6 +86,9 @@ export type Database = {
           value?: number | null
         }
         Update: {
+          archived?: boolean | null
+          archived_at?: string | null
+          archived_by?: string | null
           assigned_by?: string | null
           assigned_to?: string | null
           closed_at?: string | null
@@ -207,6 +216,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      archive_lead: {
+        Args: { lead_id: string; user_id: string }
+        Returns: undefined
+      }
       get_user_role: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]
