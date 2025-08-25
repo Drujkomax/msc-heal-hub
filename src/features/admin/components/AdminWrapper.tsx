@@ -12,6 +12,7 @@ import EditProduct from '../../products/pages/EditProduct';
 import AdminServices from '../pages/AdminServices';
 import AdminContacts from '../pages/AdminContacts';
 import Employees from '../pages/Employees';
+import UserManagement from '../pages/UserManagement';
 
 const AdminWrapper = () => {
   const { user, loading: authLoading } = useAuth();
@@ -51,6 +52,7 @@ const AdminWrapper = () => {
         <Route path="services" element={<AdminServices />} />
         <Route path="contacts" element={<AdminContacts />} />
         <Route path="employees" element={<Employees />} />
+        <Route path="users" element={<UserManagement />} />
       </Route>
     </Routes>
   );

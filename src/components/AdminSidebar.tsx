@@ -60,6 +60,10 @@ export function AdminSidebar() {
       conditionalItems.push({ name: 'Сотрудники', href: '/admin/employees', icon: Users, permission: null });
     }
 
+    if (role === 'admin' || role === 'director') {
+      conditionalItems.push({ name: 'Пользователи', href: '/admin/users', icon: Users, permission: null });
+    }
+
     return [...baseItems, ...conditionalItems];
   };
 

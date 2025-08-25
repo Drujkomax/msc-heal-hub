@@ -12,6 +12,7 @@ import ProductDetail from "./pages/ProductDetail";
 import Services from "./pages/Services";
 import Contacts from "./pages/Contacts";
 import NotFound from "./pages/NotFound";
+import AuthPage from "./pages/Auth";
 
 // Admin Components
 import AdminWrapper from "./features/admin/components/AdminWrapper";
@@ -39,6 +40,7 @@ const App = () => {
                 <main className="flex-1">
                   <Routes>
                     <Route path="/" element={<Home language={language} />} />
+                    <Route path="/auth" element={<AuthPage />} />
                     <Route path="/catalog" element={<Catalog language={language} />} />
                     <Route path="/product/:id" element={<ProductDetail language={language} />} />
                     <Route path="/services" element={<Services language={language} />} />
