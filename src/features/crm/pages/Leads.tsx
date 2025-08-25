@@ -14,6 +14,8 @@ import { supabase } from '@/integrations/supabase/client';
 import RoleBasedAccess from '@/components/auth/RoleBasedAccess';
 import { LeadHybridCard } from '../components/LeadHybridCard';
 import { DuplicateAlert } from '../components/DuplicateAlert';
+import { ViewLeadModal } from '../components/ViewLeadModal';
+import { EditLeadModal } from '../components/EditLeadModal';
 import { 
   Search, 
   Edit,
@@ -40,6 +42,8 @@ const Leads = () => {
   const [stageFilter, setStageFilter] = useState<string>('all');
   const [employees, setEmployees] = useState<Array<{id: string, email: string, role: string}>>([]);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
+  const [viewModalOpen, setViewModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
 
   const leadStages = [
     { value: 'new', label: 'Новые', count: 0, color: 'bg-blue-500' },
@@ -137,12 +141,22 @@ const Leads = () => {
 
   const handleViewLead = (lead: Lead) => {
     setSelectedLead(lead);
-    // TODO: Open view modal
+    setViewModalOpen(true);
   };
 
   const handleEditLead = (lead: Lead) => {
     setSelectedLead(lead);
-    // TODO: Open edit modal
+    setEditModalOpen(true);
+  };
+
+  const handleCloseViewModal = () => {
+    setViewModalOpen(false);
+    setSelectedLead(null);
+  };
+
+  const handleCloseEditModal = () => {
+    setEditModalOpen(false);
+    setSelectedLead(null);
   };
 
   if (loading) {
@@ -260,14 +274,27 @@ const Leads = () => {
               key={lead.id}
               lead={lead}
               allLeads={leads}
-              onView={() => console.log('View lead:', lead)}
-              onEdit={() => console.log('Edit lead:', lead)}
+              onView={() => handleViewLead(lead)}
+              onEdit={() => handleEditLead(lead)}
               onArchive={handleArchiveLead}
               onStageChange={handleStageChange}
             />
           ))
         )}
       </div>
+
+      {/* Модальные окна */}
+      <ViewLeadModal 
+        lead={selectedLead}
+        isOpen={viewModalOpen}
+        onClose={handleCloseViewModal}
+      />
+      
+      <EditLeadModal 
+        lead={selectedLead}
+        isOpen={editModalOpen}
+        onClose={handleCloseEditModal}
+      />
     </div>
   );
 };
