@@ -1,14 +1,16 @@
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
-import { AlertTriangle, Users } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { AlertTriangle, Users, Merge } from 'lucide-react';
 import { DuplicateGroup } from '@/hooks/useDuplicateDetection';
 
 interface DuplicateAlertProps {
   duplicateGroup: DuplicateGroup;
   onViewDuplicates?: () => void;
+  onMergeDuplicates?: (duplicateGroup: DuplicateGroup) => void;
 }
 
-export const DuplicateAlert = ({ duplicateGroup, onViewDuplicates }: DuplicateAlertProps) => {
+export const DuplicateAlert = ({ duplicateGroup, onViewDuplicates, onMergeDuplicates }: DuplicateAlertProps) => {
   const { leads, duplicateType, score } = duplicateGroup;
 
   const getBadgeVariant = () => {
@@ -37,14 +39,29 @@ export const DuplicateAlert = ({ duplicateGroup, onViewDuplicates }: DuplicateAl
             {getTypeText()} ({score}%)
           </Badge>
         </div>
-        {onViewDuplicates && (
-          <button
-            onClick={onViewDuplicates}
-            className="text-sm text-orange-700 hover:text-orange-800 underline"
-          >
-            Посмотреть
-          </button>
-        )}
+        <div className="flex gap-2">
+          {onViewDuplicates && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onViewDuplicates}
+              className="text-orange-700 hover:text-orange-800"
+            >
+              Посмотреть
+            </Button>
+          )}
+          {onMergeDuplicates && (
+            <Button
+              variant="default"
+              size="sm"
+              onClick={() => onMergeDuplicates(duplicateGroup)}
+              className="bg-orange-600 hover:bg-orange-700 text-white"
+            >
+              <Merge className="h-3 w-3 mr-1" />
+              Слияние
+            </Button>
+          )}
+        </div>
       </AlertDescription>
     </Alert>
   );

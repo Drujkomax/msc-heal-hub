@@ -3,17 +3,16 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { useLeads, Lead } from '@/hooks/useLeads';
 import { useDuplicateDetection } from '@/hooks/useDuplicateDetection';
 import { useUserPermissions } from '@/hooks/useUserPermissions';
 import { useAuth } from '@/hooks/useAuth';
+import { useLeadMerge } from '@/hooks/useLeadMerge';
 import { supabase } from '@/integrations/supabase/client';
 import RoleBasedAccess from '@/components/auth/RoleBasedAccess';
 import { LeadHybridCard } from '../components/LeadHybridCard';
-import KanbanBoard from '../components/KanbanBoard';
 import { DuplicateAlert } from '../components/DuplicateAlert';
 import { 
   Search, 
@@ -26,8 +25,7 @@ import {
   Calendar,
   Filter,
   AlertTriangle,
-  LayoutGrid,
-  Kanban as KanbanIcon
+  LayoutGrid
 } from 'lucide-react';
 
 const Leads = () => {
@@ -36,10 +34,10 @@ const Leads = () => {
   const { duplicateGroups, hasDuplicates } = useDuplicateDetection(leads);
   const { hasPermission, role } = useUserPermissions();
   const { user } = useAuth();
+  const { mergeLeads, loading: merging } = useLeadMerge();
   const [searchTerm, setSearchTerm] = useState('');
   const [stageFilter, setStageFilter] = useState<string>('all');
   const [employees, setEmployees] = useState<Array<{id: string, email: string, role: string}>>([]);
-  const [activeTab, setActiveTab] = useState('hybrid');
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
 
   const leadStages = [
@@ -130,6 +128,10 @@ const Leads = () => {
     }
   };
 
+  const handleMergeDuplicates = async (duplicateGroup: any) => {
+    await mergeLeads(duplicateGroup, refetch);
+  };
+
   const handleViewLead = (lead: Lead) => {
     setSelectedLead(lead);
     // TODO: Open view modal
@@ -174,6 +176,7 @@ const Leads = () => {
             <DuplicateAlert 
               key={index} 
               duplicateGroup={group}
+              onMergeDuplicates={handleMergeDuplicates}
             />
           ))}
           {duplicateGroups.length > 3 && (
@@ -236,51 +239,32 @@ const Leads = () => {
         </CardContent>
       </Card>
 
-      {/* View Toggle */}
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="hybrid" className="flex items-center gap-2">
-            <LayoutGrid className="w-4 h-4" />
-            Гибридный вид
-          </TabsTrigger>
-          <TabsTrigger value="kanban" className="flex items-center gap-2">
-            <KanbanIcon className="w-4 h-4" />
-            Канбан
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="hybrid" className="space-y-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
-            {filteredLeads.map((lead) => (
-              <LeadHybridCard 
-                key={lead.id}
-                lead={lead}
-                allLeads={leads}
-                onView={handleViewLead}
-                onEdit={handleEditLead}
-                onArchive={handleArchiveLead}
-                onStageChange={handleStageChange}
-              />
-            ))}
-          </div>
-        </TabsContent>
-
-        <TabsContent value="kanban">
-          <KanbanBoard />
-        </TabsContent>
-      </Tabs>
-
-      {filteredLeads.length === 0 && (
-        <Card>
-          <CardContent className="p-8 text-center">
-            <p className="text-muted-foreground">
-              {searchTerm || stageFilter !== 'all' 
-                ? 'Лиды не найдены по заданным критериям' 
-                : 'Нет лидов. Лиды будут появляться здесь после заполнения форм на сайте.'}
-            </p>
-          </CardContent>
-        </Card>
-      )}
+      {/* Leads Grid */}
+      <div className="grid gap-4 md:gap-6">
+        {filteredLeads.length === 0 ? (
+          <Card>
+            <CardContent className="flex flex-col items-center justify-center py-8">
+              <AlertTriangle className="h-12 w-12 text-muted-foreground mb-4" />
+              <h3 className="text-lg font-medium mb-2">Лиды не найдены</h3>
+              <p className="text-muted-foreground text-center">
+                Попробуйте изменить фильтры или добавить новых лидов
+              </p>
+            </CardContent>
+          </Card>
+        ) : (
+          filteredLeads.map((lead) => (
+            <LeadHybridCard
+              key={lead.id}
+              lead={lead}
+              allLeads={leads}
+              onView={() => console.log('View lead:', lead)}
+              onEdit={() => console.log('Edit lead:', lead)}
+              onArchive={handleArchiveLead}
+              onStageChange={(leadId, stage) => changeLeadStage(leadId, stage)}
+            />
+          ))
+        )}
+      </div>
     </div>
   );
 };

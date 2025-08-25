@@ -5,6 +5,7 @@ import AdminAuth from './AdminAuth';
 import AdminLayout from './AdminLayout';
 import Dashboard from '../pages/Dashboard';
 import Leads from '../../crm/pages/Leads';
+import AdminKanban from '../pages/AdminKanban';
 import AdminProducts from '../../products/pages/AdminProducts';
 import AddProduct from '../../products/pages/AddProduct';
 import EditProduct from '../../products/pages/EditProduct';
@@ -43,6 +44,7 @@ const AdminWrapper = () => {
         <Route index element={<Dashboard />} />
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="leads" element={<Leads />} />
+        <Route path="kanban" element={<AdminKanban />} />
         <Route path="products" element={<AdminProducts />} />
         <Route path="products/add" element={<AddProduct />} />
         <Route path="products/edit/:id" element={<EditProduct />} />

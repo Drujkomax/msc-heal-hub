@@ -25,7 +25,8 @@ import {
   BarChart3,
   Home,
   MessageSquare,
-  Settings
+  Settings,
+  Columns3
 } from 'lucide-react';
 
 export function AdminSidebar() {
@@ -38,6 +39,7 @@ export function AdminSidebar() {
     const baseItems = [
       { name: t('admin.dashboard'), href: '/admin', icon: BarChart3, permission: null },
       { name: 'Лиды', href: '/admin/leads', icon: Users, permission: null },
+      { name: 'Канбан', href: '/admin/kanban', icon: Columns3, permission: null },
     ];
 
     const conditionalItems = [];
