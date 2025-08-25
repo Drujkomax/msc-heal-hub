@@ -29,6 +29,7 @@ import {
 } from 'lucide-react';
 
 const Leads = () => {
+  // Force cache refresh
   const { toast } = useToast();
   const { leads, loading, deleteLead, archiveLead, changeLeadStage, refetch } = useLeads();
   const { duplicateGroups, hasDuplicates } = useDuplicateDetection(leads);
