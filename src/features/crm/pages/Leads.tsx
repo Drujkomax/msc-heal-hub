@@ -261,7 +261,7 @@ const Leads = () => {
               onView={() => console.log('View lead:', lead)}
               onEdit={() => console.log('Edit lead:', lead)}
               onArchive={handleArchiveLead}
-              onStageChange={(leadId, stage) => changeLeadStage(leadId, stage)}
+              onStageChange={handleStageChange}
             />
           ))
         )}

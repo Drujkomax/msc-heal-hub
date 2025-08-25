@@ -1,6 +1,7 @@
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Lead } from '@/hooks/useLeads';
 import { useDuplicateDetection } from '@/hooks/useDuplicateDetection';
@@ -67,16 +68,31 @@ export const LeadHybridCard = ({
 
       <div className="flex items-start justify-between mb-3">
         <div className="flex-1">
-          <div className="flex items-center gap-2 mb-1">
+          <div className="flex items-center gap-2 mb-2">
             <h3 className="font-semibold text-lg">{lead.name}</h3>
-            {currentStage && (
-              <Badge 
-                variant="outline" 
-                className={`${currentStage.color} text-white border-none`}
-              >
-                {currentStage.label}
-              </Badge>
-            )}
+            
+            {/* Status Selector */}
+            <Select 
+              value={lead.stage} 
+              onValueChange={(value) => onStageChange(lead.id, value)}
+              disabled={!canEdit}
+            >
+              <SelectTrigger className="w-auto h-7 text-xs bg-white border">
+                <SelectValue>
+                  {currentStage?.label || 'Статус'}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                {stages.map(stage => (
+                  <SelectItem key={stage.value} value={stage.value}>
+                    <div className="flex items-center gap-2">
+                      <div className={`w-2 h-2 rounded-full ${stage.color}`} />
+                      {stage.label}
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           
           <div className="space-y-1 text-sm text-muted-foreground">
@@ -150,22 +166,6 @@ export const LeadHybridCard = ({
         </div>
       )}
 
-      <div className="mt-3 pt-3 border-t">
-        <div className="flex gap-1 flex-wrap">
-          {stages.map(stage => (
-            <Button
-              key={stage.value}
-              size="sm"
-              variant={stage.value === lead.stage ? "default" : "outline"}
-              onClick={() => onStageChange(lead.id, stage.value)}
-              className="text-xs h-6"
-              disabled={!canEdit}
-            >
-              {stage.label}
-            </Button>
-          ))}
-        </div>
-      </div>
     </Card>
   );
 };
