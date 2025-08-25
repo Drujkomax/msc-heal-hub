@@ -1,0 +1,415 @@
+import { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+import { 
+  Users, 
+  Plus, 
+  Search, 
+  UserCheck,
+  Shield,
+  Settings,
+  Loader2
+} from 'lucide-react';
+
+interface Employee {
+  id: string;
+  email: string;
+  created_at: string;
+  role?: string;
+  last_sign_in_at?: string;
+}
+
+const EmployeeManagement = () => {
+  const { toast } = useToast();
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedRole, setSelectedRole] = useState<string>('all');
+  const [isAddEmployeeOpen, setIsAddEmployeeOpen] = useState(false);
+  const [addingEmployee, setAddingEmployee] = useState(false);
+  const [newEmployee, setNewEmployee] = useState({
+    email: '',
+    password: '',
+    role: 'salesperson'
+  });
+
+  const roles = [
+    { value: 'salesperson', label: 'Продавец', color: 'bg-blue-100 text-blue-800' },
+    { value: 'sales_manager', label: 'Менеджер продаж', color: 'bg-purple-100 text-purple-800' },
+    { value: 'admin', label: 'Администратор', color: 'bg-red-100 text-red-800' }
+  ];
+
+  useEffect(() => {
+    fetchEmployees();
+  }, []);
+
+  const fetchEmployees = async () => {
+    try {
+      setLoading(true);
+      
+      // Получаем роли пользователей (исключаем директоров)
+      const { data: userRoles, error: rolesError } = await supabase
+        .from('user_roles')
+        .select('user_id, role')
+        .neq('role', 'director'); // Исключаем директоров
+          
+      if (rolesError) throw rolesError;
+      
+      // Создаем структуру сотрудников
+      const employeesList = userRoles?.map(userRole => ({
+        id: userRole.user_id,
+        email: `employee-${userRole.user_id.slice(0, 8)}@medservice.uz`,
+        created_at: new Date().toISOString(),
+        role: userRole.role
+      })) || [];
+      
+      setEmployees(employeesList);
+    } catch (error) {
+      console.error('Error fetching employees:', error);
+      toast({
+        title: 'Ошибка',
+        description: 'Ошибка при загрузке сотрудников',
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAddEmployee = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!newEmployee.email || !newEmployee.password) {
+      toast({
+        title: 'Ошибка',
+        description: 'Заполните все поля',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (newEmployee.password.length < 6) {
+      toast({
+        title: 'Ошибка',
+        description: 'Пароль должен содержать минимум 6 символов',
+        variant: 'destructive',
+      });
+      return;
+    }
+    
+    setAddingEmployee(true);
+    
+    try {
+      // Создаем пользователя
+      const { data, error } = await supabase.auth.signUp({
+        email: newEmployee.email,
+        password: newEmployee.password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/admin/login`
+        }
+      });
+
+      if (error) throw error;
+
+      // Добавляем роль
+      if (data.user) {
+        const { error: roleError } = await supabase
+          .from('user_roles')
+          .insert({
+            user_id: data.user.id,
+            role: newEmployee.role as 'admin' | 'salesperson' | 'sales_manager'
+          });
+
+        if (roleError) throw roleError;
+      }
+
+      toast({
+        title: 'Успешно',
+        description: 'Сотрудник добавлен в систему',
+      });
+
+      setIsAddEmployeeOpen(false);
+      setNewEmployee({ email: '', password: '', role: 'salesperson' });
+      fetchEmployees();
+    } catch (error: any) {
+      console.error('Error adding employee:', error);
+      toast({
+        title: 'Ошибка',
+        description: error.message || 'Ошибка при добавлении сотрудника',
+        variant: 'destructive',
+      });
+    } finally {
+      setAddingEmployee(false);
+    }
+  };
+
+  const handleUpdateRole = async (employeeId: string, newRole: string) => {
+    try {
+      const { error } = await supabase
+        .from('user_roles')
+        .update({ role: newRole as 'admin' | 'salesperson' | 'sales_manager' })
+        .eq('user_id', employeeId);
+
+      if (error) throw error;
+
+      toast({
+        title: 'Успешно',
+        description: 'Роль сотрудника обновлена',
+      });
+
+      fetchEmployees();
+    } catch (error: any) {
+      toast({
+        title: 'Ошибка',
+        description: error.message || 'Ошибка при обновлении роли',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const filteredEmployees = employees.filter(employee => {
+    const matchesSearch = employee.email.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesRole = selectedRole === 'all' || employee.role === selectedRole;
+    return matchesSearch && matchesRole;
+  });
+
+  const getRoleInfo = (role?: string) => {
+    return roles.find(r => r.value === role) || { label: 'Не назначена', color: 'bg-gray-100 text-gray-800' };
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="flex items-center gap-2">
+          <Loader2 className="h-6 w-6 animate-spin" />
+          <p>Загрузка сотрудников...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-3xl font-bold flex items-center gap-2">
+            <Users className="h-8 w-8" />
+            Управление сотрудниками
+          </h2>
+          <p className="text-muted-foreground">Добавление и управление сотрудниками компании</p>
+        </div>
+        
+        <Dialog open={isAddEmployeeOpen} onOpenChange={setIsAddEmployeeOpen}>
+          <DialogTrigger asChild>
+            <Button className="flex items-center gap-2">
+              <Plus className="h-4 w-4" />
+              Добавить сотрудника
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="bg-background">
+            <DialogHeader>
+              <DialogTitle>Добавить нового сотрудника</DialogTitle>
+            </DialogHeader>
+            <form onSubmit={handleAddEmployee} className="space-y-4">
+              <div>
+                <Label htmlFor="email">Email сотрудника</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={newEmployee.email}
+                  onChange={(e) => setNewEmployee(prev => ({ ...prev, email: e.target.value }))}
+                  placeholder="employee@medservice.uz"
+                  required
+                  disabled={addingEmployee}
+                />
+              </div>
+              <div>
+                <Label htmlFor="password">Временный пароль</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={newEmployee.password}
+                  onChange={(e) => setNewEmployee(prev => ({ ...prev, password: e.target.value }))}
+                  placeholder="Минимум 6 символов"
+                  minLength={6}
+                  required
+                  disabled={addingEmployee}
+                />
+              </div>
+              <div>
+                <Label htmlFor="role">Должность</Label>
+                <Select 
+                  value={newEmployee.role} 
+                  onValueChange={(value) => setNewEmployee(prev => ({ ...prev, role: value }))}
+                  disabled={addingEmployee}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-background z-50">
+                    {roles.map(role => (
+                      <SelectItem key={role.value} value={role.value}>
+                        {role.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex gap-2">
+                <Button type="submit" className="flex-1" disabled={addingEmployee}>
+                  {addingEmployee && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  {addingEmployee ? 'Добавление...' : 'Добавить сотрудника'}
+                </Button>
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={() => setIsAddEmployeeOpen(false)}
+                  disabled={addingEmployee}
+                >
+                  Отмена
+                </Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
+      </div>
+
+      {/* Фильтры */}
+      <Card>
+        <CardContent className="p-4">
+          <div className="flex gap-4">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                <Input
+                  placeholder="Поиск сотрудников..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+            </div>
+            <div className="w-48">
+              <Select value={selectedRole} onValueChange={setSelectedRole}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Фильтр по должности" />
+                </SelectTrigger>
+                <SelectContent className="bg-background z-50">
+                  <SelectItem value="all">Все должности</SelectItem>
+                  {roles.map(role => (
+                    <SelectItem key={role.value} value={role.value}>
+                      {role.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Статистика */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-2">
+              <Users className="h-5 w-5 text-primary" />
+              <div>
+                <p className="text-sm text-muted-foreground">Всего сотрудников</p>
+                <p className="text-2xl font-bold">{employees.length}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        
+        {roles.map(role => {
+          const count = employees.filter(emp => emp.role === role.value).length;
+          return (
+            <Card key={role.value}>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2">
+                  <Shield className="h-5 w-5 text-primary" />
+                  <div>
+                    <p className="text-sm text-muted-foreground">{role.label}</p>
+                    <p className="text-2xl font-bold">{count}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })}
+      </div>
+
+      {/* Список сотрудников */}
+      <div className="grid gap-4">
+        {filteredEmployees.length === 0 ? (
+          <Card>
+            <CardContent className="flex flex-col items-center justify-center py-8">
+              <Users className="h-12 w-12 text-muted-foreground mb-4" />
+              <h3 className="text-lg font-medium mb-2">Сотрудники не найдены</h3>
+              <p className="text-muted-foreground text-center">
+                Попробуйте изменить фильтры или добавить нового сотрудника
+              </p>
+            </CardContent>
+          </Card>
+        ) : (
+          filteredEmployees.map((employee) => {
+            const roleInfo = getRoleInfo(employee.role);
+            
+            return (
+              <Card key={employee.id} className="hover:shadow-md transition-shadow">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                        <UserCheck className="w-5 h-5 text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="font-medium">{employee.email}</h3>
+                        <p className="text-sm text-muted-foreground">
+                          Добавлен: {new Date(employee.created_at).toLocaleDateString('ru-RU')}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-3">
+                      <Badge className={roleInfo.color}>
+                        {roleInfo.label}
+                      </Badge>
+                      
+                      <Select 
+                        value={employee.role || ''} 
+                        onValueChange={(value) => handleUpdateRole(employee.id, value)}
+                      >
+                        <SelectTrigger className="w-[160px]">
+                          <Settings className="w-4 h-4 mr-2" />
+                          <SelectValue placeholder="Изменить роль" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-background z-50">
+                          {roles.map(role => (
+                            <SelectItem key={role.value} value={role.value}>
+                              {role.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default EmployeeManagement;

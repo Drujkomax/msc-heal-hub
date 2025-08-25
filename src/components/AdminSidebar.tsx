@@ -6,6 +6,7 @@ import LanguageSwitcher from '@/components/common/LanguageSwitcher';
 import LogoutButton from '@/components/auth/LogoutButton';
 import { useUserRole } from '@/hooks/useUserRole';
 import { useUserPermissions } from '@/hooks/useUserPermissions';
+import { useAuth } from '@/hooks/useAuth';
 import RoleBasedAccess from '@/components/auth/RoleBasedAccess';
 import {
   Sidebar,
@@ -34,6 +35,7 @@ export function AdminSidebar() {
   const location = useLocation();
   const { role } = useUserRole();
   const { hasPermission } = useUserPermissions();
+  const { user } = useAuth();
 
   const getNavigationItems = () => {
     const baseItems = [
@@ -61,7 +63,7 @@ export function AdminSidebar() {
     }
 
     if (role === 'admin' || role === 'director') {
-      conditionalItems.push({ name: 'Пользователи', href: '/admin/users', icon: Users, permission: null });
+      conditionalItems.push({ name: 'Системные пользователи', href: '/admin/users', icon: Settings, permission: null });
     }
 
     return [...baseItems, ...conditionalItems];
@@ -79,11 +81,18 @@ export function AdminSidebar() {
   return (
     <Sidebar>
       <SidebarHeader className="border-b border-border p-4">
-        <div className="flex items-center space-x-2">
-          <div className="w-8 h-8 bg-primary rounded flex items-center justify-center">
-            <span className="text-primary-foreground font-bold">A</span>
+        <div className="space-y-2">
+          <div className="flex items-center space-x-2">
+            <div className="w-8 h-8 bg-primary rounded flex items-center justify-center">
+              <span className="text-primary-foreground font-bold">MSC</span>
+            </div>
+            <span className="font-semibold text-lg">Админ-панель</span>
           </div>
-          <span className="font-semibold text-lg">{t('admin.title')}</span>
+          {user?.email && (
+            <div className="text-sm text-muted-foreground pl-10">
+              {user.email}
+            </div>
+          )}
         </div>
       </SidebarHeader>
 
@@ -126,10 +135,10 @@ export function AdminSidebar() {
             <LanguageSwitcher />
             <Badge variant="secondary" className="text-xs">
               {role === 'director' ? 'Директор' :
-               role === 'sales_manager' ? 'Администратор' :
+               role === 'sales_manager' ? 'Менеджер продаж' :
                role === 'admin' ? 'Администратор' :
                role === 'salesperson' ? 'Продавец' :
-               t('admin.role')}
+               role || 'Не определена'}
             </Badge>
           </div>
           <Link to="/">

@@ -26,7 +26,6 @@ const Header = ({ language, onLanguageChange }: HeaderProps) => {
       { name: 'Кейсы', href: '/cases' },
       { name: 'О компании', href: '/about' },
       { name: 'Контакты', href: '/contacts' },
-      { name: 'Вход', href: '/auth' },
     ],
     en: [
       { name: 'Home', href: '/' },
@@ -35,7 +34,6 @@ const Header = ({ language, onLanguageChange }: HeaderProps) => {
       { name: 'Cases', href: '/cases' },
       { name: 'About', href: '/about' },
       { name: 'Contacts', href: '/contacts' },
-      { name: 'Login', href: '/auth' },
     ],
     uz: [
       { name: 'Bosh sahifa', href: '/' },
@@ -44,7 +42,6 @@ const Header = ({ language, onLanguageChange }: HeaderProps) => {
       { name: 'Loyihalar', href: '/cases' },
       { name: 'Kompaniya haqida', href: '/about' },
       { name: 'Aloqa', href: '/contacts' },
-      { name: 'Kirish', href: '/auth' },
     ]
   };
 
