@@ -59,34 +59,38 @@ const EditEmployeeModal = ({ employee, isOpen, onClose, onUpdate }: EditEmployee
 
     setLoading(true);
     try {
-      // Обновляем роль пользователя
-      const { error: roleError } = await supabase
-        .from('user_roles')
-        .update({ role: formData.role as 'admin' | 'salesperson' | 'sales_manager' })
-        .eq('user_id', employee.id);
-
-      if (roleError) throw roleError;
-
-      // Обновляем email если изменился
-      if (formData.email !== employee.email) {
-        const { error: emailError } = await supabase.auth.admin.updateUserById(
-          employee.id,
-          { email: formData.email }
-        );
-        if (emailError) throw emailError;
+      // Используем edge function для обновления пользователя
+      const { data: session } = await supabase.auth.getSession();
+      
+      if (!session.session?.access_token) {
+        throw new Error('Нет активной сессии');
       }
 
-      // Обновляем пароль если указан
-      if (formData.password.trim()) {
-        const { error: passwordError } = await supabase.auth.admin.updateUserById(
-          employee.id,
-          { password: formData.password }
-        );
-        if (passwordError) throw passwordError;
+      const response = await fetch('/supabase/functions/v1/admin-user-management', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.session.access_token}`
+        },
+        body: JSON.stringify({
+          action: 'updateUser',
+          userId: employee.id,
+          email: formData.email !== employee.email ? formData.email : undefined,
+          password: formData.password.trim() || undefined,
+          role: formData.role !== employee.role ? formData.role : undefined
+        })
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Ошибка при обновлении данных');
       }
 
       // Сохраняем имя в локальном хранилище для отображения
-      // TODO: Создать таблицу profiles в будущем для хранения дополнительных данных
+      if (formData.name.trim()) {
+        localStorage.setItem(`employee_name_${employee.id}`, formData.name);
+      }
 
       toast({
         title: 'Успешно',
