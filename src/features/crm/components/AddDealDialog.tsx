@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -25,13 +25,38 @@ const AddDealDialog = ({ open, onClose, deal }: AddDealDialogProps) => {
 
   const [formData, setFormData] = useState({
     title: deal?.title || '',
-    client_id: deal?.client_id || '',
+    client_id: deal?.client_id || 'none',
     amount: deal?.amount?.toString() || '',
     stage: deal?.stage || 'lead',
     probability: deal?.probability?.toString() || '',
     close_date: deal?.close_date ? new Date(deal.close_date).toISOString().split('T')[0] : '',
     notes: deal?.notes || ''
   });
+
+  // Update form data when deal prop changes
+  useEffect(() => {
+    if (deal) {
+      setFormData({
+        title: deal.title || '',
+        client_id: deal.client_id || 'none',
+        amount: deal.amount?.toString() || '',
+        stage: deal.stage || 'lead',
+        probability: deal.probability?.toString() || '',
+        close_date: deal.close_date ? new Date(deal.close_date).toISOString().split('T')[0] : '',
+        notes: deal.notes || ''
+      });
+    } else {
+      setFormData({
+        title: '',
+        client_id: 'none',
+        amount: '',
+        stage: 'lead',
+        probability: '',
+        close_date: '',
+        notes: ''
+      });
+    }
+  }, [deal]);
 
   const stages = [
     { value: 'lead', label: t('deals.stages.lead') },
@@ -49,7 +74,7 @@ const AddDealDialog = ({ open, onClose, deal }: AddDealDialogProps) => {
     try {
       const dealData = {
         title: formData.title,
-        client_id: formData.client_id || undefined,
+        client_id: formData.client_id === 'none' ? undefined : formData.client_id,
         amount: formData.amount ? parseFloat(formData.amount) : undefined,
         stage: formData.stage as Deal['stage'],
         probability: formData.probability ? parseInt(formData.probability) : undefined,
@@ -68,7 +93,7 @@ const AddDealDialog = ({ open, onClose, deal }: AddDealDialogProps) => {
       onClose();
       setFormData({
         title: '',
-        client_id: '',
+        client_id: 'none',
         amount: '',
         stage: 'lead',
         probability: '',
@@ -114,7 +139,7 @@ const AddDealDialog = ({ open, onClose, deal }: AddDealDialogProps) => {
                 <SelectValue placeholder={t('deals.selectClient')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">{t('deals.noClient')}</SelectItem>
+                <SelectItem value="none">{t('deals.noClient')}</SelectItem>
                 {leads.map(lead => (
                   <SelectItem key={lead.id} value={lead.id}>
                     {lead.name} {lead.company && `(${lead.company})`}
