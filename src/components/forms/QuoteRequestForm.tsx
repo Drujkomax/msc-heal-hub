@@ -9,6 +9,7 @@ import TelegramPopup from '@/components/forms/TelegramPopup';
 import CountdownTimer from '@/components/common/CountdownTimer';
 import { useLeads } from '@/hooks/useLeads';
 import { formatUzbekPhoneNumber, validateUzbekPhoneNumber, getFullUzbekPhoneNumber, isValidUzbekPhoneLength, isCompleteUzbekPhone } from '@/lib/phoneValidation';
+import { validateLeadForm, sanitizeInput } from '@/lib/formValidation';
 import { Phone, User, MessageSquare, Send, X, Settings, Package, Building2 } from 'lucide-react';
 import { Product } from '@/hooks/useProducts';
 
@@ -36,6 +37,7 @@ const QuoteRequestForm: React.FC<QuoteRequestFormProps> = ({
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [phoneError, setPhoneError] = useState('');
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const [showTelegramPopup, setShowTelegramPopup] = useState(false);
 
   const texts = {
@@ -116,6 +118,14 @@ const QuoteRequestForm: React.FC<QuoteRequestFormProps> = ({
   const t = texts[language];
 
   const handleInputChange = (field: string, value: string) => {
+    // Clear validation error for this field
+    if (validationErrors[field]) {
+      setValidationErrors(prev => ({
+        ...prev,
+        [field]: ''
+      }));
+    }
+
     if (field === 'phone') {
       if (!isValidUzbekPhoneLength(value)) return;
 
@@ -137,15 +147,28 @@ const QuoteRequestForm: React.FC<QuoteRequestFormProps> = ({
         setPhoneError('');
       }
     } else {
+      // Sanitize input for other fields
+      const sanitizedValue = sanitizeInput(value);
       setFormData(prev => ({
         ...prev,
-        [field]: value
+        [field]: sanitizedValue
       }));
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Clear previous errors
+    setValidationErrors({});
+    setPhoneError('');
+
+    // Validate form data
+    const validation = validateLeadForm(formData);
+    if (!validation.isValid) {
+      setValidationErrors(validation.errors);
+      return;
+    }
 
     if (formData.phone && (!isCompleteUzbekPhone(formData.phone) || !validateUzbekPhoneNumber(formData.phone))) {
       setPhoneError(language === 'ru' ? 'Введите корректный узбекский номер' : language === 'en' ? 'Enter a valid Uzbek number' : 'To\'g\'ri O\'zbek raqamini kiriting');
@@ -174,7 +197,8 @@ const QuoteRequestForm: React.FC<QuoteRequestFormProps> = ({
         phone: formData.phone ? getFullUzbekPhoneNumber(formData.phone) : undefined,
         company: formData.company || undefined,
         notes,
-        stage: 'new'
+        stage: 'new',
+        source: 'website_form'
       });
 
       toast({
@@ -250,14 +274,15 @@ const QuoteRequestForm: React.FC<QuoteRequestFormProps> = ({
                   <User className="w-4 h-4" />
                   {t.name} *
                 </Label>
-                <Input 
-                  id="name" 
-                  value={formData.name} 
-                  onChange={e => handleInputChange('name', e.target.value)} 
-                  required 
-                  className="border-msc-primary/20 focus:border-msc-accent transition-all duration-200 h-10" 
-                  placeholder={t.name} 
-                />
+                 <Input 
+                   id="name" 
+                   value={formData.name} 
+                   onChange={e => handleInputChange('name', e.target.value)} 
+                   required 
+                   className={`border-msc-primary/20 focus:border-msc-accent transition-all duration-200 h-10 ${validationErrors.name ? 'border-red-500' : ''}`}
+                   placeholder={t.name} 
+                 />
+                 {validationErrors.name && <p className="text-red-500 text-xs mt-1 animate-in slide-in-from-top-1 duration-200">{validationErrors.name}</p>}
               </div>
 
               {/* Phone */}

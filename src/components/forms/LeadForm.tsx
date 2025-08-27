@@ -8,6 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 import TelegramPopup from '@/components/forms/TelegramPopup';
 import { useLeads } from '@/hooks/useLeads';
 import { formatUzbekPhoneNumber, validateUzbekPhoneNumber, getFullUzbekPhoneNumber, isValidUzbekPhoneLength, isCompleteUzbekPhone } from '@/lib/phoneValidation';
+import { validateLeadForm, sanitizeInput } from '@/lib/formValidation';
 import { Phone, User, MessageSquare, Send, X, Settings } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -27,9 +28,18 @@ const LeadForm: React.FC<LeadFormProps> = ({
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [phoneError, setPhoneError] = useState('');
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const [showTelegramPopup, setShowTelegramPopup] = useState(false);
   const language = i18n.language || 'ru';
   const handleInputChange = (field: string, value: string) => {
+    // Clear validation error for this field
+    if (validationErrors[field]) {
+      setValidationErrors(prev => ({
+        ...prev,
+        [field]: ''
+      }));
+    }
+
     if (field === 'phone') {
       // Format and validate phone number
       if (!isValidUzbekPhoneLength(value)) return; // Prevent input beyond max length
@@ -53,14 +63,27 @@ const LeadForm: React.FC<LeadFormProps> = ({
         setPhoneError('');
       }
     } else {
+      // Sanitize input for other fields
+      const sanitizedValue = sanitizeInput(value);
       setFormData(prev => ({
         ...prev,
-        [field]: value
+        [field]: sanitizedValue
       }));
     }
   };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Clear previous errors
+    setValidationErrors({});
+    setPhoneError('');
+
+    // Validate form data
+    const validation = validateLeadForm(formData);
+    if (!validation.isValid) {
+      setValidationErrors(validation.errors);
+      return;
+    }
 
     // Validate phone number before submission
     if (formData.phone && (!isCompleteUzbekPhone(formData.phone) || !validateUzbekPhoneNumber(formData.phone))) {
@@ -73,7 +96,8 @@ const LeadForm: React.FC<LeadFormProps> = ({
         name: formData.name,
         phone: formData.phone ? getFullUzbekPhoneNumber(formData.phone) : undefined,
         notes: formData.equipmentType ? `Тип оборудования: ${t(`leadForm.equipmentTypes.${formData.equipmentType}`)}` : undefined,
-        stage: 'new'
+        stage: 'new',
+        source: 'website_form'
       });
       toast({
         title: language === 'ru' ? 'Заявка отправлена!' : language === 'en' ? 'Request sent!' : 'Ariza jo\'natildi!',
@@ -143,7 +167,8 @@ const LeadForm: React.FC<LeadFormProps> = ({
                    <User className="w-4 h-4" />
                    {t('leadForm.name')} *
                  </Label>
-                 <Input id="name" value={formData.name} onChange={e => handleInputChange('name', e.target.value)} required className="border-msc-primary/20 focus:border-msc-accent transition-all duration-200 h-10" placeholder={t('leadForm.name')} />
+                  <Input id="name" value={formData.name} onChange={e => handleInputChange('name', e.target.value)} required className={`border-msc-primary/20 focus:border-msc-accent transition-all duration-200 h-10 ${validationErrors.name ? 'border-red-500' : ''}`} placeholder={t('leadForm.name')} />
+                  {validationErrors.name && <p className="text-red-500 text-xs mt-1 animate-in slide-in-from-top-1 duration-200">{validationErrors.name}</p>}
               </div>
 
               {/* Phone */}

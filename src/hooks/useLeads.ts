@@ -46,13 +46,15 @@ export const useLeads = () => {
     company?: string;
     stage?: string;
     notes?: string;
+    source?: string;
   }) => {
     try {
       const { data, error } = await supabase
         .from('leads')
         .insert([{
           ...leadData,
-          stage: leadData.stage || 'new'
+          stage: leadData.stage || 'new',
+          source: leadData.source || 'website_form'
         }])
         .select()
         .single();
