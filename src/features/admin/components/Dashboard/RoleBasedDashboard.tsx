@@ -3,6 +3,8 @@ import { Badge } from '@/components/ui/badge';
 import { useLeads } from '@/hooks/useLeads';
 import { useUserPermissions } from '@/hooks/useUserPermissions';
 import { useAuth } from '@/hooks/useAuth';
+import { useTranslation } from 'react-i18next';
+import { getRoleTranslation } from '@/utils/roleTranslations';
 import { 
   TrendingUp, 
   Users, 
@@ -15,6 +17,7 @@ import {
 } from 'lucide-react';
 
 const RoleBasedDashboard = () => {
+  const { t, i18n } = useTranslation();
   const { leads, loading } = useLeads();
   const { role } = useUserPermissions();
   const { user } = useAuth();
@@ -22,7 +25,7 @@ const RoleBasedDashboard = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <p>Загрузка...</p>
+        <p>{t('common.loading')}</p>
       </div>
     );
   }
@@ -57,20 +60,20 @@ const RoleBasedDashboard = () => {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Всего лидов</CardTitle>
+          <CardTitle className="text-sm font-medium">{t('dashboard.totalLeads')}</CardTitle>
           <Users className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{totalLeads}</div>
           <p className="text-xs text-muted-foreground">
-            +{newLeads} новых
+            +{newLeads} {t('dashboard.newLeads')}
           </p>
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Конверсия</CardTitle>
+          <CardTitle className="text-sm font-medium">{t('dashboard.conversion')}</CardTitle>
           <TrendingUp className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
@@ -353,10 +356,10 @@ const RoleBasedDashboard = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-3xl font-bold">Дашборд</h2>
+        <h2 className="text-3xl font-bold">{t('dashboard.title')}</h2>
         <div className="flex items-center space-x-2">
-          <p className="text-muted-foreground">Аналитика и статистика</p>
-          <Badge variant="secondary">{role}</Badge>
+          <p className="text-muted-foreground">{t('dashboard.analytics')}</p>
+          <Badge variant="secondary">{getRoleTranslation(role || '', i18n.language)}</Badge>
         </div>
       </div>
 

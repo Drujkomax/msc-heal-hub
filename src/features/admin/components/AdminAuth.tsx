@@ -34,23 +34,22 @@ const AdminAuth = () => {
         setError(error.message);
         toast({
           variant: "destructive",
-          title: "Ошибка входа",
+          title: t('auth.loginError'),
           description: error.message,
         });
       } else {
         toast({
-          title: "Успешно",
-          description: "Вход выполнен успешно",
+          title: t('common.success'),
+          description: t('auth.loginSuccess'),
         });
-        // Перенаправляем на главную страницу админки
         navigate('/admin');
       }
     } catch (err) {
-      const errorMessage = 'Произошла ошибка при входе';
+      const errorMessage = t('auth.generalError');
       setError(errorMessage);
       toast({
         variant: "destructive",
-        title: "Ошибка",
+        title: t('common.error'),
         description: errorMessage,
       });
     } finally {
@@ -63,10 +62,10 @@ const AdminAuth = () => {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold">
-            Вход в админку
+            {t('auth.adminLogin')}
           </CardTitle>
           <CardDescription>
-            Введите данные для входа в админскую панель
+            {t('auth.adminLoginDescription')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -80,7 +79,7 @@ const AdminAuth = () => {
             <div className="space-y-2">
               <Input
                 type="email"
-                placeholder="Email"
+                placeholder={t('auth.emailPlaceholder')}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -91,7 +90,7 @@ const AdminAuth = () => {
             <div className="space-y-2">
               <Input
                 type="password"
-                placeholder="Пароль"
+                placeholder={t('auth.passwordPlaceholder')}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -106,7 +105,7 @@ const AdminAuth = () => {
               disabled={isLoading}
             >
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Войти
+              {t('auth.login')}
             </Button>
           </form>
         </CardContent>

@@ -201,5 +201,53 @@
     "salesperson": "Продавец",
     "user": "Пользователь",
     "notAssigned": "Не определена"
+  },
+  "auth": {
+    "adminLogin": "Вход в админку",
+    "adminLoginDescription": "Введите данные для входа в админскую панель",
+    "emailPlaceholder": "Email",
+    "passwordPlaceholder": "Пароль",
+    "login": "Войти",
+    "loginError": "Ошибка входа",
+    "loginSuccess": "Вход выполнен успешно",
+    "generalError": "Произошла ошибка при входе"
+  },
+  "dashboard": {
+    "title": "Дашборд",
+    "analytics": "Аналитика и статистика",
+    "totalLeads": "Всего лидов",
+    "newLeads": "новых",
+    "conversion": "Конверсия",
+    "inProgress": "В работе",
+    "activeLeads": "Активных лидов",
+    "losses": "Потери",
+    "fromTotal": "от общего",
+    "stageStats": "Статистика по этапам",
+    "overallEfficiency": "Общая эффективность",
+    "teamConversion": "Конверсия команды",
+    "requireAttention": "Требуют внимания",
+    "monthResult": "Результат месяца",
+    "closedDeals": "Закрытых сделок",
+    "team": "Команда",
+    "leadsInManagement": "Лидов в управлении",
+    "teamEfficiency": "Эффективность команды",
+    "requireAssignment": "Требуют назначения",
+    "closed": "Закрыто",
+    "successfulDeals": "Успешных сделок",
+    "myLeads": "Мои лиды",
+    "totalAssigned": "Всего назначено",
+    "myConversion": "Моя конверсия",
+    "efficiency": "Эффективность",
+    "new": "Новые",
+    "requireProcessing": "Требуют обработки",
+    "stages": {
+      "new": "Новые",
+      "contacted": "Связались",
+      "qualified": "Квалифицированы",
+      "proposal": "Предложение",
+      "negotiation": "Переговоры",
+      "closed": "Закрыты",
+      "lost": "Потеряны"
+    }
   }
 }

@@ -21,8 +21,6 @@ const AdminWrapper = () => {
   const { user, loading: authLoading } = useAuth();
   const { role, loading: roleLoading } = useUserRole();
 
-  // Добавляем отладку
-  console.log('AdminWrapper state:', { user: !!user, role, authLoading, roleLoading });
 
   // Показываем загрузку пока проверяем аутентификацию
   if (authLoading || roleLoading) {
@@ -47,7 +45,6 @@ const AdminWrapper = () => {
   // Если пользователь не авторизован или не имеет административных прав - показываем форму входа
   const allowedRoles = ['admin', 'sales_manager', 'director', 'salesperson'];
   if (!user || !allowedRoles.includes(role || '')) {
-    console.log('Showing AdminAuth because:', { hasUser: !!user, role });
     return <AdminAuth />;
   }
 
