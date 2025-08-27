@@ -16,8 +16,10 @@
     "next": "Далее",
     "previous": "Предыдущий",
     "close": "Закрыть",
+    "creating": "Создание...",
     "confirmDelete": "Вы уверены, что хотите удалить {{name}}?",
-    "unknown": "Неизвестно"
+    "unknown": "Неизвестно",
+    "noPermission": "Недостаточно прав"
   },
   "navigation": {
     "home": "Главная",
@@ -129,6 +131,9 @@
     "deleted": "Сделка удалена",
     "created": "Сделка создана",
     "updated": "Сделка обновлена",
+    "createDeal": "Создать сделку",
+    "createFromLead": "Создать сделку из лида",
+    "createdFromLead": "Сделка создана из лида {{client}}",
     "listView": "Список",
     "kanbanView": "Канбан",
     "stageUpdated": "Этап сделки обновлен",
@@ -136,6 +141,7 @@
     "noClient": "Без клиента",
     "titlePlaceholder": "Название сделки",
     "notesPlaceholder": "Дополнительная информация о сделке...",
+    "notesFromLeadPlaceholder": "Детали сделки, особые условия, контактная информация...",
     "stages": {
       "lead": "Лид",
       "qualified": "Квалифицирован",

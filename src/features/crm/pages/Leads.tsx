@@ -16,6 +16,7 @@ import { LeadHybridCard } from '../components/LeadHybridCard';
 import { DuplicateAlert } from '../components/DuplicateAlert';
 import { ViewLeadModal } from '../components/ViewLeadModal';
 import { EditLeadModal } from '../components/EditLeadModal';
+import CreateDealFromLeadDialog from '../components/CreateDealFromLeadDialog';
 import { 
   Search, 
   Edit,
@@ -44,6 +45,7 @@ const Leads = () => {
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
+  const [createDealLead, setCreateDealLead] = useState<Lead | null>(null);
 
   const leadStages = [
     { value: 'new', label: 'Новые', count: 0, color: 'bg-blue-500' },
@@ -157,6 +159,22 @@ const Leads = () => {
   const handleCloseEditModal = () => {
     setEditModalOpen(false);
     setSelectedLead(null);
+  };
+
+  const handleCreateDeal = (lead: Lead) => {
+    setCreateDealLead(lead);
+  };
+
+  const handleDealSuccess = () => {
+    setCreateDealLead(null);
+    toast({
+      title: 'Успешно',
+      description: 'Сделка создана. Переходим к разделу сделок...',
+    });
+    // Небольшая задержка для показа уведомления
+    setTimeout(() => {
+      window.location.href = '/admin/deals';
+    }, 1500);
   };
 
   if (loading) {
@@ -278,6 +296,7 @@ const Leads = () => {
               onEdit={() => handleEditLead(lead)}
               onArchive={handleArchiveLead}
               onStageChange={handleStageChange}
+              onCreateDeal={handleCreateDeal}
             />
           ))
         )}
@@ -294,6 +313,13 @@ const Leads = () => {
         lead={selectedLead}
         isOpen={editModalOpen}
         onClose={handleCloseEditModal}
+      />
+
+      <CreateDealFromLeadDialog
+        open={!!createDealLead}
+        onClose={() => setCreateDealLead(null)}
+        lead={createDealLead}
+        onSuccess={handleDealSuccess}
       />
     </div>
   );

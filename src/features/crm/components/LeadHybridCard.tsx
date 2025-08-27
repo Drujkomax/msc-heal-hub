@@ -8,7 +8,7 @@ import { useDuplicateDetection } from '@/hooks/useDuplicateDetection';
 import { useUserPermissions } from '@/hooks/useUserPermissions';
 import { useAuth } from '@/hooks/useAuth';
 import { DuplicateAlert } from './DuplicateAlert';
-import { Eye, Edit, Archive, MoreVertical, Phone, Building2, Calendar, User } from 'lucide-react';
+import { Eye, Edit, Archive, MoreVertical, Phone, Building2, Calendar, User, DollarSign } from 'lucide-react';
 import { useState } from 'react';
 
 interface LeadHybridCardProps {
@@ -18,6 +18,7 @@ interface LeadHybridCardProps {
   onEdit: (lead: Lead) => void;
   onArchive: (id: string) => void;
   onStageChange: (id: string, stage: string) => void;
+  onCreateDeal?: (lead: Lead) => void;
 }
 
 const stages = [
@@ -36,7 +37,8 @@ export const LeadHybridCard = ({
   onView, 
   onEdit, 
   onArchive, 
-  onStageChange 
+  onStageChange,
+  onCreateDeal
 }: LeadHybridCardProps) => {
   const { getDuplicatesForLead } = useDuplicateDetection(allLeads);
   const { hasPermission } = useUserPermissions();
@@ -136,6 +138,12 @@ export const LeadHybridCard = ({
               <DropdownMenuItem onClick={() => onEdit(lead)}>
                 <Edit className="h-4 w-4 mr-2" />
                 Редактировать
+              </DropdownMenuItem>
+            )}
+            {onCreateDeal && hasPermission('manage_all_leads') && (
+              <DropdownMenuItem onClick={() => onCreateDeal(lead)}>
+                <DollarSign className="h-4 w-4 mr-2" />
+                Создать сделку
               </DropdownMenuItem>
             )}
             {canArchive && (
