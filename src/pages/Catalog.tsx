@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { Search, Filter, Heart, Eye, Loader2, Package } from "lucide-react";
 import { useProducts } from '@/hooks/useProducts';
 import { toast } from 'sonner';
@@ -57,9 +58,12 @@ const Catalog = () => {
   const [searchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || 'all');
+  const [currentPage, setCurrentPage] = useState(1);
   
   const [showQuoteForm, setShowQuoteForm] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
+
+  const ITEMS_PER_PAGE = 20;
   
   const { products, loading, error } = useProducts();
 
@@ -79,6 +83,18 @@ const Catalog = () => {
     const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
+
+  // Reset page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, selectedCategory]);
+
+  // Pagination calculations
+  const totalItems = filteredProducts.length;
+  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const currentProducts = filteredProducts.slice(startIndex, endIndex);
 
 
   if (loading) {
@@ -151,86 +167,138 @@ const Catalog = () => {
         </div>
 
         {/* Products Grid */}
-        {filteredProducts.length === 0 ? (
+        {currentProducts.length === 0 ? (
           <div className="text-center py-16">
             <p className="text-xl text-muted-foreground">{translations.noProducts[language]}</p>
           </div>
         ) : (
-          <div className="grid grid-cols-3 md:grid-cols-5 gap-4 md:gap-8">
-            {filteredProducts.map((product) => (
-              <Card key={product.id} className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                <div className="relative overflow-hidden rounded-t-lg aspect-[1080/1350]">
-                  {product.images?.cover ? (
-                    <img
-                      src={product.images.cover}
-                      alt={product.name[language]}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      onError={(e) => {
-                        e.currentTarget.src = '/placeholder.svg';
-                      }}
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-muted flex items-center justify-center">
-                      <Package className="w-16 h-16 text-muted-foreground" />
-                    </div>
-                  )}
-                  <div className="absolute top-4 left-4">
-                    <Badge variant="default">
-                      {getCategoryTag(product.category, language)}
-                    </Badge>
-                  </div>
-                </div>
-                
-                <CardHeader>
-                  <div className="flex items-start justify-between mb-2">
-                    <CardTitle className="text-lg flex-1">{product.name[language]}</CardTitle>
-                    {product.country && (
-                      <div className="bg-black text-white text-xs px-2 py-1 rounded-sm flex items-center gap-1 ml-2">
-                        <span className="text-sm">{getCountryFlag(product.country)}</span>
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+              {currentProducts.map((product) => (
+                <Card key={product.id} className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 flex flex-col h-full">
+                  <div className="relative overflow-hidden rounded-t-lg aspect-[1080/1350]">
+                    {product.images?.cover ? (
+                      <img
+                        src={product.images.cover}
+                        alt={product.name[language]}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        onError={(e) => {
+                          e.currentTarget.src = '/placeholder.svg';
+                        }}
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-muted flex items-center justify-center">
+                        <Package className="w-16 h-16 text-muted-foreground" />
                       </div>
                     )}
-                  </div>
-                  <CardDescription>{product.description[language]}</CardDescription>
-                </CardHeader>
-                
-                <CardContent>
-                  {product.features && product.features[language] && product.features[language].length > 0 && (
-                    <div className="mb-4">
-                      <h4 className="font-medium mb-2">{translations.features[language]}:</h4>
-                      <ul className="text-sm text-muted-foreground space-y-1">
-                        {product.features[language].map((feature, index) => (
-                          <li key={index} className="flex items-center">
-                            <span className="w-1.5 h-1.5 bg-primary rounded-full mr-2"></span>
-                            {feature}
-                          </li>
-                        ))}
-                      </ul>
+                    <div className="absolute top-4 left-4">
+                      <Badge variant="default">
+                        {getCategoryTag(product.category, language)}
+                      </Badge>
                     </div>
-                  )}
-                  
-                  <div className="flex flex-col gap-2">
-                    <Button 
-                      className="w-full" 
-                      onClick={() => navigate(`/product/${product.id}`)}
-                    >
-                      <Eye className="h-4 w-4 mr-2" />
-                      {translations.details[language]}
-                    </Button>
-                    <Button 
-                      variant="outline"
-                      className="w-full"
-                      onClick={() => {
-                        setSelectedProduct(product);
-                        setShowQuoteForm(true);
-                      }}
-                    >
-                      {translations.requestQuote[language]}
-                    </Button>
                   </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                  
+                  <CardHeader className="flex-grow">
+                    <div className="flex items-start justify-between mb-2">
+                      <CardTitle className="text-lg flex-1">{product.name[language]}</CardTitle>
+                      {product.country && (
+                        <div className="bg-black text-white text-xs px-2 py-1 rounded-sm flex items-center gap-1 ml-2">
+                          <span className="text-sm">{getCountryFlag(product.country)}</span>
+                        </div>
+                      )}
+                    </div>
+                    <CardDescription>{product.description[language]}</CardDescription>
+                  </CardHeader>
+                  
+                  <CardContent className="flex flex-col justify-end mt-auto">
+                    {product.features && product.features[language] && product.features[language].length > 0 && (
+                      <div className="mb-4">
+                        <h4 className="font-medium mb-2">{translations.features[language]}:</h4>
+                        <ul className="text-sm text-muted-foreground space-y-1">
+                          {product.features[language].map((feature, index) => (
+                            <li key={index} className="flex items-center">
+                              <span className="w-1.5 h-1.5 bg-primary rounded-full mr-2"></span>
+                              {feature}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    
+                    <div className="flex flex-col gap-2">
+                      <Button 
+                        className="w-full" 
+                        onClick={() => navigate(`/product/${product.id}`)}
+                      >
+                        <Eye className="h-4 w-4 mr-2" />
+                        {translations.details[language]}
+                      </Button>
+                      <Button 
+                        variant="outline"
+                        className="w-full"
+                        onClick={() => {
+                          setSelectedProduct(product);
+                          setShowQuoteForm(true);
+                        }}
+                      >
+                        {translations.requestQuote[language]}
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="mt-8">
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious 
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          if (currentPage > 1) {
+                            setCurrentPage(currentPage - 1);
+                          }
+                        }}
+                        className={currentPage <= 1 ? "pointer-events-none opacity-50" : ""}
+                      />
+                    </PaginationItem>
+                    
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                      <PaginationItem key={page}>
+                        <PaginationLink
+                          href="#"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setCurrentPage(page);
+                          }}
+                          isActive={currentPage === page}
+                        >
+                          {page}
+                        </PaginationLink>
+                      </PaginationItem>
+                    ))}
+                    
+                    <PaginationItem>
+                      <PaginationNext 
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          if (currentPage < totalPages) {
+                            setCurrentPage(currentPage + 1);
+                          }
+                        }}
+                        className={currentPage >= totalPages ? "pointer-events-none opacity-50" : ""}
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
+            )}
+          </>
         )}
       </div>
 
