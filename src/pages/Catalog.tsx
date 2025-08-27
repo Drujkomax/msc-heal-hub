@@ -156,7 +156,7 @@ const Catalog = () => {
             <p className="text-xl text-muted-foreground">{translations.noProducts[language]}</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
+          <div className="grid grid-cols-3 md:grid-cols-5 gap-4 md:gap-8">
             {filteredProducts.map((product) => (
               <Card key={product.id} className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
                 <div className="relative overflow-hidden rounded-t-lg aspect-[1080/1350]">
