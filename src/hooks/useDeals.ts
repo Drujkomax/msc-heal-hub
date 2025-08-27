@@ -1,15 +1,20 @@
 import { useState, useEffect } from 'react';
 import { Deal } from '@/types/crm';
-import { dealStorage } from '@/lib/storage';
+import { supabase } from '@/integrations/supabase/client';
 
 export const useDeals = () => {
   const [deals, setDeals] = useState<Deal[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const loadDeals = () => {
+  const loadDeals = async () => {
     try {
-      const data = dealStorage.getAll();
-      setDeals(data);
+      const { data, error } = await supabase
+        .from('deals')
+        .select('*')
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      setDeals(data || []);
     } catch (error) {
       console.error('Error loading deals:', error);
     } finally {
@@ -21,11 +26,26 @@ export const useDeals = () => {
     loadDeals();
   }, []);
 
-  const addDeal = (dealData: Omit<Deal, 'id' | 'createdAt'>) => {
+  const addDeal = async (dealData: Omit<Deal, 'id' | 'createdAt'>) => {
     try {
-      const newDeal = dealStorage.create(dealData);
-      setDeals(prev => [...prev, newDeal]);
-      return newDeal;
+      const { data, error } = await supabase
+        .from('deals')
+        .insert([{
+          title: dealData.title,
+          client_id: dealData.clientId,
+          amount: dealData.amount,
+          stage: dealData.stage,
+          probability: dealData.probability,
+          close_date: dealData.closeDate,
+          notes: dealData.notes,
+          created_by: (await supabase.auth.getUser()).data.user?.id
+        }])
+        .select()
+        .single();
+      
+      if (error) throw error;
+      setDeals(prev => [...prev, data]);
+      return data;
     } catch (error) {
       console.error('Error adding deal:', error);
       throw error;

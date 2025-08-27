@@ -1,13 +1,27 @@
 import { useState, useEffect } from 'react';
-import { Client } from '@/types/crm';
 import { supabase } from '@/integrations/supabase/client';
 
-export const useClients = () => {
+interface Client {
+  id: string;
+  name: string;
+  email?: string;
+  phone?: string;
+  company?: string;
+  notes?: string;
+  created_at: string;
+  updated_at: string;
+  last_contact?: string;
+  created_by?: string;
+}
+
+export const useClientsSupabase = () => {
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const loadClients = async () => {
+  const fetchClients = async () => {
     try {
+      setError(null);
       const { data, error } = await supabase
         .from('clients')
         .select('*')
@@ -15,19 +29,23 @@ export const useClients = () => {
       
       if (error) throw error;
       setClients(data || []);
-    } catch (error) {
-      console.error('Error loading clients:', error);
+    } catch (err) {
+      console.error('Error fetching clients:', err);
+      setError(err instanceof Error ? err.message : 'Error fetching clients');
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    loadClients();
+    fetchClients();
   }, []);
 
-  const addClient = async (clientData: Omit<Client, 'id' | 'createdAt'>) => {
+  const addClient = async (clientData: Omit<Client, 'id' | 'created_at' | 'updated_at'>) => {
     try {
+      setError(null);
+      const user = await supabase.auth.getUser();
+      
       const { data, error } = await supabase
         .from('clients')
         .insert([{
@@ -36,22 +54,24 @@ export const useClients = () => {
           phone: clientData.phone,
           company: clientData.company,
           notes: clientData.notes,
-          created_by: (await supabase.auth.getUser()).data.user?.id
+          created_by: user.data.user?.id
         }])
         .select()
         .single();
       
       if (error) throw error;
-      setClients(prev => [...prev, data]);
+      setClients(prev => [data, ...prev]);
       return data;
-    } catch (error) {
-      console.error('Error adding client:', error);
-      throw error;
+    } catch (err) {
+      console.error('Error adding client:', err);
+      setError(err instanceof Error ? err.message : 'Error adding client');
+      throw err;
     }
   };
 
   const updateClient = async (id: string, updates: Partial<Client>) => {
     try {
+      setError(null);
       const { data, error } = await supabase
         .from('clients')
         .update({
@@ -60,7 +80,7 @@ export const useClients = () => {
           phone: updates.phone,
           company: updates.company,
           notes: updates.notes,
-          last_contact: updates.lastContact
+          last_contact: updates.last_contact
         })
         .eq('id', id)
         .select()
@@ -71,14 +91,16 @@ export const useClients = () => {
         prev.map(client => client.id === id ? data : client)
       );
       return data;
-    } catch (error) {
-      console.error('Error updating client:', error);
-      throw error;
+    } catch (err) {
+      console.error('Error updating client:', err);
+      setError(err instanceof Error ? err.message : 'Error updating client');
+      throw err;
     }
   };
 
   const deleteClient = async (id: string) => {
     try {
+      setError(null);
       const { error } = await supabase
         .from('clients')
         .delete()
@@ -87,9 +109,10 @@ export const useClients = () => {
       if (error) throw error;
       setClients(prev => prev.filter(client => client.id !== id));
       return true;
-    } catch (error) {
-      console.error('Error deleting client:', error);
-      throw error;
+    } catch (err) {
+      console.error('Error deleting client:', err);
+      setError(err instanceof Error ? err.message : 'Error deleting client');
+      throw err;
     }
   };
 
@@ -100,10 +123,11 @@ export const useClients = () => {
   return {
     clients,
     loading,
+    error,
     addClient,
     updateClient,
     deleteClient,
     getClientById,
-    refreshClients: loadClients,
+    refreshClients: fetchClients,
   };
 };
