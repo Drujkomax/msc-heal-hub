@@ -10,10 +10,7 @@ import { useProducts } from '@/hooks/useProducts';
 import { toast } from 'sonner';
 import { getCountryFlag } from '@/utils/countries';
 import QuoteRequestForm from '@/components/forms/QuoteRequestForm';
-
-interface CatalogProps {
-  language: 'ru' | 'en' | 'uz';
-}
+import { useTranslation } from 'react-i18next';
 
 // Categories with tags for equipment
 const getCategoryTag = (category: string, language: 'ru' | 'en' | 'uz') => {
@@ -54,7 +51,8 @@ const translations = {
   noProducts: { ru: "Товары не найдены", en: "No products found", uz: "Mahsulotlar topilmadi" }
 };
 
-const Catalog = ({ language }: CatalogProps) => {
+const Catalog = () => {
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState('');
@@ -73,6 +71,8 @@ const Catalog = ({ language }: CatalogProps) => {
     }
   }, [searchParams, selectedCategory]);
 
+  const language = i18n.language as 'ru' | 'en' | 'uz' || 'ru';
+  
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name[language].toLowerCase().includes(searchTerm.toLowerCase()) ||
                          product.description[language].toLowerCase().includes(searchTerm.toLowerCase());

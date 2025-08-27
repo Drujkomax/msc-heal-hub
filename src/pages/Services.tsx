@@ -7,14 +7,12 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Wrench, GraduationCap, Zap, Calendar, Check, Phone } from "lucide-react";
+import { useTranslation } from 'react-i18next';
 
-interface ServicesProps {
-  language: 'ru' | 'en' | 'uz';
-}
-
-const Services = ({ language }: ServicesProps) => {
+const Services = () => {
   const [isOrderDialogOpen, setIsOrderDialogOpen] = useState(false);
   const [selectedService, setSelectedService] = useState<string>("");
+  const { t, i18n } = useTranslation();
 
   const content = {
     ru: {
@@ -214,7 +212,7 @@ const Services = ({ language }: ServicesProps) => {
     }
   };
 
-  const currentContent = content[language];
+  const currentContent = content[i18n.language as 'ru' | 'en' | 'uz'] || content['ru'];
 
   const handleOrderService = (serviceName: string) => {
     setSelectedService(serviceName);

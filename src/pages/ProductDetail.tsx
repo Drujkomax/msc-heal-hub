@@ -10,10 +10,7 @@ import { Label } from "@/components/ui/label";
 import { ArrowLeft, Heart, FileText, Loader2, Package } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useProduct } from '@/hooks/useProducts';
-
-interface ProductDetailProps {
-  language: 'ru' | 'en' | 'uz';
-}
+import { useTranslation } from 'react-i18next';
 
 const getCategoryLabel = (category: string, language: 'ru' | 'en' | 'uz') => {
   const categoryLabels = {
@@ -52,7 +49,9 @@ const translations = {
   keyFeatures: { ru: "Ключевые особенности", en: "Key Features", uz: "Asosiy xususiyatlar" }
 };
 
-const ProductDetail = ({ language }: ProductDetailProps) => {
+const ProductDetail = () => {
+  const { t, i18n } = useTranslation();
+  const language = i18n.language as 'ru' | 'en' | 'uz' || 'ru';
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();

@@ -1,12 +1,10 @@
 import { Phone, Mail, MapPin, MessageCircle, Facebook, Instagram, Youtube } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { useTranslation } from 'react-i18next';
 
-interface ContactsProps {
-  language: 'ru' | 'en' | 'uz';
-}
-
-const Contacts = ({ language }: ContactsProps) => {
+const Contacts = () => {
+  const { t, i18n } = useTranslation();
   const content = {
     ru: {
       title: 'Контакты',
@@ -67,7 +65,7 @@ const Contacts = ({ language }: ContactsProps) => {
     }
   };
 
-  const t = content[language];
+  const currentContent = content[i18n.language as 'ru' | 'en' | 'uz'] || content['ru'];
 
   const handlePhoneClick = () => {
     window.open('tel:+998712373308', '_self');
@@ -103,10 +101,10 @@ const Contacts = ({ language }: ContactsProps) => {
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="font-heading text-4xl md:text-5xl font-bold text-foreground mb-4">
-            {t.title}
+            {currentContent.title}
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            {t.subtitle}
+            {currentContent.subtitle}
           </p>
         </div>
 
@@ -118,7 +116,7 @@ const Contacts = ({ language }: ContactsProps) => {
               <div className="w-12 h-12 bg-msc-primary rounded-full flex items-center justify-center mx-auto mb-4">
                 <Phone className="w-5 h-5 text-white" />
               </div>
-              <h3 className="font-semibold text-xl text-foreground mb-2">{t.phone}</h3>
+              <h3 className="font-semibold text-xl text-foreground mb-2">{currentContent.phone}</h3>
               <p className="text-msc-primary text-lg font-medium">+998 (71) 237-33-08</p>
             </CardContent>
           </Card>
@@ -129,7 +127,7 @@ const Contacts = ({ language }: ContactsProps) => {
               <div className="w-12 h-12 bg-msc-primary rounded-full flex items-center justify-center mx-auto mb-4">
                 <Mail className="w-5 h-5 text-white" />
               </div>
-              <h3 className="font-semibold text-xl text-foreground mb-2">{t.email}</h3>
+              <h3 className="font-semibold text-xl text-foreground mb-2">{currentContent.email}</h3>
               <p className="text-msc-primary text-lg font-medium">info@medsc.uz</p>
             </CardContent>
           </Card>
@@ -140,8 +138,8 @@ const Contacts = ({ language }: ContactsProps) => {
               <div className="w-12 h-12 bg-msc-primary rounded-full flex items-center justify-center mx-auto mb-4">
                 <MapPin className="w-5 h-5 text-white" />
               </div>
-              <h3 className="font-semibold text-xl text-foreground mb-2">{t.address}</h3>
-              <p className="text-muted-foreground text-lg">{t.fullAddress}</p>
+              <h3 className="font-semibold text-xl text-foreground mb-2">{currentContent.address}</h3>
+              <p className="text-muted-foreground text-lg">{currentContent.fullAddress}</p>
             </CardContent>
           </Card>
 
@@ -175,10 +173,10 @@ const Contacts = ({ language }: ContactsProps) => {
                   9-6
                 </div>
               </div>
-              <h3 className="font-semibold text-xl text-foreground mb-2">{t.workingHours}</h3>
+              <h3 className="font-semibold text-xl text-foreground mb-2">{currentContent.workingHours}</h3>
               <div className="space-y-1">
-                <p className="text-muted-foreground">{t.workingHoursText}</p>
-                <p className="text-muted-foreground text-sm">{t.weekend}</p>
+                <p className="text-muted-foreground">{currentContent.workingHoursText}</p>
+                <p className="text-muted-foreground text-sm">{currentContent.weekend}</p>
               </div>
             </CardContent>
           </Card>
@@ -186,7 +184,7 @@ const Contacts = ({ language }: ContactsProps) => {
 
         {/* Social Networks Row */}
         <div className="mb-16">
-          <h3 className="font-semibold text-2xl text-foreground text-center mb-8">{t.socialNetworks}</h3>
+          <h3 className="font-semibold text-2xl text-foreground text-center mb-8">{currentContent.socialNetworks}</h3>
           <div className="flex flex-wrap justify-center gap-4 max-w-4xl mx-auto">
             <Button 
               variant="outline" 
@@ -223,15 +221,15 @@ const Contacts = ({ language }: ContactsProps) => {
           <Card>
             <CardContent className="p-8">
               <div className="text-center mb-8">
-                <h3 className="font-semibold text-3xl text-foreground mb-2">{t.contactForm}</h3>
-                <p className="text-muted-foreground text-lg">{t.formDescription}</p>
+                <h3 className="font-semibold text-3xl text-foreground mb-2">{currentContent.contactForm}</h3>
+                <p className="text-muted-foreground text-lg">{currentContent.formDescription}</p>
               </div>
               
               <form className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-foreground mb-2">
-                      {t.name}
+                      {currentContent.name}
                     </label>
                     <input 
                       type="text" 
@@ -242,7 +240,7 @@ const Contacts = ({ language }: ContactsProps) => {
                   
                   <div>
                     <label className="block text-sm font-medium text-foreground mb-2">
-                      {t.phoneField}
+                      {currentContent.phoneField}
                     </label>
                     <input 
                       type="tel" 
@@ -254,7 +252,7 @@ const Contacts = ({ language }: ContactsProps) => {
                 
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-2">
-                    {t.emailField}
+                    {currentContent.emailField}
                   </label>
                   <input 
                     type="email" 
@@ -265,7 +263,7 @@ const Contacts = ({ language }: ContactsProps) => {
                 
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-2">
-                    {t.message}
+                    {currentContent.message}
                   </label>
                   <textarea 
                     rows={5}
@@ -275,7 +273,7 @@ const Contacts = ({ language }: ContactsProps) => {
                 </div>
                 
                 <Button type="submit" size="lg" className="w-full bg-msc-primary hover:bg-msc-accent text-lg py-3">
-                  {t.send}
+                  {currentContent.send}
                 </Button>
               </form>
             </CardContent>

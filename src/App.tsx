@@ -49,12 +49,12 @@ const App = () => {
                     <Route path="/setup-director" element={<CreateFirstDirector />} />
                     <Route path="/director-registration" element={<DirectorRegistration />} />
                     <Route path="/auth" element={<AuthPage />} />
-                    <Route path="/catalog" element={<Catalog language={language} />} />
-                    <Route path="/product/:id" element={<ProductDetail language={language} />} />
-                    <Route path="/services" element={<Services language={language} />} />
+                    <Route path="/catalog" element={<Catalog />} />
+                    <Route path="/product/:id" element={<ProductDetail />} />
+                    <Route path="/services" element={<Services />} />
                     <Route path="/cases" element={<div className="py-20 text-center">Cases Page - Coming Soon</div>} />
                     <Route path="/about" element={<div className="py-20 text-center">About Page - Coming Soon</div>} />
-                    <Route path="/contacts" element={<Contacts language={language} />} />
+                    <Route path="/contacts" element={<Contacts />} />
                     
                     <Route path="*" element={<NotFound />} />
                   </Routes>
