@@ -38,7 +38,8 @@ const EditEmployeeModal = ({ employee, isOpen, onClose, onUpdate }: EditEmployee
   const roles = [
     { value: 'salesperson', label: 'Продавец' },
     { value: 'sales_manager', label: 'Менеджер продаж' },
-    { value: 'admin', label: 'Администратор' }
+    { value: 'admin', label: 'Администратор' },
+    { value: 'director', label: 'Директор' }
   ];
 
   useEffect(() => {

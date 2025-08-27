@@ -7,10 +7,13 @@ import {
   SidebarTrigger,
 } from '@/components/ui/sidebar';
 import LanguageSwitcher from '@/components/common/LanguageSwitcher';
+import { useUserPermissions } from '@/hooks/useUserPermissions';
+import { getRoleTranslation } from '@/utils/roleTranslations';
 
 const AdminLayout = () => {
   const location = useLocation();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const { role } = useUserPermissions();
   
   const navigation = [
     { name: t('admin.dashboard'), href: '/admin' },
@@ -50,10 +53,9 @@ const AdminLayout = () => {
               {/* Desktop-only header items */}
               <div className="hidden md:flex items-center space-x-4">
                 <LanguageSwitcher />
-                <Badge variant="secondary">{t('admin.role')}</Badge>
-                <div className="text-sm text-muted-foreground">
-                  admin
-                </div>
+                <Badge variant="secondary">
+                  {getRoleTranslation(role, i18n.language)}
+                </Badge>
               </div>
 
               {/* Mobile-only header items */}

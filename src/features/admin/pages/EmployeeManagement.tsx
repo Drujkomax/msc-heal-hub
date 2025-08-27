@@ -47,8 +47,9 @@ const EmployeeManagement = () => {
 
   const roles = [
     { value: 'salesperson', label: 'Продавец', color: 'bg-blue-100 text-blue-800' },
-    { value: 'sales_manager', label: 'Менеджер продаж', color: 'bg-purple-100 text-purple-800' },
-    { value: 'admin', label: 'Администратор', color: 'bg-red-100 text-red-800' }
+    { value: 'sales_manager', label: 'Менеджер продаж', color: 'bg-green-100 text-green-800' },
+    { value: 'admin', label: 'Администратор', color: 'bg-red-100 text-red-800' },
+    { value: 'director', label: 'Директор', color: 'bg-purple-100 text-purple-800' }
   ];
 
   useEffect(() => {

@@ -110,7 +110,8 @@ const ViewEmployeeModal = ({ employee, isOpen, onClose }: ViewEmployeeModalProps
     const roles: Record<string, string> = {
       'salesperson': 'Продавец',
       'sales_manager': 'Менеджер продаж',
-      'admin': 'Администратор'
+      'admin': 'Администратор',
+      'director': 'Директор'
     };
     return roles[role || ''] || 'Не назначена';
   };
