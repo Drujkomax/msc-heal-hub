@@ -208,9 +208,9 @@ const Catalog = () => {
                     </div>
                   )}
                   
-                  <div className="flex gap-2">
+                  <div className="space-y-2">
                     <Button 
-                      className="flex-1" 
+                      className="w-full" 
                       onClick={() => navigate(`/product/${product.id}`)}
                     >
                       <Eye className="h-4 w-4 mr-2" />
@@ -218,6 +218,7 @@ const Catalog = () => {
                     </Button>
                     <Button 
                       variant="outline"
+                      className="w-full"
                       onClick={() => {
                         setSelectedProduct(product);
                         setShowQuoteForm(true);
