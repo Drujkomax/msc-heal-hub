@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTasks } from '@/hooks/useTasks';
-import { useClients } from '@/hooks/useClients';
 import { useDeals } from '@/hooks/useDeals';
+import { useLeads } from '@/hooks/useLeads';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -20,8 +20,8 @@ interface TaskListProps {
 
 const TaskList = ({ onAddTask, onEditTask, onViewTask }: TaskListProps) => {
   const { t } = useTranslation();
-  const { tasks, loading, deleteTask, completeTask } = useTasks();
-  const { clients } = useClients();
+  const { tasks, loading, deleteTask, updateTask } = useTasks();
+  const { leads } = useLeads();
   const { deals } = useDeals();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -37,9 +37,9 @@ const TaskList = ({ onAddTask, onEditTask, onViewTask }: TaskListProps) => {
     return matchesSearch && matchesStatus && matchesPriority;
   });
 
-  const getClientName = (clientId: string) => {
-    const client = clients.find(c => c.id === clientId);
-    return client?.name || t('common.unknown');
+  const getLeadName = (leadId: string) => {
+    const lead = leads.find(l => l.id === leadId);
+    return lead?.name || t('common.unknown');
   };
 
   const getDealTitle = (dealId: string) => {
@@ -87,7 +87,7 @@ const TaskList = ({ onAddTask, onEditTask, onViewTask }: TaskListProps) => {
 
   const handleCompleteTask = async (id: string) => {
     try {
-      await completeTask(id);
+      await updateTask(id, { status: 'completed', completed_at: new Date().toISOString() });
       toast.success(t('tasks.completed'));
     } catch (error) {
       toast.error(t('common.error'));
@@ -296,7 +296,7 @@ const TaskList = ({ onAddTask, onEditTask, onViewTask }: TaskListProps) => {
                 {task.client_id && (
                   <div className="flex items-center text-sm">
                     <User className="w-4 h-4 text-muted-foreground mr-2" />
-                    <span className="truncate">{getClientName(task.client_id)}</span>
+                    <span className="truncate">{getLeadName(task.client_id)}</span>
                   </div>
                 )}
                 

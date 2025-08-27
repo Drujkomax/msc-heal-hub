@@ -1,16 +1,3 @@
-export interface Client {
-  id: string;
-  name: string;
-  email?: string;
-  phone?: string;
-  company?: string;
-  notes?: string;
-  created_at: string;
-  updated_at: string;
-  last_contact?: string;
-  created_by?: string;
-}
-
 export interface Deal {
   id: string;
   title: string;

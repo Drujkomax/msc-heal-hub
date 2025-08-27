@@ -1,7 +1,6 @@
-import { Client, Deal, Task } from '@/types/crm';
+import { Deal, Task } from '@/types/crm';
 
 const STORAGE_KEYS = {
-  CLIENTS: 'crm_clients',
   DEALS: 'crm_deals',
   TASKS: 'crm_tasks',
 } as const;
@@ -22,48 +21,6 @@ const setStorageData = <T>(key: string, data: T[]): void => {
     localStorage.setItem(key, JSON.stringify(data));
   } catch (error) {
     console.error(`Error writing ${key} to localStorage:`, error);
-  }
-};
-
-// Client storage functions
-export const clientStorage = {
-  getAll: (): Client[] => getStorageData<Client>(STORAGE_KEYS.CLIENTS),
-  
-  getById: (id: string): Client | undefined => {
-    const clients = clientStorage.getAll();
-    return clients.find(client => client.id === id);
-  },
-  
-  create: (client: Omit<Client, 'id' | 'created_at' | 'updated_at'>): Client => {
-    const clients = clientStorage.getAll();
-    const newClient: Client = {
-      ...client,
-      id: crypto.randomUUID(),
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    };
-    clients.push(newClient);
-    setStorageData(STORAGE_KEYS.CLIENTS, clients);
-    return newClient;
-  },
-  
-  update: (id: string, updates: Partial<Client>): Client | null => {
-    const clients = clientStorage.getAll();
-    const index = clients.findIndex(client => client.id === id);
-    if (index === -1) return null;
-    
-    clients[index] = { ...clients[index], ...updates };
-    setStorageData(STORAGE_KEYS.CLIENTS, clients);
-    return clients[index];
-  },
-  
-  delete: (id: string): boolean => {
-    const clients = clientStorage.getAll();
-    const filteredClients = clients.filter(client => client.id !== id);
-    if (filteredClients.length === clients.length) return false;
-    
-    setStorageData(STORAGE_KEYS.CLIENTS, filteredClients);
-    return true;
   }
 };
 

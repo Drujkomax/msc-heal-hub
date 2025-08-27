@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useDeals } from '@/hooks/useDeals';
-import { useClients } from '@/hooks/useClients';
+import { useLeads } from '@/hooks/useLeads';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -20,7 +20,7 @@ interface DealListProps {
 const DealList = ({ onAddDeal, onEditDeal, onViewDeal }: DealListProps) => {
   const { t } = useTranslation();
   const { deals, loading, deleteDeal } = useDeals();
-  const { clients } = useClients();
+  const { leads } = useLeads();
   const [searchTerm, setSearchTerm] = useState('');
   const [stageFilter, setStageFilter] = useState('all');
 
@@ -32,9 +32,9 @@ const DealList = ({ onAddDeal, onEditDeal, onViewDeal }: DealListProps) => {
     return matchesSearch && matchesStage;
   });
 
-  const getClientName = (clientId: string) => {
-    const client = clients.find(c => c.id === clientId);
-    return client?.name || t('common.unknown');
+  const getLeadName = (leadId: string) => {
+    const lead = leads.find(l => l.id === leadId);
+    return lead?.name || t('common.unknown');
   };
 
   const getStageColor = (stage: string) => {
@@ -237,7 +237,7 @@ const DealList = ({ onAddDeal, onEditDeal, onViewDeal }: DealListProps) => {
                 {deal.client_id && (
                   <div className="flex items-center text-sm">
                     <User className="w-4 h-4 text-muted-foreground mr-2" />
-                    <span className="truncate">{getClientName(deal.client_id)}</span>
+                    <span className="truncate">{getLeadName(deal.client_id)}</span>
                   </div>
                 )}
                 
