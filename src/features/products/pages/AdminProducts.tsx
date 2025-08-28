@@ -42,8 +42,8 @@ const AdminProducts = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedStatus, setSelectedStatus] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedStatus, setSelectedStatus] = useState('all');
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState('grid');
   const { products, loading, error, deleteProduct, updateProduct } = useAdminProducts();
@@ -76,8 +76,8 @@ const AdminProducts = () => {
       getCategoryLabel(product.category).toLowerCase().includes(searchTerm.toLowerCase())
     );
     
-    const matchesCategory = !selectedCategory || product.category === selectedCategory;
-    const matchesStatus = !selectedStatus || product.status === selectedStatus;
+    const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
+    const matchesStatus = selectedStatus === 'all' || product.status === selectedStatus;
     
     return matchesSearch && matchesCategory && matchesStatus;
   });
@@ -178,7 +178,7 @@ const AdminProducts = () => {
                   <SelectValue placeholder="Все категории" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Все категории</SelectItem>
+                  <SelectItem value="all">Все категории</SelectItem>
                   <SelectItem value="diagnostic">Диагностическое</SelectItem>
                   <SelectItem value="surgical">Хирургическое</SelectItem>
                   <SelectItem value="monitoring">Мониторинг</SelectItem>
@@ -195,7 +195,7 @@ const AdminProducts = () => {
                   <SelectValue placeholder="Статус" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Все</SelectItem>
+                  <SelectItem value="all">Все</SelectItem>
                   <SelectItem value="active">Активные</SelectItem>
                   <SelectItem value="draft">Черновики</SelectItem>
                   <SelectItem value="archived">Архив</SelectItem>
