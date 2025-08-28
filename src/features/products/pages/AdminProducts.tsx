@@ -21,6 +21,7 @@ import { ProductStats } from '../components/ProductStats';
 import { ExportProducts } from '../components/ExportProducts';
 import { ImportProducts } from '../components/ImportProducts';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import DraftManager from '../components/DraftManager';
 
 const getCategoryLabel = (category: string) => {
   const categoryLabels = {
@@ -208,8 +209,9 @@ const AdminProducts = () => {
 
       {/* Products Content */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="grid">Сетка товаров</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-5">
+          <TabsTrigger value="grid">Все товары</TabsTrigger>
+          <TabsTrigger value="drafts">Черновики</TabsTrigger>
           <TabsTrigger value="bulk">Массовые операции</TabsTrigger>
           <TabsTrigger value="export">Экспорт</TabsTrigger>
           <TabsTrigger value="import">Импорт</TabsTrigger>
@@ -291,6 +293,10 @@ const AdminProducts = () => {
               </Card>
             ))}
           </div>
+        </TabsContent>
+        
+        <TabsContent value="drafts" className="space-y-6">
+          <DraftManager />
         </TabsContent>
 
         <TabsContent value="bulk" className="space-y-6">

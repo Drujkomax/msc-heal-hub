@@ -1,0 +1,221 @@
+import { useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { 
+  Search, 
+  FileText,
+  AlertCircle,
+  CheckCircle,
+  Clock,
+  Loader2,
+  Package
+} from 'lucide-react';
+import { useAdminProducts, Product } from '@/hooks/useProducts';
+import { useToast } from '@/hooks/use-toast';
+import DraftProductCard from './DraftProductCard';
+
+const DraftManager = () => {
+  const { toast } = useToast();
+  const [searchTerm, setSearchTerm] = useState('');
+  const { products, loading, error, deleteProduct, updateProduct } = useAdminProducts();
+
+  // Фильтруем только черновики
+  const draftProducts = products.filter(product => product.status === 'draft');
+  
+  // Применяем поиск
+  const filteredDrafts = draftProducts.filter(product => {
+    if (!searchTerm) return true;
+    
+    return (
+      product.name.ru.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.name.en.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.name.uz.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (product.category && product.category.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+  });
+
+  // Считаем статистику
+  const readyToPublish = filteredDrafts.filter(product => 
+    product.name.ru && 
+    product.description.ru && 
+    product.category &&
+    product.images?.cover
+  );
+
+  const needsWork = filteredDrafts.filter(product => 
+    !product.name.ru || 
+    !product.description.ru || 
+    !product.category ||
+    !product.images?.cover
+  );
+
+  const handleDeleteProduct = async (productId: string) => {
+    if (window.confirm('Вы уверены, что хотите удалить этот черновик?')) {
+      try {
+        await deleteProduct(productId);
+        toast({
+          title: 'Успешно!',
+          description: 'Черновик удален'
+        });
+      } catch (error) {
+        toast({
+          variant: 'destructive',
+          title: 'Ошибка',
+          description: 'Не удалось удалить черновик'
+        });
+      }
+    }
+  };
+
+  const handlePublishProduct = async (productId: string) => {
+    try {
+      await updateProduct(productId, { status: 'active' });
+      toast({
+        title: 'Успешно!',
+        description: 'Товар опубликован'
+      });
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Ошибка',
+        description: 'Не удалось опубликовать товар'
+      });
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="flex items-center space-x-2">
+          <Loader2 className="h-8 w-8 animate-spin" />
+          <span className="text-lg">Загружаем черновики...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-16">
+        <h2 className="text-2xl font-bold text-destructive mb-2">Ошибка загрузки</h2>
+        <p className="text-muted-foreground">{error}</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Статистика черновиков */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium flex items-center gap-2">
+              <FileText className="w-4 h-4 text-blue-500" />
+              Всего черновиков
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{draftProducts.length}</div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium flex items-center gap-2">
+              <CheckCircle className="w-4 h-4 text-green-500" />
+              Готовы к публикации
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-green-600">{readyToPublish.length}</div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 text-amber-500" />
+              Требуют доработки
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-amber-600">{needsWork.length}</div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium flex items-center gap-2">
+              <Clock className="w-4 h-4 text-purple-500" />
+              Завершенность
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-purple-600">
+              {draftProducts.length > 0 ? Math.round((readyToPublish.length / draftProducts.length) * 100) : 0}%
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Поиск */}
+      <Card>
+        <CardContent className="p-4">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            <Input
+              placeholder="Поиск черновиков по названию или категории..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Список черновиков */}
+      {filteredDrafts.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredDrafts.map((product) => (
+            <DraftProductCard
+              key={product.id}
+              product={product}
+              onDelete={handleDeleteProduct}
+              onPublish={handlePublishProduct}
+            />
+          ))}
+        </div>
+      ) : (
+        <Card>
+          <CardContent className="p-8 text-center">
+            {draftProducts.length === 0 ? (
+              <div className="flex flex-col items-center gap-4">
+                <Package className="w-16 h-16 text-muted-foreground" />
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">Нет черновиков</h3>
+                  <p className="text-muted-foreground">
+                    Все ваши товары опубликованы или у вас пока нет созданных товаров
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center gap-4">
+                <Search className="w-16 h-16 text-muted-foreground" />
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">Черновики не найдены</h3>
+                  <p className="text-muted-foreground">
+                    Попробуйте изменить параметры поиска
+                  </p>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+};
+
+export default DraftManager;
