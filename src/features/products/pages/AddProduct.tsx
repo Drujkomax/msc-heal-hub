@@ -52,11 +52,30 @@ const AddProduct = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.name.ru.trim() || !formData.description.ru.trim() || !formData.category) {
+    // Enhanced validation
+    if (!formData.name.ru.trim()) {
       toast({
         variant: 'destructive',
         title: 'Ошибка валидации',
-        description: 'Заполните все обязательные поля'
+        description: 'Название на русском языке обязательно'
+      });
+      return;
+    }
+
+    if (!formData.description.ru.trim()) {
+      toast({
+        variant: 'destructive',
+        title: 'Ошибка валидации',
+        description: 'Описание на русском языке обязательно'
+      });
+      return;
+    }
+
+    if (!formData.category) {
+      toast({
+        variant: 'destructive',
+        title: 'Ошибка валидации',
+        description: 'Выберите категорию товара'
       });
       return;
     }
@@ -64,7 +83,9 @@ const AddProduct = () => {
     setLoading(true);
     
     try {
-      await addProduct({
+      console.log('Submitting product data:', formData);
+      
+      const productData = {
         name: formData.name,
         description: formData.description,
         category: formData.category,
@@ -74,7 +95,10 @@ const AddProduct = () => {
         status: formData.status as 'active' | 'draft' | 'archived',
         features: formData.features,
         images: formData.images
-      });
+      };
+
+      const result = await addProduct(productData);
+      console.log('Product added successfully:', result);
 
       toast({
         title: 'Успешно!',
@@ -83,6 +107,7 @@ const AddProduct = () => {
       
       navigate('/admin/products');
     } catch (error) {
+      console.error('Error adding product:', error);
       toast({
         variant: 'destructive',
         title: 'Ошибка',
