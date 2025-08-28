@@ -248,7 +248,7 @@ const DirectorDashboardMetrics = () => {
                   <div>
                     <div className="font-medium">{member.name}</div>
                     <div className="text-sm text-muted-foreground">
-                      {member.deals} {t('director.closedDeals')}
+                      {member.deals} {t('director.salesManagerDeals', 'закрытых сделок')}
                     </div>
                   </div>
                 </div>
@@ -256,7 +256,7 @@ const DirectorDashboardMetrics = () => {
                   <div className="font-medium">${member.value.toLocaleString()}</div>
                   <div className="text-sm text-muted-foreground flex items-center gap-1">
                     <Zap className="h-3 w-3" />
-                    {member.conversion}% {t('director.conversion')}
+                    {member.conversion}% {t('director.managerConversion', 'конверсия')}
                   </div>
                 </div>
               </div>
