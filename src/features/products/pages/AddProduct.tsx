@@ -52,30 +52,12 @@ const AddProduct = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Enhanced validation
+    // Minimal validation - only name is required
     if (!formData.name.ru.trim()) {
       toast({
         variant: 'destructive',
         title: 'Ошибка валидации',
         description: 'Название на русском языке обязательно'
-      });
-      return;
-    }
-
-    if (!formData.description.ru.trim()) {
-      toast({
-        variant: 'destructive',
-        title: 'Ошибка валидации',
-        description: 'Описание на русском языке обязательно'
-      });
-      return;
-    }
-
-    if (!formData.category) {
-      toast({
-        variant: 'destructive',
-        title: 'Ошибка валидации',
-        description: 'Выберите категорию товара'
       });
       return;
     }
@@ -238,19 +220,18 @@ const AddProduct = () => {
 
                 {/* Descriptions */}
                 <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="desc-ru">Описание (RU) *</Label>
-                    <Textarea
-                      id="desc-ru"
-                      value={formData.description.ru}
-                      onChange={(e) => setFormData(prev => ({
-                        ...prev,
-                        description: { ...prev.description, ru: e.target.value }
-                      }))}
-                      rows={3}
-                      required
-                    />
-                  </div>
+                   <div>
+                     <Label htmlFor="desc-ru">Описание (RU)</Label>
+                     <Textarea
+                       id="desc-ru"
+                       value={formData.description.ru}
+                       onChange={(e) => setFormData(prev => ({
+                         ...prev,
+                         description: { ...prev.description, ru: e.target.value }
+                       }))}
+                       rows={3}
+                     />
+                   </div>
                   <div>
                     <Label htmlFor="desc-en">Описание (EN)</Label>
                     <Textarea
@@ -303,11 +284,10 @@ const AddProduct = () => {
               <CardContent className="space-y-6">
                 {(['ru', 'en', 'uz'] as const).map((lang) => (
                   <div key={lang} className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <Label>
-                        Характеристики ({lang.toUpperCase()})
-                        {lang === 'ru' && ' *'}
-                      </Label>
+                     <div className="flex items-center justify-between">
+                       <Label>
+                         Характеристики ({lang.toUpperCase()})
+                       </Label>
                       <Button
                         type="button"
                         variant="outline"
@@ -348,19 +328,19 @@ const AddProduct = () => {
                 <CardTitle>Настройки</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div>
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="category">Категория *</Label>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setCategoryDialogOpen(true)}
-                    >
-                      <Plus className="w-4 h-4 mr-1" />
-                      Новая категория
-                    </Button>
-                  </div>
+                 <div>
+                   <div className="flex items-center justify-between">
+                     <Label htmlFor="category">Категория</Label>
+                     <Button
+                       type="button"
+                       variant="ghost"
+                       size="sm"
+                       onClick={() => setCategoryDialogOpen(true)}
+                     >
+                       <Plus className="w-4 h-4 mr-1" />
+                       Новая категория
+                     </Button>
+                   </div>
                   <Select 
                     value={formData.category} 
                     onValueChange={(value) => setFormData(prev => ({
