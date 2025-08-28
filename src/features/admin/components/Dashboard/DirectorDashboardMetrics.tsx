@@ -28,11 +28,6 @@ const DirectorDashboardMetrics = () => {
   const { user } = useAuth();
   const [salesManagersData, setSalesManagersData] = useState<any[]>([]);
 
-  // Only show for directors
-  if (!hasPermission('view_analytics')) {
-    return null;
-  }
-
   // Calculate metrics
   const totalLeads = leads.length;
   const closedDeals = deals.filter(deal => deal.stage === 'closed');
@@ -139,6 +134,11 @@ const DirectorDashboardMetrics = () => {
       fetchSalesManagersData();
     }
   }, [hasPermission]);
+
+  // Only show for directors
+  if (!hasPermission('view_analytics')) {
+    return null;
+  }
 
   return (
     <div className="space-y-6">
