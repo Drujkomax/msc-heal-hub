@@ -95,6 +95,11 @@ const Header = () => {
 
             {user && (
               <>
+                <Link to="/admin">
+                  <Button variant="outline" size="sm">
+                    {t('navigation.admin')}
+                  </Button>
+                </Link>
                 <LogoutButton />
               </>
             )}

@@ -173,7 +173,7 @@ const Leads = () => {
     });
     // Небольшая задержка для показа уведомления
     setTimeout(() => {
-      // Deal created successfully
+      window.location.href = '/admin/deals';
     }, 1500);
   };
 
