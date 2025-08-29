@@ -592,20 +592,6 @@ export type Database = {
           role: Database["public"]["Enums"]["app_role"]
         }[]
       }
-      get_public_products: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          category: string
-          country: string
-          created_at: string
-          description: Json
-          features: Json
-          id: string
-          images: Json
-          in_stock: boolean
-          name: Json
-        }[]
-      }
       get_user_role: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]
