@@ -365,7 +365,7 @@ export const EditProductDialog = ({ product, open, onOpenChange }: EditProductDi
               <div>
                 <div>
                   <Label htmlFor="status">Статус</Label>
-                  <Select value={formData.status} onValueChange={(value: 'active' | 'draft' | 'archived') => setFormData(prev => ({ ...prev, status: value }))}>
+                  <Select value={formData.status} <Select value={formData.status} onValueChange={(value: 'active' | 'draft') => setFormData(prev => ({ ...prev, status: value }))}>} => setFormData(prev => ({ ...prev, status: value }))}>
                     <SelectTrigger className="w-40">
                       <SelectValue />
                     </SelectTrigger>
