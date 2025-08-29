@@ -5,6 +5,7 @@ import { useUserPermissions } from '@/hooks/useUserPermissions';
 import { useAuth } from '@/hooks/useAuth';
 import { useTranslation } from 'react-i18next';
 import DirectorDashboardMetrics from './DirectorDashboardMetrics';
+import ExecutiveOverview from '../Analytics/ExecutiveOverview';
 import { getRoleTranslation } from '@/utils/roleTranslations';
 import { 
   TrendingUp, 
@@ -157,51 +158,8 @@ const RoleBasedDashboard = () => {
 
   const renderDirectorDashboard = () => (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('dashboard.teamConversion')}</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{conversionRate}%</div>
-            <p className="text-xs text-muted-foreground">
-              {t('dashboard.overallEfficiency')}
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('dashboard.requireAttention')}</CardTitle>
-            <AlertCircle className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {totalLeads - closedLeads - lostLeads}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              {t('dashboard.activeLeads')}
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('dashboard.monthResult')}</CardTitle>
-            <Award className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{closedLeads}</div>
-            <p className="text-xs text-muted-foreground">
-              {t('dashboard.closedDeals')}
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Enhanced Director Metrics */}
-      <DirectorDashboardMetrics />
+      {/* Enhanced Executive Overview for Directors */}
+      <ExecutiveOverview />
     </div>
   );
 

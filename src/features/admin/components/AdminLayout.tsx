@@ -17,6 +17,7 @@ const AdminLayout = () => {
   
   const navigation = [
     { name: t('admin.dashboard'), href: '/admin' },
+    { name: 'Аналитика', href: '/admin/analytics' },
     { name: 'Лиды', href: '/admin/leads' },
     { name: t('admin.products'), href: '/admin/products' },
     { name: 'Услуги', href: '/admin/services' },
