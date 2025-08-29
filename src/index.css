@@ -22,52 +22,52 @@
     --msc-text: 232 78% 15%; /* #0C1139 for text */
     --msc-text-light: 220 13% 46%; /* Gray text */
     
-    /* Semantic tokens based on MSC brand */
-    --background: 240 9% 99%; /* MSC white */
-    --foreground: 232 78% 15%; /* MSC deep blue */
+    /* Semantic tokens based on MSC brand - Soft Dark Theme */
+    --background: 225 9% 8%; /* Soft dark background */
+    --foreground: 220 20% 92%; /* Light text for contrast */
 
-    --card: 240 9% 99%;
-    --card-foreground: 232 78% 15%;
+    --card: 225 12% 10%; /* Slightly lighter cards */
+    --card-foreground: 220 20% 92%;
 
-    --popover: 240 9% 99%;
-    --popover-foreground: 232 78% 15%;
+    --popover: 225 15% 12%;
+    --popover-foreground: 220 20% 92%;
 
-    --primary: 232 78% 15%; /* MSC primary blue */
-    --primary-foreground: 240 9% 99%;
+    --primary: 220 100% 70%; /* MSC accent blue as primary */
+    --primary-foreground: 225 9% 8%;
 
-    --secondary: 220 60% 95%; /* Light accent */
-    --secondary-foreground: 232 78% 15%;
+    --secondary: 225 12% 16%; /* Dark secondary */
+    --secondary-foreground: 220 20% 92%;
 
-    --muted: 220 13% 95%;
-    --muted-foreground: 220 13% 46%;
+    --muted: 225 12% 14%;
+    --muted-foreground: 220 13% 65%;
 
     --accent: 220 100% 70%; /* MSC accent blue */
-    --accent-foreground: 240 9% 99%;
+    --accent-foreground: 225 9% 8%;
 
     --destructive: 0 84% 60%;
-    --destructive-foreground: 240 9% 99%;
+    --destructive-foreground: 220 20% 92%;
 
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
+    --border: 225 12% 18%;
+    --input: 225 12% 16%;
     --ring: 220 100% 70%;
 
     --radius: 0.75rem;
 
-    --sidebar-background: 0 0% 98%;
+    --sidebar-background: 225 15% 6%; /* Darker sidebar */
 
-    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-foreground: 220 20% 88%;
 
-    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary: 220 100% 70%;
 
-    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-primary-foreground: 225 9% 8%;
 
-    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent: 225 12% 14%;
 
-    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-accent-foreground: 220 20% 88%;
 
-    --sidebar-border: 220 13% 91%;
+    --sidebar-border: 225 12% 16%;
 
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-ring: 220 100% 70%;
   }
 
   .dark {
