@@ -98,13 +98,6 @@ export type Database = {
             referencedRelation: "products"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "conversion_analytics_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: false
-            referencedRelation: "public_products"
-            referencedColumns: ["id"]
-          },
         ]
       }
       deals: {
@@ -554,42 +547,7 @@ export type Database = {
       }
     }
     Views: {
-      public_products: {
-        Row: {
-          category: string | null
-          country: string | null
-          created_at: string | null
-          description: Json | null
-          features: Json | null
-          id: string | null
-          images: Json | null
-          in_stock: boolean | null
-          name: Json | null
-        }
-        Insert: {
-          category?: string | null
-          country?: string | null
-          created_at?: string | null
-          description?: Json | null
-          features?: Json | null
-          id?: string | null
-          images?: Json | null
-          in_stock?: boolean | null
-          name?: Json | null
-        }
-        Update: {
-          category?: string | null
-          country?: string | null
-          created_at?: string | null
-          description?: Json | null
-          features?: Json | null
-          id?: string | null
-          images?: Json | null
-          in_stock?: boolean | null
-          name?: Json | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       accept_invite: {
@@ -632,6 +590,20 @@ export type Database = {
           expires_at: string
           id: string
           role: Database["public"]["Enums"]["app_role"]
+        }[]
+      }
+      get_public_products: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          category: string
+          country: string
+          created_at: string
+          description: Json
+          features: Json
+          id: string
+          images: Json
+          in_stock: boolean
+          name: Json
         }[]
       }
       get_user_role: {
