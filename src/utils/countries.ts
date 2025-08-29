@@ -15,10 +15,18 @@ export const countries = [
   { code: 'FI', name: { ru: 'Финляндия', en: 'Finland', uz: 'Finlandiya' }, flag: '🇫🇮' },
   { code: 'NO', name: { ru: 'Норвегия', en: 'Norway', uz: 'Norvegiya' }, flag: '🇳🇴' },
   { code: 'DK', name: { ru: 'Дания', en: 'Denmark', uz: 'Daniya' }, flag: '🇩🇰' },
+  { code: 'PL', name: { ru: 'Польша', en: 'Poland', uz: 'Polsha' }, flag: '🇵🇱' },
+  { code: 'CZ', name: { ru: 'Чехия', en: 'Czech Republic', uz: 'Chexiya' }, flag: '🇨🇿' },
+  { code: 'SK', name: { ru: 'Словакия', en: 'Slovakia', uz: 'Slovakiya' }, flag: '🇸🇰' },
+  { code: 'HU', name: { ru: 'Венгрия', en: 'Hungary', uz: 'Vengriya' }, flag: '🇭🇺' },
+  { code: 'ES', name: { ru: 'Испания', en: 'Spain', uz: 'Ispaniya' }, flag: '🇪🇸' },
+  { code: 'PT', name: { ru: 'Португалия', en: 'Portugal', uz: 'Portugaliya' }, flag: '🇵🇹' },
   { code: 'IL', name: { ru: 'Израиль', en: 'Israel', uz: 'Isroil' }, flag: '🇮🇱' },
   { code: 'CA', name: { ru: 'Канада', en: 'Canada', uz: 'Kanada' }, flag: '🇨🇦' },
   { code: 'AU', name: { ru: 'Австралия', en: 'Australia', uz: 'Avstraliya' }, flag: '🇦🇺' },
   { code: 'RU', name: { ru: 'Россия', en: 'Russia', uz: 'Rossiya' }, flag: '🇷🇺' },
+  { code: 'UZ', name: { ru: 'Узбекистан', en: 'Uzbekistan', uz: 'O\'zbekiston' }, flag: '🇺🇿' },
+  { code: 'IN', name: { ru: 'Индия', en: 'India', uz: 'Hindiston' }, flag: '🇮🇳' },
 ];
 
 export const getCountryByCode = (code: string | null) => {
