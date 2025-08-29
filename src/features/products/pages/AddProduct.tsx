@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { ArrowLeft, Save, Loader2, Plus } from 'lucide-react';
-import { useProducts } from '@/hooks/useProducts';
+import { useAdminProducts } from '@/hooks/useProducts';
 import { useToast } from '@/hooks/use-toast';
 import { ImageUpload } from '@/components/common/ProductImageUpload';
 import { CategoryDialog } from '@/components/common/CategoryDialog';
@@ -30,7 +30,7 @@ const statusOptions = [
 const AddProduct = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { addProduct } = useProducts();
+  const { addProduct } = useAdminProducts();
   const { categories } = useCategories();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);

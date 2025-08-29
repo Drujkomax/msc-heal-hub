@@ -251,10 +251,47 @@ export const useAdminProducts = () => {
     }
   };
 
+  const addProduct = async (productData: Omit<Product, 'id' | 'created_at' | 'updated_at'>) => {
+    try {
+      // Clean up empty features
+      const cleanedFeatures = {
+        ru: productData.features?.ru?.filter(f => f.trim()) || [],
+        en: productData.features?.en?.filter(f => f.trim()) || [],
+        uz: productData.features?.uz?.filter(f => f.trim()) || []
+      };
+
+      const cleanedData = {
+        ...productData,
+        features: cleanedFeatures
+      };
+
+      console.log('Adding product with data:', cleanedData);
+
+      const { data, error } = await supabase
+        .from('products')
+        .insert([cleanedData])
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Database error:', error);
+        throw error;
+      }
+      
+      console.log('Product added successfully:', data);
+      await fetchProducts(); // Refresh the list
+      return data;
+    } catch (err) {
+      console.error('Error adding product:', err);
+      throw new Error(err instanceof Error ? err.message : 'Ошибка при добавлении товара');
+    }
+  };
+
   return {
     products,
     loading,
     error,
+    addProduct,
     deleteProduct,
     archiveProduct,
     updateProduct,

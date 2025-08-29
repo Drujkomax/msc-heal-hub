@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, Loader2 } from 'lucide-react';
-import { useProducts } from '@/hooks/useProducts';
+import { useAdminProducts } from '@/hooks/useProducts';
 import { useCategories } from '@/hooks/useCategories';
 import { useToast } from '@/hooks/use-toast';
 import { ImageUpload } from '@/components/common/ImageUpload';
@@ -16,7 +16,7 @@ import { countries } from '@/utils/countries';
 
 
 export const AddProductDialog = () => {
-  const { addProduct } = useProducts();
+  const { addProduct } = useAdminProducts();
   const { categories } = useCategories();
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
