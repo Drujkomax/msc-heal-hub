@@ -395,6 +395,101 @@ export type Database = {
         }
         Relationships: []
       }
+      system_alerts: {
+        Row: {
+          acknowledged_at: string | null
+          acknowledged_by: string | null
+          alert_type: string
+          created_at: string
+          description: string | null
+          details: Json | null
+          id: string
+          resolved_at: string | null
+          severity: string
+          status: string
+          title: string
+          triggered_by_log_id: string | null
+        }
+        Insert: {
+          acknowledged_at?: string | null
+          acknowledged_by?: string | null
+          alert_type: string
+          created_at?: string
+          description?: string | null
+          details?: Json | null
+          id?: string
+          resolved_at?: string | null
+          severity?: string
+          status?: string
+          title: string
+          triggered_by_log_id?: string | null
+        }
+        Update: {
+          acknowledged_at?: string | null
+          acknowledged_by?: string | null
+          alert_type?: string
+          created_at?: string
+          description?: string | null
+          details?: Json | null
+          id?: string
+          resolved_at?: string | null
+          severity?: string
+          status?: string
+          title?: string
+          triggered_by_log_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "system_alerts_triggered_by_log_id_fkey"
+            columns: ["triggered_by_log_id"]
+            isOneToOne: false
+            referencedRelation: "system_logs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      system_logs: {
+        Row: {
+          category: string
+          created_at: string
+          details: Json | null
+          id: string
+          ip_address: unknown | null
+          level: string
+          message: string
+          stack_trace: string | null
+          url: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          ip_address?: unknown | null
+          level?: string
+          message: string
+          stack_trace?: string | null
+          url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          ip_address?: unknown | null
+          level?: string
+          message?: string
+          stack_trace?: string | null
+          url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       tasks: {
         Row: {
           assignee_id: string | null
@@ -582,6 +677,17 @@ export type Database = {
           total_actions: number
         }[]
       }
+      get_log_statistics: {
+        Args: { p_end_date?: string; p_start_date?: string }
+        Returns: {
+          categories: Json
+          date: string
+          error_count: number
+          info_count: number
+          total_logs: number
+          warn_count: number
+        }[]
+      }
       get_pending_invites: {
         Args: Record<PropertyKey, never>
         Returns: {
@@ -625,6 +731,20 @@ export type Database = {
           p_entity_id?: string
           p_entity_type?: string
           p_session_duration?: number
+        }
+        Returns: string
+      }
+      log_system_event: {
+        Args: {
+          p_category: string
+          p_details?: Json
+          p_ip_address?: unknown
+          p_level: string
+          p_message: string
+          p_stack_trace?: string
+          p_url?: string
+          p_user_agent?: string
+          p_user_id?: string
         }
         Returns: string
       }

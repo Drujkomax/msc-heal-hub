@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useSystemLogger } from './useSystemLogger';
 
 interface PerformanceMetrics {
   name: string;
@@ -41,9 +42,10 @@ class PerformanceMonitor {
         performance.clearMarks(`${name}-end`);
         performance.clearMeasures(name);
         
-        // Log performance issues
+        // Log performance issues to system logger
         if (measure.duration > 1000) {
           console.warn(`Performance warning: ${name} took ${measure.duration.toFixed(2)}ms`);
+          // Will be logged via usePerformanceMonitoring hook
         }
       }
     }
@@ -77,6 +79,7 @@ class PerformanceMonitor {
 
 export const usePerformanceMonitoring = (componentName?: string) => {
   const monitor = PerformanceMonitor.getInstance();
+  const { logPerformance } = useSystemLogger();
 
   useEffect(() => {
     if (componentName) {
@@ -92,10 +95,30 @@ export const usePerformanceMonitoring = (componentName?: string) => {
     operationName: string,
     operation: () => Promise<T>
   ): Promise<T> => {
+    const startTime = Date.now();
     monitor.startMeasure(operationName);
     try {
       const result = await operation();
+      const duration = Date.now() - startTime;
+      
+      // Логируем в систему
+      logPerformance(operationName, duration, {
+        operationType: 'async',
+        success: true
+      });
+      
       return result;
+    } catch (error) {
+      const duration = Date.now() - startTime;
+      
+      // Логируем ошибку с производительностью
+      logPerformance(operationName, duration, {
+        operationType: 'async',
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+      
+      throw error;
     } finally {
       monitor.endMeasure(operationName);
     }

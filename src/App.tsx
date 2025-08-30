@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ErrorBoundary from "@/components/providers/ErrorBoundary";
+import { setupGlobalErrorHandling } from "@/utils/globalErrorHandler";
 import Header from "./components/Layout/Header";
 import Footer from "./components/Layout/Footer";
 import Home from "./pages/Home";
@@ -40,12 +42,14 @@ const queryClient = new QueryClient({
 const App = () => {
   const [language, setLanguage] = useState<'ru' | 'en' | 'uz'>('ru');
 
-  // Debug log to check language value
-  console.log('Current language:', language);
+  useEffect(() => {
+    setupGlobalErrorHandling();
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
+      <ErrorBoundary>
+        <TooltipProvider>
         <Toaster />
         <Sonner />
         <BrowserRouter>
@@ -79,6 +83,7 @@ const App = () => {
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
+      </ErrorBoundary>
     </QueryClientProvider>
   );
 };
