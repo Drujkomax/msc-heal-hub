@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Plus, Phone, Building, Eye } from 'lucide-react';
-import { useLeads } from '@/hooks/useLeads';
+import { useLeads, Lead } from '@/hooks/useLeads';
 import { useUserPermissions } from '@/hooks/useUserPermissions';
 import { useAuth } from '@/hooks/useAuth';
 import { useDuplicateDetection } from '@/hooks/useDuplicateDetection';
@@ -24,7 +24,7 @@ const stages = [
 ];
 
 const KanbanBoard = () => {
-  const [selectedLead, setSelectedLead] = useState<any>(null);
+  const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { leads, loading, changeLeadStage, refetch } = useLeads();
   const { hasPermission } = useUserPermissions();
@@ -89,7 +89,7 @@ const KanbanBoard = () => {
     return visibleLeads.filter(lead => lead.stage === stageId);
   };
 
-  const openLeadModal = (lead?: any) => {
+  const openLeadModal = (lead?: Lead) => {
     setSelectedLead(lead || null);
     setIsModalOpen(true);
   };
