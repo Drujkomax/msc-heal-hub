@@ -27,7 +27,7 @@ import {
   User,
   Phone,
   Building,
-  Calendar,
+  CalendarIcon,
   Filter,
   AlertTriangle,
   LayoutGrid,
@@ -37,6 +37,9 @@ import {
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { cn } from '@/lib/utils';
 
 const Leads = () => {
   // Helper functions for lead stages
@@ -106,6 +109,9 @@ const Leads = () => {
   const { mergeLeads, loading: merging } = useLeadMerge();
   const [searchTerm, setSearchTerm] = useState('');
   const [stageFilter, setStageFilter] = useState<string>('all');
+  const [assignedFilter, setAssignedFilter] = useState<string>('all');
+  const [startDate, setStartDate] = useState<Date | undefined>();
+  const [endDate, setEndDate] = useState<Date | undefined>();
   const [employees, setEmployees] = useState<Array<{id: string, email: string, role: string}>>([]);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [leadModalOpen, setLeadModalOpen] = useState(false);
@@ -165,7 +171,15 @@ const Leads = () => {
     
     const matchesStage = stageFilter === 'all' || lead.stage === stageFilter;
     
-    return matchesSearch && matchesStage;
+    const matchesAssigned = assignedFilter === 'all' || 
+      (assignedFilter === 'unassigned' && !lead.assigned_to) ||
+      (assignedFilter !== 'unassigned' && lead.assigned_to === assignedFilter);
+    
+    const leadDate = new Date(lead.created_at);
+    const matchesDateRange = (!startDate || leadDate >= startDate) && 
+                             (!endDate || leadDate <= endDate);
+    
+    return matchesSearch && matchesStage && matchesAssigned && matchesDateRange;
   });
 
   const handleArchiveLead = async (id: string) => {
@@ -312,7 +326,7 @@ const Leads = () => {
       {/* Filters */}
       <Card>
         <CardContent className="p-4">
-          <div className="flex flex-col gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="flex-1">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
@@ -324,7 +338,8 @@ const Leads = () => {
                 />
               </div>
             </div>
-            <div className="w-full">
+            
+            <div>
               <Select value={stageFilter} onValueChange={setStageFilter}>
                 <SelectTrigger>
                   <Filter className="w-4 h-4 mr-2" />
@@ -339,6 +354,74 @@ const Leads = () => {
                   ))}
                 </SelectContent>
               </Select>
+            </div>
+
+            <div>
+              <Select value={assignedFilter} onValueChange={setAssignedFilter}>
+                <SelectTrigger>
+                  <User className="w-4 h-4 mr-2" />
+                  <SelectValue placeholder="Назначен" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Все</SelectItem>
+                  <SelectItem value="unassigned">Не назначен</SelectItem>
+                  {employees.map((employee) => (
+                    <SelectItem key={employee.id} value={employee.id}>
+                      {employee.email}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex gap-2">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "justify-start text-left font-normal",
+                      !startDate && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {startDate ? format(startDate, "dd.MM.yyyy") : "От"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={startDate}
+                    onSelect={setStartDate}
+                    initialFocus
+                    className="pointer-events-auto"
+                  />
+                </PopoverContent>
+              </Popover>
+
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "justify-start text-left font-normal",
+                      !endDate && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {endDate ? format(endDate, "dd.MM.yyyy") : "До"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={endDate}
+                    onSelect={setEndDate}
+                    initialFocus
+                    className="pointer-events-auto"
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
         </CardContent>
