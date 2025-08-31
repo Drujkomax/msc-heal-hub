@@ -192,6 +192,50 @@ export type Database = {
         }
         Relationships: []
       }
+      lead_activities: {
+        Row: {
+          content: string
+          created_at: string
+          created_by: string | null
+          id: string
+          lead_id: string
+          metadata: Json | null
+          new_value: string | null
+          old_value: string | null
+          type: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          lead_id: string
+          metadata?: Json | null
+          new_value?: string | null
+          old_value?: string | null
+          type: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          lead_id?: string
+          metadata?: Json | null
+          new_value?: string | null
+          old_value?: string | null
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_activities_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lead_notes: {
         Row: {
           content: string

@@ -4,10 +4,13 @@ import { supabase } from '@/integrations/supabase/client';
 export interface Lead {
   id: string;
   name: string;
+  email?: string;
   phone?: string;
   company?: string;
   stage: string;
+  source?: string;
   notes?: string;
+  value?: number;
   assigned_to?: string;
   assigned_by?: string;
   created_at: string;
@@ -42,11 +45,13 @@ export const useLeads = () => {
 
   const addLead = async (leadData: {
     name: string;
+    email?: string;
     phone?: string;
     company?: string;
     stage?: string;
     notes?: string;
     source?: string;
+    value?: number;
   }) => {
     try {
       const { data, error } = await supabase

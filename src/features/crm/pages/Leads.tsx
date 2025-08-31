@@ -14,8 +14,7 @@ import { supabase } from '@/integrations/supabase/client';
 import RoleBasedAccess from '@/components/auth/RoleBasedAccess';
 import { LeadHybridCard } from '../components/LeadHybridCard';
 import { DuplicateAlert } from '../components/DuplicateAlert';
-import { ViewLeadModal } from '../components/ViewLeadModal';
-import { EditLeadModal } from '../components/EditLeadModal';
+import { EnhancedLeadModal } from '../components/EnhancedLeadModal';
 import CreateDealFromLeadDialog from '../components/CreateDealFromLeadDialog';
 import { AddLeadDialog } from '../components/AddLeadDialog';
 import { 
@@ -45,8 +44,7 @@ const Leads = () => {
   const [stageFilter, setStageFilter] = useState<string>('all');
   const [employees, setEmployees] = useState<Array<{id: string, email: string, role: string}>>([]);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
-  const [viewModalOpen, setViewModalOpen] = useState(false);
-  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [leadModalOpen, setLeadModalOpen] = useState(false);
   const [createDealLead, setCreateDealLead] = useState<Lead | null>(null);
   const [addLeadModalOpen, setAddLeadModalOpen] = useState(false);
 
@@ -146,22 +144,21 @@ const Leads = () => {
 
   const handleViewLead = (lead: Lead) => {
     setSelectedLead(lead);
-    setViewModalOpen(true);
+    setLeadModalOpen(true);
   };
 
   const handleEditLead = (lead: Lead) => {
     setSelectedLead(lead);
-    setEditModalOpen(true);
+    setLeadModalOpen(true);
   };
 
-  const handleCloseViewModal = () => {
-    setViewModalOpen(false);
+  const handleCloseLeadModal = () => {
+    setLeadModalOpen(false);
     setSelectedLead(null);
   };
 
-  const handleCloseEditModal = () => {
-    setEditModalOpen(false);
-    setSelectedLead(null);
+  const handleLeadUpdate = () => {
+    refetch(); // Refresh leads data
   };
 
   const handleCreateDeal = (lead: Lead) => {
@@ -312,16 +309,11 @@ const Leads = () => {
       </div>
 
       {/* Модальные окна */}
-      <ViewLeadModal 
+      <EnhancedLeadModal 
         lead={selectedLead}
-        isOpen={viewModalOpen}
-        onClose={handleCloseViewModal}
-      />
-      
-      <EditLeadModal 
-        lead={selectedLead}
-        isOpen={editModalOpen}
-        onClose={handleCloseEditModal}
+        isOpen={leadModalOpen}
+        onClose={handleCloseLeadModal}
+        onLeadUpdate={handleLeadUpdate}
       />
 
       <CreateDealFromLeadDialog
