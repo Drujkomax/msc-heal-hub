@@ -143,7 +143,7 @@ export const AddLeadDialog = ({ open, onClose, onSuccess }: AddLeadDialogProps) 
               type="tel"
               value={formData.phone}
               onChange={(e) => handleInputChange('phone', e.target.value)}
-              placeholder="+7 (xxx) xxx-xx-xx"
+              placeholder="+998 (xx) xxx-xx-xx"
             />
           </div>
 
