@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useToast } from '@/hooks/use-toast';
 import { useLeads, Lead } from '@/hooks/useLeads';
 import { useDuplicateDetection } from '@/hooks/useDuplicateDetection';
@@ -29,10 +31,39 @@ import {
   Filter,
   AlertTriangle,
   LayoutGrid,
-  Plus
+  Plus,
+  MoreHorizontal
 } from 'lucide-react';
+import { format } from 'date-fns';
+import { ru } from 'date-fns/locale';
 
 const Leads = () => {
+  // Helper functions for lead stages
+  const getStageLabel = (stage: string) => {
+    const stageMap: Record<string, string> = {
+      new: 'Новый',
+      contacted: 'Связались',
+      qualified: 'Квалифицирован',
+      proposal: 'Предложение',
+      negotiation: 'Переговоры',
+      closed: 'Закрыт',
+      lost: 'Потерян'
+    };
+    return stageMap[stage] || stage;
+  };
+
+  const getStageColor = (stage: string) => {
+    const colorMap: Record<string, string> = {
+      new: 'bg-blue-100 text-blue-800 border-blue-200',
+      contacted: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+      qualified: 'bg-purple-100 text-purple-800 border-purple-200',
+      proposal: 'bg-orange-100 text-orange-800 border-orange-200',
+      negotiation: 'bg-indigo-100 text-indigo-800 border-indigo-200',
+      closed: 'bg-green-100 text-green-800 border-green-200',
+      lost: 'bg-red-100 text-red-800 border-red-200'
+    };
+    return colorMap[stage] || 'bg-gray-100 text-gray-800 border-gray-200';
+  };
   // Force cache refresh
   const { toast } = useToast();
   const { leads, loading, deleteLead, archiveLead, changeLeadStage, refetch } = useLeads();
@@ -280,33 +311,87 @@ const Leads = () => {
         </CardContent>
       </Card>
 
-      {/* Leads Grid */}
-      <div className="grid gap-4 md:gap-6">
-        {filteredLeads.length === 0 ? (
-          <Card>
-            <CardContent className="flex flex-col items-center justify-center py-8">
+      {/* Leads Table */}
+      <Card>
+        <CardContent className="p-0">
+          {filteredLeads.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-8">
               <AlertTriangle className="h-12 w-12 text-muted-foreground mb-4" />
               <h3 className="text-lg font-medium mb-2">Лиды не найдены</h3>
               <p className="text-muted-foreground text-center">
                 Попробуйте изменить фильтры или добавить новых лидов
               </p>
-            </CardContent>
-          </Card>
-        ) : (
-          filteredLeads.map((lead) => (
-            <LeadHybridCard
-              key={lead.id}
-              lead={lead}
-              allLeads={leads}
-              onView={() => handleViewLead(lead)}
-              onEdit={() => handleEditLead(lead)}
-              onArchive={handleArchiveLead}
-              onStageChange={handleStageChange}
-              onCreateDeal={handleCreateDeal}
-            />
-          ))
-        )}
-      </div>
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Имя</TableHead>
+                  <TableHead>Компания</TableHead>
+                  <TableHead>Телефон</TableHead>
+                  <TableHead>Статус</TableHead>
+                  <TableHead>Создан</TableHead>
+                  <TableHead>Назначен</TableHead>
+                  <TableHead className="text-right">Действия</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredLeads.map((lead) => (
+                  <TableRow key={lead.id} className="cursor-pointer hover:bg-muted/50">
+                    <TableCell className="font-medium">{lead.name}</TableCell>
+                    <TableCell>{lead.company || '-'}</TableCell>
+                    <TableCell>{lead.phone || '-'}</TableCell>
+                    <TableCell>
+                      <Badge 
+                        variant="outline" 
+                        className={getStageColor(lead.stage)}
+                      >
+                        {getStageLabel(lead.stage)}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      {format(new Date(lead.created_at), 'dd.MM.yyyy', { locale: ru })}
+                    </TableCell>
+                    <TableCell>
+                      {lead.assigned_to ? 'Назначен' : 'Не назначен'}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" className="h-8 w-8 p-0">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => handleViewLead(lead)}>
+                            <Eye className="mr-2 h-4 w-4" />
+                            Посмотреть
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleEditLead(lead)}>
+                            <Edit className="mr-2 h-4 w-4" />
+                            Редактировать
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleCreateDeal(lead)}>
+                            <Plus className="mr-2 h-4 w-4" />
+                            Создать сделку
+                          </DropdownMenuItem>
+                          <DropdownMenuItem 
+                            onClick={() => handleArchiveLead(lead.id)}
+                            className="text-destructive"
+                          >
+                            <Archive className="mr-2 h-4 w-4" />
+                            Архивировать
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Модальные окна */}
       <EnhancedLeadModal 
