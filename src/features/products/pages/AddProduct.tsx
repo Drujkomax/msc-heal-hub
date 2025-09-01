@@ -51,12 +51,35 @@ const AddProduct = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    console.log('Form data on submit:', formData);
+    
     // Minimal validation - only name is required
     if (!formData.name.ru.trim()) {
+      console.log('Validation failed: name is empty');
       toast({
         variant: 'destructive',
         title: 'Ошибка валидации',
         description: 'Название на русском языке обязательно'
+      });
+      return;
+    }
+    
+    if (!formData.description.ru.trim()) {
+      console.log('Validation failed: description is empty');
+      toast({
+        variant: 'destructive',
+        title: 'Ошибка валидации',
+        description: 'Описание на русском языке обязательно'
+      });
+      return;
+    }
+    
+    if (!formData.category) {
+      console.log('Validation failed: category is empty');
+      toast({
+        variant: 'destructive',
+        title: 'Ошибка валидации',
+        description: 'Выберите категорию товара'
       });
       return;
     }
