@@ -11,7 +11,7 @@ import { Switch } from '@/components/ui/switch';
 import { ArrowLeft, Save, Loader2 } from 'lucide-react';
 import { useAdminProducts, useAdminProduct } from '@/hooks/useProducts';
 import { useToast } from '@/hooks/use-toast';
-import { ImageUpload } from '@/components/common/ProductImageUpload';
+import { ProductImageUpload } from '@/components/common/ProductImageUpload';
 import { countries } from '@/utils/countries';
 
 const categories = [
@@ -292,7 +292,7 @@ const EditProduct = () => {
                 <CardTitle>Изображения</CardTitle>
               </CardHeader>
               <CardContent>
-                <ImageUpload
+                <ProductImageUpload
                   images={formData.images}
                   onImagesChange={(images) => setFormData(prev => ({
                     ...prev,

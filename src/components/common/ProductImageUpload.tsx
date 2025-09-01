@@ -13,7 +13,7 @@ interface ProductImageUploadProps {
   onImagesChange: (images: { cover: string | null; gallery: string[] }) => void;
 }
 
-export const ImageUpload = ({ images, onImagesChange }: ProductImageUploadProps) => {
+export const ProductImageUpload = ({ images, onImagesChange }: ProductImageUploadProps) => {
   const [uploading, setUploading] = useState<{ cover?: boolean; gallery?: boolean }>({});
   const { toast } = useToast();
 
