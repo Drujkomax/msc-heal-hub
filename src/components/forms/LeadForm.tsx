@@ -15,9 +15,7 @@ import { useTranslation } from 'react-i18next';
 interface LeadFormProps {
   onClose?: () => void;
 }
-const LeadForm: React.FC<LeadFormProps> = ({
-  onClose
-}) => {
+const LeadForm: React.FC<LeadFormProps> = ({ onClose }) => {
   const { toast } = useToast();
   const { addLead } = useLeads();
   const { t, i18n } = useTranslation();
@@ -135,9 +133,8 @@ const LeadForm: React.FC<LeadFormProps> = ({
             <button onClick={onClose} className="absolute top-3 right-3 text-white/80 hover:text-white transition-colors">
               <X className="w-5 h-5" />
             </button>
-            
-               <div className="text-center">
-                 <h2 className="font-heading text-lg font-bold mb-1 flex items-center justify-center gap-2">
+            <div className="text-center">
+              <h2 className="font-heading text-lg font-bold mb-1 flex items-center justify-center gap-2">
                    <MessageSquare className="w-5 h-5" />
                    {t('leadForm.title')}
                  </h2>
@@ -163,20 +160,27 @@ const LeadForm: React.FC<LeadFormProps> = ({
             <form onSubmit={handleSubmit} className="space-y-3">
               {/* Name */}
               <div className="space-y-1">
-                 <Label htmlFor="name" className="flex items-center gap-2 text-msc-text font-medium text-sm">
-                   <User className="w-4 h-4" />
-                   {t('leadForm.name')} *
-                 </Label>
-                  <Input id="name" value={formData.name} onChange={e => handleInputChange('name', e.target.value)} required className={`border-msc-primary/20 focus:border-msc-accent transition-all duration-200 h-10 ${validationErrors.name ? 'border-red-500' : ''}`} placeholder={t('leadForm.name')} />
-                  {validationErrors.name && <p className="text-red-500 text-xs mt-1 animate-in slide-in-from-top-1 duration-200">{validationErrors.name}</p>}
+                <Label htmlFor="name" className="flex items-center gap-2 text-msc-text font-medium text-sm">
+                  <User className="w-4 h-4" />
+                  {t('leadForm.name')} *
+                </Label>
+                <Input 
+                  id="name" 
+                  value={formData.name} 
+                  onChange={e => handleInputChange('name', e.target.value)} 
+                  required 
+                  className={`border-msc-primary/20 focus:border-msc-accent transition-all duration-200 h-10 ${validationErrors.name ? 'border-red-500' : ''}`} 
+                  placeholder={t('leadForm.name')} 
+                />
+                {validationErrors.name && <p className="text-red-500 text-xs mt-1 animate-in slide-in-from-top-1 duration-200">{validationErrors.name}</p>}
               </div>
 
               {/* Phone */}
               <div className="space-y-1">
-                 <Label htmlFor="phone" className="flex items-center gap-2 text-msc-text font-medium text-sm">
-                   <Phone className="w-4 h-4" />
-                   {t('leadForm.phone')} *
-                 </Label>
+                <Label htmlFor="phone" className="flex items-center gap-2 text-msc-text font-medium text-sm">
+                  <Phone className="w-4 h-4" />
+                  {t('leadForm.phone')} *
+                </Label>
                 <div className="relative">
                   <div className="absolute left-3 top-2.5 flex items-center gap-1.5 pointer-events-none">
                     <span className="text-base">🇺🇿</span>
@@ -192,11 +196,11 @@ const LeadForm: React.FC<LeadFormProps> = ({
 
               {/* Equipment Type */}
               <div className="space-y-1">
-                 <Label className="flex items-center gap-2 text-msc-text font-medium text-sm">
-                   <Settings className="w-4 h-4" />
-                   {t('leadForm.equipmentType')} *
-                 </Label>
-                 <Select value={formData.equipmentType} onValueChange={value => handleInputChange('equipmentType', value)} required>
+                <Label className="flex items-center gap-2 text-msc-text font-medium text-sm">
+                  <Settings className="w-4 h-4" />
+                  {t('leadForm.equipmentType')} *
+                </Label>
+                <Select value={formData.equipmentType} onValueChange={value => handleInputChange('equipmentType', value)} required>
                    <SelectTrigger className="border-msc-primary/20 focus:border-msc-accent h-10 transition-all duration-200">
                      <SelectValue placeholder={t('leadForm.equipmentType')} />
                    </SelectTrigger>
