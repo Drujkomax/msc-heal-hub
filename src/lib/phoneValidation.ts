@@ -24,14 +24,8 @@ export const validateUzbekPhoneNumber = (phone: string): boolean => {
   // Check if it's exactly 9 digits (excluding +998)
   const phoneDigits = digits.startsWith('998') ? digits.slice(3) : digits;
   
-  // Must be exactly 9 digits and start with valid prefixes
-  if (phoneDigits.length !== 9) return false;
-  
-  // Valid Uzbekistan mobile prefixes
-  const validPrefixes = ['90', '91', '93', '94', '95', '97', '98', '99', '33', '71', '73', '74', '75', '78', '79'];
-  const prefix = phoneDigits.slice(0, 2);
-  
-  return validPrefixes.includes(prefix);
+  // Must be exactly 9 digits
+  return phoneDigits.length === 9;
 };
 
 export const getFullUzbekPhoneNumber = (phone: string): string => {
