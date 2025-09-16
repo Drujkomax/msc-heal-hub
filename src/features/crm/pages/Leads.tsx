@@ -71,7 +71,7 @@ const Leads = () => {
 
   const getAssignedUserName = (userId: string) => {
     const employee = employees.find(emp => emp.id === userId);
-    return employee ? employee.email : 'Назначен';
+    return employee ? (employee.full_name || employee.email) : 'Назначен';
   };
 
   const handleAssignLead = async (leadId: string, assigneeId: string | null) => {
@@ -112,7 +112,7 @@ const Leads = () => {
   const [assignedFilter, setAssignedFilter] = useState<string>('all');
   const [startDate, setStartDate] = useState<Date | undefined>();
   const [endDate, setEndDate] = useState<Date | undefined>();
-  const [employees, setEmployees] = useState<Array<{id: string, email: string, role: string}>>([]);
+  const [employees, setEmployees] = useState<Array<{id: string, email: string, full_name: string, role: string}>>([]);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [leadModalOpen, setLeadModalOpen] = useState(false);
   const [createDealLead, setCreateDealLead] = useState<Lead | null>(null);
@@ -136,18 +136,38 @@ const Leads = () => {
 
   const fetchEmployees = async () => {
     try {
-      const { data, error } = await supabase
+      // Получаем сначала роли продавцов
+      const { data: userRoles, error: rolesError } = await supabase
         .from('user_roles')
         .select('user_id, role')
         .eq('role', 'salesperson');
 
-      if (error) throw error;
-      
-      const employeesData = data?.map(item => ({
-        id: item.user_id,
-        email: `user-${item.user_id.slice(0, 8)}@company.com`,
-        role: item.role
-      })) || [];
+      if (rolesError) throw rolesError;
+
+      if (!userRoles || userRoles.length === 0) {
+        setEmployees([]);
+        return;
+      }
+
+      // Получаем профили этих пользователей
+      const userIds = userRoles.map(role => role.user_id);
+      const { data: profiles, error: profilesError } = await supabase
+        .from('profiles')
+        .select('id, email, full_name')
+        .in('id', userIds);
+
+      if (profilesError) throw profilesError;
+
+      // Объединяем данные
+      const employeesData = userRoles.map(role => {
+        const profile = profiles?.find(p => p.id === role.user_id);
+        return {
+          id: role.user_id,
+          email: profile?.email || 'Неизвестный email',
+          full_name: profile?.full_name || profile?.email || 'Неизвестный пользователь',
+          role: role.role
+        };
+      });
       
       setEmployees(employeesData);
     } catch (error) {
@@ -367,7 +387,7 @@ const Leads = () => {
                   <SelectItem value="unassigned">Не назначен</SelectItem>
                   {employees.map((employee) => (
                     <SelectItem key={employee.id} value={employee.id}>
-                      {employee.email}
+                      {employee.full_name || employee.email}
                     </SelectItem>
                   ))}
                 </SelectContent>
