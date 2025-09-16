@@ -719,6 +719,10 @@ export type Database = {
         Args: { product_id: string; user_id: string }
         Returns: undefined
       }
+      confirm_user_registration: {
+        Args: { user_id: string }
+        Returns: Json
+      }
       create_first_director: {
         Args: { director_email: string }
         Returns: Json
