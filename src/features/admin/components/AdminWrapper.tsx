@@ -37,7 +37,7 @@ const AdminWrapper = () => {
     );
   }
 
-  // Показываем страницы регистрации без проверки авторизации через корректные маршруты
+  // Показываем страницы регистрации без проверки авторизации
   const currentPath = window.location.pathname;
   if (currentPath.includes('/admin/register/') || currentPath === '/admin/director-registration') {
     return (
@@ -59,7 +59,6 @@ const AdminWrapper = () => {
   // Если авторизован и админ - показываем админскую панель
   return (
     <Routes>
-      <Route path="register/:inviteId" element={<RegisterWithInvite />} />
       <Route path="login" element={<AdminAuth />} />
       <Route path="/*" element={<AdminLayout />}>
         <Route index element={<Dashboard />} />
