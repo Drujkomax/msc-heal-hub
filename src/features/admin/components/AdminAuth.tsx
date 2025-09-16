@@ -8,6 +8,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useToast } from '@/hooks/use-toast';
+import { createUserWithRole } from '@/utils/createUser';
 
 const AdminAuth = () => {
   const { t } = useTranslation();
@@ -17,6 +18,7 @@ const AdminAuth = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [createLoading, setCreateLoading] = useState(false);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -54,6 +56,26 @@ const AdminAuth = () => {
       });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleCreateUser = async () => {
+    setCreateLoading(true);
+    try {
+      await createUserWithRole('makhsud@medsc.uz', 'msc007uz', 'salesperson');
+      toast({
+        title: 'Успешно',
+        description: 'Пользователь создан: makhsud@medsc.uz (продавец)',
+      });
+    } catch (error) {
+      console.error('Error creating user:', error);
+      toast({
+        variant: "destructive",
+        title: 'Ошибка',
+        description: 'Не удалось создать пользователя',
+      });
+    } finally {
+      setCreateLoading(false);
     }
   };
 
@@ -108,6 +130,20 @@ const AdminAuth = () => {
               {t('auth.login')}
             </Button>
           </form>
+          
+          {/* Скрытая кнопка для создания пользователя */}
+          <div className="mt-4 text-center">
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={handleCreateUser}
+              disabled={createLoading}
+              className="text-xs opacity-50 hover:opacity-100"
+            >
+              {createLoading && <Loader2 className="mr-2 h-3 w-3 animate-spin" />}
+              Создать тестового пользователя
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </div>
