@@ -13,7 +13,7 @@ export const roleTranslations: Record<string, RoleTranslation> = {
     uz: 'Direktor'
   },
   'sales_manager': {
-    ru: 'Менеджер продаж',
+    ru: 'Руководитель',
     en: 'Sales Manager',
     uz: 'Sotuv menejeri'
   },
@@ -23,7 +23,7 @@ export const roleTranslations: Record<string, RoleTranslation> = {
     uz: 'Administrator'
   },
   'salesperson': {
-    ru: 'Продавец',
+    ru: 'Специалист по продажам',
     en: 'Salesperson',
     uz: 'Sotuvchi'
   },

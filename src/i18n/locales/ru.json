@@ -319,9 +319,9 @@
   },
   "roles": {
     "director": "Директор",
-    "salesManager": "Менеджер продаж", 
+    "salesManager": "Руководитель", 
     "admin": "Администратор",
-    "salesperson": "Продавец",
+    "salesperson": "Специалист по продажам",
     "user": "Пользователь",
     "notAssigned": "Не определена"
   },
