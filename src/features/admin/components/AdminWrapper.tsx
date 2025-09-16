@@ -37,15 +37,15 @@ const AdminWrapper = () => {
     );
   }
 
-  // Показываем страницу регистрации по приглашению без проверки авторизации
+  // Показываем страницы регистрации без проверки авторизации через корректные маршруты
   const currentPath = window.location.pathname;
-  if (currentPath.includes('/admin/register/')) {
-    return <RegisterWithInvite />;
-  }
-  
-  // Показываем страницу регистрации директора без проверки авторизации  
-  if (currentPath === '/admin/director-registration') {
-    return <DirectorRegistration />;
+  if (currentPath.includes('/admin/register/') || currentPath === '/admin/director-registration') {
+    return (
+      <Routes>
+        <Route path="register/:inviteId" element={<RegisterWithInvite />} />
+        <Route path="director-registration" element={<DirectorRegistration />} />
+      </Routes>
+    );
   }
 
   // Если пользователь не авторизован или не имеет административных прав - показываем форму входа

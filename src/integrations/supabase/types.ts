@@ -822,6 +822,14 @@ export type Database = {
         Args: { p_date?: string; p_product_id: string }
         Returns: undefined
       }
+      validate_invite: {
+        Args: { p_invite_id: string }
+        Returns: {
+          email: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+        }[]
+      }
       validate_product_category: {
         Args: { category_value: string }
         Returns: boolean

@@ -40,23 +40,20 @@ const RegisterWithInvite = () => {
     try {
       setValidating(true);
       
-      // Проверяем приглашение
-      const { data: invites, error } = await supabase
-        .from('user_invites')
-        .select('email, role')
-        .eq('id', inviteId)
-        .eq('used', false)
-        .gt('expires_at', new Date().toISOString())
-        .single();
+      // Проверяем приглашение через защищенную функцию
+      const { data, error } = await supabase.rpc('validate_invite', {
+        p_invite_id: inviteId
+      });
 
-      if (error || !invites) {
+      if (error || !data || data.length === 0) {
         setError('Приглашение недействительно или истекло');
         return;
       }
 
+      const invite = Array.isArray(data) ? data[0] : (data as any);
       setInviteData({
-        email: invites.email,
-        role: getRoleLabel(invites.role),
+        email: invite.email,
+        role: getRoleLabel(invite.role),
         message: 'Приглашение действительно'
       });
     } catch (err) {

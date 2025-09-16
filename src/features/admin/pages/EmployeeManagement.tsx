@@ -116,11 +116,19 @@ const EmployeeManagement = () => {
       if (error) throw error;
 
       const inviteData = data as { invite_id: string };
+      const fullLink = `${window.location.origin}/admin/register/${inviteData.invite_id}`;
 
       toast({
         title: 'Приглашение отправлено',
-        description: `Сотрудник может зарегистрироваться по ссылке: /admin/register/${inviteData.invite_id}`,
-        duration: 10000,
+        description: (
+          <span>
+            Сотрудник может зарегистрироваться по ссылке: {' '}
+            <a href={fullLink} className="underline text-primary" target="_blank" rel="noopener noreferrer">
+              {fullLink}
+            </a>
+          </span>
+        ),
+        duration: 15000,
       });
 
       setIsAddEmployeeOpen(false);
