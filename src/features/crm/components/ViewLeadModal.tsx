@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Lead } from '@/hooks/useLeads';
@@ -13,12 +14,57 @@ import {
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
+import { supabase } from '@/integrations/supabase/client';
 
 interface ViewLeadModalProps {
   lead: Lead | null;
   isOpen: boolean;
   onClose: () => void;
 }
+
+interface AssignedUserDisplayProps {
+  userId: string;
+}
+
+const AssignedUserDisplay = ({ userId }: AssignedUserDisplayProps) => {
+  const [userData, setUserData] = useState<{ full_name?: string; email?: string } | null>(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('full_name, email')
+          .eq('id', userId)
+          .single();
+
+        if (error) {
+          console.error('Error fetching user data:', error);
+          setUserData(null);
+        } else {
+          setUserData(data);
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        setUserData(null);
+      }
+    };
+
+    if (userId) {
+      fetchUserData();
+    }
+  }, [userId]);
+
+  if (!userData) {
+    return <span className="text-sm text-muted-foreground">Загрузка...</span>;
+  }
+
+  return (
+    <span className="text-sm">
+      {userData.full_name || userData.email || userId}
+    </span>
+  );
+};
 
 const stageLabels = {
   new: 'Новый',
@@ -138,7 +184,7 @@ export const ViewLeadModal = ({ lead, isOpen, onClose }: ViewLeadModalProps) => 
                 <label className="text-sm font-medium text-muted-foreground">Назначен</label>
                 <div className="flex items-center gap-2 mt-1">
                   <Target className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm">{lead.assigned_to}</span>
+                  <AssignedUserDisplay userId={lead.assigned_to} />
                 </div>
               </div>
             )}

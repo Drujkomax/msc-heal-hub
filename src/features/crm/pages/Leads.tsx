@@ -528,14 +528,14 @@ const Leads = () => {
                             <User className="mr-2 h-4 w-4" />
                             Не назначен
                           </DropdownMenuItem>
-                          {employees.map((employee) => (
+                           {employees.map((employee) => (
                             <DropdownMenuItem 
                               key={employee.id}
                               onClick={() => handleAssignLead(lead.id, employee.id)}
                               className="hover:bg-accent"
                             >
                               <User className="mr-2 h-4 w-4" />
-                              {employee.email}
+                              {employee.full_name || employee.email}
                             </DropdownMenuItem>
                           ))}
                         </DropdownMenuContent>
