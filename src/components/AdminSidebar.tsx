@@ -89,11 +89,11 @@ export function AdminSidebar() {
       <SidebarHeader className="border-b border-white/10 p-6">
         <div className="space-y-3 animate-fade-in">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-lg flex items-center justify-center overflow-hidden animate-glow">
+            <div className="w-12 h-12 rounded-lg flex items-center justify-center overflow-hidden animate-glow bg-white/10">
               <img 
                 src="/src/assets/msc-admin-logo.jpg" 
                 alt="Med Service Centre" 
-                className="w-full h-full object-contain"
+                className="w-10 h-10 object-cover rounded-md"
               />
             </div>
             <div>
