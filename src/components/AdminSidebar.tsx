@@ -89,19 +89,26 @@ export function AdminSidebar() {
       <SidebarHeader className="border-b border-white/10 p-6">
         <div className="space-y-3 animate-fade-in">
           <div className="flex items-center space-x-3">
+            <div className="w-12 h-12 rounded-lg flex items-center justify-center overflow-hidden animate-glow bg-white/10">
+              <img 
+                src="/src/assets/msc-admin-logo.jpg" 
+                alt="Med Service Centre" 
+                className="w-10 h-10 object-cover rounded-md"
+              />
+            </div>
             <div>
-              <span className="font-heading text-lg text-white">{t('navigation2.adminPanel')}</span>
-              <div className="text-xs text-gray-300">Med Service Centre</div>
+              <span className="font-heading text-lg gradient-text">{t('navigation2.adminPanel')}</span>
+              <div className="text-xs text-muted-foreground">Med Service Centre</div>
             </div>
           </div>
           {user?.email && (
-            <div className="bg-white/10 rounded-lg p-3 border border-white/20">
-              <div className="text-sm text-white font-medium">
+            <div className="glass-card rounded-lg p-3">
+              <div className="text-sm text-foreground font-medium">
                 {user.email}
               </div>
               <Badge 
                 variant="secondary" 
-                className="bg-blue-500/20 border-blue-400/30 text-blue-200 text-xs mt-1"
+                className="bg-gradient-to-r from-primary/20 to-accent/20 border-primary/30 text-primary text-xs mt-1"
               >
                 {getRoleTranslation(role, i18n.language)}
               </Badge>
@@ -112,7 +119,7 @@ export function AdminSidebar() {
 
       <SidebarContent className="px-3 py-4">
         <SidebarGroup>
-          <SidebarGroupLabel className="text-gray-300 font-medium mb-3 px-3">
+          <SidebarGroupLabel className="text-muted-foreground font-medium mb-3 px-3">
             {t('navigation2.navigation')}
           </SidebarGroupLabel>
           
@@ -127,15 +134,15 @@ export function AdminSidebar() {
                     <SidebarMenuButton asChild>
                       <Link
                         to={item.href}
-                        className={`flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 group ${
+                        className={`flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium smooth-transition group ${
                           active
-                            ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg'
-                            : 'text-gray-300 hover:bg-white/10 hover:text-white'
+                            ? 'bg-gradient-to-r from-primary to-accent text-white shadow-lg shadow-primary/25'
+                            : 'text-sidebar-foreground hover:bg-white/10 hover:text-white'
                         }`}
                       >
-                        <Icon className={`w-5 h-5 flex-shrink-0 ${active ? '' : 'group-hover:scale-110 transition-transform'}`} />
-                        <span className="group-hover:translate-x-1 transition-transform">{item.name}</span>
-                        {active && <div className="ml-auto w-2 h-2 bg-white rounded-full" />}
+                        <Icon className={`w-5 h-5 flex-shrink-0 ${active ? 'animate-float' : 'group-hover:scale-110 smooth-transition'}`} />
+                        <span className="group-hover:translate-x-1 smooth-transition">{item.name}</span>
+                        {active && <div className="ml-auto w-2 h-2 bg-white rounded-full animate-glow" />}
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -154,10 +161,10 @@ export function AdminSidebar() {
           <Link to="/">
             <Button 
               variant="outline" 
-              className="w-full justify-start bg-white/10 border-white/20 text-white hover:bg-white/20 transition-colors group" 
+              className="w-full justify-start glass-card border-white/20 hover:bg-white/10 smooth-transition group" 
               size="sm"
             >
-              <Home className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
+              <Home className="w-4 h-4 mr-2 group-hover:scale-110 smooth-transition" />
               {t('admin.toWebsite')}
             </Button>
           </Link>
