@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+
 import LanguageSwitcher from '@/components/common/LanguageSwitcher';
 import LogoutButton from '@/components/auth/LogoutButton';
 import { useUserRole } from '@/hooks/useUserRole';
@@ -137,11 +137,8 @@ export function AdminSidebar() {
 
       <SidebarFooter className="border-t border-border p-4">
         <div className="space-y-3">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-center">
             <LanguageSwitcher />
-            <Badge variant="secondary" className="text-xs">
-              {getRoleTranslation(role, i18n.language)}
-            </Badge>
           </div>
           <Link to="/">
             <Button variant="outline" className="w-full justify-start" size="sm">
