@@ -271,5 +271,67 @@
       "expert": "Ekspert maslahati",
       "free": "Bepul"
     }
+  },
+  "home": {
+    "hero": {
+      "title": "Med Service Centre",
+      "subtitle": "O'zbekistondagi yetakchi tibbiy uskunalar integratori",
+      "description": "Yetkazib berish,\no'rnatish, xodimlarni o'qitish\nva texnik xizmat",
+      "cta": "ROI hisoblagich",
+      "experience": "yillik tajriba",
+      "projects": "loyiha",
+      "clients": "Mamnun mijozlar",
+      "getConsultation": "Maslahat olish"
+    },
+    "process": {
+      "quote": "Taklif",
+      "supply": "Yetkazish",
+      "installation": "O'rnatish",
+      "training": "O'qitish",
+      "service": "Xizmat",
+      "roi": "Rentabellik"
+    },
+    "roiCalculator": {
+      "title": "Sizning tibbiy uskunangiz qancha muddatda o'zini oqlashini biling",
+      "description": "Uskuna narxi va protseduralar sonini kiritib, o'zini oqlash muddatini bilib oling",
+      "contactUs": "Biz bilan bog'laning",
+      "consultationOffer": "\"2025 yilda uskunani tez qanday to'lash\" bo'yicha 24 soat ichida maslahat oling!"
+    },
+    "categories": {
+      "title": "Uskuna toifalari",
+      "description": "Barcha yo'nalishlar uchun keng assortimentdagi tibbiy uskunalar",
+      "diagnostic": "Diagnostika uskunalari",
+      "surgical": "Jarrohlik uskunalari",
+      "rehabilitation": "Reabilitatsiya uskunalari",
+      "laboratory": "Laboratoriya uskunalari",
+      "dental": "Stomatologiya uskunalari",
+      "ophthalmology": "Oftalmologiya uskunalari"
+    },
+    "advantages": {
+      "title": "Nega bizni tanlashadi?",
+      "description": "Tibbiy masalalarni hal qilishda kompleks yondashuv",
+      "qualityGuarantee": {
+        "title": "Sifat kafolati",
+        "description": "Faqat yetakchi jahon ishlab chiqaruvchilarining sertifikatlangan uskunalari bilan ishlaymiz"
+      },
+      "support247": {
+        "title": "24/7 texnik yordam",
+        "description": "Har qanday muammo bo'yicha kunu-tun qo'llab-quvvatlash"
+      },
+      "fastInstallation": {
+        "title": "Tezkor o'rnatish",
+        "description": "Tajribali muhandislar jamoamiz uskunani tez va sifatli o'rnatadi"
+      },
+      "globalExperience": {
+        "title": "Respublika bo'ylab logistika",
+        "description": "O'zbekistonning istalgan hududiga yetkazib berish va montaj"
+      }
+    },
+    "finalCta": {
+      "title": "Tibbiy muassasangizni modernizatsiya qilishga tayyormisiz?",
+      "description": "Mutaxassislarimiz sizning ehtiyojlaringizga muvofiq optimal yechim topishda yordam beradi",
+      "requestButton": "Ariza qoldirish",
+      "managerButton": "Menejer 15 daqiqa ichida qo'ng'iroq qiladi"
+    }
   }
 }

@@ -271,5 +271,67 @@
       "expert": "Expert consultation",
       "free": "Free"
     }
+  },
+  "home": {
+    "hero": {
+      "title": "Med Service Centre",
+      "subtitle": "Leading medical equipment integrator in Uzbekistan",
+      "description": "Supply, installation,\nstaff training\nand technical support",
+      "cta": "Calculate ROI",
+      "experience": "years experience",
+      "projects": "projects",
+      "clients": "Satisfied clients",
+      "getConsultation": "Get Consultation"
+    },
+    "process": {
+      "quote": "Quote",
+      "supply": "Supply",
+      "installation": "Installation",
+      "training": "Training",
+      "service": "Service",
+      "roi": "ROI"
+    },
+    "roiCalculator": {
+      "title": "Calculate Your ROI",
+      "description": "Find out how long it will take for your medical equipment to pay for itself",
+      "contactUs": "Contact Us",
+      "consultationOffer": "Get consultation \"How to quickly pay back equipment in 2025\" in 24 hours!"
+    },
+    "categories": {
+      "title": "Equipment Categories",
+      "description": "Wide range of medical equipment for all medical fields",
+      "diagnostic": "Diagnostic Equipment",
+      "surgical": "Surgical Equipment",
+      "rehabilitation": "Rehabilitation Equipment",
+      "laboratory": "Laboratory Equipment",
+      "dental": "Dental Equipment",
+      "ophthalmology": "Ophthalmology Equipment"
+    },
+    "advantages": {
+      "title": "Why Choose Us",
+      "description": "Comprehensive approach to medical solutions",
+      "qualityGuarantee": {
+        "title": "Quality Guarantee",
+        "description": "We work only with certified equipment from leading global manufacturers"
+      },
+      "support247": {
+        "title": "24/7 Service",
+        "description": "Round-the-clock technical support and quick resolution of any issues"
+      },
+      "fastInstallation": {
+        "title": "Fast Installation",
+        "description": "Professional team of engineers ensures quick installation and setup"
+      },
+      "globalExperience": {
+        "title": "Logistics throughout Uzbekistan",
+        "description": "Delivery and installation of equipment in any region of the country"
+      }
+    },
+    "finalCta": {
+      "title": "Ready to modernize your medical facility?",
+      "description": "Our experts will help you find the optimal solution for your needs and budget",
+      "requestButton": "Submit Request",
+      "managerButton": "Manager will call back within 15 minutes"
+    }
   }
 }

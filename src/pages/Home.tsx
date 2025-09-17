@@ -16,53 +16,11 @@ const Home = ({ language }: HomeProps) => {
   const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(false);
   const [showConsultationForm, setShowConsultationForm] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     setIsVisible(true);
   }, []);
-
-  const content = {
-    ru: {
-      hero: {
-        title: 'Med Service Centre',
-        subtitle: 'Ведущий интегратор медицинского оборудования в Узбекистане',
-        description: "- Поставка\n- Инсталляция\n- Обучение персонала\n- Техническое обслуживание",
-        cta: 'Рассчитать ROI',
-        experience: '8 лет опыта',
-        projects: '300+ проектов',
-        clients: 'Довольных клиентов'
-      }
-    },
-    en: {
-      hero: {
-        title: 'Med Service Centre',
-        subtitle: 'Leading medical equipment integrator in Uzbekistan',
-        description: 'Supply, installation,\nstaff training\nand technical support',
-        cta: 'Calculate ROI',
-        experience: '8 years experience',
-        projects: '300+ projects',
-        clients: 'Satisfied clients'
-      }
-    },
-    uz: {
-      hero: {
-        title: 'Med Service Centre',
-        subtitle: "O'zbekistondagi yetakchi tibbiy uskunalar integratori",
-        description: "Yetkazib berish,\no'rnatish, xodimlarni o'qitish\nva texnik xizmat",
-        cta: 'ROI hisoblagich',
-        experience: 'Yillik tajriba',
-        projects: 'Loyiha',
-        clients: 'Mamnun mijozlar'
-      }
-    }
-  };
-
-  const t = content[language] || content['ru']; // Fallback to Russian if language is undefined
-
-  // Early return if content is not available
-  if (!t) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <div className="min-h-screen">
@@ -89,15 +47,15 @@ const Home = ({ language }: HomeProps) => {
             <div className={`max-w-2xl space-y-8 ${isVisible ? 'animate-reveal' : ''}`}>
               <div className="space-y-4">
                 <h1 className="font-heading text-6xl lg:text-8xl font-bold leading-tight">
-                  {t.hero.title.split(' ').map((word, index) => (
+                  {t('home.hero.title').split(' ').map((word, index) => (
                     <span key={index} className="block">{word}</span>
                   ))}
                 </h1>
                 <p className="text-xl lg:text-2xl text-white/90 font-medium">
-                  {t.hero.subtitle}
+                  {t('home.hero.subtitle')}
                 </p>
                 <p className="text-lg text-white/80 whitespace-pre-line">
-                  {t.hero.description}
+                  {t('home.hero.description')}
                 </p>
               </div>
 
@@ -105,15 +63,15 @@ const Home = ({ language }: HomeProps) => {
               <div className="grid grid-cols-3 gap-6 bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
                 <div className="text-center">
                   <div className="text-2xl lg:text-3xl font-bold text-white">8+</div>
-                  <div className="text-sm text-white/90 font-medium">{t.hero.experience}</div>
+                  <div className="text-sm text-white/90 font-medium">{t('home.hero.experience')}</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl lg:text-3xl font-bold text-white">300+</div>
-                  <div className="text-sm text-white/90 font-medium">{t.hero.projects}</div>
+                  <div className="text-sm text-white/90 font-medium">{t('home.hero.projects')}</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl lg:text-3xl font-bold text-white">100%</div>
-                  <div className="text-sm text-white/90 font-medium">{t.hero.clients}</div>
+                  <div className="text-sm text-white/90 font-medium">{t('home.hero.clients')}</div>
                 </div>
               </div>
 
@@ -126,7 +84,7 @@ const Home = ({ language }: HomeProps) => {
                     calculatorSection?.scrollIntoView({ behavior: 'smooth' });
                   }}
                 >
-                  {t.hero.cta}
+                  {t('home.hero.cta')}
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
                 <Button
@@ -134,7 +92,7 @@ const Home = ({ language }: HomeProps) => {
                   className="bg-white text-msc-primary hover:bg-white/90 font-semibold px-8 py-4 text-lg flex-1 sm:flex-none sm:min-w-[240px]"
                   onClick={() => setShowConsultationForm(true)}
                 >
-                  {language === 'ru' ? 'Получить консультацию' : language === 'en' ? 'Get Consultation' : 'Maslahat olish'}
+                  {t('home.hero.getConsultation')}
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
               </div>
@@ -156,12 +114,12 @@ const Home = ({ language }: HomeProps) => {
                 <div className="absolute inset-0 animate-[spin_20s_linear_infinite]">
                   {/* Process Icons positioned in perfect circle */}
                   {[
-                    { icon: FileText, label: language === 'ru' ? 'КП' : language === 'en' ? 'Quote' : 'Taklif', angle: 0 },
-                    { icon: Truck, label: language === 'ru' ? 'Поставка' : language === 'en' ? 'Supply' : 'Yetkazish', angle: 60 },
-                    { icon: Settings, label: language === 'ru' ? 'Установка' : language === 'en' ? 'Installation' : 'O\'rnatish', angle: 120 },
-                    { icon: GraduationCap, label: language === 'ru' ? 'Обучение' : language === 'en' ? 'Training' : 'O\'qitish', angle: 180 },
-                    { icon: Wrench, label: language === 'ru' ? 'Сервис' : language === 'en' ? 'Service' : 'Xizmat', angle: 240 },
-                    { icon: TrendingUp, label: language === 'ru' ? 'Окупаемость' : language === 'en' ? 'ROI' : 'Rentabellik', angle: 300 }
+                    { icon: FileText, label: t('home.process.quote'), angle: 0 },
+                    { icon: Truck, label: t('home.process.supply'), angle: 60 },
+                    { icon: Settings, label: t('home.process.installation'), angle: 120 },
+                    { icon: GraduationCap, label: t('home.process.training'), angle: 180 },
+                    { icon: Wrench, label: t('home.process.service'), angle: 240 },
+                    { icon: TrendingUp, label: t('home.process.roi'), angle: 300 }
                   ].map((item, index) => {
                     const IconComponent = item.icon;
                     const radius = window.innerWidth < 768 ? 120 : 180; // Distance from center - smaller on mobile
@@ -201,15 +159,10 @@ const Home = ({ language }: HomeProps) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="font-heading text-3xl lg:text-4xl font-bold text-msc-primary mb-4">
-              {language === 'ru' ? 'Рассчитайте окупаемость' : language === 'en' ? 'Calculate Your ROI' : 'Sizning tibbiy uskunangiz qancha muddatda o\'zini oqlashini biling'}
+              {t('home.roiCalculator.title')}
             </h2>
             <p className="text-lg text-msc-text-light max-w-2xl mx-auto">
-              {language === 'ru' 
-                ? 'Узнайте, за какой период окупится ваше медицинское оборудование'
-                : language === 'en'
-                ? 'Find out how long it will take for your medical equipment to pay for itself'
-                : 'Uskuna narxi va protseduralar sonini kiritib, o\'zini oqlash muddatini bilib oling'
-              }
+              {t('home.roiCalculator.description')}
             </p>
           </div>
           
@@ -224,11 +177,11 @@ const Home = ({ language }: HomeProps) => {
               className="bg-msc-accent hover:bg-msc-accent/90 text-white font-semibold px-8 py-4 text-lg shadow-lg"
               onClick={() => setShowConsultationForm(true)}
             >
-              {language === 'ru' ? 'Свяжитесь с нами' : language === 'en' ? 'Contact Us' : 'Biz bilan bog\'laning'}
+              {t('home.roiCalculator.contactUs')}
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
             <p className="text-lg font-semibold text-msc-primary mt-3 leading-relaxed">
-              {language === 'ru' ? 'Получите консультацию "Как быстро окупить оборудование в 2025" за 24 часа!' : language === 'en' ? 'Get consultation "How to quickly pay back equipment in 2025" in 24 hours!' : '"2025 yilda uskunani tez qanday to\'lash" bo\'yicha 24 soat ichida maslahat oling!'}
+              {t('home.roiCalculator.consultationOffer')}
             </p>
           </div>
         </div>
@@ -239,23 +192,21 @@ const Home = ({ language }: HomeProps) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="font-heading text-3xl lg:text-4xl font-bold text-msc-primary mb-4">
-              {language === 'ru' ? 'Категории оборудования' : language === 'en' ? 'Equipment Categories' : 'Uskuna toifalari'}
+              {t('home.categories.title')}
             </h2>
             <p className="text-lg text-msc-text-light max-w-2xl mx-auto">
-              {language === 'ru' ? 'Широкий спектр медицинского оборудования для всех направлений' : 
-               language === 'en' ? 'Wide range of medical equipment for all medical fields' : 
-               'Barcha yo\'nalishlar uchun keng assortimentdagi tibbiy uskunalar'}
+              {t('home.categories.description')}
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              { name: language === 'ru' ? 'Диагностическое оборудование' : language === 'en' ? 'Diagnostic Equipment' : 'Diagnostika uskunalari', icon: Stethoscope, category: 'diagnostic' },
-              { name: language === 'ru' ? 'Хирургическое оборудование' : language === 'en' ? 'Surgical Equipment' : 'Jarrohlik uskunalari', icon: Scissors, category: 'surgical' },
-              { name: language === 'ru' ? 'Реабилитационное оборудование' : language === 'en' ? 'Rehabilitation Equipment' : 'Reabilitatsiya uskunalari', icon: Heart, category: 'rehabilitation' },
-              { name: language === 'ru' ? 'Лабораторное оборудование' : language === 'en' ? 'Laboratory Equipment' : 'Laboratoriya uskunalari', icon: TestTube, category: 'laboratory' },
-              { name: language === 'ru' ? 'Стоматологическое оборудование' : language === 'en' ? 'Dental Equipment' : 'Stomatologiya uskunalari', icon: Smile, category: 'dental' },
-              { name: language === 'ru' ? 'Офтальмологическое оборудование' : language === 'en' ? 'Ophthalmology Equipment' : 'Oftalmologiya uskunalari', icon: Eye, category: 'ophthalmology' },
+              { name: t('home.categories.diagnostic'), icon: Stethoscope, category: 'diagnostic' },
+              { name: t('home.categories.surgical'), icon: Scissors, category: 'surgical' },
+              { name: t('home.categories.rehabilitation'), icon: Heart, category: 'rehabilitation' },
+              { name: t('home.categories.laboratory'), icon: TestTube, category: 'laboratory' },
+              { name: t('home.categories.dental'), icon: Smile, category: 'dental' },
+              { name: t('home.categories.ophthalmology'), icon: Eye, category: 'ophthalmology' },
             ].map((category, index) => (
               <Card 
                 key={index} 
@@ -279,12 +230,10 @@ const Home = ({ language }: HomeProps) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="font-heading text-3xl lg:text-4xl font-bold text-msc-primary mb-4">
-              {language === 'ru' ? 'Почему выбирают нас' : language === 'en' ? 'Why Choose Us' : 'Nega bizni tanlashadi?'}
+              {t('home.advantages.title')}
             </h2>
             <p className="text-lg text-msc-text-light max-w-2xl mx-auto">
-              {language === 'ru' ? 'Комплексный подход к решению медицинских задач' : 
-               language === 'en' ? 'Comprehensive approach to medical solutions' : 
-               'Tibbiy masalalarni hal qilishda kompleks yondashuv'}
+              {t('home.advantages.description')}
             </p>
           </div>
 
@@ -292,31 +241,23 @@ const Home = ({ language }: HomeProps) => {
             {[
               {
                 icon: Shield,
-                title: language === 'ru' ? 'Гарантия качества' : language === 'en' ? 'Quality Guarantee' : 'Sifat kafolati',
-                description: language === 'ru' ? 'Работаем только с сертифицированным оборудованием ведущих мировых производителей' : 
-                            language === 'en' ? 'We work only with certified equipment from leading global manufacturers' : 
-                            'Faqat yetakchi jahon ishlab chiqaruvchilarining sertifikatlangan uskunalari bilan ishlaymiz'
+                title: t('home.advantages.qualityGuarantee.title'),
+                description: t('home.advantages.qualityGuarantee.description')
               },
               {
                 icon: Headphones,
-                title: language === 'ru' ? 'Сервис 24/7' : language === 'en' ? '24/7 Service' : '24/7 texnik yordam',
-                description: language === 'ru' ? 'Круглосуточная техническая поддержка и оперативное решение любых вопросов' : 
-                            language === 'en' ? 'Round-the-clock technical support and quick resolution of any issues' : 
-                            'Har qanday muammo bo\'yicha kunu-tun qo\'llab-quvvatlash'
+                title: t('home.advantages.support247.title'),
+                description: t('home.advantages.support247.description')
               },
               {
                 icon: Zap,
-                title: language === 'ru' ? 'Быстрая установка' : language === 'en' ? 'Fast Installation' : 'Tezkor o\'rnatish',
-                description: language === 'ru' ? 'Профессиональная команда инженеров обеспечивает быструю инсталляцию и настройку' : 
-                            language === 'en' ? 'Professional team of engineers ensures quick installation and setup' : 
-                            'Tajribali muhandislar jamoamiz uskunani tez va sifatli o\'rnatadi'
+                title: t('home.advantages.fastInstallation.title'),
+                description: t('home.advantages.fastInstallation.description')
               },
               {
                 icon: Globe,
-                title: language === 'ru' ? 'Логистика по всему Узбекистану' : language === 'en' ? 'Logistics throughout Uzbekistan' : 'Respublika bo\'ylab logistika',
-                description: language === 'ru' ? 'Доставка и установка оборудования в любой регион страны' : 
-                            language === 'en' ? 'Delivery and installation of equipment in any region of the country' : 
-                            'O\'zbekistonning istalgan hududiga yetkazib berish va montaj'
+                title: t('home.advantages.globalExperience.title'),
+                description: t('home.advantages.globalExperience.description')
               }
             ].map((advantage, index) => (
               <div key={index} className="text-center group">
@@ -335,15 +276,10 @@ const Home = ({ language }: HomeProps) => {
       <section className="py-20 bg-gradient-to-br from-msc-primary to-msc-accent text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="font-heading text-3xl lg:text-4xl font-bold mb-4">
-            {language === 'ru' ? 'Готовы начать сотрудничество?' : language === 'en' ? 'Ready to Start Cooperation?' : 'Hamkorlikka tayyormisiz?'}
+            {t('home.finalCta.title')}
           </h2>
           <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-            {language === 'ru' 
-              ? 'Свяжитесь с нами сегодня и получите профессиональную консультацию по выбору медицинского оборудования'
-              : language === 'en'
-              ? 'Contact us today and get professional consultation on choosing medical equipment'
-              : 'Bugun biz bilan bog\'laning va tibbiy asbob-uskunalarni tanlash bo\'yicha professional maslahat oling'
-            }
+            {t('home.finalCta.description')}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
@@ -351,7 +287,7 @@ const Home = ({ language }: HomeProps) => {
               className="bg-white text-msc-primary hover:bg-white/90 font-semibold px-8 py-4 text-lg"
               onClick={() => setShowConsultationForm(true)}
             >
-              {language === 'ru' ? 'Оставить заявку' : language === 'en' ? 'Submit Request' : 'Ariza qoldirish'}
+              {t('home.finalCta.requestButton')}
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
             <Button
@@ -360,7 +296,7 @@ const Home = ({ language }: HomeProps) => {
               className="border-white text-black hover:bg-white hover:text-msc-primary px-8 py-4 text-lg transition-all duration-300"
               onClick={() => setShowConsultationForm(true)}
             >
-              {language === 'ru' ? 'Связаться с менеджером' : language === 'en' ? 'Contact Manager' : 'Menejer bilan bog\'lanish'}
+              {t('home.finalCta.managerButton')}
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
           </div>
