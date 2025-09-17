@@ -11,10 +11,6 @@
   font-display: swap;
 }
 
-/* ============================== */
-/* PUBLIC SITE DESIGN SYSTEM */
-/* ============================== */
-
 /* MSC Design System - Med Service Centre Brand Colors & Typography */
 
 @layer base {
@@ -26,183 +22,85 @@
     --msc-text: 232 78% 15%; /* #0C1139 for text */
     --msc-text-light: 220 13% 46%; /* Gray text */
     
-    /* PUBLIC SITE - High Contrast Dark Theme */
-    --background: 222 84% 5%; /* Very dark background */
-    --foreground: 210 40% 98%; /* Almost white text */
+    /* Semantic tokens based on MSC brand - Light Theme */
+    --background: 240 9% 99%; /* Light background */
+    --foreground: 232 78% 15%; /* Dark text for contrast */
 
-    --card: 222 84% 6%; /* Slightly lighter cards */
-    --card-foreground: 210 40% 98%;
+    --card: 0 0% 100%; /* White cards */
+    --card-foreground: 232 78% 15%;
 
-    --popover: 222 84% 6%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 232 78% 15%;
 
-    --primary: 221 83% 53%; /* Bright blue primary */
-    --primary-foreground: 222 84% 5%;
+    --primary: 232 78% 15%; /* MSC primary deep blue */
+    --primary-foreground: 240 9% 99%;
 
-    --secondary: 217 32% 17%; /* Dark gray secondary */
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 240 5% 96%; /* Light gray secondary */
+    --secondary-foreground: 232 78% 15%;
 
-    --muted: 215 27% 16%; /* Muted dark background */
-    --muted-foreground: 217 10% 64%; /* Medium gray text */
+    --muted: 240 5% 96%;
+    --muted-foreground: 220 13% 46%;
 
-    --accent: 210 100% 60%; /* Bright accent */
-    --accent-foreground: 222 84% 5%;
+    --accent: 220 100% 70%; /* MSC accent blue */
+    --accent-foreground: 232 78% 15%;
 
-    --destructive: 0 75% 60%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 240 9% 99%;
 
-    --border: 217 32% 17%; /* Subtle borders */
-    --input: 217 32% 17%;
-    --ring: 221 83% 53%;
+    --border: 240 6% 90%;
+    --input: 240 6% 90%;
+    --ring: 220 100% 70%;
 
     --radius: 0.75rem;
 
-    /* Public site doesn't use sidebar */
-    --sidebar-background: 222 84% 5%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 221 83% 53%;
-    --sidebar-primary-foreground: 222 84% 5%;
-    --sidebar-accent: 217 32% 17%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 217 32% 17%;
-    --sidebar-ring: 221 83% 53%;
+    --sidebar-background: 0 0% 100%; /* Light sidebar */
+    --sidebar-foreground: 232 78% 15%;
+    --sidebar-primary: 232 78% 15%;
+    --sidebar-primary-foreground: 240 9% 99%;
+    --sidebar-accent: 240 5% 96%;
+    --sidebar-accent-foreground: 232 78% 15%;
+    --sidebar-border: 240 6% 90%;
+    --sidebar-ring: 220 100% 70%;
   }
 
   .dark {
-    /* Enhanced dark mode for public site */
-    --background: 222 84% 3%; /* Even darker */
-    --foreground: 210 40% 100%;
+    --background: 225 12% 6%; /* Even darker for dark mode */
+    --foreground: 220 25% 95%; /* Very light text */
 
-    --card: 222 84% 4%;
-    --card-foreground: 210 40% 100%;
+    --card: 225 15% 8%;
+    --card-foreground: 220 25% 95%;
 
-    --popover: 222 84% 5%;
-    --popover-foreground: 210 40% 100%;
+    --popover: 225 18% 10%;
+    --popover-foreground: 220 25% 95%;
 
-    --primary: 221 83% 58%;
-    --primary-foreground: 222 84% 3%;
+    --primary: 220 100% 65%;
+    --primary-foreground: 225 12% 6%;
 
-    --secondary: 217 32% 15%;
-    --secondary-foreground: 210 40% 100%;
+    --secondary: 225 15% 12%;
+    --secondary-foreground: 220 25% 95%;
 
-    --muted: 215 27% 14%;
-    --muted-foreground: 217 10% 68%;
+    --muted: 225 15% 10%;
+    --muted-foreground: 220 15% 70%;
 
-    --accent: 210 100% 65%;
-    --accent-foreground: 222 84% 3%;
+    --accent: 220 100% 65%;
+    --accent-foreground: 225 12% 6%;
 
-    --destructive: 0 75% 65%;
-    --destructive-foreground: 210 40% 100%;
+    --destructive: 0 75% 55%;
+    --destructive-foreground: 220 25% 95%;
 
-    --border: 217 32% 15%;
-    --input: 217 32% 15%;
-    --ring: 221 83% 58%;
+    --border: 225 15% 15%;
+    --input: 225 15% 12%;
+    --ring: 220 100% 65%;
     
-    --sidebar-background: 222 84% 3%;
-    --sidebar-foreground: 210 40% 100%;
-    --sidebar-primary: 221 83% 58%;
-    --sidebar-primary-foreground: 222 84% 3%;
-    --sidebar-accent: 217 32% 15%;
-    --sidebar-accent-foreground: 210 40% 100%;
-    --sidebar-border: 217 32% 15%;
-    --sidebar-ring: 221 83% 58%;
+    --sidebar-background: 225 18% 4%;
+    --sidebar-foreground: 220 25% 92%;
+    --sidebar-primary: 220 100% 65%;
+    --sidebar-primary-foreground: 225 12% 6%;
+    --sidebar-accent: 225 15% 10%;
+    --sidebar-accent-foreground: 220 25% 92%;
+    --sidebar-border: 225 15% 12%;
+    --sidebar-ring: 220 100% 65%;
   }
-}
-
-/* ============================== */
-/* ADMIN PANEL DESIGN SYSTEM */
-/* ============================== */
-
-/* Admin theme - Bitrix24 inspired color palette */
-.theme-admin {
-  /* Bitrix24 Color Palette */
-  --bitrix-blue-primary: 191 97% 58%; /* #2fc6f6 - основной голубой */
-  --bitrix-blue-secondary: 195 100% 47%; /* #00aeef - тёмно-голубой */
-  --bitrix-green: 75 72% 53%; /* #a4d037 - яркий зелёный для акцентов */
-  --bitrix-dark-blue: 215 52% 24%; /* #1e3a8a - тёмно-синий для профессионального вида */
-  --bitrix-light-gray: 220 9% 95%; /* #f2f4f6 - светло-серый фон */
-  --bitrix-dark-gray: 220 8% 46%; /* #6b7280 - тёмно-серый текст */
-  
-  /* Admin - Bitrix24 inspired professional palette */
-  --background: 0 0% 100%; /* Чистый белый фон */
-  --foreground: 220 8% 46%; /* Тёмно-серый текст */
-
-  --card: 0 0% 100%; /* Белые карточки */
-  --card-foreground: 220 8% 46%;
-
-  --popover: 0 0% 100%;
-  --popover-foreground: 220 8% 46%;
-
-  --primary: 191 97% 58%; /* Основной голубой Bitrix24 */
-  --primary-foreground: 0 0% 100%;
-
-  --secondary: 220 9% 95%; /* Светло-серый фон */
-  --secondary-foreground: 220 8% 46%;
-
-  --muted: 220 9% 97%; /* Очень светлый фон */
-  --muted-foreground: 220 8% 60%; /* Средне-серый */
-
-  --accent: 75 72% 53%; /* Зелёный акцент Bitrix24 */
-  --accent-foreground: 0 0% 100%;
-
-  --destructive: 0 84% 60%;
-  --destructive-foreground: 0 0% 100%;
-
-  --border: 220 9% 88%; /* Светлые границы */
-  --input: 220 9% 95%;
-  --ring: 191 97% 58%; /* Голубое кольцо фокуса */
-
-  --radius: 0.5rem; /* Умеренное скругление */
-
-  /* Admin sidebar - Bitrix24 style */
-  --sidebar-background: 0 0% 100%; /* Белый сайдбар */
-  --sidebar-foreground: 220 8% 46%;
-  --sidebar-primary: 191 97% 58%; /* Голубой для активных элементов */
-  --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 220 9% 97%; /* Светлый hover */
-  --sidebar-accent-foreground: 220 8% 46%;
-  --sidebar-border: 220 9% 88%;
-  --sidebar-ring: 191 97% 58%;
-}
-
-.theme-admin.dark {
-  /* Admin dark theme - Bitrix24 inspired dark mode */
-  --background: 220 15% 6%; /* Тёмный фон */
-  --foreground: 220 9% 88%; /* Светлый текст */
-
-  --card: 220 15% 8%; /* Тёмные карточки */
-  --card-foreground: 220 9% 88%;
-
-  --popover: 220 15% 8%;
-  --popover-foreground: 220 9% 88%;
-
-  --primary: 191 97% 65%; /* Более яркий голубой для тёмной темы */
-  --primary-foreground: 220 15% 6%;
-
-  --secondary: 220 15% 12%; /* Тёмно-серый вторичный */
-  --secondary-foreground: 220 9% 88%;
-
-  --muted: 220 15% 10%; /* Приглушённый тёмный */
-  --muted-foreground: 220 8% 65%;
-
-  --accent: 75 72% 60%; /* Яркий зелёный акцент */
-  --accent-foreground: 220 15% 6%;
-
-  --destructive: 0 84% 65%;
-  --destructive-foreground: 220 9% 88%;
-
-  --border: 220 15% 15%; /* Тёмные границы */
-  --input: 220 15% 12%;
-  --ring: 191 97% 65%;
-  
-  --sidebar-background: 220 15% 4%; /* Очень тёмный сайдбар */
-  --sidebar-foreground: 220 9% 85%;
-  --sidebar-primary: 191 97% 65%;
-  --sidebar-primary-foreground: 220 15% 4%;
-  --sidebar-accent: 220 15% 10%;
-  --sidebar-accent-foreground: 220 9% 85%;
-  --sidebar-border: 220 15% 12%;
-  --sidebar-ring: 191 97% 65%;
 }
 
 @layer base {
