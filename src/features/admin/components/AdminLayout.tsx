@@ -35,48 +35,40 @@ const AdminLayout = () => {
 
   return (
     <SidebarProvider defaultOpen>
-      <div className="min-h-screen flex w-full">
+      <div className="min-h-screen flex w-full bg-background">
         <AdminSidebar />
         
         <div className="flex-1 flex flex-col">
-          {/* Premium Header with Glass Effect */}
-          <header className="glass-card border-b border-white/10 px-4 py-4 md:px-6 m-3 md:m-4 rounded-xl">
+          {/* Mobile Header */}
+          <header className="bg-card border-b border-border px-4 py-4 md:px-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
-                <SidebarTrigger className="md:hidden hover-glow p-2 rounded-lg hover:bg-white/10 smooth-transition" />
-                <div className="animate-fade-in">
-                  <h1 className="text-xl md:text-2xl font-heading gradient-text">
+                <SidebarTrigger className="md:hidden" />
+                <div>
+                  <h1 className="text-xl md:text-2xl font-semibold text-foreground">
                     {currentPageName}
                   </h1>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Добро пожаловать в админскую панель MSC
-                  </p>
                 </div>
               </div>
               
               {/* Desktop-only header items */}
               <div className="hidden md:flex items-center space-x-4">
                 <LanguageSwitcher />
-                <Badge 
-                  variant="secondary" 
-                  className="bg-gradient-to-r from-primary/20 to-accent/20 border-primary/30 text-primary font-medium px-3 py-1"
-                >
+                <Badge variant="secondary">
                   {getRoleTranslation(role, i18n.language)}
                 </Badge>
               </div>
 
               {/* Mobile-only header items */}
               <div className="md:hidden">
-                <SidebarTrigger className="hover-glow p-2 rounded-lg hover:bg-white/10 smooth-transition" />
+                <SidebarTrigger />
               </div>
             </div>
           </header>
 
-          {/* Main Content with Premium Container */}
-          <main className="flex-1 p-3 md:p-4">
-            <div className="animate-slide-up">
-              <Outlet />
-            </div>
+          {/* Main Content */}
+          <main className="flex-1 p-4 md:p-6">
+            <Outlet />
           </main>
         </div>
       </div>
