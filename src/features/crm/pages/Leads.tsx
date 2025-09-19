@@ -296,7 +296,7 @@ const Leads = () => {
           <h2 className="text-3xl font-bold">Лиды</h2>
           <p className="text-muted-foreground">Управление заявками клиентов</p>
         </div>
-        <RoleBasedAccess roles={['director', 'admin', 'sales_manager']}>
+        <RoleBasedAccess roles={['director', 'admin', 'sales_manager', 'salesperson']}>
           <Button onClick={() => setAddLeadModalOpen(true)} className="flex items-center gap-2">
             <Plus className="h-4 w-4" />
             Добавить лида
