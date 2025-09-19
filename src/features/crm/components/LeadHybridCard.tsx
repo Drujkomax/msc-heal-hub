@@ -8,7 +8,7 @@ import { useDuplicateDetection } from '@/hooks/useDuplicateDetection';
 import { useUserPermissions } from '@/hooks/useUserPermissions';
 import { useAuth } from '@/hooks/useAuth';
 import { DuplicateAlert } from './DuplicateAlert';
-import { Eye, Edit, Archive, MoreVertical, Phone, Building2, Calendar, User, DollarSign } from 'lucide-react';
+import { Eye, Edit, Archive, MoreVertical, Phone, Building2, Calendar, User, DollarSign, MapPin } from 'lucide-react';
 import { useState } from 'react';
 
 interface LeadHybridCardProps {
@@ -108,6 +108,12 @@ export const LeadHybridCard = ({
               <div className="flex items-center gap-1">
                 <Building2 className="h-3 w-3" />
                 <span>{lead.company}</span>
+              </div>
+            )}
+            {lead.city && (
+              <div className="flex items-center gap-1">
+                <MapPin className="h-3 w-3" />
+                <span>{lead.city}</span>
               </div>
             )}
             <div className="flex items-center gap-1">

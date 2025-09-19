@@ -7,6 +7,8 @@ export interface Lead {
   email?: string;
   phone?: string;
   company?: string;
+  position?: string;
+  city?: string;
   stage: string;
   source?: string;
   notes?: string;
@@ -21,7 +23,6 @@ export interface Lead {
   archived_by?: string;
   // Поля квалификации
   budget_range?: string;
-  position?: string;
   equipment_interest?: string;
   timeline?: string;
   qualification_date?: string;
@@ -55,11 +56,15 @@ export const useLeads = () => {
     email?: string;
     phone?: string;
     company?: string;
+    position?: string;
+    city?: string;
     stage?: string;
     notes?: string;
     source?: string;
     value?: number;
     equipment_interest?: string;
+    budget_range?: string;
+    timeline?: string;
     assigned_to?: string;
   }) => {
     try {

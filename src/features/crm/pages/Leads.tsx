@@ -190,6 +190,7 @@ const Leads = () => {
     const matchesSearch = 
       lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       lead.phone?.includes(searchTerm) ||
+      lead.city?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       lead.company?.toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesStage = stageFilter === 'all' || lead.stage === stageFilter;
@@ -499,6 +500,7 @@ const Leads = () => {
                 <TableRow>
                   <TableHead>Имя</TableHead>
                   <TableHead>Компания</TableHead>
+                  <TableHead>Город</TableHead>
                   <TableHead>Телефон</TableHead>
                   <TableHead>Статус</TableHead>
                   <TableHead>Создан</TableHead>
@@ -528,6 +530,7 @@ const Leads = () => {
                   >
                     <TableCell className="font-medium">{lead.name}</TableCell>
                     <TableCell>{lead.company || '-'}</TableCell>
+                    <TableCell>{lead.city || '-'}</TableCell>
                     <TableCell>{lead.phone || '-'}</TableCell>
                     <TableCell>
                       <DropdownMenu>

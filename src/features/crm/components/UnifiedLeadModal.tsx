@@ -211,6 +211,13 @@ export const UnifiedLeadModal = ({ lead, isOpen, onClose, onLeadUpdate }: Unifie
                         <div className="font-medium">{lead.position || 'Не указана'}</div>
                       </div>
                     </div>
+                    <div className="flex items-center gap-3">
+                      <MapPin className="h-4 w-4 text-muted-foreground" />
+                      <div>
+                        <div className="text-sm text-muted-foreground">Город</div>
+                        <div className="font-medium">{lead.city || 'Не указан'}</div>
+                      </div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>

@@ -300,6 +300,7 @@ export type Database = {
           assigned_by: string | null
           assigned_to: string | null
           budget_range: string | null
+          city: string | null
           closed_at: string | null
           company: string | null
           created_at: string
@@ -325,6 +326,7 @@ export type Database = {
           assigned_by?: string | null
           assigned_to?: string | null
           budget_range?: string | null
+          city?: string | null
           closed_at?: string | null
           company?: string | null
           created_at?: string
@@ -350,6 +352,7 @@ export type Database = {
           assigned_by?: string | null
           assigned_to?: string | null
           budget_range?: string | null
+          city?: string | null
           closed_at?: string | null
           company?: string | null
           created_at?: string
