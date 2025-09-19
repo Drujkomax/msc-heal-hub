@@ -3,12 +3,13 @@ import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Plus, Phone, Building, Eye } from 'lucide-react';
+import { Plus, Phone, Building, Eye, User } from 'lucide-react';
 import { useLeads, Lead } from '@/hooks/useLeads';
 import { useUserPermissions } from '@/hooks/useUserPermissions';
 import { useAuth } from '@/hooks/useAuth';
 import { useDuplicateDetection } from '@/hooks/useDuplicateDetection';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 import { EnhancedLeadModal } from './EnhancedLeadModal';
 import { DuplicateAlert } from './DuplicateAlert';
 
@@ -26,11 +27,30 @@ const stages = [
 const KanbanBoard = () => {
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [employees, setEmployees] = useState<Array<{id: string, email: string, full_name: string}>>([]);
   const { leads, loading, changeLeadStage, refetch } = useLeads();
   const { hasPermission } = useUserPermissions();
   const { user } = useAuth();
   const { duplicateGroups } = useDuplicateDetection(leads);
   const { toast } = useToast();
+
+  // Fetch employee profiles for assigned users display
+  useEffect(() => {
+    const fetchEmployees = async () => {
+      try {
+        const { data: profiles, error } = await supabase
+          .from('profiles')
+          .select('id, email, full_name');
+
+        if (error) throw error;
+        setEmployees(profiles || []);
+      } catch (error) {
+        console.error('Error fetching employee profiles:', error);
+      }
+    };
+
+    fetchEmployees();
+  }, []);
 
   // Filter out archived leads and apply user access permissions
   const visibleLeads = leads.filter(lead => {
@@ -102,6 +122,11 @@ const KanbanBoard = () => {
     }).format(amount);
   };
 
+  const getAssignedUserName = (userId: string) => {
+    const employee = employees.find(emp => emp.id === userId);
+    return employee ? (employee.full_name || employee.email) : 'Назначен';
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -162,9 +187,17 @@ const KanbanBoard = () => {
                             onClick={() => openLeadModal(lead)}
                           >
                             <CardHeader className="pb-2">
-                              <CardTitle className="text-sm font-medium">
-                                {lead.name}
-                              </CardTitle>
+                              <div className="flex items-start justify-between">
+                                <CardTitle className="text-sm font-medium">
+                                  {lead.name}
+                                </CardTitle>
+                                {lead.assigned_to && (
+                                  <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
+                                    <User className="mr-1 h-3 w-3" />
+                                    {getAssignedUserName(lead.assigned_to).split(' ')[0] || 'Назначен'}
+                                  </Badge>
+                                )}
+                              </div>
                             </CardHeader>
                             <CardContent className="pt-0">
                               <div className="space-y-1 text-xs text-gray-600">
@@ -178,6 +211,12 @@ const KanbanBoard = () => {
                                   <div className="flex items-center">
                                     <Phone className="mr-1 h-3 w-3" />
                                     {lead.phone}
+                                  </div>
+                                )}
+                                {lead.city && (
+                                  <div className="flex items-center">
+                                    <Building className="mr-1 h-3 w-3" />
+                                    {lead.city}
                                   </div>
                                 )}
                               </div>

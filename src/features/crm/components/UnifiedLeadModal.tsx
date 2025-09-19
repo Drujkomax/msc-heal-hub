@@ -1,15 +1,16 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { User, Edit3, Phone, Mail, Building, DollarSign, Calendar, MapPin, Clock, Target, Award, MessageSquare, ChevronDown } from 'lucide-react';
+import { User, Edit3, Phone, Mail, Building, DollarSign, Calendar, MapPin, Clock, Target, Award, MessageSquare, ChevronDown, UserCheck } from 'lucide-react';
 import { Lead, useLeads } from '@/hooks/useLeads';
 import { EditLeadModal } from './EditLeadModal';
 import { LeadActivityChat } from './LeadActivityChat';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 
@@ -130,6 +131,35 @@ const StatusDropdown = ({ currentStage, leadId, onStageChange }: StatusDropdownP
 
 export const UnifiedLeadModal = ({ lead, isOpen, onClose, onLeadUpdate }: UnifiedLeadModalProps) => {
   const [editModalOpen, setEditModalOpen] = useState(false);
+  const [assignedUser, setAssignedUser] = useState<{id: string, email: string, full_name: string} | null>(null);
+
+  // Fetch assigned user information
+  useEffect(() => {
+    const fetchAssignedUser = async () => {
+      if (!lead?.assigned_to) {
+        setAssignedUser(null);
+        return;
+      }
+
+      try {
+        const { data: profile, error } = await supabase
+          .from('profiles')
+          .select('id, email, full_name')
+          .eq('id', lead.assigned_to)
+          .single();
+
+        if (error) throw error;
+        setAssignedUser(profile);
+      } catch (error) {
+        console.error('Error fetching assigned user:', error);
+        setAssignedUser(null);
+      }
+    };
+
+    if (isOpen && lead) {
+      fetchAssignedUser();
+    }
+  }, [lead?.assigned_to, isOpen]);
 
   if (!lead) return null;
 
@@ -263,6 +293,17 @@ export const UnifiedLeadModal = ({ lead, isOpen, onClose, onLeadUpdate }: Unifie
                         <div>
                           <div className="text-sm text-muted-foreground">Потенциальная стоимость</div>
                           <div className="font-medium">${lead.value.toLocaleString()}</div>
+                        </div>
+                      </div>
+                    )}
+                    {lead.assigned_to && (
+                      <div className="flex items-center gap-3">
+                        <UserCheck className="h-4 w-4 text-muted-foreground" />
+                        <div>
+                          <div className="text-sm text-muted-foreground">Назначен на</div>
+                          <div className="font-medium">
+                            {assignedUser ? (assignedUser.full_name || assignedUser.email) : 'Загрузка...'}
+                          </div>
                         </div>
                       </div>
                     )}
