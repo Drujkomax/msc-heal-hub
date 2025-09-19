@@ -8,7 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useToast } from '@/hooks/use-toast';
 import { useLeads, Lead } from '@/hooks/useLeads';
-import { useDuplicateDetection } from '@/hooks/useDuplicateDetection';
+import { useDuplicateDetection, DuplicateGroup } from '@/hooks/useDuplicateDetection';
 import { useUserPermissions } from '@/hooks/useUserPermissions';
 import { useAuth } from '@/hooks/useAuth';
 import { useLeadMerge } from '@/hooks/useLeadMerge';
@@ -16,6 +16,7 @@ import { supabase } from '@/integrations/supabase/client';
 import RoleBasedAccess from '@/components/auth/RoleBasedAccess';
 import { LeadHybridCard } from '../components/LeadHybridCard';
 import { DuplicateAlert } from '../components/DuplicateAlert';
+import { DuplicateDetailModal } from '../components/DuplicateDetailModal';
 import { UnifiedLeadModal } from '../components/UnifiedLeadModal';
 import CreateDealFromLeadDialog from '../components/CreateDealFromLeadDialog';
 import { AddLeadDialog } from '../components/AddLeadDialog';
@@ -117,6 +118,8 @@ const Leads = () => {
   const [leadModalOpen, setLeadModalOpen] = useState(false);
   const [createDealLead, setCreateDealLead] = useState<Lead | null>(null);
   const [addLeadModalOpen, setAddLeadModalOpen] = useState(false);
+  const [selectedDuplicateGroup, setSelectedDuplicateGroup] = useState<DuplicateGroup | null>(null);
+  const [isDuplicateModalOpen, setIsDuplicateModalOpen] = useState(false);
 
   const leadStages = [
     { value: 'new', label: 'Новые', count: 0, color: 'bg-blue-500' },
@@ -236,6 +239,11 @@ const Leads = () => {
     }
   };
 
+  const handleViewDuplicateDetails = (duplicateGroup: DuplicateGroup) => {
+    setSelectedDuplicateGroup(duplicateGroup);
+    setIsDuplicateModalOpen(true);
+  };
+
   const handleMergeDuplicates = async (duplicateGroup: any) => {
     await mergeLeads(duplicateGroup, refetch);
   };
@@ -315,7 +323,7 @@ const Leads = () => {
             <DuplicateAlert 
               key={index} 
               duplicateGroup={group}
-              onMergeDuplicates={handleMergeDuplicates}
+              onViewDetails={() => handleViewDuplicateDetails(group)}
             />
           ))}
           {duplicateGroups.length > 3 && (
@@ -650,6 +658,13 @@ const Leads = () => {
             description: 'Лид успешно добавлен',
           });
         }}
+      />
+
+      <DuplicateDetailModal
+        duplicateGroup={selectedDuplicateGroup}
+        isOpen={isDuplicateModalOpen}
+        onClose={() => setIsDuplicateModalOpen(false)}
+        onMergeComplete={refetch}
       />
     </div>
   );

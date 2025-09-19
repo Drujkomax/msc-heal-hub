@@ -63,7 +63,7 @@ export const LeadHybridCard = ({
               duplicateType: 'name', // simplified for display
               score: 85
             }}
-            onViewDuplicates={() => setShowDuplicates(!showDuplicates)}
+            onViewDetails={() => setShowDuplicates(!showDuplicates)}
           />
         </div>
       )}
