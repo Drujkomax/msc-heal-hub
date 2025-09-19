@@ -473,7 +473,22 @@ const Leads = () => {
               </TableHeader>
               <TableBody>
                 {filteredLeads.map((lead) => (
-                  <TableRow key={lead.id} className="cursor-pointer hover:bg-muted/50">
+                  <TableRow 
+                    key={lead.id} 
+                    className="cursor-pointer hover:bg-muted/50"
+                    onClick={(e) => {
+                      // Проверяем, что клик не по dropdown меню или кнопкам
+                      const target = e.target as HTMLElement;
+                      const isDropdownClick = target.closest('[role="combobox"]') || 
+                                              target.closest('[data-radix-collection-item]') ||
+                                              target.closest('button') ||
+                                              target.closest('[role="menuitem"]');
+                      
+                      if (!isDropdownClick) {
+                        handleViewLead(lead);
+                      }
+                    }}
+                  >
                     <TableCell className="font-medium">{lead.name}</TableCell>
                     <TableCell>{lead.company || '-'}</TableCell>
                     <TableCell>{lead.phone || '-'}</TableCell>
