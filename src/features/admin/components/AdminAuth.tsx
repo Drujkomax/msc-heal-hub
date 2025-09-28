@@ -42,10 +42,11 @@ const AdminAuth = () => {
           title: t('common.success'),
           description: t('auth.loginSuccess'),
         });
-        // Даем время на обновление состояния и принудительно обновляем
+        // Небольшая задержка, затем жесткий редирект на абсолютный URL админки
+        const targetUrl = `${window.location.origin}/admin`;
         setTimeout(() => {
-          window.location.href = '/admin/dashboard';
-        }, 100);
+          window.location.replace(targetUrl);
+        }, 300);
       }
     } catch (err) {
       const errorMessage = t('auth.generalError');
