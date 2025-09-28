@@ -801,6 +801,15 @@ export type Database = {
           total_actions: number
         }[]
       }
+      get_employee_profiles: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          avatar_url: string
+          email: string
+          full_name: string
+          id: string
+        }[]
+      }
       get_log_statistics: {
         Args: { p_end_date?: string; p_start_date?: string }
         Returns: {
