@@ -62,11 +62,14 @@ const AdminWrapper = () => {
   // Only director, admin, and sales_manager can access admin panel
   // salesperson has limited access only to assigned leads/deals through different interface
   const allowedRoles = ['admin', 'sales_manager', 'director', 'salesperson'];
+  console.info('[AdminWrapper] auth resolved:', { user: !!user, role });
   if (!user || !allowedRoles.includes(role || '')) {
+    console.warn('[AdminWrapper] Access denied, showing AdminAuth', { hasUser: !!user, role });
     return <AdminAuth />;
   }
 
   // Если авторизован и админ - показываем админскую панель
+  console.info('[AdminWrapper] Authorized, rendering admin routes');
   return (
     <Routes>
       <Route path="login" element={<AdminAuth />} />

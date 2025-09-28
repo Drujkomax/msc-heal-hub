@@ -46,7 +46,8 @@ const AuthPage = () => {
           description: 'Вход выполнен успешно',
         });
         // Перенаправляем в админскую панель
-        navigate('/admin');
+        // Принудительный редирект после небольшого ожидания, чтобы сессия успела сохраниться
+        setTimeout(() => { window.location.href = '/admin/dashboard'; }, 100);
       }
     } catch (err) {
       const errorMessage = 'Произошла ошибка при входе';
