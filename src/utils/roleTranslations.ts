@@ -34,7 +34,7 @@ export const roleTranslations: Record<string, RoleTranslation> = {
   },
   'accountant': {
     ru: 'Бухгалтер',
-    en: 'Accountant',
+    en: 'Accountant', 
     uz: 'Buxgalter'
   },
   'engineer': {
