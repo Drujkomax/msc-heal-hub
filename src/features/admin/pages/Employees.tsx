@@ -48,7 +48,9 @@ const Employees = () => {
     'director': 'Директор',
     'sales_manager': 'Руководитель', 
     'admin': 'Администратор',
-    'salesperson': 'Специалист по продажам'
+    'salesperson': 'Специалист по продажам',
+    'accountant': 'Бухгалтер',
+    'engineer': 'Инженер'
   };
 
   useEffect(() => {
@@ -67,7 +69,7 @@ const Employees = () => {
           role,
           created_at
         `)
-        .in('role', ['salesperson', 'sales_manager', 'admin'])
+        .in('role', ['salesperson', 'sales_manager', 'admin', 'accountant', 'engineer'])
         .order('created_at', { ascending: false });
 
       if (rolesError) throw rolesError;
@@ -199,6 +201,8 @@ const Employees = () => {
                     <SelectContent>
                       <SelectItem value="salesperson">Специалист по продажам</SelectItem>
                       <SelectItem value="sales_manager">Руководитель</SelectItem>
+                      <SelectItem value="accountant">Бухгалтер</SelectItem>
+                      <SelectItem value="engineer">Инженер</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

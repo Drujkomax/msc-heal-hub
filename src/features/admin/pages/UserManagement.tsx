@@ -47,7 +47,9 @@ const UserManagement = () => {
     { value: 'salesperson', label: 'Специалист по продажам', color: 'bg-blue-100 text-blue-800' },
     { value: 'sales_manager', label: 'Руководитель', color: 'bg-purple-100 text-purple-800' },
     { value: 'admin', label: 'Администратор', color: 'bg-red-100 text-red-800' },
-    { value: 'director', label: 'Директор', color: 'bg-green-100 text-green-800' }
+    { value: 'director', label: 'Директор', color: 'bg-green-100 text-green-800' },
+    { value: 'accountant', label: 'Бухгалтер', color: 'bg-orange-100 text-orange-800' },
+    { value: 'engineer', label: 'Инженер', color: 'bg-cyan-100 text-cyan-800' }
   ];
 
   useEffect(() => {
@@ -129,7 +131,7 @@ const UserManagement = () => {
           .from('user_roles')
           .insert({
             user_id: data.user.id,
-            role: newUser.role as 'admin' | 'salesperson' | 'sales_manager' | 'director'
+            role: newUser.role as 'admin' | 'salesperson' | 'sales_manager' | 'director' | 'accountant' | 'engineer'
           });
 
         if (roleError) throw roleError;
@@ -158,7 +160,7 @@ const UserManagement = () => {
         .from('user_roles')
         .upsert({
           user_id: userId,
-          role: newRole as 'admin' | 'salesperson' | 'sales_manager' | 'director'
+          role: newRole as 'admin' | 'salesperson' | 'sales_manager' | 'director' | 'accountant' | 'engineer'
         }, {
           onConflict: 'user_id'
         });
