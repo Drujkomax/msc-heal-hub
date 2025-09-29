@@ -69,8 +69,8 @@ export function AdminSidebar() {
     // Контакты - доступны всем
     conditionalItems.push({ name: t('admin.contacts'), href: '/admin/contacts', icon: MessageSquare, permission: null });
 
-    // Управление сотрудниками - только для директора
-    if (role === 'director') {
+    // Управление сотрудниками - для директора и руководителя
+    if (role === 'director' || role === 'sales_manager') {
       conditionalItems.push({ name: t('navigation2.employees'), href: '/admin/employees', icon: Users, permission: null });
     }
 
