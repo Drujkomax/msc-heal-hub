@@ -56,10 +56,28 @@ const rolePermissions: Record<string, Permission[]> = {
     'manage_all_leads'
   ],
   'accountant': [
-    // Бухгалтер может только просматривать
+    'view_all_leads',
+    'manage_all_leads',
+    'assign_leads',
+    'export_leads',
+    'import_leads',
+    'manage_products',
+    'manage_services',
+    'manage_contacts',
+    'view_activity_logs',
+    'view_analytics'
   ],
   'engineer': [
-    // Инженер может только просматривать
+    'view_all_leads',
+    'manage_all_leads',
+    'assign_leads',
+    'export_leads',
+    'import_leads',
+    'manage_products',
+    'manage_services',
+    'manage_contacts',
+    'view_activity_logs',
+    'view_analytics'
   ],
   'user': []
 };
