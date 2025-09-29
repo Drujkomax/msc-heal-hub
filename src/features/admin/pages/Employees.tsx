@@ -10,8 +10,9 @@ import { Label } from '@/components/ui/label';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
-import { UserPlus, Edit, Trash2, Activity } from 'lucide-react';
+import { UserPlus, Edit, Trash2, Activity, Eye } from 'lucide-react';
 import RoleBasedAccess from '@/components/auth/RoleBasedAccess';
+import ViewEmployeeModal from '@/features/admin/components/ViewEmployeeModal';
 
 interface Employee {
   id: string;
@@ -38,6 +39,7 @@ const Employees = () => {
   const [loading, setLoading] = useState(true);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [newEmployeeData, setNewEmployeeData] = useState({
     email: '',
     password: '',
@@ -239,6 +241,16 @@ const Employees = () => {
                       </div>
                     </div>
                     <div className="flex items-center space-x-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => {
+                          setSelectedEmployee(employee);
+                          setIsViewModalOpen(true);
+                        }}
+                      >
+                        <Eye className="w-4 h-4" />
+                      </Button>
                       <Button variant="outline" size="sm">
                         <Edit className="w-4 h-4" />
                       </Button>
@@ -293,6 +305,15 @@ const Employees = () => {
             </CardContent>
           </Card>
         </div>
+
+        <ViewEmployeeModal
+          employee={selectedEmployee}
+          isOpen={isViewModalOpen}
+          onClose={() => {
+            setIsViewModalOpen(false);
+            setSelectedEmployee(null);
+          }}
+        />
       </div>
     </RoleBasedAccess>
   );

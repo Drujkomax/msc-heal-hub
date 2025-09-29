@@ -25,9 +25,9 @@ interface Employee {
 
 interface ActivityLog {
   id: string;
-  action: string;
-  target_type?: string;
-  target_id?: string;
+  action_type: string;
+  entity_type?: string;
+  entity_id?: string;
   created_at: string;
   details?: any;
 }
@@ -69,11 +69,11 @@ const ViewEmployeeModal = ({ employee, isOpen, onClose }: ViewEmployeeModalProps
     try {
       // Получаем логи активности
       const { data: logs, error: logsError } = await supabase
-        .from('user_activity_logs')
+        .from('employee_activity')
         .select('*')
         .eq('user_id', employee.id)
         .order('created_at', { ascending: false })
-        .limit(50);
+        .limit(100);
 
       if (logsError) {
         console.error('Error fetching activity logs:', logsError);
@@ -119,20 +119,23 @@ const ViewEmployeeModal = ({ employee, isOpen, onClose }: ViewEmployeeModalProps
     return roles[role || ''] || 'Не назначена';
   };
 
-  const getActionLabel = (action: string) => {
+  const getActionLabel = (actionType: string) => {
     const actions: Record<string, string> = {
       'login': '🔐 Вход в систему',
       'logout': '🚪 Выход из системы',
-      'lead_create': '➕ Создал нового лида',
-      'lead_update': '✏️ Обновил данные лида',
+      'lead_create': '➕ Создал лида',
+      'lead_update': '✏️ Обновил лида',
       'lead_assign': '👤 Назначил лида',
       'lead_close': '✅ Закрыл лида',
       'product_create': '📦 Добавил товар',
       'product_update': '🔄 Обновил товар',
+      'product_edit': '✏️ Отредактировал товар',
       'client_create': '👥 Добавил клиента',
-      'quote_send': '📄 Отправил коммерческое предложение'
+      'deal_action': '💼 Работа со сделкой',
+      'page_view': '👁️ Просмотр страницы',
+      'form_submit': '📝 Отправил форму'
     };
-    return actions[action] || `🔧 ${action}`;
+    return actions[actionType] || `🔧 ${actionType}`;
   };
 
   const getActionDescription = (log: ActivityLog) => {
@@ -140,27 +143,34 @@ const ViewEmployeeModal = ({ employee, isOpen, onClose }: ViewEmployeeModalProps
       try {
         const details = typeof log.details === 'string' ? JSON.parse(log.details) : log.details;
         
-        switch (log.action) {
+        switch (log.action_type) {
           case 'lead_create':
             return `Создал лида "${details.name || details.company || 'Без названия'}"`;
           case 'lead_update':
-            return `Обновил лида "${details.name || details.company || 'ID: ' + details.id}"`;
+            return `Обновил лида "${details.name || details.company || details.lead_name || 'ID: ' + (details.id || details.lead_id)}"`;
           case 'lead_assign':
-            return `Назначил лида "${details.name || 'ID: ' + details.lead_id}" на сотрудника`;
+            return `Назначил лида "${details.name || details.lead_name || 'ID: ' + details.lead_id}" на сотрудника`;
           case 'lead_close':
-            return `Закрыл лида "${details.name || 'ID: ' + details.id}" со статусом "${details.status || 'завершен'}"`;
+            return `Закрыл лида "${details.name || details.lead_name || 'ID: ' + details.id}" со статусом "${details.status || 'завершен'}"`;
           case 'product_create':
-            return `Добавил товар "${details.name || 'Без названия'}"`;
+          case 'product_edit':
+            return `${log.action_type === 'product_create' ? 'Добавил' : 'Отредактировал'} товар "${details.name || details.product_name || 'Без названия'}"`;
           case 'client_create':
             return `Добавил клиента "${details.name || details.company || 'Без названия'}"`;
+          case 'deal_action':
+            return `Работа со сделкой "${details.title || details.deal_title || 'ID: ' + details.deal_id}"`;
+          case 'page_view':
+            return `Просмотрел страницу "${details.page || details.url || 'Неизвестная страница'}"`;
+          case 'form_submit':
+            return `Отправил форму "${details.form_name || details.form_type || 'Неизвестная форма'}"`;
           default:
-            return getActionLabel(log.action);
+            return getActionLabel(log.action_type);
         }
       } catch (e) {
-        return getActionLabel(log.action);
+        return getActionLabel(log.action_type);
       }
     }
-    return getActionLabel(log.action);
+    return getActionLabel(log.action_type);
   };
 
   // Группируем логи по дням
@@ -182,10 +192,12 @@ const ViewEmployeeModal = ({ employee, isOpen, onClose }: ViewEmployeeModalProps
   const getDailySummary = (logs: ActivityLog[]) => {
     const summary = {
       totalActions: logs.length,
-      leads: logs.filter(log => log.action.includes('lead')).length,
-      products: logs.filter(log => log.action.includes('product')).length,
-      clients: logs.filter(log => log.action.includes('client')).length,
-      logins: logs.filter(log => log.action === 'login').length
+      leads: logs.filter(log => log.action_type.includes('lead')).length,
+      products: logs.filter(log => log.action_type.includes('product')).length,
+      clients: logs.filter(log => log.action_type.includes('client')).length,
+      deals: logs.filter(log => log.action_type.includes('deal')).length,
+      logins: logs.filter(log => log.action_type === 'login').length,
+      views: logs.filter(log => log.action_type === 'page_view').length
     };
     
     return summary;
@@ -336,13 +348,15 @@ const ViewEmployeeModal = ({ employee, isOpen, onClose }: ViewEmployeeModalProps
                                       <Calendar className="h-4 w-4" />
                                       {date}
                                     </h4>
-                                    <div className="flex gap-4 text-sm text-muted-foreground">
-                                      <span>Всего: {summary.totalActions}</span>
-                                      {summary.leads > 0 && <span>Лиды: {summary.leads}</span>}
-                                      {summary.products > 0 && <span>Товары: {summary.products}</span>}
-                                      {summary.clients > 0 && <span>Клиенты: {summary.clients}</span>}
-                                      {summary.logins > 0 && <span>Входы: {summary.logins}</span>}
-                                    </div>
+                                     <div className="flex gap-4 text-sm text-muted-foreground">
+                                       <span>Всего: {summary.totalActions}</span>
+                                       {summary.leads > 0 && <span>Лиды: {summary.leads}</span>}
+                                       {summary.products > 0 && <span>Товары: {summary.products}</span>}
+                                       {summary.clients > 0 && <span>Клиенты: {summary.clients}</span>}
+                                       {summary.deals > 0 && <span>Сделки: {summary.deals}</span>}
+                                       {summary.views > 0 && <span>Просмотры: {summary.views}</span>}
+                                       {summary.logins > 0 && <span>Входы: {summary.logins}</span>}
+                                     </div>
                                   </div>
                                 </div>
                                 
