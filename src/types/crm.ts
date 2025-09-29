@@ -23,6 +23,10 @@ export interface Task {
   priority: 'low' | 'medium' | 'high' | 'urgent';
   due_date?: string;
   completed_at?: string;
+  recurrence_type?: 'none' | 'daily' | 'weekly' | 'monthly' | 'yearly';
+  recurrence_interval?: number;
+  recurrence_end_date?: string;
+  parent_task_id?: string;
   created_at: string;
   updated_at: string;
   created_by?: string;

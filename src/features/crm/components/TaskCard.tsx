@@ -56,7 +56,7 @@ export const TaskCard = ({ task, onView, onEdit, onDelete, onComplete }: TaskCar
   };
 
   const isOverdue = task.due_date && new Date(task.due_date) < new Date() && task.status !== 'completed';
-  const isRecurring = false; // TODO: Add recurrence logic when database is updated
+  const isRecurring = task.recurrence_type && task.recurrence_type !== 'none';
 
   return (
     <Card className={`hover:shadow-md transition-shadow ${isOverdue ? 'border-red-200 bg-red-50/50' : ''}`}>

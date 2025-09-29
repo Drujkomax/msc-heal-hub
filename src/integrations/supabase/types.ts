@@ -695,7 +695,11 @@ export type Database = {
           description: string | null
           due_date: string | null
           id: string
+          parent_task_id: string | null
           priority: string
+          recurrence_end_date: string | null
+          recurrence_interval: number | null
+          recurrence_type: string | null
           status: string
           title: string
           updated_at: string
@@ -710,7 +714,11 @@ export type Database = {
           description?: string | null
           due_date?: string | null
           id?: string
+          parent_task_id?: string | null
           priority?: string
+          recurrence_end_date?: string | null
+          recurrence_interval?: number | null
+          recurrence_type?: string | null
           status?: string
           title: string
           updated_at?: string
@@ -725,7 +733,11 @@ export type Database = {
           description?: string | null
           due_date?: string | null
           id?: string
+          parent_task_id?: string | null
           priority?: string
+          recurrence_end_date?: string | null
+          recurrence_interval?: number | null
+          recurrence_type?: string | null
           status?: string
           title?: string
           updated_at?: string
@@ -743,6 +755,13 @@ export type Database = {
             columns: ["deal_id"]
             isOneToOne: false
             referencedRelation: "deals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tasks_parent_task_id_fkey"
+            columns: ["parent_task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
             referencedColumns: ["id"]
           },
         ]

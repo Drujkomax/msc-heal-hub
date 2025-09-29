@@ -79,8 +79,13 @@ export const AddTaskDialog = ({ open, onOpenChange, editingTask }: AddTaskDialog
     setLoading(true);
     try {
       const taskData = {
-        ...data,
+        title: data.title,
+        description: data.description,
+        status: data.status,
+        priority: data.priority,
         due_date: data.due_date?.toISOString(),
+        recurrence_type: data.recurrence_type,
+        recurrence_interval: data.recurrence_interval,
         recurrence_end_date: data.recurrence_end_date?.toISOString(),
         assignee_id: data.assignee_id || undefined,
         client_id: data.client_id || undefined,

@@ -174,8 +174,32 @@ export const ViewTaskModal = ({
             </div>
             
             <div className="text-sm text-muted-foreground">
-              <p>Единоразовая задача</p>
-              <p className="text-xs mt-1">Эта задача не повторяется</p>
+              {task.recurrence_type && task.recurrence_type !== 'none' ? (
+                <div>
+                  <p>
+                    Повторяется {task.recurrence_type === 'daily' ? 'ежедневно' : 
+                                task.recurrence_type === 'weekly' ? 'еженедельно' :
+                                task.recurrence_type === 'monthly' ? 'ежемесячно' : 'ежегодно'}
+                    {task.recurrence_interval && task.recurrence_interval > 1 && (
+                      <span> каждые {task.recurrence_interval} {
+                        task.recurrence_type === 'daily' ? 'дней' :
+                        task.recurrence_type === 'weekly' ? 'недель' :
+                        task.recurrence_type === 'monthly' ? 'месяцев' : 'лет'
+                      }</span>
+                    )}
+                  </p>
+                  {task.recurrence_end_date && (
+                    <p className="text-xs mt-1">
+                      До: {format(new Date(task.recurrence_end_date), 'dd MMMM yyyy', { locale: ru })}
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <div>
+                  <p>Единоразовая задача</p>
+                  <p className="text-xs mt-1">Эта задача не повторяется</p>
+                </div>
+              )}
             </div>
           </div>
 

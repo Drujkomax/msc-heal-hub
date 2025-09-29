@@ -39,6 +39,10 @@ export const useTasks = () => {
           status: taskData.status,
           priority: taskData.priority,
           due_date: taskData.due_date,
+          recurrence_type: taskData.recurrence_type || 'none',
+          recurrence_interval: taskData.recurrence_interval || 1,
+          recurrence_end_date: taskData.recurrence_end_date,
+          parent_task_id: taskData.parent_task_id,
           created_by: (await supabase.auth.getUser()).data.user?.id
         }])
         .select()
@@ -66,7 +70,11 @@ export const useTasks = () => {
           status: updates.status,
           priority: updates.priority,
           due_date: updates.due_date,
-          completed_at: updates.completed_at
+          completed_at: updates.completed_at,
+          recurrence_type: updates.recurrence_type,
+          recurrence_interval: updates.recurrence_interval,
+          recurrence_end_date: updates.recurrence_end_date,
+          parent_task_id: updates.parent_task_id
         })
         .eq('id', id)
         .select()
