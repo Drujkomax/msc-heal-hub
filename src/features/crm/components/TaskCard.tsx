@@ -104,8 +104,8 @@ export const TaskCard = ({ task, onView, onEdit, onDelete, onComplete, canComple
                   Редактировать
                 </DropdownMenuItem>
               )}
-              {canComplete && task.status !== 'completed' && (
-                <DropdownMenuItem onClick={() => onComplete(task.id)}>
+              {task.status !== 'completed' && (
+                <DropdownMenuItem disabled={!canComplete} onClick={() => canComplete && onComplete(task.id)}>
                   <CheckCircle2 className="mr-2 h-4 w-4" />
                   Выполнить
                 </DropdownMenuItem>
@@ -164,11 +164,13 @@ export const TaskCard = ({ task, onView, onEdit, onDelete, onComplete, canComple
             <Eye className="h-3 w-3 mr-1" />
             Открыть
           </Button>
-          {canComplete && task.status !== 'completed' && (
+          {task.status !== 'completed' && (
             <Button 
               size="sm" 
-              onClick={() => onComplete(task.id)}
+              onClick={() => canComplete && onComplete(task.id)}
+              disabled={!canComplete}
               className="flex-1"
+              title={!canComplete ? 'Недостаточно прав для выполнения' : undefined}
             >
               <CheckCircle2 className="h-3 w-3 mr-1" />
               Выполнить
