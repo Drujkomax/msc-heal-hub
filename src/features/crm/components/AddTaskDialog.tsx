@@ -89,7 +89,7 @@ export const AddTaskDialog = ({ open, onOpenChange, editingTask }: AddTaskDialog
         recurrence_end_date: data.recurrence_end_date?.toISOString(),
         assignee_id: data.assignee_id && data.assignee_id !== '' ? data.assignee_id : undefined,
         client_id: data.client_id && data.client_id !== '' ? data.client_id : undefined,
-        deal_id: data.deal_id && data.deal_id !== '' ? data.deal_id : undefined,
+        deal_id: data.deal_id && data.deal_id !== '' && data.deal_id !== 'none' ? data.deal_id : undefined,
         parent_task_id: undefined,
       };
 
@@ -266,7 +266,7 @@ export const AddTaskDialog = ({ open, onOpenChange, editingTask }: AddTaskDialog
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="">Без сделки</SelectItem>
+                        <SelectItem value="none">Без сделки</SelectItem>
                         {deals?.map((deal) => (
                           <SelectItem key={deal.id} value={deal.id}>
                             {deal.title}
