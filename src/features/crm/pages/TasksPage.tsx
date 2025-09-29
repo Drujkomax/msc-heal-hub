@@ -281,7 +281,7 @@ const TasksPage = () => {
                 : 'Попробуйте изменить фильтры поиска'
               }
             </p>
-            {tasks?.length === 0 && (
+            {tasks?.length === 0 && (role === 'director' || role === 'sales_manager') && (
               <Button onClick={handleAddTask}>
                 <Plus className="h-4 w-4 mr-2" />
                 Создать задачу
