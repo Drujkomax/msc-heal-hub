@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import LocationMap from '@/components/common/LocationMap';
 
 const Contacts = () => {
   const { t, i18n } = useTranslation();
@@ -86,7 +87,9 @@ const Contacts = () => {
       emailField: 'Email',
       message: 'Сообщение',
       send: 'Отправить',
-      fullAddress: 'г. Ташкент, Узбекистан'
+      fullAddress: 'г. Ташкент, Узбекистан',
+      ourLocation: 'Наше местоположение',
+      locationDescription: 'Найдите нас на карте'
     },
     en: {
       title: 'Contacts',
@@ -105,7 +108,9 @@ const Contacts = () => {
       emailField: 'Email',
       message: 'Message',
       send: 'Send',
-      fullAddress: 'Tashkent, Uzbekistan'
+      fullAddress: 'Tashkent, Uzbekistan',
+      ourLocation: 'Our Location',
+      locationDescription: 'Find us on the map'
     },
     uz: {
       title: 'Aloqa',
@@ -124,7 +129,9 @@ const Contacts = () => {
       emailField: 'Email',
       message: 'Xabar',
       send: 'Yuborish',
-      fullAddress: 'Toshkent, O\'zbekiston'
+      fullAddress: 'Toshkent, O\'zbekiston',
+      ourLocation: 'Bizning joylashuvimiz',
+      locationDescription: 'Bizni xaritada toping'
     }
   };
 
@@ -411,6 +418,15 @@ const Contacts = () => {
               </form>
             </CardContent>
           </Card>
+        </div>
+
+        {/* Location Map */}
+        <div className="max-w-4xl mx-auto mt-16">
+          <div className="text-center mb-8">
+            <h3 className="font-semibold text-3xl text-foreground mb-2">{currentContent.ourLocation}</h3>
+            <p className="text-muted-foreground text-lg">{currentContent.locationDescription}</p>
+          </div>
+          <LocationMap />
         </div>
       </div>
     </div>
