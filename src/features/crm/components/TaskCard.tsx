@@ -12,9 +12,10 @@ interface TaskCardProps {
   onEdit?: (task: any) => void;
   onDelete?: (taskId: string) => void;
   onComplete: (taskId: string) => void;
+  canComplete?: boolean;
 }
 
-export const TaskCard = ({ task, onView, onEdit, onDelete, onComplete }: TaskCardProps) => {
+export const TaskCard = ({ task, onView, onEdit, onDelete, onComplete, canComplete = true }: TaskCardProps) => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
@@ -103,7 +104,7 @@ export const TaskCard = ({ task, onView, onEdit, onDelete, onComplete }: TaskCar
                   Редактировать
                 </DropdownMenuItem>
               )}
-              {task.status !== 'completed' && (
+              {canComplete && task.status !== 'completed' && (
                 <DropdownMenuItem onClick={() => onComplete(task.id)}>
                   <CheckCircle2 className="mr-2 h-4 w-4" />
                   Выполнить
@@ -163,7 +164,7 @@ export const TaskCard = ({ task, onView, onEdit, onDelete, onComplete }: TaskCar
             <Eye className="h-3 w-3 mr-1" />
             Открыть
           </Button>
-          {task.status !== 'completed' && (
+          {canComplete && task.status !== 'completed' && (
             <Button 
               size="sm" 
               onClick={() => onComplete(task.id)}

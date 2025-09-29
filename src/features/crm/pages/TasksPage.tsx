@@ -3,6 +3,7 @@ import { useTasks } from '@/hooks/useTasks';
 import { useLeads } from '@/hooks/useLeads';
 import { useDeals } from '@/hooks/useDeals';
 import { useUserPermissions } from '@/hooks/useUserPermissions';
+import { useAuth } from '@/hooks/useAuth';
 import { AddTaskDialog } from '../components/AddTaskDialog';
 import { ViewTaskModal } from '../components/ViewTaskModal';
 import { TaskFilters } from '../components/TaskFilters';
@@ -19,6 +20,7 @@ const TasksPage = () => {
   const { leads } = useLeads();
   const { deals } = useDeals();
   const { role } = useUserPermissions();
+  const { user } = useAuth();
   
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [editingTask, setEditingTask] = useState<any>(null);
@@ -31,6 +33,14 @@ const TasksPage = () => {
   const [dueDateFilter, setDueDateFilter] = useState<Date | undefined>();
   const [assigneeFilter, setAssigneeFilter] = useState('all');
   const [overdueOnly, setOverdueOnly] = useState(false);
+
+  const canCompleteTask = (task: any) => {
+    if (role === 'director' || role === 'sales_manager' || role === 'admin') return true;
+    if (role === 'salesperson' || role === 'accountant' || role === 'engineer') {
+      return !!(task.assignee_id && user?.id && task.assignee_id === user.id);
+    }
+    return false;
+  };
 
   const handleAddTask = () => {
     // Только директор и руководитель могут создавать задачи
@@ -299,6 +309,7 @@ const TasksPage = () => {
               onEdit={role === 'director' || role === 'sales_manager' ? handleEditTask : undefined}
               onDelete={role === 'director' || role === 'sales_manager' ? handleDeleteTask : undefined}
               onComplete={handleCompleteTask}
+              canComplete={canCompleteTask(task)}
             />
           ))}
         </div>
