@@ -97,7 +97,7 @@ const DealsPage = () => {
   ];
 
   return (
-    <RoleBasedAccess permissions={['view_all_leads']}>
+    <RoleBasedAccess permissions={['view_all_leads', 'manage_deals']}>
       <div className="space-y-6 p-6">
         {/* Header */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
