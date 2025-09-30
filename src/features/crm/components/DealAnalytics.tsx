@@ -44,12 +44,12 @@ const DealAnalytics = ({ detailed = false }: DealAnalyticsProps) => {
 
   // Process data for charts
   const stageData = [
-    { name: t('deals.stages.lead'), value: deals.filter(d => d.stage === 'lead').length, color: '#3b82f6' },
-    { name: t('deals.stages.qualified'), value: deals.filter(d => d.stage === 'qualified').length, color: '#10b981' },
-    { name: t('deals.stages.proposal'), value: deals.filter(d => d.stage === 'proposal').length, color: '#f59e0b' },
-    { name: t('deals.stages.negotiation'), value: deals.filter(d => d.stage === 'negotiation').length, color: '#f97316' },
-    { name: t('deals.stages.closed'), value: deals.filter(d => d.stage === 'closed').length, color: '#059669' },
-    { name: t('deals.stages.lost'), value: deals.filter(d => d.stage === 'lost').length, color: '#dc2626' }
+    { name: 'Лиды', value: deals.filter(d => d.stage === 'lead').length, color: '#3b82f6' },
+    { name: 'Квалифицированы', value: deals.filter(d => d.stage === 'qualified').length, color: '#10b981' },
+    { name: 'Предложения', value: deals.filter(d => d.stage === 'proposal').length, color: '#f59e0b' },
+    { name: 'Переговоры', value: deals.filter(d => d.stage === 'negotiation').length, color: '#f97316' },
+    { name: 'Закрыты', value: deals.filter(d => d.stage === 'closed').length, color: '#059669' },
+    { name: 'Потеряны', value: deals.filter(d => d.stage === 'lost').length, color: '#dc2626' }
   ];
 
   const monthlyData = [
@@ -62,11 +62,11 @@ const DealAnalytics = ({ detailed = false }: DealAnalyticsProps) => {
   ];
 
   const conversionFunnel = [
-    { stage: t('deals.stages.lead'), count: deals.filter(d => d.stage === 'lead').length, percentage: 100 },
-    { stage: t('deals.stages.qualified'), count: deals.filter(d => d.stage === 'qualified').length, percentage: 80 },
-    { stage: t('deals.stages.proposal'), count: deals.filter(d => d.stage === 'proposal').length, percentage: 60 },
-    { stage: t('deals.stages.negotiation'), count: deals.filter(d => d.stage === 'negotiation').length, percentage: 40 },
-    { stage: t('deals.stages.closed'), count: deals.filter(d => d.stage === 'closed').length, percentage: 25 }
+    { stage: 'Лиды', count: deals.filter(d => d.stage === 'lead').length, percentage: 100 },
+    { stage: 'Квалифицированы', count: deals.filter(d => d.stage === 'qualified').length, percentage: 80 },
+    { stage: 'Предложения', count: deals.filter(d => d.stage === 'proposal').length, percentage: 60 },
+    { stage: 'Переговоры', count: deals.filter(d => d.stage === 'negotiation').length, percentage: 40 },
+    { stage: 'Закрыты', count: deals.filter(d => d.stage === 'closed').length, percentage: 25 }
   ];
 
   // Key metrics
@@ -85,7 +85,7 @@ const DealAnalytics = ({ detailed = false }: DealAnalyticsProps) => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Target className="w-5 h-5" />
-              {t('deals.analytics.pipelineOverview')}
+              Обзор воронки продаж
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -95,18 +95,29 @@ const DealAnalytics = ({ detailed = false }: DealAnalyticsProps) => {
                   data={stageData}
                   cx="50%"
                   cy="50%"
-                  outerRadius={100}
+                  outerRadius={80}
                   fill="#8884d8"
                   dataKey="value"
-                  label={({ name, value }) => `${name}: ${value}`}
+                  label={false}
                 >
                   {stageData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip />
+                <Tooltip formatter={(value, name) => [`${value} сделок`, name]} />
               </PieChart>
             </ResponsiveContainer>
+            <div className="grid grid-cols-2 gap-2 mt-4">
+              {stageData.map((entry, index) => (
+                <div key={index} className="flex items-center gap-2 text-sm">
+                  <div 
+                    className="w-3 h-3 rounded-full" 
+                    style={{ backgroundColor: entry.color }}
+                  />
+                  <span className="truncate">{entry.name}: {entry.value}</span>
+                </div>
+              ))}
+            </div>
           </CardContent>
         </Card>
 
@@ -115,7 +126,7 @@ const DealAnalytics = ({ detailed = false }: DealAnalyticsProps) => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <TrendingUp className="w-5 h-5" />
-              {t('deals.analytics.monthlyTrend')}
+              Месячная динамика
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -138,7 +149,7 @@ const DealAnalytics = ({ detailed = false }: DealAnalyticsProps) => {
         {/* Quick Metrics */}
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle>{t('deals.analytics.keyMetrics')}</CardTitle>
+            <CardTitle>Ключевые показатели</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
@@ -147,28 +158,28 @@ const DealAnalytics = ({ detailed = false }: DealAnalyticsProps) => {
                   <DollarSign className="w-6 h-6 text-green-600" />
                 </div>
                 <p className="text-2xl font-bold">${wonValue.toLocaleString()}</p>
-                <p className="text-sm text-muted-foreground">{t('deals.analytics.wonValue')}</p>
+                <p className="text-sm text-muted-foreground">Выигранная сумма</p>
               </div>
               <div className="text-center">
                 <div className="flex items-center justify-center w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-full mx-auto mb-2">
                   <Percent className="w-6 h-6 text-blue-600" />
                 </div>
                 <p className="text-2xl font-bold">{winRate.toFixed(1)}%</p>
-                <p className="text-sm text-muted-foreground">{t('deals.analytics.winRate')}</p>
+                <p className="text-sm text-muted-foreground">Коэффициент побед</p>
               </div>
               <div className="text-center">
                 <div className="flex items-center justify-center w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-full mx-auto mb-2">
                   <Users className="w-6 h-6 text-purple-600" />
                 </div>
                 <p className="text-2xl font-bold">${avgDealSize.toLocaleString()}</p>
-                <p className="text-sm text-muted-foreground">{t('deals.analytics.avgDealSize')}</p>
+                <p className="text-sm text-muted-foreground">Средний размер сделки</p>
               </div>
               <div className="text-center">
                 <div className="flex items-center justify-center w-12 h-12 bg-orange-100 dark:bg-orange-900/20 rounded-full mx-auto mb-2">
                   <Clock className="w-6 h-6 text-orange-600" />
                 </div>
                 <p className="text-2xl font-bold">28</p>
-                <p className="text-sm text-muted-foreground">{t('deals.analytics.avgCycleTime')}</p>
+                <p className="text-sm text-muted-foreground">Среднее время цикла</p>
               </div>
             </div>
           </CardContent>
