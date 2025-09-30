@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import EnhancedDealList from '../components/EnhancedDealList';
-import UnifiedDealDialog from '../components/UnifiedDealDialog';
 import EnhancedViewDealModal from '../components/EnhancedViewDealModal';
 import DealAnalytics from '../components/DealAnalytics';
 import { Deal } from '@/types/crm';
@@ -30,7 +29,6 @@ const DealsPage = () => {
   const navigate = useNavigate();
   const { deals } = useDeals();
   const [activeTab, setActiveTab] = useState('overview');
-  const [showAddDialog, setShowAddDialog] = useState(false);
   const [editingDeal, setEditingDeal] = useState<Deal | null>(null);
   const [viewingDeal, setViewingDeal] = useState<Deal | null>(null);
 
@@ -42,19 +40,13 @@ const DealsPage = () => {
   const avgDealValue = totalDeals > 0 ? totalValue / totalDeals : 0;
   const conversionRate = totalDeals > 0 ? (closedDeals.length / totalDeals * 100) : 0;
 
-  const handleAddDeal = () => {
-    setEditingDeal(null);
-    setShowAddDialog(true);
-  };
-
-  const handleCreateDetailedDeal = () => {
+  const handleCreateDeal = () => {
     navigate('/admin/deals/create');
   };
 
   const handleEditDeal = (deal: Deal) => {
-    setEditingDeal(deal);
-    setViewingDeal(null);
-    setShowAddDialog(true);
+    // Переходим на страницу создания сделки в режиме редактирования
+    navigate(`/admin/deals/edit/${deal.id}`);
   };
 
   const handleViewDeal = (deal: Deal) => {
@@ -62,7 +54,6 @@ const DealsPage = () => {
   };
 
   const handleCloseDialog = () => {
-    setShowAddDialog(false);
     setEditingDeal(null);
     setViewingDeal(null);
   };
@@ -120,13 +111,9 @@ const DealsPage = () => {
               <Download className="w-4 h-4 mr-2" />
               {t('common.export')}
             </Button>
-            <Button onClick={handleAddDeal} variant="outline">
+            <Button onClick={handleCreateDeal}>
               <Plus className="w-4 h-4 mr-2" />
-              Быстрая сделка
-            </Button>
-            <Button onClick={handleCreateDetailedDeal}>
-              <Plus className="w-4 h-4 mr-2" />
-              Создать детальную сделку
+              {t('deals.addDeal')}
             </Button>
           </div>
         </div>
@@ -185,7 +172,6 @@ const DealsPage = () => {
           
           <TabsContent value="list" className="space-y-6">
             <EnhancedDealList 
-              onAddDeal={handleAddDeal}
               onEditDeal={handleEditDeal}
               onViewDeal={handleViewDeal}
             />
@@ -195,12 +181,6 @@ const DealsPage = () => {
             <DealAnalytics detailed />
           </TabsContent>
         </Tabs>
-
-        <UnifiedDealDialog
-          open={showAddDialog}
-          onClose={handleCloseDialog}
-          deal={editingDeal}
-        />
 
         <EnhancedViewDealModal
           open={!!viewingDeal}

@@ -30,7 +30,6 @@ import { toast } from 'sonner';
 import { Deal } from '@/types/crm';
 
 interface EnhancedDealListProps {
-  onAddDeal: () => void;
   onEditDeal: (deal: Deal) => void;
   onViewDeal: (deal: Deal) => void;
 }
@@ -38,7 +37,7 @@ interface EnhancedDealListProps {
 type SortField = 'created_at' | 'amount' | 'title' | 'stage';
 type SortOrder = 'asc' | 'desc';
 
-const EnhancedDealList = ({ onAddDeal, onEditDeal, onViewDeal }: EnhancedDealListProps) => {
+const EnhancedDealList = ({ onEditDeal, onViewDeal }: EnhancedDealListProps) => {
   const { t } = useTranslation();
   const { deals, loading, deleteDeal } = useDeals();
   const { leads } = useLeads();
@@ -212,10 +211,6 @@ const EnhancedDealList = ({ onAddDeal, onEditDeal, onViewDeal }: EnhancedDealLis
             <Download className="w-4 h-4 mr-2" />
             {t('common.export')}
           </Button>
-          <Button onClick={onAddDeal}>
-            <Plus className="w-4 h-4 mr-2" />
-            {t('deals.addDeal')}
-          </Button>
         </div>
       </div>
 
@@ -288,12 +283,6 @@ const EnhancedDealList = ({ onAddDeal, onEditDeal, onViewDeal }: EnhancedDealLis
               <p className="mt-1 text-sm text-muted-foreground">
                 {t('deals.notFoundDescription')}
               </p>
-              <div className="mt-6">
-                <Button onClick={onAddDeal}>
-                  <Plus className="w-4 h-4 mr-2" />
-                  {t('deals.addDeal')}
-                </Button>
-              </div>
             </div>
           </CardContent>
         </Card>
