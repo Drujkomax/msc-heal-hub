@@ -341,7 +341,7 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
 
                   {(formData.amount || formData.probability) && (
                     <div>
-                      <Label>{t('deals.financialSummary')}</Label>
+                      <Label>Финансовая сводка</Label>
                       <div className="mt-1 space-y-2">
                         {formData.amount && (
                           <div className="flex justify-between text-sm">
