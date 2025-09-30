@@ -36,10 +36,9 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
     lead_id: '',
     amount: '',
     stage: 'lead' as Deal['stage'],
-    probability: '',
     close_date: '',
     notes: '',
-    deal_type: '' as 'product' | 'service' | '',
+    deal_type: '' as 'product' | 'service' | 'both' | '',
     product_id: '',
     service_id: ''
   });
@@ -63,7 +62,6 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
         lead_id: deal.lead_id || '',
         amount: deal.amount?.toString() || '',
         stage: deal.stage || 'lead',
-        probability: deal.probability?.toString() || '',
         close_date: deal.close_date ? new Date(deal.close_date).toISOString().split('T')[0] : '',
         notes: deal.notes || '',
         deal_type: deal.deal_type || '',
@@ -76,7 +74,6 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
         lead_id: '',
         amount: '',
         stage: 'lead',
-        probability: '10',
         close_date: '',
         notes: '',
         deal_type: '',
@@ -102,19 +99,11 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
       newErrors.amount = 'Неверный формат числа';
     }
     
-    if (formData.probability && (isNaN(Number(formData.probability)) || Number(formData.probability) < 0 || Number(formData.probability) > 100)) {
-      newErrors.probability = 'Вероятность должна быть от 0 до 100';
-    }
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const calculateEstimatedValue = () => {
-    const amount = Number(formData.amount) || 0;
-    const probability = Number(formData.probability) || 0;
-    return (amount * probability / 100).toFixed(2);
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -129,7 +118,7 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
         lead_id: formData.lead_id || undefined,
         amount: formData.amount ? Number(formData.amount) : undefined,
         stage: formData.stage,
-        probability: formData.probability ? Number(formData.probability) : undefined,
+        
         close_date: formData.close_date || undefined,
         notes: formData.notes || undefined,
         deal_type: formData.deal_type || undefined,
@@ -168,21 +157,14 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
     if (field === 'deal_type') {
       setFormData(prev => ({
         ...prev,
-        deal_type: value as 'product' | 'service' | '',
-        product_id: '',
-        service_id: ''
+        deal_type: value as 'product' | 'service' | 'both' | '',
+        product_id: value === 'service' ? '' : prev.product_id,
+        service_id: value === 'product' ? '' : prev.service_id
       }));
     } else {
       setFormData(prev => ({ ...prev, [field]: value }));
     }
     
-    // Auto-suggest probability based on stage
-    if (field === 'stage') {
-      const selectedStage = stages.find(s => s.value === value);
-      if (selectedStage) {
-        setFormData(prev => ({ ...prev, probability: selectedStage.probability.toString() }));
-      }
-    }
     
     // Clear errors for this field
     if (errors[field]) {
@@ -206,7 +188,6 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
   };
 
   const currentStage = stages.find(s => s.value === formData.stage);
-  const estimatedValue = calculateEstimatedValue();
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -264,15 +245,16 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
                       <SelectTrigger className={errors.deal_type ? 'border-red-500' : ''}>
                         <SelectValue placeholder="Выберите тип сделки" />
                       </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="product">Товар</SelectItem>
-                        <SelectItem value="service">Услуга</SelectItem>
-                      </SelectContent>
+                       <SelectContent>
+                         <SelectItem value="product">Товар</SelectItem>
+                         <SelectItem value="service">Услуга</SelectItem>
+                         <SelectItem value="both">И товар и услуга</SelectItem>
+                       </SelectContent>
                     </Select>
                     {errors.deal_type && <p className="text-sm text-red-500 mt-1">{errors.deal_type}</p>}
                   </div>
 
-                  {formData.deal_type === 'product' && (
+                  {(formData.deal_type === 'product' || formData.deal_type === 'both') && (
                     <div>
                       <Label htmlFor="product_id">Товар</Label>
                       <Select value={formData.product_id} onValueChange={(value) => handleInputChange('product_id', value)}>
@@ -295,7 +277,7 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
                     </div>
                   )}
 
-                  {formData.deal_type === 'service' && (
+                  {(formData.deal_type === 'service' || formData.deal_type === 'both') && (
                     <div>
                       <Label htmlFor="service_id">Услуга</Label>
                       <Select value={formData.service_id} onValueChange={(value) => handleInputChange('service_id', value)}>
@@ -374,35 +356,18 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="amount">Сумма сделки</Label>
-                      <Input
-                        id="amount"
-                        type="number"
-                        step="0.01"
-                        value={formData.amount}
-                        onChange={(e) => handleInputChange('amount', e.target.value)}
-                        placeholder="0.00"
-                        className={errors.amount ? 'border-red-500' : ''}
-                      />
-                      {errors.amount && <p className="text-sm text-red-500 mt-1">{errors.amount}</p>}
-                    </div>
-
-                    <div>
-                      <Label htmlFor="probability">Вероятность (%)</Label>
-                      <Input
-                        id="probability"
-                        type="number"
-                        min="0"
-                        max="100"
-                        value={formData.probability}
-                        onChange={(e) => handleInputChange('probability', e.target.value)}
-                        placeholder="50"
-                        className={errors.probability ? 'border-red-500' : ''}
-                      />
-                      {errors.probability && <p className="text-sm text-red-500 mt-1">{errors.probability}</p>}
-                    </div>
+                    <Input
+                      id="amount"
+                      type="number"
+                      step="0.01"
+                      value={formData.amount}
+                      onChange={(e) => handleInputChange('amount', e.target.value)}
+                      placeholder="0.00"
+                      className={errors.amount ? 'border-red-500' : ''}
+                    />
+                    {errors.amount && <p className="text-sm text-red-500 mt-1">{errors.amount}</p>}
                   </div>
                 </CardContent>
               </Card>
@@ -439,47 +404,47 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
                     </div>
                   )}
 
-                  {((formData.deal_type === 'product' && formData.product_id) || 
-                    (formData.deal_type === 'service' && formData.service_id)) && (
-                    <div>
-                      <Label>{formData.deal_type === 'product' ? 'Выбранный товар' : 'Выбранная услуга'}</Label>
-                      <div className="mt-1 p-2 bg-muted rounded text-sm">
-                        <div className="flex items-center gap-2">
-                          {formData.deal_type === 'product' ? <Package className="w-4 h-4" /> : <Settings className="w-4 h-4" />}
-                          {formData.deal_type === 'product' ? getProductName(formData.product_id) : getServiceName(formData.service_id)}
-                        </div>
-                      </div>
-                    </div>
+                   {((formData.deal_type === 'product' && formData.product_id) || 
+                     (formData.deal_type === 'service' && formData.service_id) ||
+                     (formData.deal_type === 'both' && (formData.product_id || formData.service_id))) && (
+                     <div>
+                       <Label>
+                         {formData.deal_type === 'product' ? 'Выбранный товар' : 
+                          formData.deal_type === 'service' ? 'Выбранная услуга' :
+                          'Выбранные товар и услуга'}
+                       </Label>
+                       <div className="mt-1 space-y-1">
+                         {formData.product_id && (
+                           <div className="p-2 bg-muted rounded text-sm">
+                             <div className="flex items-center gap-2">
+                               <Package className="w-4 h-4" />
+                               {getProductName(formData.product_id)}
+                             </div>
+                           </div>
+                         )}
+                         {formData.service_id && (
+                           <div className="p-2 bg-muted rounded text-sm">
+                             <div className="flex items-center gap-2">
+                               <Settings className="w-4 h-4" />
+                               {getServiceName(formData.service_id)}
+                             </div>
+                           </div>
+                         )}
+                       </div>
+                     </div>
                   )}
 
-                  {(formData.amount || formData.probability) && (
-                    <div>
-                      <Label>Финансовая сводка</Label>
-                      <div className="mt-1 space-y-2">
-                        {formData.amount && (
-                          <div className="flex justify-between text-sm">
-                            <span>Стоимость сделки:</span>
-                            <span className="font-medium">${Number(formData.amount).toLocaleString()}</span>
-                          </div>
-                        )}
-                        {formData.probability && (
-                          <div className="flex justify-between text-sm">
-                            <span>Вероятность:</span>
-                            <span className="font-medium">{formData.probability}%</span>
-                          </div>
-                        )}
-                        {formData.amount && formData.probability && (
-                          <>
-                            <Separator />
-                            <div className="flex justify-between text-sm font-medium">
-                              <span>Ожидаемая стоимость:</span>
-                              <span className="text-green-600">${Number(estimatedValue).toLocaleString()}</span>
-                            </div>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  )}
+                   {formData.amount && (
+                     <div>
+                       <Label>Финансовая сводка</Label>
+                       <div className="mt-1 space-y-2">
+                         <div className="flex justify-between text-sm">
+                           <span>Стоимость сделки:</span>
+                           <span className="font-medium">${Number(formData.amount).toLocaleString()}</span>
+                         </div>
+                       </div>
+                     </div>
+                   )}
 
                   {formData.close_date && (
                     <div>

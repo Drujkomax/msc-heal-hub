@@ -7,7 +7,7 @@ export interface Deal {
   probability?: number;
   close_date?: string;
   notes?: string;
-  deal_type?: 'product' | 'service';
+  deal_type?: 'product' | 'service' | 'both';
   product_id?: string;
   service_id?: string;
   created_at: string;
