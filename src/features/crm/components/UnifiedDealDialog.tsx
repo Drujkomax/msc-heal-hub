@@ -186,7 +186,7 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <FileText className="w-4 h-4" />
-                    {t('deals.basicDetails')}
+                    Основная информация
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
