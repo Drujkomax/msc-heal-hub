@@ -7,6 +7,7 @@ import AdminAuth from './AdminAuth';
 import AdminLayout from './AdminLayout';
 import Dashboard from '../pages/Dashboard';
 import Leads from '../../crm/pages/Leads';
+import CreateDeal from '../../crm/pages/CreateDeal';
 import DealsPage from '../../crm/pages/DealsPage';
 import TasksPage from '../../crm/pages/TasksPage';
 import AdminKanban from '../pages/AdminKanban';
@@ -103,6 +104,11 @@ const AdminWrapper = () => {
         <Route path="deals" element={
           <ProtectedRoute permission="manage_deals" fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
             <DealsPage />
+          </ProtectedRoute>
+        } />
+        <Route path="deals/create" element={
+          <ProtectedRoute permission="manage_deals" fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
+            <CreateDeal />
           </ProtectedRoute>
         } />
         <Route path="tasks" element={

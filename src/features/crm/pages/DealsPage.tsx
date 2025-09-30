@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -26,6 +27,7 @@ import {
 
 const DealsPage = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { deals } = useDeals();
   const [activeTab, setActiveTab] = useState('overview');
   const [showAddDialog, setShowAddDialog] = useState(false);
@@ -43,6 +45,10 @@ const DealsPage = () => {
   const handleAddDeal = () => {
     setEditingDeal(null);
     setShowAddDialog(true);
+  };
+
+  const handleCreateDetailedDeal = () => {
+    navigate('/admin/deals/create');
   };
 
   const handleEditDeal = (deal: Deal) => {
@@ -114,9 +120,13 @@ const DealsPage = () => {
               <Download className="w-4 h-4 mr-2" />
               {t('common.export')}
             </Button>
-            <Button onClick={handleAddDeal}>
+            <Button onClick={handleAddDeal} variant="outline">
               <Plus className="w-4 h-4 mr-2" />
-              {t('deals.addDeal')}
+              Быстрая сделка
+            </Button>
+            <Button onClick={handleCreateDetailedDeal}>
+              <Plus className="w-4 h-4 mr-2" />
+              Создать детальную сделку
             </Button>
           </div>
         </div>
