@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import EnhancedDealList from '../components/EnhancedDealList';
 import EnhancedDealKanban from '../components/EnhancedDealKanban';
-import EnhancedAddDealDialog from '../components/EnhancedAddDealDialog';
+import UnifiedDealDialog from '../components/UnifiedDealDialog';
 import EnhancedViewDealModal from '../components/EnhancedViewDealModal';
 import DealAnalytics from '../components/DealAnalytics';
 import { Deal } from '@/types/crm';
@@ -200,7 +200,7 @@ const DealsPage = () => {
           </TabsContent>
         </Tabs>
 
-        <EnhancedAddDealDialog
+        <UnifiedDealDialog
           open={showAddDialog}
           onClose={handleCloseDialog}
           deal={editingDeal}
