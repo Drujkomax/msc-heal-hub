@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import EnhancedDealList from '../components/EnhancedDealList';
-import EnhancedDealKanban from '../components/EnhancedDealKanban';
 import UnifiedDealDialog from '../components/UnifiedDealDialog';
 import EnhancedViewDealModal from '../components/EnhancedViewDealModal';
 import DealAnalytics from '../components/DealAnalytics';
@@ -15,7 +14,6 @@ import { useTranslation } from 'react-i18next';
 import RoleBasedAccess from '@/components/auth/RoleBasedAccess';
 import { 
   LayoutList, 
-  Kanban, 
   BarChart3, 
   TrendingUp, 
   DollarSign, 
@@ -156,7 +154,7 @@ const DealsPage = () => {
 
         {/* Main Content */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="overview" className="flex items-center gap-2">
               <BarChart3 className="w-4 h-4" />
               <span className="hidden sm:inline">{t('deals.overview')}</span>
@@ -164,10 +162,6 @@ const DealsPage = () => {
             <TabsTrigger value="list" className="flex items-center gap-2">
               <LayoutList className="w-4 h-4" />
               <span className="hidden sm:inline">{t('deals.listView')}</span>
-            </TabsTrigger>
-            <TabsTrigger value="kanban" className="flex items-center gap-2">
-              <Kanban className="w-4 h-4" />
-              <span className="hidden sm:inline">{t('deals.kanbanView')}</span>
             </TabsTrigger>
             <TabsTrigger value="analytics" className="flex items-center gap-2">
               <TrendingUp className="w-4 h-4" />
@@ -187,14 +181,6 @@ const DealsPage = () => {
             />
           </TabsContent>
           
-          <TabsContent value="kanban" className="space-y-6">
-            <EnhancedDealKanban 
-              onAddDeal={handleAddDeal}
-              onEditDeal={handleEditDeal}
-              onViewDeal={handleViewDeal}
-            />
-          </TabsContent>
-
           <TabsContent value="analytics" className="space-y-6">
             <DealAnalytics detailed />
           </TabsContent>
