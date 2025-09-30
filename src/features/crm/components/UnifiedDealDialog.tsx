@@ -33,7 +33,7 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
   
   const [formData, setFormData] = useState({
     title: '',
-    client_id: '',
+    lead_id: '',
     amount: '',
     stage: 'lead' as Deal['stage'],
     probability: '',
@@ -60,7 +60,7 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
     if (deal) {
       setFormData({
         title: deal.title || '',
-        client_id: deal.client_id || '',
+        lead_id: deal.lead_id || '',
         amount: deal.amount?.toString() || '',
         stage: deal.stage || 'lead',
         probability: deal.probability?.toString() || '',
@@ -73,7 +73,7 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
     } else {
       setFormData({
         title: '',
-        client_id: '',
+        lead_id: '',
         amount: '',
         stage: 'lead',
         probability: '10',
@@ -126,7 +126,7 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
     try {
       const dealData = {
         title: formData.title,
-        client_id: formData.client_id || undefined,
+        lead_id: formData.lead_id || undefined,
         amount: formData.amount ? Number(formData.amount) : undefined,
         stage: formData.stage,
         probability: formData.probability ? Number(formData.probability) : undefined,
@@ -190,8 +190,8 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
     }
   };
 
-  const getLeadName = (clientId: string) => {
-    const lead = leads.find(l => l.id === clientId);
+  const getLeadName = (leadId: string) => {
+    const lead = leads.find(l => l.id === leadId);
     return lead ? `${lead.name} (${lead.company || 'Без компании'})` : '';
   };
 
@@ -243,10 +243,10 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
                   </div>
 
                   <div>
-                    <Label htmlFor="client_id">Клиент</Label>
-                    <Select value={formData.client_id} onValueChange={(value) => handleInputChange('client_id', value)}>
+                    <Label htmlFor="lead_id">Лид</Label>
+                    <Select value={formData.lead_id} onValueChange={(value) => handleInputChange('lead_id', value)}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Выберите клиента" />
+                        <SelectValue placeholder="Выберите лид" />
                       </SelectTrigger>
                       <SelectContent>
                         {leads.map((lead) => (
@@ -427,13 +427,13 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
                     </div>
                   )}
 
-                  {formData.client_id && (
+                  {formData.lead_id && (
                     <div>
-                      <Label>Выбранный клиент</Label>
+                      <Label>Выбранный лид</Label>
                       <div className="mt-1 p-2 bg-muted rounded text-sm">
                         <div className="flex items-center gap-2">
                           <User className="w-4 h-4" />
-                          {getLeadName(formData.client_id)}
+                          {getLeadName(formData.lead_id)}
                         </div>
                       </div>
                     </div>

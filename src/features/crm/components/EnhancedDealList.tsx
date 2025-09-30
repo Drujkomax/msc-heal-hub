@@ -64,7 +64,7 @@ const EnhancedDealList = ({ onAddDeal, onEditDeal, onViewDeal }: EnhancedDealLis
   const filteredAndSortedDeals = deals
     .filter(deal => {
       const matchesSearch = deal.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           getLeadName(deal.client_id).toLowerCase().includes(searchTerm.toLowerCase());
+                           getLeadName(deal.lead_id).toLowerCase().includes(searchTerm.toLowerCase());
       const matchesStage = stageFilter === 'all' || deal.stage === stageFilter;
       
       let matchesAmount = true;
@@ -372,7 +372,7 @@ const EnhancedDealList = ({ onAddDeal, onEditDeal, onViewDeal }: EnhancedDealLis
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <User className="w-4 h-4 text-muted-foreground" />
-                      <span className="truncate max-w-32">{getLeadName(deal.client_id)}</span>
+                      <span className="truncate max-w-32">{getLeadName(deal.lead_id)}</span>
                     </div>
                   </TableCell>
                   <TableCell>

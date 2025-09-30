@@ -160,12 +160,12 @@ export type Database = {
       deals: {
         Row: {
           amount: number | null
-          client_id: string | null
           close_date: string | null
           created_at: string
           created_by: string | null
           deal_type: string | null
           id: string
+          lead_id: string | null
           notes: string | null
           probability: number | null
           product_id: string | null
@@ -176,12 +176,12 @@ export type Database = {
         }
         Insert: {
           amount?: number | null
-          client_id?: string | null
           close_date?: string | null
           created_at?: string
           created_by?: string | null
           deal_type?: string | null
           id?: string
+          lead_id?: string | null
           notes?: string | null
           probability?: number | null
           product_id?: string | null
@@ -192,12 +192,12 @@ export type Database = {
         }
         Update: {
           amount?: number | null
-          client_id?: string | null
           close_date?: string | null
           created_at?: string
           created_by?: string | null
           deal_type?: string | null
           id?: string
+          lead_id?: string | null
           notes?: string | null
           probability?: number | null
           product_id?: string | null
@@ -208,10 +208,10 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "deals_client_id_fkey"
-            columns: ["client_id"]
+            foreignKeyName: "deals_lead_id_fkey"
+            columns: ["lead_id"]
             isOneToOne: false
-            referencedRelation: "clients"
+            referencedRelation: "leads"
             referencedColumns: ["id"]
           },
           {

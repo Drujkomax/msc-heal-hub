@@ -1,7 +1,7 @@
 export interface Deal {
   id: string;
   title: string;
-  client_id?: string;
+  lead_id?: string;
   amount?: number;
   stage: 'lead' | 'qualified' | 'proposal' | 'negotiation' | 'closed' | 'lost';
   probability?: number;

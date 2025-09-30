@@ -57,7 +57,7 @@ const CreateDealFromLeadDialog = ({ open, onClose, lead, onSuccess }: CreateDeal
     try {
       const dealData = {
         title: formData.title,
-        client_id: lead.id,
+        lead_id: lead.id,
         amount: formData.amount ? parseFloat(formData.amount) : undefined,
         stage: formData.stage,
         probability: formData.probability ? parseInt(formData.probability) : undefined,

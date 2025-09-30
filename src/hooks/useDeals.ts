@@ -32,7 +32,7 @@ export const useDeals = () => {
         .from('deals')
         .insert([{
           title: dealData.title,
-          client_id: dealData.client_id,
+          lead_id: dealData.lead_id,
           amount: dealData.amount,
           stage: dealData.stage,
           probability: dealData.probability,
@@ -61,7 +61,7 @@ export const useDeals = () => {
         .from('deals')
         .update({
           title: updates.title,
-          client_id: updates.client_id,
+          lead_id: updates.lead_id,
           amount: updates.amount,
           stage: updates.stage,
           probability: updates.probability,
@@ -106,8 +106,8 @@ export const useDeals = () => {
     return deals.find(deal => deal.id === id);
   };
 
-  const getDealsByClientId = (clientId: string) => {
-    return deals.filter(deal => deal.client_id === clientId);
+  const getDealsByLeadId = (leadId: string) => {
+    return deals.filter(deal => deal.lead_id === leadId);
   };
 
   return {
@@ -117,7 +117,7 @@ export const useDeals = () => {
     updateDeal,
     deleteDeal,
     getDealById,
-    getDealsByClientId,
+    getDealsByLeadId,
     refreshDeals: loadDeals,
   };
 };

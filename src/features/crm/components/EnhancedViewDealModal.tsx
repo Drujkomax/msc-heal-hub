@@ -81,7 +81,7 @@ const EnhancedViewDealModal = ({ open, onClose, deal, onEdit }: EnhancedViewDeal
     return deal.amount * (deal.probability / 100);
   };
 
-  const leadDetails = getLeadDetails(deal.client_id);
+  const leadDetails = getLeadDetails(deal.lead_id);
   const estimatedValue = calculateEstimatedValue();
   const timeInfo = deal.close_date ? getTimeUntilClose(deal.close_date) : null;
 
