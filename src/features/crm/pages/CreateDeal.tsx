@@ -732,29 +732,6 @@ const CreateDeal = () => {
 
                   <Separator />
 
-                  {/* Валюта */}
-                  <div>
-                    <Label className="flex items-center gap-2">
-                      <ArrowRightLeft className="w-4 h-4" />
-                      Валюта сделки
-                    </Label>
-                    <Select 
-                      value={formData.currency} 
-                      onValueChange={(value) => handleInputChange('currency', value)}
-                    >
-                      <SelectTrigger className="mt-2">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="UZS">UZS (сум)</SelectItem>
-                        <SelectItem value="USD">USD ($)</SelectItem>
-                        <SelectItem value="EUR">EUR (€)</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <Separator />
-
                   <div>
                     <Label>Финансовая сводка</Label>
                     <div className="mt-2 space-y-2">
