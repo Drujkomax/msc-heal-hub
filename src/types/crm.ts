@@ -10,6 +10,11 @@ export interface Deal {
   deal_type?: 'product' | 'service' | 'both';
   product_id?: string;
   service_id?: string;
+  payment_status?: 'waiting' | 'paid' | 'not_realized' | 'debt';
+  debt_amount?: number;
+  assigned_engineer?: string;
+  assigned_accountant?: string;
+  assigned_salesperson?: string;
   created_at: string;
   updated_at: string;
   created_by?: string;

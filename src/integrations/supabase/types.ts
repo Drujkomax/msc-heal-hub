@@ -263,9 +263,11 @@ export type Database = {
           created_at: string
           created_by: string | null
           deal_type: string | null
+          debt_amount: number | null
           id: string
           lead_id: string | null
           notes: string | null
+          payment_status: string | null
           probability: number | null
           product_id: string | null
           service_id: string | null
@@ -282,9 +284,11 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           deal_type?: string | null
+          debt_amount?: number | null
           id?: string
           lead_id?: string | null
           notes?: string | null
+          payment_status?: string | null
           probability?: number | null
           product_id?: string | null
           service_id?: string | null
@@ -301,9 +305,11 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           deal_type?: string | null
+          debt_amount?: number | null
           id?: string
           lead_id?: string | null
           notes?: string | null
+          payment_status?: string | null
           probability?: number | null
           product_id?: string | null
           service_id?: string | null

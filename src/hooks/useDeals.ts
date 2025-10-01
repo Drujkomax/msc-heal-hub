@@ -41,6 +41,11 @@ export const useDeals = () => {
           deal_type: dealData.deal_type,
           product_id: dealData.product_id,
           service_id: dealData.service_id,
+          payment_status: dealData.payment_status,
+          debt_amount: dealData.debt_amount,
+          assigned_engineer: dealData.assigned_engineer,
+          assigned_accountant: dealData.assigned_accountant,
+          assigned_salesperson: dealData.assigned_salesperson,
           created_by: (await supabase.auth.getUser()).data.user?.id
         }])
         .select()
@@ -69,7 +74,12 @@ export const useDeals = () => {
           notes: updates.notes,
           deal_type: updates.deal_type,
           product_id: updates.product_id,
-          service_id: updates.service_id
+          service_id: updates.service_id,
+          payment_status: updates.payment_status,
+          debt_amount: updates.debt_amount,
+          assigned_engineer: updates.assigned_engineer,
+          assigned_accountant: updates.assigned_accountant,
+          assigned_salesperson: updates.assigned_salesperson
         })
         .eq('id', id)
         .select()

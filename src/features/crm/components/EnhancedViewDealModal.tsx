@@ -23,7 +23,9 @@ import {
   Phone,
   Target,
   BarChart3,
-  Activity
+  Activity,
+  CreditCard,
+  AlertCircle
 } from 'lucide-react';
 
 interface EnhancedViewDealModalProps {
@@ -81,9 +83,20 @@ const EnhancedViewDealModal = ({ open, onClose, deal, onEdit }: EnhancedViewDeal
     return deal.amount * (deal.probability / 100);
   };
 
+  const getPaymentStatusInfo = (status?: string) => {
+    const statusMap = {
+      'waiting': { label: 'Ожидание', color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200', icon: Clock },
+      'paid': { label: 'Оплачено', color: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200', icon: DollarSign },
+      'not_realized': { label: 'Не реализовано', color: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200', icon: FileText },
+      'debt': { label: 'Задолженность', color: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200', icon: AlertCircle }
+    };
+    return statusMap[status as keyof typeof statusMap] || statusMap['waiting'];
+  };
+
   const leadDetails = getLeadDetails(deal.lead_id);
   const estimatedValue = calculateEstimatedValue();
   const timeInfo = deal.close_date ? getTimeUntilClose(deal.close_date) : null;
+  const paymentStatusInfo = getPaymentStatusInfo(deal.payment_status);
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -150,6 +163,33 @@ const EnhancedViewDealModal = ({ open, onClose, deal, onEdit }: EnhancedViewDeal
                     <div className="text-lg font-bold text-green-600">
                       ${estimatedValue.toLocaleString()}
                     </div>
+                  </div>
+                )}
+
+                {/* Payment Status */}
+                {deal.payment_status && (
+                  <div className="space-y-2">
+                    <Separator />
+                    <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <CreditCard className="w-4 h-4 text-muted-foreground" />
+                        <span className="text-sm font-medium">Статус оплаты</span>
+                      </div>
+                      <Badge className={paymentStatusInfo.color}>
+                        {paymentStatusInfo.label}
+                      </Badge>
+                    </div>
+                    {deal.payment_status === 'debt' && deal.debt_amount && (
+                      <div className="flex items-center justify-between p-3 bg-red-50 dark:bg-red-950/20 rounded-lg border border-red-200 dark:border-red-900">
+                        <div className="flex items-center gap-2">
+                          <AlertCircle className="w-4 h-4 text-red-600" />
+                          <span className="text-sm font-medium text-red-900 dark:text-red-200">Сумма задолженности</span>
+                        </div>
+                        <div className="text-lg font-bold text-red-600">
+                          ${deal.debt_amount.toLocaleString()}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </CardContent>

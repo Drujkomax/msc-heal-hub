@@ -12,10 +12,11 @@ import { useDeals } from '@/hooks/useDeals';
 import { useLeads } from '@/hooks/useLeads';
 import { useProducts } from '@/hooks/useProducts';
 import { useServices } from '@/hooks/useServices';
+import { useUserPermissions } from '@/hooks/useUserPermissions';
 import { Deal } from '@/types/crm';
 import { useTranslation } from 'react-i18next';
 import { useToast } from '@/hooks/use-toast';
-import { CalendarIcon, DollarSign, TrendingUp, FileText, User, Calendar, Target, Package, Settings } from 'lucide-react';
+import { CalendarIcon, DollarSign, TrendingUp, FileText, User, Calendar, Target, Package, Settings, CreditCard } from 'lucide-react';
 
 interface UnifiedDealDialogProps {
   open: boolean;
@@ -30,6 +31,10 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
   const { leads } = useLeads();
   const { products } = useProducts();
   const { services } = useServices();
+  const { role } = useUserPermissions();
+  
+  // Проверяем, может ли пользователь редактировать статус оплаты
+  const canEditPaymentStatus = role === 'director' || role === 'sales_manager' || role === 'accountant';
   
   const [formData, setFormData] = useState({
     title: '',
@@ -40,7 +45,9 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
     notes: '',
     deal_type: '' as 'product' | 'service' | 'both' | '',
     product_id: '',
-    service_id: ''
+    service_id: '',
+    payment_status: 'waiting' as 'waiting' | 'paid' | 'not_realized' | 'debt',
+    debt_amount: ''
   });
   
   const [loading, setLoading] = useState(false);
@@ -66,7 +73,9 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
         notes: deal.notes || '',
         deal_type: deal.deal_type || '',
         product_id: deal.product_id || '',
-        service_id: deal.service_id || ''
+        service_id: deal.service_id || '',
+        payment_status: deal.payment_status || 'waiting',
+        debt_amount: deal.debt_amount?.toString() || ''
       });
     } else {
       setFormData({
@@ -78,7 +87,9 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
         notes: '',
         deal_type: '',
         product_id: '',
-        service_id: ''
+        service_id: '',
+        payment_status: 'waiting',
+        debt_amount: ''
       });
     }
     setErrors({});
@@ -118,12 +129,15 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
         lead_id: formData.lead_id || undefined,
         amount: formData.amount ? Number(formData.amount) : undefined,
         stage: formData.stage,
-        
         close_date: formData.close_date || undefined,
         notes: formData.notes || undefined,
         deal_type: formData.deal_type || undefined,
         product_id: formData.product_id || undefined,
-        service_id: formData.service_id || undefined
+        service_id: formData.service_id || undefined,
+        payment_status: canEditPaymentStatus ? formData.payment_status : undefined,
+        debt_amount: (canEditPaymentStatus && formData.payment_status === 'debt' && formData.debt_amount) 
+          ? Number(formData.debt_amount) 
+          : undefined
       };
       
       if (deal) {
@@ -160,6 +174,13 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
         deal_type: value as 'product' | 'service' | 'both' | '',
         product_id: value === 'service' ? '' : prev.product_id,
         service_id: value === 'product' ? '' : prev.service_id
+      }));
+    } else if (field === 'payment_status') {
+      // Сбрасываем debt_amount когда payment_status не 'debt'
+      setFormData(prev => ({
+        ...prev,
+        payment_status: value as 'waiting' | 'paid' | 'not_realized' | 'debt',
+        debt_amount: value === 'debt' ? prev.debt_amount : ''
       }));
     } else {
       setFormData(prev => ({ ...prev, [field]: value }));
@@ -371,6 +392,50 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
                   </div>
                 </CardContent>
               </Card>
+
+              {canEditPaymentStatus && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <CreditCard className="w-4 h-4" />
+                      Статус оплаты
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <Label htmlFor="payment_status">Статус оплаты</Label>
+                      <Select 
+                        value={formData.payment_status} 
+                        onValueChange={(value) => handleInputChange('payment_status', value)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="waiting">Ожидание</SelectItem>
+                          <SelectItem value="paid">Оплачено</SelectItem>
+                          <SelectItem value="not_realized">Не реализовано</SelectItem>
+                          <SelectItem value="debt">Задолженность</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {formData.payment_status === 'debt' && (
+                      <div>
+                        <Label htmlFor="debt_amount">Сумма задолженности</Label>
+                        <Input
+                          id="debt_amount"
+                          type="number"
+                          step="0.01"
+                          value={formData.debt_amount}
+                          onChange={(e) => handleInputChange('debt_amount', e.target.value)}
+                          placeholder="0.00"
+                        />
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              )}
             </div>
 
             {/* Summary Sidebar */}
