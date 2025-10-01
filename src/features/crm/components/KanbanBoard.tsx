@@ -10,6 +10,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useDuplicateDetection } from '@/hooks/useDuplicateDetection';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { AddLeadDialog } from './AddLeadDialog';
 import { EnhancedLeadModal } from './EnhancedLeadModal';
 import { DuplicateAlert } from './DuplicateAlert';
 
@@ -18,15 +19,16 @@ const stages = [
   { id: 'new', title: 'Новый лид', color: 'bg-blue-500' },
   { id: 'contacted', title: 'Связались', color: 'bg-yellow-500' },
   { id: 'qualified', title: 'Квалифицирован', color: 'bg-purple-500' },
-  { id: 'proposal', title: 'Предложение', color: 'bg-orange-500' },
+  { id: 'proposal', title: 'Отправил КП', color: 'bg-orange-500' },
   { id: 'negotiation', title: 'Переговоры', color: 'bg-indigo-500' },
-  { id: 'closed', title: 'Закрыт', color: 'bg-green-500' },
+  { id: 'closed', title: 'Успешно/Отказ', color: 'bg-green-500' },
   { id: 'lost', title: 'Потерян', color: 'bg-red-500' }
 ];
 
 const KanbanBoard = () => {
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAddLeadOpen, setIsAddLeadOpen] = useState(false);
   const [employees, setEmployees] = useState<Array<{id: string, email: string, full_name: string}>>([]);
   const { leads, loading, changeLeadStage, refetch } = useLeads();
   const { hasPermission } = useUserPermissions();
@@ -110,9 +112,14 @@ const KanbanBoard = () => {
   };
 
   const openLeadModal = (lead?: Lead) => {
-    console.log('Opening lead modal', { lead, hasPermission: hasPermission('manage_all_leads') });
-    setSelectedLead(lead || null);
-    setIsModalOpen(true);
+    if (lead) {
+      // Открываем модал просмотра/редактирования
+      setSelectedLead(lead);
+      setIsModalOpen(true);
+    } else {
+      // Открываем модал создания нового лида
+      setIsAddLeadOpen(true);
+    }
   };
 
   const formatCurrency = (amount?: number) => {
@@ -236,9 +243,18 @@ const KanbanBoard = () => {
         </div>
       </DragDropContext>
 
+      <AddLeadDialog
+        open={isAddLeadOpen}
+        onClose={() => setIsAddLeadOpen(false)}
+        onSuccess={refetch}
+      />
+
       <EnhancedLeadModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedLead(null);
+        }}
         lead={selectedLead}
         onLeadUpdate={refetch}
       />

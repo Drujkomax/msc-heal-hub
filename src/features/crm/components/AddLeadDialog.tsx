@@ -48,7 +48,7 @@ export const AddLeadDialog = ({ open, onClose, onSuccess }: AddLeadDialogProps) 
     { value: 'new', label: 'Новый' },
     { value: 'contacted', label: 'Связались' },
     { value: 'qualified', label: 'Квалифицирован' },
-    { value: 'proposal', label: 'Предложение' },
+    { value: 'proposal', label: 'Отправил КП' },
     { value: 'negotiation', label: 'Переговоры' }
   ];
 
