@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 import { useTasks } from '@/hooks/useTasks';
 import { useLeads } from '@/hooks/useLeads';
 import { useDeals } from '@/hooks/useDeals';
+import { useEmployeesByRole } from '@/hooks/useEmployeesByRole';
 import { toast } from '@/hooks/use-toast';
 
 const taskSchema = z.object({
@@ -44,6 +45,7 @@ export const AddTaskDialog = ({ open, onOpenChange, editingTask }: AddTaskDialog
   const { addTask, updateTask } = useTasks();
   const { leads } = useLeads();
   const { deals } = useDeals();
+  const { employees } = useEmployeesByRole();
   const [loading, setLoading] = useState(false);
 
   const form = useForm<TaskFormData>({
@@ -160,6 +162,32 @@ export const AddTaskDialog = ({ open, onOpenChange, editingTask }: AddTaskDialog
                         {...field} 
                       />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="assignee_id"
+                render={({ field }) => (
+                  <FormItem className="md:col-span-2">
+                    <FormLabel>Назначить сотруднику</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Выберите сотрудника" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="">Не назначено</SelectItem>
+                        {employees?.map((employee) => (
+                          <SelectItem key={employee.id} value={employee.id}>
+                            {employee.full_name || employee.email}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
