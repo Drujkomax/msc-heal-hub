@@ -173,14 +173,13 @@ export const AddTaskDialog = ({ open, onOpenChange, editingTask }: AddTaskDialog
                 render={({ field }) => (
                   <FormItem className="md:col-span-2">
                     <FormLabel>Назначить сотруднику</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Выберите сотрудника" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="">Не назначено</SelectItem>
                         {employees?.map((employee) => (
                           <SelectItem key={employee.id} value={employee.id}>
                             {employee.full_name || employee.email}
