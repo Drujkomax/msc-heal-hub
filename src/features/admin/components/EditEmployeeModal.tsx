@@ -6,10 +6,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Loader2 } from 'lucide-react';
+import { Loader2, User, Shield } from 'lucide-react';
 import { getRoleTranslation } from '@/utils/roleTranslations';
+import { CustomPermissionsForm } from './CustomPermissionsForm';
 
 interface Employee {
   id: string;
@@ -117,12 +119,25 @@ const EditEmployeeModal = ({ employee, isOpen, onClose, onUpdate }: EditEmployee
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-background max-w-md">
+      <DialogContent className="bg-background max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{t('employees.editEmployee')}</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <Tabs defaultValue="basic" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="basic" className="flex items-center gap-2">
+              <User className="h-4 w-4" />
+              Основная информация
+            </TabsTrigger>
+            <TabsTrigger value="permissions" className="flex items-center gap-2">
+              <Shield className="h-4 w-4" />
+              Настройка прав
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="basic">
+            <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <Label htmlFor="email">Email</Label>
             <Input
@@ -192,21 +207,37 @@ const EditEmployeeModal = ({ employee, isOpen, onClose, onUpdate }: EditEmployee
             />
           </div>
 
-          <div className="flex gap-2 pt-4">
-            <Button type="submit" className="flex-1" disabled={loading}>
-              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {t('common.save')}
-            </Button>
-            <Button 
-              type="button" 
-              variant="outline" 
-              onClick={onClose}
-              disabled={loading}
-            >
-              {t('common.cancel')}
-            </Button>
-          </div>
-        </form>
+              <div className="flex gap-2 pt-4">
+                <Button type="submit" className="flex-1" disabled={loading}>
+                  {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  {t('common.save')}
+                </Button>
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={onClose}
+                  disabled={loading}
+                >
+                  {t('common.cancel')}
+                </Button>
+              </div>
+            </form>
+          </TabsContent>
+
+          <TabsContent value="permissions">
+            {employee && (
+              <CustomPermissionsForm 
+                userId={employee.id}
+                onSave={() => {
+                  toast({
+                    title: 'Успешно',
+                    description: 'Права доступа обновлены',
+                  });
+                }}
+              />
+            )}
+          </TabsContent>
+        </Tabs>
       </DialogContent>
     </Dialog>
   );

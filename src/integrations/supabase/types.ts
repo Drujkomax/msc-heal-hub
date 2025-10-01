@@ -383,6 +383,36 @@ export type Database = {
         }
         Relationships: []
       }
+      employee_custom_permissions: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          id: string
+          permission_level: string
+          section: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          permission_level: string
+          section: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          permission_level?: string
+          section?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       lead_activities: {
         Row: {
           content: string
@@ -978,6 +1008,33 @@ export type Database = {
           },
         ]
       }
+      temporary_employees: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          expires_at: string
+          id: string
+          is_active: boolean | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          expires_at: string
+          id?: string
+          is_active?: boolean | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          expires_at?: string
+          id?: string
+          is_active?: boolean | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_activity_logs: {
         Row: {
           action: string
@@ -1159,6 +1216,10 @@ export type Database = {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]
       }
+      has_custom_permission: {
+        Args: { _required_level?: string; _section: string; _user_id: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -1180,6 +1241,10 @@ export type Database = {
       increment_product_views: {
         Args: { product_id: string }
         Returns: undefined
+      }
+      is_temporary_employee_active: {
+        Args: { _user_id: string }
+        Returns: boolean
       }
       log_employee_activity: {
         Args: {
