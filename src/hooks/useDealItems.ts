@@ -8,6 +8,7 @@ export interface DealProduct {
   quantity: number;
   unit_price: number;
   total_price: number;
+  currency: 'USD' | 'EUR' | 'UZS';
   created_at: string;
   updated_at: string;
 }
@@ -19,6 +20,7 @@ export interface DealService {
   quantity: number;
   unit_price: number;
   total_price: number;
+  currency: 'USD' | 'EUR' | 'UZS';
   created_at: string;
   updated_at: string;
 }
@@ -40,7 +42,12 @@ export const useDealItems = () => {
       const { data, error } = await query.order('created_at', { ascending: true });
       
       if (error) throw error;
-      setDealProducts(data || []);
+      // Добавляем currency по умолчанию, если его нет
+      const productsWithCurrency = (data || []).map(item => ({
+        ...item,
+        currency: (item as any).currency || 'UZS'
+      } as DealProduct));
+      setDealProducts(productsWithCurrency);
     } catch (error) {
       console.error('Error loading deal products:', error);
     } finally {
@@ -60,7 +67,12 @@ export const useDealItems = () => {
       const { data, error } = await query.order('created_at', { ascending: true });
       
       if (error) throw error;
-      setDealServices(data || []);
+      // Добавляем currency по умолчанию, если его нет
+      const servicesWithCurrency = (data || []).map(item => ({
+        ...item,
+        currency: (item as any).currency || 'UZS'
+      } as DealService));
+      setDealServices(servicesWithCurrency);
     } catch (error) {
       console.error('Error loading deal services:', error);
     } finally {
@@ -77,8 +89,13 @@ export const useDealItems = () => {
     
     if (error) throw error;
     
-    setDealProducts(prev => [...prev, data]);
-    return data;
+    const productWithCurrency = {
+      ...data,
+      currency: (data as any).currency || 'UZS'
+    } as DealProduct;
+    
+    setDealProducts(prev => [...prev, productWithCurrency]);
+    return productWithCurrency;
   };
 
   const addDealService = async (dealService: Omit<DealService, 'id' | 'created_at' | 'updated_at' | 'total_price'>) => {
@@ -90,8 +107,13 @@ export const useDealItems = () => {
     
     if (error) throw error;
     
-    setDealServices(prev => [...prev, data]);
-    return data;
+    const serviceWithCurrency = {
+      ...data,
+      currency: (data as any).currency || 'UZS'
+    } as DealService;
+    
+    setDealServices(prev => [...prev, serviceWithCurrency]);
+    return serviceWithCurrency;
   };
 
   const updateDealProduct = async (id: string, updates: Partial<DealProduct>) => {
@@ -104,8 +126,13 @@ export const useDealItems = () => {
     
     if (error) throw error;
     
-    setDealProducts(prev => prev.map(item => item.id === id ? data : item));
-    return data;
+    const productWithCurrency = {
+      ...data,
+      currency: (data as any).currency || 'UZS'
+    } as DealProduct;
+    
+    setDealProducts(prev => prev.map(item => item.id === id ? productWithCurrency : item));
+    return productWithCurrency;
   };
 
   const updateDealService = async (id: string, updates: Partial<DealService>) => {
@@ -118,8 +145,13 @@ export const useDealItems = () => {
     
     if (error) throw error;
     
-    setDealServices(prev => prev.map(item => item.id === id ? data : item));
-    return data;
+    const serviceWithCurrency = {
+      ...data,
+      currency: (data as any).currency || 'UZS'
+    } as DealService;
+    
+    setDealServices(prev => prev.map(item => item.id === id ? serviceWithCurrency : item));
+    return serviceWithCurrency;
   };
 
   const deleteDealProduct = async (id: string) => {

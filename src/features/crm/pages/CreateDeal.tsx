@@ -40,6 +40,7 @@ interface DealProduct {
   quantity: number;
   unit_price: number;
   total_price: number;
+  currency: 'USD' | 'EUR' | 'UZS';
 }
 
 interface DealService {
@@ -48,6 +49,7 @@ interface DealService {
   quantity: number;
   unit_price: number;
   total_price: number;
+  currency: 'USD' | 'EUR' | 'UZS';
 }
 
 const CreateDeal = () => {
@@ -108,7 +110,8 @@ const CreateDeal = () => {
       product_id: '',
       quantity: 1,
       unit_price: 0,
-      total_price: 0
+      total_price: 0,
+      currency: 'UZS'
     };
     setDealProducts([...dealProducts, newProduct]);
   };
@@ -119,7 +122,8 @@ const CreateDeal = () => {
       service_id: '',
       quantity: 1,
       unit_price: 0,
-      total_price: 0
+      total_price: 0,
+      currency: 'UZS'
     };
     setDealServices([...dealServices, newService]);
   };
@@ -462,7 +466,7 @@ const CreateDeal = () => {
                             )}
                           </div>
                           
-                          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                             <div className="md:col-span-2">
                               <Label>Товар *</Label>
                               <Select 
@@ -509,12 +513,41 @@ const CreateDeal = () => {
                               />
                               {errors[`product_price_${index}`] && <p className="text-sm text-red-500 mt-1">{errors[`product_price_${index}`]}</p>}
                             </div>
+
+                            <div>
+                              <Label>Валюта</Label>
+                              <Select 
+                                value={product.currency} 
+                                onValueChange={(value) => updateProduct(product.id, 'currency', value)}
+                              >
+                                <SelectTrigger>
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="UZS">Сум (UZS)</SelectItem>
+                                  <SelectItem value="USD">Доллар (USD)</SelectItem>
+                                  <SelectItem value="EUR">Евро (EUR)</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
                           </div>
+                          
+                          {product.currency !== 'UZS' && product.unit_price > 0 && (
+                            <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg border border-border/50">
+                              <ArrowRightLeft className="w-4 h-4 text-muted-foreground" />
+                              <div className="text-sm">
+                                <span className="text-muted-foreground">Конвертация: </span>
+                                <span className="font-medium">
+                                  {product.unit_price.toLocaleString()} {product.currency} = {convertToUZS(product.unit_price, product.currency).toLocaleString()} UZS
+                                </span>
+                              </div>
+                            </div>
+                          )}
                           
                           <div className="flex justify-end">
                             <div className="text-right">
                               <Label className="text-sm text-muted-foreground">Итого:</Label>
-                              <p className="text-lg font-semibold">${product.total_price.toLocaleString()}</p>
+                              <p className="text-lg font-semibold">{product.total_price.toLocaleString()} {product.currency}</p>
                             </div>
                           </div>
                         </div>
@@ -568,7 +601,7 @@ const CreateDeal = () => {
                             )}
                           </div>
                           
-                          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                             <div className="md:col-span-2">
                               <Label>Услуга *</Label>
                               <Select 
@@ -615,12 +648,41 @@ const CreateDeal = () => {
                               />
                               {errors[`service_price_${index}`] && <p className="text-sm text-red-500 mt-1">{errors[`service_price_${index}`]}</p>}
                             </div>
+
+                            <div>
+                              <Label>Валюта</Label>
+                              <Select 
+                                value={service.currency} 
+                                onValueChange={(value) => updateService(service.id, 'currency', value)}
+                              >
+                                <SelectTrigger>
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="UZS">Сум (UZS)</SelectItem>
+                                  <SelectItem value="USD">Доллар (USD)</SelectItem>
+                                  <SelectItem value="EUR">Евро (EUR)</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
                           </div>
+                          
+                          {service.currency !== 'UZS' && service.unit_price > 0 && (
+                            <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg border border-border/50">
+                              <ArrowRightLeft className="w-4 h-4 text-muted-foreground" />
+                              <div className="text-sm">
+                                <span className="text-muted-foreground">Конвертация: </span>
+                                <span className="font-medium">
+                                  {service.unit_price.toLocaleString()} {service.currency} = {convertToUZS(service.unit_price, service.currency).toLocaleString()} UZS
+                                </span>
+                              </div>
+                            </div>
+                          )}
                           
                           <div className="flex justify-end">
                             <div className="text-right">
                               <Label className="text-sm text-muted-foreground">Итого:</Label>
-                              <p className="text-lg font-semibold">${service.total_price.toLocaleString()}</p>
+                              <p className="text-lg font-semibold">{service.total_price.toLocaleString()} {service.currency}</p>
                             </div>
                           </div>
                         </div>
