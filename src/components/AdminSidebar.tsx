@@ -78,9 +78,9 @@ export function AdminSidebar() {
       conditionalItems.push({ name: 'Архив', href: '/admin/archived', icon: Archive, permission: 'view_archive' });
     }
 
-    // Продукты - доступны админу, бухгалтеру, руководителю и директору
-    if (hasPermission('manage_products')) {
-      conditionalItems.push({ name: t('admin.products'), href: '/admin/products', icon: ShoppingBag, permission: 'manage_products' });
+    // Продукты - доступны при наличии любого права на товары (просмотр или управление)
+    if (hasPermission('view_products')) {
+      conditionalItems.push({ name: t('admin.products'), href: '/admin/products', icon: ShoppingBag, permission: 'view_products' });
     }
     
     // Категории - доступны админу, руководителю и директору
