@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import EnhancedDealList from '../components/EnhancedDealList';
 import EnhancedViewDealModal from '../components/EnhancedViewDealModal';
+import UnifiedDealDialog from '../components/UnifiedDealDialog';
 import DealAnalytics from '../components/DealAnalytics';
 import { Deal } from '@/types/crm';
 import { useDeals } from '@/hooks/useDeals';
@@ -47,8 +48,8 @@ const DealsPage = () => {
   };
 
   const handleEditDeal = (deal: Deal) => {
-    // Переходим на страницу создания сделки в режиме редактирования
-    navigate(`/admin/deals/edit/${deal.id}`);
+    setViewingDeal(null); // Закрываем модал просмотра если открыт
+    setEditingDeal(deal);
   };
 
   const handleViewDeal = (deal: Deal) => {
@@ -191,6 +192,12 @@ const DealsPage = () => {
           onClose={handleCloseDialog}
           deal={viewingDeal}
           onEdit={hasPermission('manage_deals') ? handleEditDeal : undefined}
+        />
+
+        <UnifiedDealDialog
+          open={!!editingDeal}
+          onClose={handleCloseDialog}
+          deal={editingDeal}
         />
       </div>
     </RoleBasedAccess>
