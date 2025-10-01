@@ -367,8 +367,7 @@ const EnhancedDealList = ({ onEditDeal, onViewDeal }: EnhancedDealListProps) => 
                   <TableCell>
                     {deal.amount ? (
                       <div className="flex items-center gap-1 font-medium">
-                        <DollarSign className="w-4 h-4" />
-                        {deal.amount.toLocaleString()}
+                        {deal.amount.toLocaleString()} UZS
                       </div>
                     ) : (
                       <span className="text-muted-foreground">—</span>
