@@ -11,7 +11,7 @@ import { useDuplicateDetection } from '@/hooks/useDuplicateDetection';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { AddLeadDialog } from './AddLeadDialog';
-import { EnhancedLeadModal } from './EnhancedLeadModal';
+import { UnifiedLeadModal } from './UnifiedLeadModal';
 import { DuplicateAlert } from './DuplicateAlert';
 import { CongratulationsDialog } from './CongratulationsDialog';
 import { useNavigate } from 'react-router-dom';
@@ -261,13 +261,13 @@ const KanbanBoard = () => {
         onSuccess={refetch}
       />
 
-      <EnhancedLeadModal
+      <UnifiedLeadModal
+        lead={selectedLead}
         isOpen={isModalOpen}
         onClose={() => {
           setIsModalOpen(false);
           setSelectedLead(null);
         }}
-        lead={selectedLead}
         onLeadUpdate={refetch}
       />
 
