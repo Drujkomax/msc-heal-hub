@@ -186,9 +186,21 @@ const CreateDeal = () => {
   };
 
   const calculateTotalAmount = () => {
-    const productsTotal = dealProducts.reduce((sum, p) => sum + p.total_price, 0);
-    const servicesTotal = dealServices.reduce((sum, s) => sum + s.total_price, 0);
+    const productsTotal = dealProducts.reduce((sum, p) => {
+      return sum + convertToUZS(p.total_price, p.currency);
+    }, 0);
+    const servicesTotal = dealServices.reduce((sum, s) => {
+      return sum + convertToUZS(s.total_price, s.currency);
+    }, 0);
     return productsTotal + servicesTotal;
+  };
+
+  const calculateProductsTotal = () => {
+    return dealProducts.reduce((sum, p) => sum + convertToUZS(p.total_price, p.currency), 0);
+  };
+
+  const calculateServicesTotal = () => {
+    return dealServices.reduce((sum, s) => sum + convertToUZS(s.total_price, s.currency), 0);
   };
 
   const validateForm = () => {
@@ -742,51 +754,31 @@ const CreateDeal = () => {
                       <div className="flex justify-between text-sm">
                         <span>Товары ({dealProducts.length}):</span>
                         <span className="font-medium">
-                          ${dealProducts.reduce((sum, p) => sum + p.total_price, 0).toLocaleString()}
+                          {calculateProductsTotal().toLocaleString('ru-RU', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                          })} UZS
                         </span>
                       </div>
                       <div className="flex justify-between text-sm">
                         <span>Услуги ({dealServices.length}):</span>
                         <span className="font-medium">
-                          ${dealServices.reduce((sum, s) => sum + s.total_price, 0).toLocaleString()}
+                          {calculateServicesTotal().toLocaleString('ru-RU', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                          })} UZS
                         </span>
                       </div>
                       <Separator />
                       <div className="flex justify-between font-semibold">
                         <span>Общая сумма:</span>
                         <span className="text-green-600">
-                          {formData.currency === 'USD' && '$'}
-                          {formData.currency === 'EUR' && '€'}
-                          {calculateTotalAmount().toLocaleString()}
-                          {formData.currency === 'UZS' && ' UZS'}
+                          {calculateTotalAmount().toLocaleString('ru-RU', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                          })} UZS
                         </span>
                       </div>
-                      
-                      {/* Конвертация в сумы */}
-                      {calculateTotalAmount() > 0 && formData.currency !== 'UZS' && (
-                        <div className="mt-3 p-3 bg-muted/50 rounded-md border space-y-2">
-                          <div className="flex items-center gap-2">
-                            <ArrowRightLeft className="w-3 h-3 text-muted-foreground" />
-                            <span className="text-xs text-muted-foreground">
-                              Конвертация в сумы:
-                            </span>
-                          </div>
-                          <div className="flex justify-between items-center">
-                            <span className="text-sm font-semibold text-primary">
-                              {convertToUZS(
-                                calculateTotalAmount(), 
-                                formData.currency
-                              ).toLocaleString('ru-RU', {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2
-                              })} UZS
-                            </span>
-                          </div>
-                          <div className="text-xs text-muted-foreground">
-                            Курс: 1 {formData.currency} = {exchangeRates[formData.currency].toLocaleString('ru-RU')} UZS
-                          </div>
-                        </div>
-                      )}
                     </div>
                   </div>
 
