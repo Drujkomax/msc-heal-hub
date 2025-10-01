@@ -302,7 +302,7 @@ export const UnifiedLeadModal = ({ lead, isOpen, onClose, onLeadUpdate }: Unifie
                         <div>
                           <div className="text-sm text-muted-foreground">Назначен на</div>
                           <div className="font-medium">
-                            {assignedUser ? (assignedUser.full_name || assignedUser.email) : 'Загрузка...'}
+                            {assignedUser ? assignedUser.email : 'Загрузка...'}
                           </div>
                         </div>
                       </div>

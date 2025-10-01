@@ -422,7 +422,7 @@ const Leads = () => {
                     <SelectItem value="unassigned">Не назначен</SelectItem>
                     {employees.map((employee) => (
                       <SelectItem key={employee.id} value={employee.id}>
-                        {employee.full_name || employee.email}
+                        {employee.email}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -591,7 +591,7 @@ const Leads = () => {
                                 className="hover:bg-accent"
                               >
                                 <User className="mr-2 h-4 w-4" />
-                                {employee.full_name || employee.email}
+                                {employee.email}
                               </DropdownMenuItem>
                             ))}
                           </DropdownMenuContent>

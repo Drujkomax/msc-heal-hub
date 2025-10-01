@@ -199,7 +199,7 @@ export const AddTaskDialog = ({ open, onOpenChange, editingTask }: AddTaskDialog
                               htmlFor={`assignee-${employee.id}`}
                               className="text-sm font-medium leading-none cursor-pointer peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                             >
-                              {employee.full_name || employee.email}
+                              {employee.email}
                             </label>
                           </div>
                         ))

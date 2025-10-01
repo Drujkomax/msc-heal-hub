@@ -61,7 +61,7 @@ const AssignedUserDisplay = ({ userId }: AssignedUserDisplayProps) => {
 
   return (
     <span className="text-sm">
-      {userData.full_name || userData.email || userId}
+      {userData.email || userId}
     </span>
   );
 };
