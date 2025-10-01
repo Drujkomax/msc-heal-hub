@@ -102,7 +102,7 @@ const AdminWrapper = () => {
           </ProtectedRoute>
         } />
         <Route path="deals" element={
-          <ProtectedRoute permission="manage_deals" fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
+          <ProtectedRoute permission={['view_deals', 'manage_deals']} fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
             <DealsPage />
           </ProtectedRoute>
         } />
@@ -112,7 +112,7 @@ const AdminWrapper = () => {
           </ProtectedRoute>
         } />
         <Route path="tasks" element={
-          <ProtectedRoute permission="manage_tasks" fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
+          <ProtectedRoute permission={['view_tasks', 'manage_tasks']} fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
             <TasksPage />
           </ProtectedRoute>
         } />
@@ -129,9 +129,9 @@ const AdminWrapper = () => {
           </ProtectedRoute>
         } />
         
-        {/* Продукты - для всех кроме salesperson */}
+        {/* Продукты - просмотр или управление */}
         <Route path="products" element={
-          <ProtectedRoute permission="manage_products" fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
+          <ProtectedRoute permission={['view_products', 'manage_products']} fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
             <AdminProducts />
           </ProtectedRoute>
         } />
@@ -146,26 +146,26 @@ const AdminWrapper = () => {
           </ProtectedRoute>
         } />
         <Route path="products/preview/:id" element={
-          <ProtectedRoute permission="manage_products" fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
+          <ProtectedRoute permission={['view_products', 'manage_products']} fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
             <AdminProductPreview />
           </ProtectedRoute>
         } />
         <Route path="categories" element={
-          <ProtectedRoute permission="manage_categories" fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
+          <ProtectedRoute permission={['view_categories', 'manage_categories']} fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
             <Categories />
           </ProtectedRoute>
         } />
         
         {/* Услуги */}
         <Route path="services" element={
-          <ProtectedRoute permission="manage_services" fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
+          <ProtectedRoute permission={['view_services', 'manage_services']} fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
             <AdminServices />
           </ProtectedRoute>
         } />
         
         {/* Контакты */}
         <Route path="contacts" element={
-          <ProtectedRoute permission="manage_contacts" fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
+          <ProtectedRoute permission={['view_contacts', 'manage_contacts']} fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
             <AdminContacts />
           </ProtectedRoute>
         } />
