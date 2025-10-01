@@ -110,6 +110,7 @@ const KanbanBoard = () => {
   };
 
   const openLeadModal = (lead?: Lead) => {
+    console.log('Opening lead modal', { lead, hasPermission: hasPermission('manage_all_leads') });
     setSelectedLead(lead || null);
     setIsModalOpen(true);
   };
