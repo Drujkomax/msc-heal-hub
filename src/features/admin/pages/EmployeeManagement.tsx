@@ -186,6 +186,26 @@ const EmployeeManagement = () => {
     setAddingEmployee(true);
     
     try {
+      // Проверяем, существует ли уже пользователь с таким email
+      const { data: existingUser, error: checkError } = await supabase
+        .from('profiles')
+        .select('id, email')
+        .eq('email', newEmployee.email)
+        .maybeSingle();
+
+      if (checkError && checkError.code !== 'PGRST116') {
+        throw checkError;
+      }
+
+      if (existingUser) {
+        toast({
+          title: 'Ошибка',
+          description: `Пользователь с email ${newEmployee.email} уже зарегистрирован в системе`,
+          variant: 'destructive',
+        });
+        return;
+      }
+
       // Определяем роль на основе доступа к админке
       const finalRole = hasAdminAccess ? newEmployee.role : 'user';
       

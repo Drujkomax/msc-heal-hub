@@ -98,6 +98,14 @@ const RegisterWithInvite = () => {
     setError('');
 
     try {
+      // Проверяем, существует ли уже пользователь
+      const { data: existingSession } = await supabase.auth.getSession();
+      
+      // Если пользователь уже авторизован, выходим
+      if (existingSession?.session) {
+        await supabase.auth.signOut();
+      }
+
       // Регистрируемся в Supabase Auth без подтверждения email
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: inviteData.email,
@@ -110,7 +118,13 @@ const RegisterWithInvite = () => {
         }
       });
 
-      if (authError) throw authError;
+      if (authError) {
+        // Если пользователь уже зарегистрирован
+        if (authError.message?.includes('already registered') || authError.message?.includes('User already registered')) {
+          throw new Error('Этот email уже зарегистрирован. Пожалуйста, войдите в систему или используйте другой email.');
+        }
+        throw authError;
+      }
 
       if (authData.user) {
         // Используем новую функцию для назначения роли и подтверждения пользователя
