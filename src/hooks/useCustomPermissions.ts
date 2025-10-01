@@ -137,7 +137,7 @@ export const useCustomPermissions = (userId?: string) => {
             user_id: userId,
             expires_at: expiresAt.toISOString(),
             is_active: true,
-          });
+          }, { onConflict: 'user_id' });
 
         if (tempError) throw tempError;
       } else {
