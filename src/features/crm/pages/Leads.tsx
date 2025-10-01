@@ -51,8 +51,8 @@ const Leads = () => {
       qualified: 'Квалифицирован',
       proposal: 'Отправил КП',
       negotiation: 'Переговоры',
-      closed: 'Успешно/Отказ',
-      lost: 'Потерян'
+      closed: 'Успешно',
+      lost: 'Отказ'
     };
     return stageMap[stage] || stage;
   };
@@ -127,8 +127,8 @@ const Leads = () => {
     { value: 'qualified', label: 'Квалифицированы', count: 0, color: 'bg-purple-500' },
     { value: 'proposal', label: 'Отправил КП', count: 0, color: 'bg-orange-500' },
     { value: 'negotiation', label: 'Переговоры', count: 0, color: 'bg-indigo-500' },
-    { value: 'closed', label: 'Успешно/Отказ', count: 0, color: 'bg-green-500' },
-    { value: 'lost', label: 'Потеряны', count: 0, color: 'bg-red-500' },
+    { value: 'closed', label: 'Успешно', count: 0, color: 'bg-green-500' },
+    { value: 'lost', label: 'Отказ', count: 0, color: 'bg-red-500' },
   ];
 
   useEffect(() => {
