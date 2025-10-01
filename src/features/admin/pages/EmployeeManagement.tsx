@@ -6,6 +6,16 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { 
+  AlertDialog, 
+  AlertDialogAction, 
+  AlertDialogCancel, 
+  AlertDialogContent, 
+  AlertDialogDescription, 
+  AlertDialogFooter, 
+  AlertDialogHeader, 
+  AlertDialogTitle 
+} from '@/components/ui/alert-dialog';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Calendar } from '@/components/ui/calendar';
@@ -29,7 +39,8 @@ import {
   Edit,
   Eye,
   User,
-  CalendarIcon
+  CalendarIcon,
+  Trash2
 } from 'lucide-react';
 
 interface Employee {
@@ -62,6 +73,9 @@ const EmployeeManagement = () => {
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [deletingEmployee, setDeletingEmployee] = useState(false);
+  const [employeeToDelete, setEmployeeToDelete] = useState<Employee | null>(null);
 
   const getRoles = () => [
     { value: 'observer', label: getRoleTranslation('observer', i18n.language), color: 'bg-yellow-100 text-yellow-800' },
@@ -239,6 +253,65 @@ const EmployeeManagement = () => {
   const handleViewEmployee = (employee: Employee) => {
     setSelectedEmployee(employee);
     setIsViewModalOpen(true);
+  };
+
+  const handleDeleteEmployee = (employee: Employee) => {
+    setEmployeeToDelete(employee);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const confirmDeleteEmployee = async () => {
+    if (!employeeToDelete) return;
+    
+    setDeletingEmployee(true);
+    
+    try {
+      // Удаляем роль пользователя
+      const { error: roleError } = await supabase
+        .from('user_roles')
+        .delete()
+        .eq('user_id', employeeToDelete.id);
+      
+      if (roleError) throw roleError;
+
+      // Удаляем профиль пользователя
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .delete()
+        .eq('id', employeeToDelete.id);
+      
+      if (profileError) throw profileError;
+
+      // Удаляем кастомные права (если есть)
+      await supabase
+        .from('employee_custom_permissions')
+        .delete()
+        .eq('user_id', employeeToDelete.id);
+
+      // Удаляем статус временного сотрудника (если есть)
+      await supabase
+        .from('temporary_employees')
+        .delete()
+        .eq('user_id', employeeToDelete.id);
+
+      toast({
+        title: 'Сотрудник удалён',
+        description: `Сотрудник ${employeeToDelete.email} был успешно удалён из системы`,
+      });
+
+      fetchEmployees();
+      setIsDeleteDialogOpen(false);
+      setEmployeeToDelete(null);
+    } catch (error: any) {
+      console.error('Error deleting employee:', error);
+      toast({
+        title: 'Ошибка',
+        description: error.message || 'Ошибка при удалении сотрудника',
+        variant: 'destructive',
+      });
+    } finally {
+      setDeletingEmployee(false);
+    }
   };
 
   const filteredEmployees = employees.filter(employee => {
@@ -575,6 +648,15 @@ const EmployeeManagement = () => {
                         <Button
                           variant="outline"
                           size="sm"
+                          onClick={() => handleViewEmployee(employee)}
+                          className="flex items-center gap-1"
+                        >
+                          <Eye className="w-4 h-4" />
+                          {t('common.view')}
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
                           onClick={() => handleEditEmployee(employee)}
                           className="flex items-center gap-1"
                         >
@@ -582,13 +664,13 @@ const EmployeeManagement = () => {
                           {t('common.edit')}
                         </Button>
                         <Button
-                          variant="outline"
+                          variant="destructive"
                           size="sm"
-                          onClick={() => handleViewEmployee(employee)}
+                          onClick={() => handleDeleteEmployee(employee)}
                           className="flex items-center gap-1"
                         >
-                          <Eye className="w-4 h-4" />
-                          {t('common.view')}
+                          <Trash2 className="w-4 h-4" />
+                          {t('common.delete')}
                         </Button>
                       </div>
                     </div>
@@ -619,6 +701,32 @@ const EmployeeManagement = () => {
           setSelectedEmployee(null);
         }}
       />
+
+      {/* Диалог подтверждения удаления */}
+      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <AlertDialogContent className="bg-background">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Удалить сотрудника?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Вы уверены, что хотите удалить сотрудника {employeeToDelete?.email}?
+              Это действие нельзя отменить. Все данные сотрудника, включая права доступа и профиль, будут удалены.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deletingEmployee}>
+              Отмена
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDeleteEmployee}
+              disabled={deletingEmployee}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {deletingEmployee && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {deletingEmployee ? 'Удаление...' : 'Удалить'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
