@@ -503,10 +503,10 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
                      <div>
                        <Label>Финансовая сводка</Label>
                        <div className="mt-1 space-y-2">
-                         <div className="flex justify-between text-sm">
-                           <span>Стоимость сделки:</span>
-                           <span className="font-medium">${Number(formData.amount).toLocaleString()}</span>
-                         </div>
+                          <div className="flex justify-between text-sm">
+                            <span>Стоимость сделки:</span>
+                            <span className="font-medium">{Number(formData.amount).toLocaleString()} UZS</span>
+                          </div>
                        </div>
                      </div>
                    )}
