@@ -13,6 +13,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { AddLeadDialog } from './AddLeadDialog';
 import { EnhancedLeadModal } from './EnhancedLeadModal';
 import { DuplicateAlert } from './DuplicateAlert';
+import { CongratulationsDialog } from './CongratulationsDialog';
+import { useNavigate } from 'react-router-dom';
 
 // Unified lead stages
 const stages = [
@@ -29,12 +31,15 @@ const KanbanBoard = () => {
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAddLeadOpen, setIsAddLeadOpen] = useState(false);
+  const [isCongratulationsOpen, setIsCongratulationsOpen] = useState(false);
+  const [congratsLead, setCongratsLead] = useState<Lead | null>(null);
   const [employees, setEmployees] = useState<Array<{id: string, email: string, full_name: string}>>([]);
   const { leads, loading, changeLeadStage, refetch } = useLeads();
   const { hasPermission } = useUserPermissions();
   const { user } = useAuth();
   const { duplicateGroups } = useDuplicateDetection(leads);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   // Fetch employee profiles for assigned users display
   useEffect(() => {
@@ -93,10 +98,17 @@ const KanbanBoard = () => {
 
     try {
       await changeLeadStage(leadId, newStage);
-      toast({
-        title: "Успешно",
-        description: "Этап лида обновлен",
-      });
+      
+      // Show congratulations dialog when moving from qualified to proposal
+      if (source.droppableId === 'qualified' && newStage === 'proposal') {
+        setCongratsLead(lead);
+        setIsCongratulationsOpen(true);
+      } else {
+        toast({
+          title: "Успешно",
+          description: "Этап лида обновлен",
+        });
+      }
     } catch (error) {
       console.error('Error updating lead stage:', error);
       toast({
@@ -257,6 +269,19 @@ const KanbanBoard = () => {
         }}
         lead={selectedLead}
         onLeadUpdate={refetch}
+      />
+
+      <CongratulationsDialog
+        open={isCongratulationsOpen}
+        onClose={() => {
+          setIsCongratulationsOpen(false);
+          setCongratsLead(null);
+        }}
+        lead={congratsLead}
+        onCreateDeal={() => {
+          setIsCongratulationsOpen(false);
+          navigate('/admin/deals/create', { state: { leadId: congratsLead?.id } });
+        }}
       />
     </div>
   );
