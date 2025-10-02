@@ -29,7 +29,11 @@ export const useAuth = () => {
 
   const signOut = async () => {
     const { error } = await supabase.auth.signOut();
-    // Игнорируем ошибку "session not found" при выходе
+    // Принудительно очищаем состояние даже при ошибке
+    setSession(null);
+    setUser(null);
+    
+    // Игнорируем только ошибку "session not found"
     if (error && !error.message?.toLowerCase().includes('session')) {
       throw error;
     }
