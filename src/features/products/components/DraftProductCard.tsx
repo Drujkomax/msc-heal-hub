@@ -147,7 +147,7 @@ const DraftProductCard = ({ product, onArchive, onPublish }: DraftProductCardPro
             <Button 
               variant="outline" 
               size="sm" 
-              onClick={() => navigate(`/product/${product.id}`)}
+              onClick={() => navigate(`/admin/products/preview/${product.id}`)}
               className="flex-1"
             >
               <Eye className="w-4 h-4 mr-1" />
