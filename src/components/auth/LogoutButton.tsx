@@ -14,25 +14,21 @@ const LogoutButton = () => {
 
   const handleLogout = async () => {
     try {
-      await signOut();
-
-      // Проверяем, действительно ли сессия завершена
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        console.warn('Logout verification failed: session still exists');
-        toast({
-          variant: 'destructive',
-          title: t('common.error'),
-          description: 'Не удалось выйти. Повторите попытку.',
-        });
-        return;
-      }
-
+      // Выходим из системы
+      await supabase.auth.signOut({ scope: 'global' });
+      
+      // Принудительно очищаем localStorage
+      localStorage.clear();
+      
       toast({
         title: t('common.success'),
         description: 'Вы успешно вышли из системы',
       });
-      navigate('/');
+      
+      // Используем window.location для полной перезагрузки
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 500);
     } catch (error) {
       console.error('Logout error:', error);
       toast({
