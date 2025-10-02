@@ -126,10 +126,10 @@ const AdminProducts = () => {
 
       <div className="space-y-6">
         <Tabs defaultValue="active" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className={`grid w-full ${hasPermission('view_products') && hasPermission('view_archive') ? 'grid-cols-3' : hasPermission('view_products') || hasPermission('view_archive') ? 'grid-cols-2' : 'grid-cols-1'}`}>
             <TabsTrigger value="active">Активные</TabsTrigger>
-            <TabsTrigger value="drafts">Черновики</TabsTrigger>
-            <TabsTrigger value="archived">Архив</TabsTrigger>
+            {hasPermission('view_products') && <TabsTrigger value="drafts">Черновики</TabsTrigger>}
+            {hasPermission('view_archive') && <TabsTrigger value="archived">Архив</TabsTrigger>}
           </TabsList>
 
           <TabsContent value="active" className="space-y-4">
@@ -269,26 +269,30 @@ const AdminProducts = () => {
             </Card>
           </TabsContent>
 
-          <TabsContent value="drafts">
-            <DraftManager />
-          </TabsContent>
+          {hasPermission('view_products') && (
+            <TabsContent value="drafts">
+              <DraftManager />
+            </TabsContent>
+          )}
 
-          <TabsContent value="archived">
-            <Card>
-              <CardContent className="p-6">
-                <div className="text-center py-8">
-                  <Archive className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-lg font-medium mb-2">Архивированные товары</p>
-                  <p className="text-muted-foreground mb-4">
-                    Для просмотра архивированных товаров перейдите в раздел "Архив"
-                  </p>
-                  <Button onClick={() => navigate('/admin/archived')}>
-                    Перейти к архиву
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+          {hasPermission('view_archive') && (
+            <TabsContent value="archived">
+              <Card>
+                <CardContent className="p-6">
+                  <div className="text-center py-8">
+                    <Archive className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                    <p className="text-lg font-medium mb-2">Архивированные товары</p>
+                    <p className="text-muted-foreground mb-4">
+                      Для просмотра архивированных товаров перейдите в раздел "Архив"
+                    </p>
+                    <Button onClick={() => navigate('/admin/archived')}>
+                      Перейти к архиву
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          )}
         </Tabs>
       </div>
     </div>
