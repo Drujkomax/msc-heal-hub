@@ -102,14 +102,24 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
       newErrors.title = 'Название обязательно';
     }
     
-    if (formData.deal_type && !formData.product_id && !formData.service_id) {
-      newErrors.deal_type = 'Выберите товар или услугу';
+    // Валидация только если выбран тип сделки
+    if (formData.deal_type) {
+      if (formData.deal_type === 'product' && !formData.product_id) {
+        newErrors.deal_type = 'Выберите товар';
+      } else if (formData.deal_type === 'service' && !formData.service_id) {
+        newErrors.deal_type = 'Выберите услугу';
+      } else if (formData.deal_type === 'both' && !formData.product_id && !formData.service_id) {
+        newErrors.deal_type = 'Выберите товар и/или услугу';
+      }
     }
     
     if (formData.amount && isNaN(Number(formData.amount))) {
       newErrors.amount = 'Неверный формат числа';
     }
     
+    if (formData.payment_status === 'debt' && formData.debt_amount && isNaN(Number(formData.debt_amount))) {
+      newErrors.debt_amount = 'Неверный формат числа';
+    }
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
