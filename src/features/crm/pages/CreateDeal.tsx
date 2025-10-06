@@ -395,30 +395,19 @@ const CreateDeal = () => {
                     <Label htmlFor="lead_id">Клиент</Label>
                     <Select value={formData.lead_id} onValueChange={(value) => handleInputChange('lead_id', value)}>
                       <SelectTrigger>
-                        <SelectValue placeholder={leads.length === 0 ? "Нет доступных клиентов" : "Выберите клиента"} />
+                        <SelectValue placeholder="Выберите клиента" />
                       </SelectTrigger>
                       <SelectContent>
-                        {leads.length === 0 ? (
-                          <div className="p-2 text-sm text-muted-foreground">
-                            Нет доступных клиентов
-                          </div>
-                        ) : (
-                          leads.filter(lead => !lead.archived).map((lead) => (
-                            <SelectItem key={lead.id} value={lead.id}>
-                              <div className="flex items-center gap-2">
-                                <User className="w-4 h-4" />
-                                {lead.name} {lead.company && `(${lead.company})`}
-                              </div>
-                            </SelectItem>
-                          ))
-                        )}
+                        {leads.filter(lead => !lead.archived).map((lead) => (
+                          <SelectItem key={lead.id} value={lead.id}>
+                            {lead.name} {lead.company && `(${lead.company})`}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
-                    {leads.length > 0 && (
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Доступно клиентов: {leads.filter(l => !l.archived).length}
-                      </p>
-                    )}
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Клиентов: {leads.filter(l => !l.archived).length}
+                    </p>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
