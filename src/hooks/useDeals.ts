@@ -83,9 +83,14 @@ export const useDeals = () => {
         })
         .eq('id', id)
         .select()
-        .single();
+        .maybeSingle();
       
       if (error) throw error;
+      
+      if (!data) {
+        throw new Error('Не удалось обновить сделку. Проверьте права доступа.');
+      }
+      
       setDeals(prev => 
         prev.map(deal => deal.id === id ? data as Deal : deal)
       );
