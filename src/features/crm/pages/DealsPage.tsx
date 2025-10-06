@@ -23,7 +23,9 @@ import {
   Calendar,
   Plus,
   Filter,
-  Download
+  Download,
+  AlertCircle,
+  CreditCard
 } from 'lucide-react';
 
 const DealsPage = () => {
@@ -49,7 +51,11 @@ const DealsPage = () => {
   const waitingDeals = deals.filter(deal => deal.payment_status === 'waiting').length;
   const paidDeals = deals.filter(deal => deal.payment_status === 'paid').length;
   const notRealizedDeals = deals.filter(deal => deal.payment_status === 'not_realized').length;
-  const debtDeals = deals.filter(deal => deal.payment_status === 'debt').length;
+  const debtDeals = deals.filter(deal => deal.payment_status === 'debt');
+  
+  // Calculate total debt amount and count of debtors
+  const totalDebtAmount = debtDeals.reduce((sum, deal) => sum + (deal.debt_amount || 0), 0);
+  const debtorsCount = debtDeals.length;
 
   const handleCreateDeal = () => {
     navigate('/admin/deals/create');
@@ -96,7 +102,7 @@ const DealsPage = () => {
     },
     {
       title: 'Задолженность',
-      value: debtDeals.toString(),
+      value: debtorsCount.toString(),
       icon: TrendingUp,
       color: 'text-red-600 bg-red-50 dark:bg-red-900/20',
       change: '',
@@ -163,6 +169,48 @@ const DealsPage = () => {
             )}
           </div>
         </div>
+
+        {/* Debt Summary Block - Only for Accountants */}
+        {isAccountant && (
+          <Card className="border-red-200 dark:border-red-800 bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-950/20 dark:to-orange-950/20">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-red-700 dark:text-red-400">
+                <AlertCircle className="w-5 h-5" />
+                Сводка по задолженностям
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="flex items-center gap-4 p-4 bg-white/50 dark:bg-gray-900/50 rounded-lg border border-red-100 dark:border-red-900">
+                  <div className="p-3 rounded-full bg-red-100 dark:bg-red-900/30">
+                    <DollarSign className="w-6 h-6 text-red-600 dark:text-red-400" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">Общая сумма задолженности</p>
+                    <p className="text-2xl font-bold text-red-600 dark:text-red-400">
+                      {totalDebtAmount.toLocaleString('ru-RU', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                      })} USD
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4 p-4 bg-white/50 dark:bg-gray-900/50 rounded-lg border border-red-100 dark:border-red-900">
+                  <div className="p-3 rounded-full bg-orange-100 dark:bg-orange-900/30">
+                    <CreditCard className="w-6 h-6 text-orange-600 dark:text-orange-400" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">Количество должников</p>
+                    <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">
+                      {debtorsCount}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
 
         {/* Quick Stats */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
