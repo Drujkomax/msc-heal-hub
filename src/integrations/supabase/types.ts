@@ -1190,6 +1190,15 @@ export type Database = {
           id: string
         }[]
       }
+      get_employees_with_roles: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          email: string
+          full_name: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+        }[]
+      }
       get_log_statistics: {
         Args: { p_end_date?: string; p_start_date?: string }
         Returns: {
