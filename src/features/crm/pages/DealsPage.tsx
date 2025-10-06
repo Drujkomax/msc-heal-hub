@@ -167,7 +167,30 @@ const DealsPage = () => {
                 {t('deals.addDeal')}
               </Button>
             )}
-          </div>
+        </div>
+
+        {/* Debt Summary Block - Only for Accountants */}
+        {isAccountant && (
+          <Card className="border-red-200 dark:border-red-800 bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-950/20 dark:to-orange-950/20">
+            <CardContent className="p-6">
+              <div className="flex items-center gap-4">
+                <div className="p-4 rounded-full bg-red-100 dark:bg-red-900/30">
+                  <DollarSign className="w-8 h-8 text-red-600 dark:text-red-400" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Общая сумма задолженности</p>
+                  <p className="text-3xl font-bold text-red-600 dark:text-red-400">
+                    {totalDebtAmount.toLocaleString('ru-RU', {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2
+                    })} USD
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         </div>
 
         {/* Quick Stats */}
