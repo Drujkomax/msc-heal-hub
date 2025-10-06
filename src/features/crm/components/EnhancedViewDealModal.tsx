@@ -263,11 +263,6 @@ const EnhancedViewDealModal = ({ open, onClose, deal, onEdit }: EnhancedViewDeal
                 </CardContent>
               </Card>
             )}
-
-            {/* Audit Log - Only for Accountants */}
-            {role === 'accountant' && (
-              <DealAuditLog dealId={deal.id} />
-            )}
           </div>
 
           {/* Sidebar */}
