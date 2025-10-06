@@ -30,10 +30,12 @@ const DealsPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { deals } = useDeals();
-  const { hasPermission } = useUserPermissions();
+  const { hasPermission, role } = useUserPermissions();
   const [activeTab, setActiveTab] = useState('overview');
   const [editingDeal, setEditingDeal] = useState<Deal | null>(null);
   const [viewingDeal, setViewingDeal] = useState<Deal | null>(null);
+  
+  const isAccountant = role === 'accountant';
 
   // Calculate quick stats
   const totalDeals = deals.length;
@@ -42,6 +44,12 @@ const DealsPage = () => {
   const wonValue = closedDeals.reduce((sum, deal) => sum + (deal.amount || 0), 0);
   const avgDealValue = totalDeals > 0 ? totalValue / totalDeals : 0;
   const conversionRate = totalDeals > 0 ? (closedDeals.length / totalDeals * 100) : 0;
+  
+  // Payment status stats for accountants
+  const waitingDeals = deals.filter(deal => deal.payment_status === 'waiting').length;
+  const paidDeals = deals.filter(deal => deal.payment_status === 'paid').length;
+  const notRealizedDeals = deals.filter(deal => deal.payment_status === 'not_realized').length;
+  const debtDeals = deals.filter(deal => deal.payment_status === 'debt').length;
 
   const handleCreateDeal = () => {
     navigate('/admin/deals/create');
@@ -61,7 +69,40 @@ const DealsPage = () => {
     setViewingDeal(null);
   };
 
-  const quickStats = [
+  const quickStats = isAccountant ? [
+    {
+      title: 'Ожидание',
+      value: waitingDeals.toString(),
+      icon: Calendar,
+      color: 'text-blue-600 bg-blue-50 dark:bg-blue-900/20',
+      change: '',
+      changeType: 'neutral' as const
+    },
+    {
+      title: 'Оплачено',
+      value: paidDeals.toString(),
+      icon: DollarSign,
+      color: 'text-green-600 bg-green-50 dark:bg-green-900/20',
+      change: '',
+      changeType: 'positive' as const
+    },
+    {
+      title: 'Не реализовано',
+      value: notRealizedDeals.toString(),
+      icon: Users,
+      color: 'text-orange-600 bg-orange-50 dark:bg-orange-900/20',
+      change: '',
+      changeType: 'neutral' as const
+    },
+    {
+      title: 'Задолженность',
+      value: debtDeals.toString(),
+      icon: TrendingUp,
+      color: 'text-red-600 bg-red-50 dark:bg-red-900/20',
+      change: '',
+      changeType: 'neutral' as const
+    }
+  ] : [
     {
       title: t('deals.stats.totalDeals'),
       value: totalDeals.toString(),
@@ -134,16 +175,18 @@ const DealsPage = () => {
                       {stat.title}
                     </p>
                     <p className="text-2xl font-bold mt-1">{stat.value}</p>
-                    <div className="flex items-center mt-2">
-                      <span className={`text-xs font-medium ${
-                        stat.changeType === 'positive' ? 'text-green-600' : 'text-muted-foreground'
-                      }`}>
-                        {stat.change}
-                      </span>
-                      <span className="text-xs text-muted-foreground ml-1">
-                        {t('deals.stats.fromLastMonth')}
-                      </span>
-                    </div>
+                    {stat.change && (
+                      <div className="flex items-center mt-2">
+                        <span className={`text-xs font-medium ${
+                          stat.changeType === 'positive' ? 'text-green-600' : 'text-muted-foreground'
+                        }`}>
+                          {stat.change}
+                        </span>
+                        <span className="text-xs text-muted-foreground ml-1">
+                          {t('deals.stats.fromLastMonth')}
+                        </span>
+                      </div>
+                    )}
                   </div>
                   <div className={`p-3 rounded-full ${stat.color}`}>
                     <stat.icon className="w-6 h-6" />
