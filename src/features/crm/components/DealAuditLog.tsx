@@ -1,21 +1,22 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { supabase } from '@/integrations/supabase/client';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { 
   FileText, 
-  User, 
   Clock, 
-  TrendingUp, 
-  CreditCard, 
-  UserPlus,
+  User,
   Edit,
+  Plus,
   Trash2,
-  AlertCircle
+  ArrowRightLeft,
+  CreditCard,
+  UserPlus,
+  TrendingUp
 } from 'lucide-react';
 
 interface AuditLogEntry {
@@ -25,7 +26,7 @@ interface AuditLogEntry {
   action_type: string;
   old_values: any;
   new_values: any;
-  changed_fields: string[] | null;
+  changed_fields: string[];
   user_email: string | null;
   user_role: string | null;
   created_at: string;
@@ -36,16 +37,15 @@ interface DealAuditLogProps {
 }
 
 const DealAuditLog = ({ dealId }: DealAuditLogProps) => {
-  const [auditLog, setAuditLog] = useState<AuditLogEntry[]>([]);
+  const [auditLogs, setAuditLogs] = useState<AuditLogEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadAuditLog();
+    loadAuditLogs();
   }, [dealId]);
 
-  const loadAuditLog = async () => {
+  const loadAuditLogs = async () => {
     try {
-      setLoading(true);
       const { data, error } = await supabase
         .from('deal_audit_log')
         .select('*')
@@ -53,125 +53,105 @@ const DealAuditLog = ({ dealId }: DealAuditLogProps) => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setAuditLog(data || []);
+      setAuditLogs(data || []);
     } catch (error) {
-      console.error('Ошибка загрузки аудита:', error);
+      console.error('Error loading audit logs:', error);
     } finally {
       setLoading(false);
     }
   };
 
   const getActionIcon = (actionType: string) => {
-    const icons = {
-      created: FileText,
+    const iconMap: { [key: string]: any } = {
+      created: Plus,
       updated: Edit,
       deleted: Trash2,
-      stage_changed: TrendingUp,
+      stage_changed: ArrowRightLeft,
       payment_status_changed: CreditCard,
       assigned: UserPlus
     };
-    const Icon = icons[actionType as keyof typeof icons] || Edit;
+    const Icon = iconMap[actionType] || FileText;
     return <Icon className="w-4 h-4" />;
   };
 
+  const getActionColor = (actionType: string) => {
+    const colorMap: { [key: string]: string } = {
+      created: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+      updated: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+      deleted: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+      stage_changed: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
+      payment_status_changed: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
+      assigned: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200'
+    };
+    return colorMap[actionType] || 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
+  };
+
   const getActionLabel = (actionType: string) => {
-    const labels = {
+    const labelMap: { [key: string]: string } = {
       created: 'Создана',
       updated: 'Обновлена',
       deleted: 'Удалена',
       stage_changed: 'Изменен статус',
       payment_status_changed: 'Изменен статус оплаты',
-      assigned: 'Изменено назначение'
+      assigned: 'Назначение изменено'
     };
-    return labels[actionType as keyof typeof labels] || actionType;
+    return labelMap[actionType] || actionType;
   };
 
-  const getActionColor = (actionType: string) => {
-    const colors = {
-      created: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-      updated: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-      deleted: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
-      stage_changed: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
-      payment_status_changed: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
-      assigned: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200'
-    };
-    return colors[actionType as keyof typeof colors] || 'bg-muted text-muted-foreground';
-  };
-
-  const formatFieldName = (field: string) => {
-    const fieldNames: { [key: string]: string } = {
+  const getFieldLabel = (field: string) => {
+    const labelMap: { [key: string]: string } = {
       title: 'Название',
       amount: 'Сумма',
       stage: 'Статус',
       payment_status: 'Статус оплаты',
+      debt_amount: 'Сумма задолженности',
       assignments: 'Назначения',
-      debt_amount: 'Сумма долга',
-      notes: 'Примечания'
+      notes: 'Заметки',
+      probability: 'Вероятность'
     };
-    return fieldNames[field] || field;
+    return labelMap[field] || field;
   };
 
-  const formatValue = (value: any, field?: string) => {
-    if (value === null || value === undefined) return 'Не указано';
-    
-    if (field === 'stage') {
-      const stageNames: { [key: string]: string } = {
-        lead: 'Лид',
-        qualified: 'Квалифицирован',
-        proposal: 'Предложение',
-        negotiation: 'Переговоры',
-        closed: 'Закрыто',
-        lost: 'Потеряно'
-      };
-      return stageNames[value] || value;
-    }
-    
-    if (field === 'payment_status') {
-      const statusNames: { [key: string]: string } = {
-        waiting: 'Ожидание',
-        paid: 'Оплачено',
-        not_realized: 'Не реализовано',
-        debt: 'Задолженность'
-      };
-      return statusNames[value] || value;
-    }
-    
-    if (typeof value === 'object') {
-      return JSON.stringify(value, null, 2);
-    }
-    
-    return String(value);
-  };
-
-  const renderChanges = (entry: AuditLogEntry) => {
-    if (entry.action_type === 'created') {
-      return <p className="text-sm text-muted-foreground">Сделка создана</p>;
+  const renderChangeDetails = (log: AuditLogEntry) => {
+    if (log.action_type === 'created') {
+      return (
+        <div className="text-sm text-muted-foreground">
+          Сделка создана пользователем {log.user_email}
+        </div>
+      );
     }
 
-    if (entry.action_type === 'deleted') {
-      return <p className="text-sm text-muted-foreground">Сделка удалена</p>;
-    }
-
-    if (!entry.changed_fields || entry.changed_fields.length === 0) {
-      return <p className="text-sm text-muted-foreground">Нет изменений</p>;
+    if (!log.changed_fields || log.changed_fields.length === 0) {
+      return null;
     }
 
     return (
-      <div className="space-y-2">
-        {entry.changed_fields.map((field) => (
-          <div key={field} className="text-sm">
-            <p className="font-medium text-foreground">{formatFieldName(field)}</p>
-            <div className="flex items-center gap-2 mt-1">
-              <span className="text-muted-foreground">
-                {formatValue(entry.old_values?.[field], field)}
-              </span>
-              <span className="text-muted-foreground">→</span>
-              <span className="text-foreground font-medium">
-                {formatValue(entry.new_values?.[field], field)}
-              </span>
+      <div className="mt-2 space-y-2">
+        {log.changed_fields.map((field) => {
+          const oldValue = log.old_values?.[field];
+          const newValue = log.new_values?.[field];
+          
+          return (
+            <div key={field} className="text-sm p-2 bg-muted/30 rounded">
+              <div className="font-medium text-muted-foreground mb-1">
+                {getFieldLabel(field)}:
+              </div>
+              <div className="flex items-center gap-2">
+                {oldValue !== undefined && oldValue !== null && (
+                  <>
+                    <span className="text-red-600 line-through">
+                      {typeof oldValue === 'object' ? JSON.stringify(oldValue) : String(oldValue)}
+                    </span>
+                    <ArrowRightLeft className="w-3 h-3 text-muted-foreground" />
+                  </>
+                )}
+                <span className="text-green-600 font-medium">
+                  {typeof newValue === 'object' ? JSON.stringify(newValue) : String(newValue)}
+                </span>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     );
   };
@@ -186,13 +166,15 @@ const DealAuditLog = ({ dealId }: DealAuditLogProps) => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">Загрузка...</p>
+          <div className="text-center text-muted-foreground py-8">
+            Загрузка...
+          </div>
         </CardContent>
       </Card>
     );
   }
 
-  if (auditLog.length === 0) {
+  if (auditLogs.length === 0) {
     return (
       <Card>
         <CardHeader>
@@ -202,9 +184,8 @@ const DealAuditLog = ({ dealId }: DealAuditLogProps) => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <AlertCircle className="w-4 h-4" />
-            <p className="text-sm">История изменений отсутствует</p>
+          <div className="text-center text-muted-foreground py-8">
+            История изменений пуста
           </div>
         </CardContent>
       </Card>
@@ -218,50 +199,44 @@ const DealAuditLog = ({ dealId }: DealAuditLogProps) => {
           <FileText className="w-5 h-5" />
           Аудит изменений
         </CardTitle>
-        <p className="text-sm text-muted-foreground mt-1">
-          История всех изменений сделки
-        </p>
       </CardHeader>
       <CardContent>
         <ScrollArea className="h-[400px] pr-4">
           <div className="space-y-4">
-            {auditLog.map((entry, index) => (
-              <div key={entry.id}>
+            {auditLogs.map((log, index) => (
+              <div key={log.id}>
                 <div className="space-y-3">
                   <div className="flex items-start justify-between">
                     <div className="flex items-start gap-3">
-                      <div className={`p-2 rounded-lg ${getActionColor(entry.action_type)}`}>
-                        {getActionIcon(entry.action_type)}
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <Badge variant="outline" className={getActionColor(entry.action_type)}>
-                            {getActionLabel(entry.action_type)}
-                          </Badge>
+                      <Badge className={getActionColor(log.action_type)}>
+                        <div className="flex items-center gap-1">
+                          {getActionIcon(log.action_type)}
+                          <span>{getActionLabel(log.action_type)}</span>
                         </div>
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground mb-2">
-                          <div className="flex items-center gap-1">
-                            <User className="w-3 h-3" />
-                            <span>{entry.user_email || 'Система'}</span>
-                          </div>
-                          {entry.user_role && (
-                            <Badge variant="secondary" className="text-xs">
-                              {entry.user_role}
-                            </Badge>
-                          )}
-                          <div className="flex items-center gap-1">
-                            <Clock className="w-3 h-3" />
-                            <span>
-                              {format(new Date(entry.created_at), 'dd MMM yyyy, HH:mm', { locale: ru })}
-                            </span>
-                          </div>
-                        </div>
-                        {renderChanges(entry)}
-                      </div>
+                      </Badge>
+                      {log.user_role && (
+                        <Badge variant="outline" className="text-xs">
+                          {log.user_role}
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                      <Clock className="w-3 h-3" />
+                      {format(new Date(log.created_at), 'dd.MM.yyyy HH:mm', { locale: ru })}
                     </div>
                   </div>
+
+                  {log.user_email && (
+                    <div className="flex items-center gap-2 text-sm">
+                      <User className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-muted-foreground">{log.user_email}</span>
+                    </div>
+                  )}
+
+                  {renderChangeDetails(log)}
                 </div>
-                {index < auditLog.length - 1 && <Separator className="mt-4" />}
+
+                {index < auditLogs.length - 1 && <Separator className="mt-4" />}
               </div>
             ))}
           </div>
