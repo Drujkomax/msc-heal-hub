@@ -1,5 +1,5 @@
 import { useState, useEffect, ChangeEvent } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -120,6 +120,14 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
     if (formData.payment_status === 'debt' && formData.debt_amount && isNaN(Number(formData.debt_amount))) {
       newErrors.debt_amount = 'Неверный формат числа';
     }
+
+    if (Object.keys(newErrors).length > 0) {
+      toast({
+        title: 'Проверьте форму',
+        description: Object.values(newErrors)[0],
+        variant: 'destructive'
+      });
+    }
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -228,6 +236,9 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
             <Target className="w-5 h-5" />
             {deal ? 'Редактировать сделку' : 'Добавить сделку'}
           </DialogTitle>
+          <DialogDescription>
+            {deal ? 'Обновите данные сделки' : 'Заполните форму для создания сделки'}
+          </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6">
