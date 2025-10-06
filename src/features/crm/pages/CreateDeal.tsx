@@ -17,6 +17,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useEmployeesByRole } from '@/hooks/useEmployeesByRole';
 import { Deal } from '@/types/crm';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 import { 
   ArrowLeft, 
   Plus, 
@@ -31,7 +32,10 @@ import {
   Users,
   CreditCard,
   AlertCircle,
-  ArrowRightLeft
+  ArrowRightLeft,
+  Upload,
+  X,
+  File
 } from 'lucide-react';
 
 interface DealProduct {
@@ -82,6 +86,8 @@ const CreateDeal = () => {
   
   const [dealProducts, setDealProducts] = useState<DealProduct[]>([]);
   const [dealServices, setDealServices] = useState<DealService[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+  const [uploadingFiles, setUploadingFiles] = useState(false);
   
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
@@ -248,6 +254,57 @@ const CreateDeal = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) {
+      const newFiles = Array.from(files);
+      setUploadedFiles(prev => [...prev, ...newFiles]);
+    }
+  };
+
+  const removeFile = (index: number) => {
+    setUploadedFiles(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const uploadFilesToStorage = async (dealId: string) => {
+    if (uploadedFiles.length === 0) return;
+    
+    setUploadingFiles(true);
+    try {
+      for (const file of uploadedFiles) {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${dealId}/${Date.now()}_${file.name}`;
+        const filePath = `${fileName}`;
+
+        // Upload to storage
+        const { error: uploadError } = await supabase.storage
+          .from('deal-documents')
+          .upload(filePath, file);
+
+        if (uploadError) throw uploadError;
+
+        // Save metadata to database
+        const { error: dbError } = await supabase
+          .from('deal_documents')
+          .insert({
+            deal_id: dealId,
+            file_name: file.name,
+            file_path: filePath,
+            file_size: file.size,
+            file_type: file.type,
+            uploaded_by: user?.id
+          });
+
+        if (dbError) throw dbError;
+      }
+    } catch (error) {
+      console.error('Error uploading files:', error);
+      throw error;
+    } finally {
+      setUploadingFiles(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -277,11 +334,18 @@ const CreateDeal = () => {
           : undefined
       };
       
-      await addDeal(dealData);
+      const createdDeal = await addDeal(dealData);
+      
+      // Upload files if accountant
+      if (role === 'accountant' && uploadedFiles.length > 0 && createdDeal) {
+        await uploadFilesToStorage(createdDeal.id);
+      }
       
       toast({
         title: 'Сделка создана',
-        description: 'Сделка успешно создана с товарами и услугами'
+        description: uploadedFiles.length > 0 
+          ? `Сделка успешно создана с ${uploadedFiles.length} документами`
+          : 'Сделка успешно создана с товарами и услугами'
       });
       
       navigate('/admin/deals');
@@ -961,16 +1025,80 @@ const CreateDeal = () => {
                            </p>
                          )}
                        </div>
-                     </div>
-                   </div>
+                      </div>
+                    </div>
 
-                   {errors.items && (
-                     <div className="text-sm text-red-500 bg-red-50 p-2 rounded">
-                       {errors.items}
-                     </div>
-                   )}
-                 </CardContent>
-               </Card>
+                    {/* Document Upload - Only for Accountants */}
+                    {role === 'accountant' && (
+                      <>
+                        <Separator />
+                        <div>
+                          <Label className="flex items-center gap-2 mb-3">
+                            <Upload className="w-4 h-4" />
+                            Документы
+                          </Label>
+                          <div className="space-y-3">
+                            <div className="border-2 border-dashed border-border rounded-lg p-6 text-center hover:border-primary/50 transition-colors">
+                              <input
+                                type="file"
+                                id="file-upload"
+                                multiple
+                                accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
+                                onChange={handleFileUpload}
+                                className="hidden"
+                              />
+                              <label 
+                                htmlFor="file-upload" 
+                                className="cursor-pointer flex flex-col items-center gap-2"
+                              >
+                                <Upload className="w-8 h-8 text-muted-foreground" />
+                                <p className="text-sm font-medium">Загрузить документы</p>
+                                <p className="text-xs text-muted-foreground">
+                                  PDF, DOC, XLS, JPG, PNG (макс. 10 файлов)
+                                </p>
+                              </label>
+                            </div>
+
+                            {uploadedFiles.length > 0 && (
+                              <div className="space-y-2">
+                                {uploadedFiles.map((file, index) => (
+                                  <div 
+                                    key={index} 
+                                    className="flex items-center justify-between p-3 bg-muted rounded-lg"
+                                  >
+                                    <div className="flex items-center gap-2">
+                                      <File className="w-4 h-4 text-muted-foreground" />
+                                      <div>
+                                        <p className="text-sm font-medium">{file.name}</p>
+                                        <p className="text-xs text-muted-foreground">
+                                          {(file.size / 1024).toFixed(2)} KB
+                                        </p>
+                                      </div>
+                                    </div>
+                                    <Button
+                                      type="button"
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => removeFile(index)}
+                                    >
+                                      <X className="w-4 h-4" />
+                                    </Button>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </>
+                    )}
+
+                    {errors.items && (
+                      <div className="text-sm text-red-500 bg-red-50 p-2 rounded">
+                        {errors.items}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
             </div>
           </div>
 
@@ -984,9 +1112,9 @@ const CreateDeal = () => {
             >
               Отмена
             </Button>
-            <Button type="submit" disabled={loading} className="flex items-center gap-2">
+            <Button type="submit" disabled={loading || uploadingFiles} className="flex items-center gap-2">
               <Save className="w-4 h-4" />
-              {loading ? 'Создание...' : 'Создать сделку'}
+              {loading || uploadingFiles ? 'Создание...' : 'Создать сделку'}
             </Button>
           </div>
         </form>
