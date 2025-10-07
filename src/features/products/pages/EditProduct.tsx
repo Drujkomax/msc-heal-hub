@@ -411,7 +411,7 @@ const EditProduct = () => {
                     </SelectTrigger>
                     <SelectContent>
                       {categories.map((category) => (
-                        <SelectItem key={category.id} value={category.id}>
+                        <SelectItem key={category.id} value={category.value}>
                           {category.name[i18n.language as 'ru' | 'en' | 'uz'] || category.name.ru}
                         </SelectItem>
                       ))}
