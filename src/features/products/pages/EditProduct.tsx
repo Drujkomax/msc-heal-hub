@@ -35,6 +35,8 @@ const EditProduct = () => {
     description: { ru: '', en: '', uz: '' },
     category: '',
     country: '',
+    manufacturer_name: '',
+    icon_url: '',
     price: '',
     status: 'draft',
     features: { ru: [''], en: [''], uz: [''] },
@@ -48,6 +50,8 @@ const EditProduct = () => {
         description: product.description,
         category: product.category,
         country: product.country || '',
+        manufacturer_name: product.manufacturer_name || '',
+        icon_url: product.icon_url || '',
         price: product.price || '',
         status: product.status,
         features: product.features || { ru: [''], en: [''], uz: [''] },
@@ -272,6 +276,34 @@ const EditProduct = () => {
                         ...prev,
                         name: { ...prev.name, uz: e.target.value }
                       }))}
+                    />
+                  </div>
+                </div>
+
+                {/* Manufacturer and Icon */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="manufacturer">Название производителя</Label>
+                    <Input
+                      id="manufacturer"
+                      value={formData.manufacturer_name}
+                      onChange={(e) => setFormData(prev => ({
+                        ...prev,
+                        manufacturer_name: e.target.value
+                      }))}
+                      placeholder="Например: Siemens, GE Healthcare"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="icon-url">Иконка (URL)</Label>
+                    <Input
+                      id="icon-url"
+                      value={formData.icon_url}
+                      onChange={(e) => setFormData(prev => ({
+                        ...prev,
+                        icon_url: e.target.value
+                      }))}
+                      placeholder="https://example.com/icon.png"
                     />
                   </div>
                 </div>

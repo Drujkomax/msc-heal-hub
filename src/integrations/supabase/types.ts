@@ -702,9 +702,11 @@ export type Database = {
           currency: string | null
           description: Json
           features: Json | null
+          icon_url: string | null
           id: string
           images: Json | null
           in_stock: boolean
+          manufacturer_name: string | null
           name: Json
           performance_score: number | null
           price: string | null
@@ -729,9 +731,11 @@ export type Database = {
           currency?: string | null
           description: Json
           features?: Json | null
+          icon_url?: string | null
           id?: string
           images?: Json | null
           in_stock?: boolean
+          manufacturer_name?: string | null
           name: Json
           performance_score?: number | null
           price?: string | null
@@ -756,9 +760,11 @@ export type Database = {
           currency?: string | null
           description?: Json
           features?: Json | null
+          icon_url?: string | null
           id?: string
           images?: Json | null
           in_stock?: boolean
+          manufacturer_name?: string | null
           name?: Json
           performance_score?: number | null
           price?: string | null
