@@ -324,10 +324,19 @@ const AddProduct = () => {
               <CardContent>
                 <ProductImageUpload
                   images={formData.images}
-                  onImagesChange={(images) => setFormData(prev => ({
-                    ...prev,
-                    images
-                  }))}
+                  onImagesChange={(imagesOrUpdater) => {
+                    if (typeof imagesOrUpdater === 'function') {
+                      setFormData(prev => ({
+                        ...prev,
+                        images: imagesOrUpdater(prev.images)
+                      }));
+                    } else {
+                      setFormData(prev => ({
+                        ...prev,
+                        images: imagesOrUpdater
+                      }));
+                    }
+                  }}
                 />
               </CardContent>
             </Card>

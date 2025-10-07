@@ -10,7 +10,7 @@ interface ProductImageUploadProps {
     cover: string | null;
     gallery: string[];
   };
-  onImagesChange: (images: { cover: string | null; gallery: string[] }) => void;
+  onImagesChange: (images: { cover: string | null; gallery: string[] } | ((prev: { cover: string | null; gallery: string[] }) => { cover: string | null; gallery: string[] })) => void;
 }
 
 export const ProductImageUpload = ({ images, onImagesChange }: ProductImageUploadProps) => {
@@ -39,13 +39,11 @@ export const ProductImageUpload = ({ images, onImagesChange }: ProductImageUploa
         .getPublicUrl(data.path);
 
       if (type === 'cover') {
-        const newImages = { ...images, cover: publicUrl };
-        console.log('Updating cover image:', newImages);
-        onImagesChange(newImages);
+        onImagesChange((prev) => ({ ...prev, cover: publicUrl }));
+        console.log('Updating cover image');
       } else {
-        const newImages = { ...images, gallery: [...images.gallery, publicUrl] };
-        console.log('Adding to gallery:', newImages);
-        onImagesChange(newImages);
+        onImagesChange((prev) => ({ ...prev, gallery: [...prev.gallery, publicUrl] }));
+        console.log('Adding to gallery');
       }
 
       toast({
