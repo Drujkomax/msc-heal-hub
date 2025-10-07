@@ -1,9 +1,12 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
+// Restrict CORS to Supabase project only
+const SUPABASE_URL = Deno.env.get('SUPABASE_URL') ?? '';
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': SUPABASE_URL.replace(/\/$/, ''), // Remove trailing slash
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Credentials': 'true',
 }
 
 serve(async (req) => {
@@ -67,6 +70,20 @@ serve(async (req) => {
         }
       )
     }
+
+    // Log deletion action for audit trail
+    await supabaseClient.rpc('log_system_event', {
+      p_level: 'warn',
+      p_category: 'security',
+      p_message: `User deletion initiated for ${userId}`,
+      p_details: { 
+        adminId: user.id, 
+        adminEmail: user.email,
+        targetUserId: userId,
+        action: 'delete_user'
+      },
+      p_user_id: user.id
+    });
 
     // Delete related data first
     await supabaseClient

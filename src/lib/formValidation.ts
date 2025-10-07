@@ -1,4 +1,5 @@
 // Form validation utilities
+import validator from 'validator';
 
 export interface ValidationResult {
   isValid: boolean;
@@ -110,10 +111,10 @@ export const validateLeadForm = (formData: LeadFormData): ValidationResult => {
   };
 };
 
-// Sanitize input to prevent XSS
+// Sanitize input to prevent XSS using comprehensive validation
 export const sanitizeInput = (input: string): string => {
-  return input
-    .trim()
-    .replace(/[<>]/g, '') // Remove potential HTML tags
-    .substring(0, 200); // Limit length
+  // Use validator.js for robust HTML escaping
+  let clean = validator.trim(input);
+  clean = validator.escape(clean); // Escapes HTML entities, event handlers, and special chars
+  return clean.substring(0, 200); // Limit length as defense in depth
 };
