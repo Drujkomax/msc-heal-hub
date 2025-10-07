@@ -13,17 +13,7 @@ import { useAdminProducts, useAdminProduct } from '@/hooks/useProducts';
 import { useToast } from '@/hooks/use-toast';
 import { ProductImageUpload } from '@/components/common/ProductImageUpload';
 import { countries } from '@/utils/countries';
-
-const categories = [
-  { value: 'diagnostic', label: 'Диагностическое оборудование' },
-  { value: 'surgical', label: 'Хирургическое оборудование' },
-  { value: 'monitoring', label: 'Мониторинг' },
-  { value: 'laboratory', label: 'Лабораторное оборудование' },
-  { value: 'rehabilitation', label: 'Реабилитационное оборудование' },
-  { value: 'dental', label: 'Стоматологическое оборудование' },
-  { value: 'ophthalmology', label: 'Офтальмологическое оборудование' },
-  { value: 'furniture', label: 'Медицинская мебель' }
-];
+import { useCategories } from '@/hooks/useCategories';
 
 const statusOptions = [
   { value: 'active', label: 'Активный' },
@@ -31,11 +21,12 @@ const statusOptions = [
 ];
 
 const EditProduct = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams();
   const { updateProduct } = useAdminProducts();
   const { product, loading: productLoading, error } = useAdminProduct(id || '');
+  const { categories, loading: categoriesLoading } = useCategories();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
 
@@ -65,7 +56,7 @@ const EditProduct = () => {
     }
   }, [product]);
 
-  if (productLoading) {
+  if (productLoading || categoriesLoading) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="flex items-center space-x-2">
@@ -420,8 +411,8 @@ const EditProduct = () => {
                     </SelectTrigger>
                     <SelectContent>
                       {categories.map((category) => (
-                        <SelectItem key={category.value} value={category.value}>
-                          {category.label}
+                        <SelectItem key={category.id} value={category.id}>
+                          {category.name[i18n.language as 'ru' | 'en' | 'uz'] || category.name.ru}
                         </SelectItem>
                       ))}
                     </SelectContent>
