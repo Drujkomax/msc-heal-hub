@@ -661,6 +661,39 @@ export type Database = {
         }
         Relationships: []
       }
+      manufacturers: {
+        Row: {
+          country_code: string
+          created_at: string
+          created_by: string | null
+          id: string
+          logo_url: string | null
+          name: Json
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          country_code: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          logo_url?: string | null
+          name: Json
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          country_code?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          logo_url?: string | null
+          name?: Json
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       product_categories: {
         Row: {
           created_at: string
@@ -706,6 +739,7 @@ export type Database = {
           id: string
           images: Json | null
           in_stock: boolean
+          manufacturer_id: string | null
           manufacturer_name: string | null
           name: Json
           performance_score: number | null
@@ -735,6 +769,7 @@ export type Database = {
           id?: string
           images?: Json | null
           in_stock?: boolean
+          manufacturer_id?: string | null
           manufacturer_name?: string | null
           name: Json
           performance_score?: number | null
@@ -764,6 +799,7 @@ export type Database = {
           id?: string
           images?: Json | null
           in_stock?: boolean
+          manufacturer_id?: string | null
           manufacturer_name?: string | null
           name?: Json
           performance_score?: number | null
@@ -776,7 +812,15 @@ export type Database = {
           updated_by?: string | null
           views_count?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "products_manufacturer_id_fkey"
+            columns: ["manufacturer_id"]
+            isOneToOne: false
+            referencedRelation: "manufacturers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {

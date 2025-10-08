@@ -33,7 +33,8 @@ import {
   HandCoins,
   CheckSquare,
   Archive,
-  Tags
+  Tags,
+  Factory
 } from 'lucide-react';
 
 export function AdminSidebar() {
@@ -86,6 +87,11 @@ export function AdminSidebar() {
     // Категории - доступны при наличии права на категории
     if (hasPermission('view_categories')) {
       conditionalItems.push({ name: 'Категории', href: '/admin/categories', icon: Tags, permission: 'view_categories' });
+    }
+    
+    // Производители - доступны при наличии права на категории
+    if (hasPermission('view_categories')) {
+      conditionalItems.push({ name: 'Производители', href: '/admin/manufacturers', icon: Factory, permission: 'view_categories' });
     }
 
     // Услуги - доступны при наличии права на услуги

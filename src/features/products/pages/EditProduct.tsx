@@ -15,6 +15,7 @@ import { ProductImageUpload } from '@/components/common/ProductImageUpload';
 import { ImageUpload } from '@/components/common/ImageUpload';
 import { countries } from '@/utils/countries';
 import { useCategories } from '@/hooks/useCategories';
+import { useManufacturers } from '@/hooks/useManufacturers';
 
 const statusOptions = [
   { value: 'active', label: 'Активный' },
@@ -28,6 +29,7 @@ const EditProduct = () => {
   const { updateProduct } = useAdminProducts();
   const { product, loading: productLoading, error } = useAdminProduct(id || '');
   const { categories, loading: categoriesLoading } = useCategories();
+  const { manufacturers } = useManufacturers();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
 
@@ -36,7 +38,7 @@ const EditProduct = () => {
     description: { ru: '', en: '', uz: '' },
     category: '',
     country: '',
-    manufacturer_name: '',
+    manufacturer_id: '',
     icon_url: '',
     price: '',
     status: 'draft',
@@ -52,7 +54,7 @@ const EditProduct = () => {
         description: product.description,
         category: product.category,
         country: product.country || '',
-        manufacturer_name: productData.manufacturer_name || '',
+        manufacturer_id: productData.manufacturer_id || '',
         icon_url: productData.icon_url || '',
         price: product.price || '',
         status: product.status,
@@ -145,6 +147,8 @@ const EditProduct = () => {
         description: formData.description,
         category: formData.category,
         country: formData.country,
+        manufacturer_id: formData.manufacturer_id || null,
+        icon_url: formData.icon_url || null,
         price: formData.price || null,
         status: formData.status as 'active' | 'draft',
         features: formData.features,
@@ -460,16 +464,30 @@ const EditProduct = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="manufacturer">Название производителя</Label>
-                  <Input
-                    id="manufacturer"
-                    value={formData.manufacturer_name}
-                    onChange={(e) => setFormData(prev => ({
-                      ...prev,
-                      manufacturer_name: e.target.value
-                    }))}
-                    placeholder="Например: Siemens, GE Healthcare"
-                  />
+                  <Label htmlFor="manufacturer">Производитель</Label>
+                  <Select
+                    value={formData.manufacturer_id}
+                    onValueChange={(value) => {
+                      const manufacturer = manufacturers.find(m => m.id === value);
+                      setFormData(prev => ({
+                        ...prev,
+                        manufacturer_id: value,
+                        country: manufacturer?.country_code || prev.country,
+                        icon_url: manufacturer?.logo_url || prev.icon_url
+                      }));
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Выберите производителя" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {manufacturers.map((manufacturer) => (
+                        <SelectItem key={manufacturer.id} value={manufacturer.id}>
+                          {`${manufacturer.name.ru}`}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div>

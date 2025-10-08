@@ -22,6 +22,7 @@ import UserManagement from '../pages/UserManagement';
 import EmployeeManagement from '../pages/EmployeeManagement';
 import Analytics from '../pages/Analytics';
 import Categories from '../pages/Categories';
+import Manufacturers from '../pages/Manufacturers';
 import { useResolveInviteRole } from '@/hooks/useResolveInviteRole';
 import { ProtectedRoute } from '@/components/auth/ProtectedRouteAdmin';
 
@@ -153,6 +154,11 @@ const AdminWrapper = () => {
         <Route path="categories" element={
           <ProtectedRoute permission={['view_categories', 'manage_categories']} fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
             <Categories />
+          </ProtectedRoute>
+        } />
+        <Route path="manufacturers" element={
+          <ProtectedRoute permission={['view_categories', 'manage_categories']} fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
+            <Manufacturers />
           </ProtectedRoute>
         } />
         
