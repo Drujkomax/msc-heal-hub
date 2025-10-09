@@ -175,7 +175,7 @@ const AdminProducts = () => {
                               <img 
                                 src={product.images.cover} 
                                 alt={product.name.ru}
-                                className="w-full h-full object-cover"
+                                className="w-full h-full object-contain"
                               />
                             ) : (
                               <Package className="w-10 h-10 text-gray-400" />
