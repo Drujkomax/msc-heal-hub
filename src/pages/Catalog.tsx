@@ -11,7 +11,7 @@ import { Search, Filter, Heart, Eye, Loader2, Package, Menu } from "lucide-react
 import { useProducts } from '@/hooks/useProducts';
 import { useCategories } from '@/hooks/useCategories';
 import { toast } from 'sonner';
-import { getCountryFlag } from '@/utils/countries';
+import { getCountryFlag, getCountryName } from '@/utils/countries';
 import QuoteRequestForm from '@/components/forms/QuoteRequestForm';
 import { useTranslation } from 'react-i18next';
 import SEOHead from "@/components/SEO/SEOHead";
@@ -254,8 +254,9 @@ const Catalog = () => {
                     <div className="flex items-start justify-between mb-2">
                       <CardTitle className="text-sm sm:text-lg flex-1 line-clamp-2">{product.name[language]}</CardTitle>
                       {product.country && (
-                        <div className="bg-black text-white text-xs px-2 py-1 rounded-sm flex items-center gap-1 ml-2">
+                        <div className="bg-black text-white text-xs px-2 py-1 rounded-sm flex items-center gap-1 ml-2 whitespace-nowrap">
                           <span className="text-sm">{getCountryFlag(product.country)}</span>
+                          <span className="hidden sm:inline">{getCountryName(product.country, language).toLowerCase()}</span>
                         </div>
                       )}
                     </div>
