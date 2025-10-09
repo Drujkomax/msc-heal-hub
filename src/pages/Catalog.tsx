@@ -256,7 +256,7 @@ const Catalog = () => {
                       {product.country && (
                         <div className="bg-black text-white text-xs px-2 py-1 rounded-sm flex items-center gap-1 ml-2 whitespace-nowrap">
                           <span className="text-sm">{getCountryFlag(product.country)}</span>
-                          <span className="hidden sm:inline">{getCountryName(product.country, language).toLowerCase()}</span>
+                          <span className="hidden sm:inline">{getCountryName(product.country, language)}</span>
                         </div>
                       )}
                     </div>

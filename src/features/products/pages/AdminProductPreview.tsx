@@ -7,7 +7,7 @@ import { ArrowLeft, Edit2, Package, AlertTriangle, Eye, ExternalLink, CheckCircl
 import { useAdminProduct } from '@/hooks/useProducts';
 import { useTranslation } from 'react-i18next';
 import { Loader2 } from 'lucide-react';
-import { getCountryName } from '@/utils/countries';
+import { getCountryName, getCountryFlag } from '@/utils/countries';
 
 const getCategoryLabel = (category: string, language: 'ru' | 'en' | 'uz') => {
   const categoryLabels = {
@@ -331,7 +331,10 @@ const AdminProductPreview = () => {
               <Card>
                 <CardContent className="p-4">
                   <div className="text-sm text-muted-foreground mb-1">Страна производства</div>
-                  <div className="font-medium">{getCountryName(product.country, language).toLowerCase()}</div>
+                  <div className="font-medium flex items-center gap-2">
+                    <span className="text-xl">{getCountryFlag(product.country)}</span>
+                    <span>{getCountryName(product.country, language)}</span>
+                  </div>
                 </CardContent>
               </Card>
             )}
