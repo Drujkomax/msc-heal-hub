@@ -31,7 +31,8 @@ export const AddLeadDialog = ({ open, onClose, onSuccess }: AddLeadDialogProps) 
     timeline: '',
     notes: '',
     source: 'manual',
-    stage: 'new'
+    stage: 'new',
+    lead_quality: ''
   });
 
   const leadSources = [
@@ -114,7 +115,8 @@ export const AddLeadDialog = ({ open, onClose, onSuccess }: AddLeadDialogProps) 
         timeline: formData.timeline || undefined,
         notes: formData.notes.trim() || undefined,
         source: formData.source,
-        stage: formData.stage
+        stage: formData.stage,
+        lead_quality: formData.lead_quality ? (formData.lead_quality as 'A' | 'B' | 'C') : undefined
       });
 
       toast({
@@ -135,7 +137,8 @@ export const AddLeadDialog = ({ open, onClose, onSuccess }: AddLeadDialogProps) 
         timeline: '',
         notes: '',
         source: 'manual',
-        stage: 'new'
+        stage: 'new',
+        lead_quality: ''
       });
 
       onSuccess?.();
@@ -301,23 +304,40 @@ export const AddLeadDialog = ({ open, onClose, onSuccess }: AddLeadDialogProps) 
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="timeline" className="flex items-center gap-2">
-                  <Clock className="h-4 w-4" />
-                  Временные рамки
+                <Label htmlFor="lead_quality" className="flex items-center gap-2">
+                  <Tag className="h-4 w-4" />
+                  Качество лида
                 </Label>
-                <Select value={formData.timeline} onValueChange={(value) => handleInputChange('timeline', value)}>
+                <Select value={formData.lead_quality} onValueChange={(value) => handleInputChange('lead_quality', value)}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Выберите сроки" />
+                    <SelectValue placeholder="Выберите качество лида" />
                   </SelectTrigger>
                   <SelectContent>
-                    {timelines.map((timeline) => (
-                      <SelectItem key={timeline.value} value={timeline.value}>
-                        {timeline.label}
-                      </SelectItem>
-                    ))}
+                    <SelectItem value="A">A - Целевой</SelectItem>
+                    <SelectItem value="B">B - Потенциальный</SelectItem>
+                    <SelectItem value="C">C - Мусор</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="timeline" className="flex items-center gap-2">
+                <Clock className="h-4 w-4" />
+                Временные рамки
+              </Label>
+              <Select value={formData.timeline} onValueChange={(value) => handleInputChange('timeline', value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Выберите сроки" />
+                </SelectTrigger>
+                <SelectContent>
+                  {timelines.map((timeline) => (
+                    <SelectItem key={timeline.value} value={timeline.value}>
+                      {timeline.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
