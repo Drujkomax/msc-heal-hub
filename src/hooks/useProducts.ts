@@ -33,6 +33,7 @@ export interface Product {
   archived_by?: string;
   views_count?: number;
   quote_requests_count?: number;
+  manufacturer_id?: string | null;
   created_at: string;
   updated_at: string;
 }

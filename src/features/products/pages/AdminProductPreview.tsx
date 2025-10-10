@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Edit2, Package, AlertTriangle, Eye, ExternalLink, CheckCircle } from "lucide-react";
 import { useAdminProduct } from '@/hooks/useProducts';
+import { useManufacturers } from '@/hooks/useManufacturers';
 import { useTranslation } from 'react-i18next';
 import { Loader2 } from 'lucide-react';
 import { getCountryName, getCountryFlag } from '@/utils/countries';
@@ -32,6 +33,9 @@ const AdminProductPreview = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const { product, loading, error } = useAdminProduct(id || '');
+  const { manufacturers } = useManufacturers();
+  
+  const manufacturer = manufacturers.find(m => m.id === product?.manufacturer_id);
 
   if (loading) {
     return (
@@ -326,15 +330,45 @@ const AdminProductPreview = () => {
               </Card>
             )}
 
-            {/* Country */}
-            {product.country && (
+            {/* Manufacturer and Country */}
+            {(manufacturer || product.country) && (
               <Card>
-                <CardContent className="p-4">
-                  <div className="text-sm text-muted-foreground mb-1">Страна производства</div>
-                  <div className="font-medium flex items-center gap-2">
-                    <span className="text-xl">{getCountryFlag(product.country)}</span>
-                    <span>{getCountryName(product.country, language)}</span>
-                  </div>
+                <CardHeader>
+                  <CardTitle className="text-lg">Производитель</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {manufacturer && (
+                    <div className="flex items-center gap-4">
+                      {manufacturer.logo_url && (
+                        <div className="w-16 h-16 rounded-lg bg-muted flex items-center justify-center overflow-hidden border">
+                          <img 
+                            src={manufacturer.logo_url} 
+                            alt={manufacturer.name}
+                            className="w-full h-full object-contain p-2"
+                            onError={(e) => {
+                              e.currentTarget.style.display = 'none';
+                            }}
+                          />
+                        </div>
+                      )}
+                      <div className="flex-1">
+                        <div className="font-semibold text-lg">{manufacturer.name}</div>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className="text-xl">{getCountryFlag(manufacturer.country_code)}</span>
+                          <span className="text-muted-foreground">{getCountryName(manufacturer.country_code, language)}</span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  {!manufacturer && product.country && (
+                    <div>
+                      <div className="text-sm text-muted-foreground mb-1">Страна производства</div>
+                      <div className="font-medium flex items-center gap-2">
+                        <span className="text-xl">{getCountryFlag(product.country)}</span>
+                        <span>{getCountryName(product.country, language)}</span>
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             )}
