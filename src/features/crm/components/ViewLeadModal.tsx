@@ -142,6 +142,23 @@ export const ViewLeadModal = ({ lead, isOpen, onClose }: ViewLeadModalProps) => 
                 </div>
               </div>
               
+              {lead.lead_quality && (
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">Качество лида</label>
+                  <div className="mt-1">
+                    <Badge className={
+                      lead.lead_quality === 'A' ? 'bg-green-100 text-green-800 border-green-200' :
+                      lead.lead_quality === 'B' ? 'bg-yellow-100 text-yellow-800 border-yellow-200' :
+                      'bg-red-100 text-red-800 border-red-200'
+                    }>
+                      {lead.lead_quality === 'A' ? 'A - Целевой' :
+                       lead.lead_quality === 'B' ? 'B - Потенциальный' :
+                       'C - Мусор'}
+                    </Badge>
+                  </div>
+                </div>
+              )}
+              
               <div>
                 <label className="text-sm font-medium text-muted-foreground">Дата создания</label>
                 <div className="flex items-center gap-2 mt-1">

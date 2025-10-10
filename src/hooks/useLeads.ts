@@ -27,6 +27,7 @@ export interface Lead {
   timeline?: string;
   qualification_date?: string;
   qualified_by?: string;
+  lead_quality?: 'A' | 'B' | 'C';
 }
 
 export const useLeads = () => {
@@ -43,7 +44,7 @@ export const useLeads = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setLeads(data || []);
+      setLeads((data || []) as Lead[]);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Произошла ошибка');
     } finally {
@@ -66,6 +67,7 @@ export const useLeads = () => {
     budget_range?: string;
     timeline?: string;
     assigned_to?: string;
+    lead_quality?: 'A' | 'B' | 'C';
   }) => {
     try {
       // Получаем текущего пользователя для автоназначения лида

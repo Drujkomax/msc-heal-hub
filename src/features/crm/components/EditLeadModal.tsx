@@ -62,7 +62,8 @@ export const EditLeadModal = ({ lead, isOpen, onClose, onSuccess }: EditLeadModa
     equipment_interest: '',
     position: '',
     value: '',
-    notes: ''
+    notes: '',
+    lead_quality: ''
   });
 
   useEffect(() => {
@@ -77,7 +78,8 @@ export const EditLeadModal = ({ lead, isOpen, onClose, onSuccess }: EditLeadModa
         equipment_interest: lead.equipment_interest || '',
         position: lead.position || '',
         value: lead.value?.toString() || '',
-        notes: lead.notes || ''
+        notes: lead.notes || '',
+        lead_quality: lead.lead_quality || ''
       });
     }
   }, [lead]);
@@ -244,6 +246,20 @@ export const EditLeadModal = ({ lead, isOpen, onClose, onSuccess }: EditLeadModa
                         {budget.label}
                       </SelectItem>
                     ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="lead_quality">Качество лида</Label>
+                <Select value={formData.lead_quality || ''} onValueChange={(value) => handleInputChange('lead_quality', value)}>
+                  <SelectTrigger className="focus:ring-2 focus:ring-primary">
+                    <SelectValue placeholder="Выберите качество лида" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-background z-50">
+                    <SelectItem value="A">A - Целевой</SelectItem>
+                    <SelectItem value="B">B - Потенциальный</SelectItem>
+                    <SelectItem value="C">C - Мусор</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

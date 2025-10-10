@@ -503,6 +503,7 @@ const Leads = () => {
                   <TableHead>Город</TableHead>
                   <TableHead>Телефон</TableHead>
                   <TableHead>Статус</TableHead>
+                  <TableHead>Качество</TableHead>
                   <TableHead>Создан</TableHead>
                   <RoleBasedAccess roles={['director', 'admin', 'sales_manager']}>
                     <TableHead>Назначен</TableHead>
@@ -560,6 +561,20 @@ const Leads = () => {
                           ))}
                         </DropdownMenuContent>
                       </DropdownMenu>
+                    </TableCell>
+                    <TableCell>
+                      {lead.lead_quality ? (
+                        <Badge 
+                          variant="outline" 
+                          className={
+                            lead.lead_quality === 'A' ? 'bg-green-100 text-green-800 border-green-200' :
+                            lead.lead_quality === 'B' ? 'bg-yellow-100 text-yellow-800 border-yellow-200' :
+                            'bg-red-100 text-red-800 border-red-200'
+                          }
+                        >
+                          {lead.lead_quality}
+                        </Badge>
+                      ) : '-'}
                     </TableCell>
                     <TableCell>
                       {format(new Date(lead.created_at), 'dd.MM.yyyy', { locale: ru })}
