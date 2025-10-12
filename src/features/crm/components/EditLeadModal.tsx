@@ -100,7 +100,8 @@ export const EditLeadModal = ({ lead, isOpen, onClose, onSuccess }: EditLeadModa
         equipment_interest: formData.equipment_interest || undefined,
         position: formData.position.trim() || undefined,
         value: formData.value ? parseFloat(formData.value) : undefined,
-        notes: formData.notes.trim() || undefined
+        notes: formData.notes.trim() || undefined,
+        lead_quality: formData.lead_quality ? (formData.lead_quality as 'A' | 'B' | 'C') : undefined
       });
       
       toast({
