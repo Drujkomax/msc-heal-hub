@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 export interface Manufacturer {
   id: string;
   name: string;
+  legal_name?: string;
   country_code: string;
   logo_url?: string;
   slug: string;
@@ -35,6 +36,7 @@ export const useManufacturers = () => {
 
   const addManufacturer = async (manufacturerData: { 
     name: string;
+    legal_name?: string;
     country_code: string;
     logo_url?: string;
     slug: string;
@@ -56,6 +58,7 @@ export const useManufacturers = () => {
 
   const updateManufacturer = async (id: string, manufacturerData: { 
     name: string;
+    legal_name?: string;
     country_code: string;
     logo_url?: string;
     slug: string;

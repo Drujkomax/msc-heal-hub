@@ -52,6 +52,7 @@ export default function ManufacturersTab() {
 
   const [formData, setFormData] = useState({
     name: '',
+    legalName: '',
     countryCode: '',
     logoUrl: '',
     slug: ''
@@ -60,6 +61,7 @@ export default function ManufacturersTab() {
   const resetForm = () => {
     setFormData({
       name: '',
+      legalName: '',
       countryCode: '',
       logoUrl: '',
       slug: ''
@@ -79,6 +81,7 @@ export default function ManufacturersTab() {
 
       await addManufacturer({
         name: formData.name,
+        legal_name: formData.legalName || undefined,
         country_code: formData.countryCode,
         logo_url: formData.logoUrl || undefined,
         slug: formData.slug
@@ -115,6 +118,7 @@ export default function ManufacturersTab() {
 
       await updateManufacturer(selectedManufacturer.id, {
         name: formData.name,
+        legal_name: formData.legalName || undefined,
         country_code: formData.countryCode,
         logo_url: formData.logoUrl || undefined,
         slug: formData.slug
@@ -161,6 +165,7 @@ export default function ManufacturersTab() {
     setSelectedManufacturer(manufacturer);
     setFormData({
       name: manufacturer.name,
+      legalName: manufacturer.legal_name || '',
       countryCode: manufacturer.country_code,
       logoUrl: manufacturer.logo_url || '',
       slug: manufacturer.slug
@@ -198,6 +203,16 @@ export default function ManufacturersTab() {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="Название производителя"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="legalName">Юридическое наименование производителя</Label>
+                <Input
+                  id="legalName"
+                  value={formData.legalName}
+                  onChange={(e) => setFormData({ ...formData, legalName: e.target.value })}
+                  placeholder="Полное юридическое наименование"
                 />
               </div>
 
@@ -257,6 +272,7 @@ export default function ManufacturersTab() {
                 <TableRow>
                   <TableHead>Логотип</TableHead>
                   <TableHead>Название</TableHead>
+                  <TableHead>Юридическое наименование</TableHead>
                   <TableHead>Страна</TableHead>
                   <TableHead>Slug</TableHead>
                   <TableHead className="text-right">Действия</TableHead>
@@ -277,6 +293,11 @@ export default function ManufacturersTab() {
                         )}
                       </TableCell>
                       <TableCell>{manufacturer.name}</TableCell>
+                      <TableCell>
+                        <div className="text-sm text-muted-foreground">
+                          {manufacturer.legal_name || '—'}
+                        </div>
+                      </TableCell>
                       <TableCell>
                         {country ? `${country.flag} ${country.name.ru}` : manufacturer.country_code}
                       </TableCell>
@@ -324,6 +345,16 @@ export default function ManufacturersTab() {
                 id="editName"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="editLegalName">Юридическое наименование производителя</Label>
+              <Input
+                id="editLegalName"
+                value={formData.legalName}
+                onChange={(e) => setFormData({ ...formData, legalName: e.target.value })}
+                placeholder="Полное юридическое наименование"
               />
             </div>
 
