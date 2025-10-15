@@ -265,7 +265,7 @@ const ProductPreview = () => {
                 <CardContent className="p-4">
                   <div className="text-sm text-muted-foreground mb-1">Страна производства</div>
                   <div className="font-medium flex items-center gap-2">
-                    <span className="text-xl">{getCountryFlag(product.country)}</span>
+                    <span className="text-xl leading-none inline-block" style={{ fontFamily: 'Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, sans-serif' }}>{getCountryFlag(product.country)}</span>
                     <span>{getCountryName(product.country, language)}</span>
                   </div>
                 </CardContent>

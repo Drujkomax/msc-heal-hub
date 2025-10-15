@@ -354,7 +354,7 @@ const AdminProductPreview = () => {
                       <div className="flex-1">
                         <div className="font-semibold text-lg">{manufacturer.name}</div>
                         <div className="flex items-center gap-2 mt-1">
-                          <span className="text-xl">{getCountryFlag(manufacturer.country_code)}</span>
+                          <span className="text-xl leading-none inline-block" style={{ fontFamily: 'Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, sans-serif' }}>{getCountryFlag(manufacturer.country_code)}</span>
                           <span className="text-muted-foreground">{getCountryName(manufacturer.country_code, language)}</span>
                         </div>
                       </div>
@@ -372,7 +372,7 @@ const AdminProductPreview = () => {
                           </div>
                           <div className="text-sm text-muted-foreground">Страна производства (указана вручную):</div>
                           <div className="font-medium flex items-center gap-2 mt-1">
-                            <span className="text-xl">{getCountryFlag(product.country)}</span>
+                            <span className="text-xl leading-none inline-block" style={{ fontFamily: 'Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, sans-serif' }}>{getCountryFlag(product.country)}</span>
                             <span>{getCountryName(product.country, language)}</span>
                           </div>
                         </div>

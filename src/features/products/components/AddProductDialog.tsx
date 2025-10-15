@@ -261,7 +261,7 @@ export const AddProductDialog = () => {
                       {countries.map(country => (
                         <SelectItem key={country.code} value={country.code}>
                           <span className="flex items-center gap-2">
-                            <span>{country.flag}</span>
+                            <span className="text-lg leading-none inline-block" style={{ fontFamily: 'Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, sans-serif' }}>{country.flag}</span>
                             <span>{country.name.ru}</span>
                           </span>
                         </SelectItem>
