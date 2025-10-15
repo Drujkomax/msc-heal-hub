@@ -17,12 +17,29 @@ export const ProductImageUpload = ({ images, onImagesChange }: ProductImageUploa
   const [uploading, setUploading] = useState<{ cover?: boolean; gallery?: boolean }>({});
   const { toast } = useToast();
 
+  const sanitizeFileName = (fileName: string): string => {
+    // Remove file extension
+    const lastDotIndex = fileName.lastIndexOf('.');
+    const name = lastDotIndex !== -1 ? fileName.substring(0, lastDotIndex) : fileName;
+    const extension = lastDotIndex !== -1 ? fileName.substring(lastDotIndex) : '';
+    
+    // Replace cyrillic and special characters with transliteration or remove them
+    const sanitized = name
+      .replace(/[а-яА-ЯёЁ\s]/g, '_') // Replace cyrillic and spaces with underscore
+      .replace(/[^a-zA-Z0-9_-]/g, '') // Remove any other special characters
+      .replace(/_+/g, '_') // Replace multiple underscores with single
+      .replace(/^_|_$/g, ''); // Remove leading/trailing underscores
+    
+    return sanitized + extension;
+  };
+
   const uploadImage = async (file: File, type: 'cover' | 'gallery') => {
     console.log('Starting image upload:', { fileName: file.name, type, currentImages: images });
     setUploading(prev => ({ ...prev, [type]: true }));
     
     try {
-      const fileName = `${Date.now()}-${file.name}`;
+      const sanitizedName = sanitizeFileName(file.name);
+      const fileName = `${Date.now()}-${sanitizedName}`;
       const filePath = `products/${type}/${fileName}`;
 
       const { data, error } = await supabase.storage
