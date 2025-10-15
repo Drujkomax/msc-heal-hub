@@ -27,14 +27,31 @@ export const ImageUpload = ({
   const [uploading, setUploading] = useState(false);
   const { toast } = useToast();
 
+  const sanitizeFileName = (fileName: string): string => {
+    // Remove file extension
+    const lastDotIndex = fileName.lastIndexOf('.');
+    const name = lastDotIndex !== -1 ? fileName.substring(0, lastDotIndex) : fileName;
+    const extension = lastDotIndex !== -1 ? fileName.substring(lastDotIndex) : '';
+    
+    // Replace cyrillic and special characters with transliteration or remove them
+    const sanitized = name
+      .replace(/[а-яА-ЯёЁ\s]/g, '_') // Replace cyrillic and spaces with underscore
+      .replace(/[^a-zA-Z0-9_-]/g, '') // Remove any other special characters
+      .replace(/_+/g, '_') // Replace multiple underscores with single
+      .replace(/^_|_$/g, ''); // Remove leading/trailing underscores
+    
+    return sanitized + extension;
+  };
+
   const uploadImage = async (file: File) => {
     if (!file) return;
 
     setUploading(true);
     try {
       // Create structured folder path
-      const fileName = `${Date.now()}-${file.name}`;
-      const folderPath = productId 
+      const sanitizedName = sanitizeFileName(file.name);
+      const fileName = `${Date.now()}-${sanitizedName}`;
+      const folderPath = productId
         ? `products/${productId}/${imageType === 'cover' ? 'cover' : `gallery/${galleryIndex || 0}`}`
         : `temp/products/${imageType === 'cover' ? 'cover' : `gallery/${galleryIndex || 0}`}`;
       
