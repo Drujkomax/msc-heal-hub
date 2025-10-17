@@ -339,21 +339,35 @@ const AdminProductPreview = () => {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {manufacturer ? (
-                    <div className="space-y-3">
-                      <div className="flex gap-2">
-                        <span className="text-muted-foreground min-w-[200px]">Название:</span>
-                        <span className="font-medium">{manufacturer.name}</span>
-                      </div>
-                      <div className="flex gap-2">
-                        <span className="text-muted-foreground min-w-[200px]">Производитель:</span>
-                        <span className="font-medium">{manufacturer.legal_name || '—'}</span>
-                      </div>
-                      <div className="flex gap-2">
-                        <span className="text-muted-foreground min-w-[200px]">Страна:</span>
-                        <span className="font-medium flex items-center gap-2">
-                          <span className="text-xl leading-none inline-block" style={{ fontFamily: 'Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, sans-serif' }}>{getCountryFlag(countryCode)}</span>
-                          {getCountryName(countryCode, language) || 'Не указана'}
-                        </span>
+                    <div className="space-y-4">
+                      {manufacturer.logo_url && (
+                        <div className="flex items-center gap-3 pb-3 border-b">
+                          <img 
+                            src={manufacturer.logo_url} 
+                            alt={`${manufacturer.name} logo`}
+                            className="h-16 w-auto object-contain"
+                            onError={(e) => {
+                              e.currentTarget.style.display = 'none';
+                            }}
+                          />
+                        </div>
+                      )}
+                      <div className="space-y-3">
+                        <div className="flex gap-2">
+                          <span className="text-muted-foreground min-w-[200px]">Название:</span>
+                          <span className="font-medium">{manufacturer.name}</span>
+                        </div>
+                        <div className="flex gap-2">
+                          <span className="text-muted-foreground min-w-[200px]">Производитель:</span>
+                          <span className="font-medium">{manufacturer.legal_name || '—'}</span>
+                        </div>
+                        <div className="flex gap-2">
+                          <span className="text-muted-foreground min-w-[200px]">Страна:</span>
+                          <span className="font-medium flex items-center gap-2">
+                            <span className="text-xl leading-none inline-block" style={{ fontFamily: 'Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, sans-serif' }}>{getCountryFlag(countryCode)}</span>
+                            {getCountryName(countryCode, language) || 'Не указана'}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   ) : product.country ? (
