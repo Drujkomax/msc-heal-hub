@@ -126,15 +126,25 @@ export const useProducts = () => {
   const archiveProduct = useCallback(async (id: string) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('User not authenticated');
+      if (!user) throw new Error('Пользователь не авторизован');
 
-      const { error } = await supabase.rpc('archive_product', {
-        product_id: id,
-        user_id: user.id
-      });
+      const { data, error } = await supabase
+        .from('products')
+        .update({
+          archived: true,
+          archived_at: new Date().toISOString(),
+          archived_by: user.id,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', id)
+        .eq('archived', false)
+        .select('id')
+        .maybeSingle();
 
       if (error) throw error;
-      await fetchProducts(); // Refresh the list
+      if (!data) throw new Error('Товар не найден или уже архивирован');
+
+      await fetchProducts();
       
       toast({
         title: "Товар архивирован",
@@ -144,9 +154,10 @@ export const useProducts = () => {
       console.error('Error archiving product:', err);
       toast({
         title: "Ошибка",
-        description: "Не удалось архивировать товар.",
+        description: err instanceof Error ? err.message : "Не удалось архивировать товар.",
         variant: "destructive",
       });
+      throw err;
     }
   }, [toast, fetchProducts]);
 
@@ -207,21 +218,24 @@ export const useAdminProducts = () => {
   const archiveProduct = useCallback(async (id: string) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('User not authenticated');
+      if (!user) throw new Error('Пользователь не авторизован');
 
-      const { data, error } = await supabase.rpc('archive_product', {
-        product_id: id,
-        user_id: user.id
-      });
+      const { data, error } = await supabase
+        .from('products')
+        .update({
+          archived: true,
+          archived_at: new Date().toISOString(),
+          archived_by: user.id,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', id)
+        .eq('archived', false)
+        .select('id')
+        .maybeSingle();
 
-      if (error) {
-        console.error('RPC Error:', error);
-        throw error;
-      }
-      
-      console.log('Archive result:', data);
-      
-      // Обновляем список товаров
+      if (error) throw error;
+      if (!data) throw new Error('Товар не найден или уже архивирован');
+
       await fetchProducts();
       
       toast({
