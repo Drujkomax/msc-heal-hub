@@ -21,6 +21,7 @@ import { useAdminProducts } from '@/hooks/useProducts';
 import { useToast } from '@/hooks/use-toast';
 import { useUserPermissions } from '@/hooks/useUserPermissions';
 import { useManufacturers } from '@/hooks/useManufacturers';
+import { useCategories } from '@/hooks/useCategories';
 import { AddProductDialog } from '../components/AddProductDialog';
 import DraftManager from '../components/DraftManager';
 
@@ -35,8 +36,12 @@ const AdminProducts = () => {
 
   const { products, loading, error, archiveProduct } = useAdminProducts();
   const { manufacturers } = useManufacturers();
+  const { categories } = useCategories();
 
   const getCategoryLabel = (category: string) => {
+    const found = categories.find(c => c.value === category || c.id === category);
+    if (found) return found.name.ru;
+
     const categoryLabels = {
       diagnostic: 'Диагностическое',
       surgical: 'Хирургическое',
