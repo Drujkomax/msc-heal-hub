@@ -133,6 +133,63 @@ const AdminProducts = () => {
         {hasPermission('manage_products') && <AddProductDialog />}
       </div>
 
+      {/* Статистика товаров */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium flex items-center gap-2">
+              <Package className="w-4 h-4 text-primary" />
+              Всего товаров
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{products.length}</div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium flex items-center gap-2">
+              <Package className="w-4 h-4 text-green-500" />
+              Активные
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-green-600">
+              {products.filter(p => p.status === 'active').length}
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium flex items-center gap-2">
+              <FileText className="w-4 h-4 text-orange-500" />
+              Черновики
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-orange-600">
+              {products.filter(p => p.status === 'draft').length}
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium flex items-center gap-2">
+              <Archive className="w-4 h-4 text-red-500" />
+              В архиве
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-red-600">
+              {products.filter(p => p.archived).length}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
       <div className="space-y-6">
         <Tabs defaultValue="active" className="w-full">
           <TabsList className={`grid w-full ${hasPermission('view_products') && hasPermission('view_archive') ? 'grid-cols-3' : hasPermission('view_products') || hasPermission('view_archive') ? 'grid-cols-2' : 'grid-cols-1'}`}>
