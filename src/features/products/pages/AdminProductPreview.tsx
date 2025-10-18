@@ -284,7 +284,7 @@ const AdminProductPreview = () => {
               <div className="flex gap-2 mb-4">
                 {product.category && (
                   <Badge variant="outline" className="text-sm">
-                    {getCategoryLabel(product.category, language)}
+                    {getCategoryLabel(product.category, 'ru')}
                   </Badge>
                 )}
               </div>
