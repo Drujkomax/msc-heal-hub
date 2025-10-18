@@ -60,6 +60,7 @@ const DraftManager = () => {
   // Данные для статистических карточек
   const statsCards = [
     {
+      id: 'total',
       icon: FileText,
       iconColor: 'text-blue-500',
       title: 'Всего черновиков',
@@ -67,6 +68,7 @@ const DraftManager = () => {
       valueColor: ''
     },
     {
+      id: 'ready',
       icon: CheckCircle,
       iconColor: 'text-green-500',
       title: 'Готовы к публикации',
@@ -74,6 +76,7 @@ const DraftManager = () => {
       valueColor: 'text-green-600'
     },
     {
+      id: 'needs-work',
       icon: AlertCircle,
       iconColor: 'text-amber-500',
       title: 'Требуют доработки',
@@ -81,6 +84,7 @@ const DraftManager = () => {
       valueColor: 'text-amber-600'
     },
     {
+      id: 'completion',
       icon: Clock,
       iconColor: 'text-purple-500',
       title: 'Завершенность',
@@ -147,10 +151,10 @@ const DraftManager = () => {
     <div className="space-y-6">
       {/* Статистика черновиков */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        {statsCards.map((stat, index) => {
+        {statsCards.map((stat) => {
           const Icon = stat.icon;
           return (
-            <Card key={index}>
+            <Card key={stat.id}>
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm font-medium flex items-center gap-2">
                   <Icon className={`w-4 h-4 ${stat.iconColor}`} />
