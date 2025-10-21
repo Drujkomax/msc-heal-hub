@@ -88,8 +88,10 @@ export const ProductImageUpload = ({ images, onImagesChange }: ProductImageUploa
         </CardHeader>
         <CardContent className="overflow-hidden">
           {images.cover ? (
-            <div className="relative overflow-hidden rounded-lg">
-              <img src={images.cover} alt="Обложка" className="w-full h-48 object-cover" />
+            <div className="relative w-full overflow-hidden rounded-lg border border-border">
+              <div className="w-full h-48 overflow-hidden">
+                <img src={images.cover} alt="Обложка" className="w-full h-full object-cover" />
+              </div>
               <Button
                 type="button"
                 variant="destructive"
@@ -131,11 +133,13 @@ export const ProductImageUpload = ({ images, onImagesChange }: ProductImageUploa
         <CardHeader>
           <CardTitle>Галерея изображений</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="overflow-hidden">
           <div className="grid grid-cols-3 gap-4 mb-4">
             {images.gallery.map((url, index) => (
-              <div key={index} className="relative overflow-hidden rounded-lg">
-                <img src={url} alt={`Галерея ${index + 1}`} className="w-full h-24 object-cover" />
+              <div key={index} className="relative w-full overflow-hidden rounded-lg border border-border">
+                <div className="w-full h-24 overflow-hidden">
+                  <img src={url} alt={`Галерея ${index + 1}`} className="w-full h-full object-cover" />
+                </div>
                 <Button
                   type="button"
                   variant="destructive"
