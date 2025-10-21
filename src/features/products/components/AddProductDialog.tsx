@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, Loader2 } from 'lucide-react';
 import { useAdminProducts } from '@/hooks/useProducts';
 import { useCategories } from '@/hooks/useCategories';
+import { useManufacturers } from '@/hooks/useManufacturers';
 import { useToast } from '@/hooks/use-toast';
 import { ImageUpload } from '@/components/common/ImageUpload';
 import { countries } from '@/utils/countries';
@@ -18,6 +19,7 @@ import { countries } from '@/utils/countries';
 export const AddProductDialog = () => {
   const { addProduct } = useAdminProducts();
   const { categories } = useCategories();
+  const { manufacturers } = useManufacturers();
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -27,6 +29,7 @@ export const AddProductDialog = () => {
     description: { ru: '', en: '', uz: '' },
     category: '',
     country: '',
+    manufacturer_id: '',
     images: { cover: null as string | null, gallery: [null, null] as (string | null)[] },
     features: { ru: [''], en: [''], uz: [''] },
     status: 'active' as 'active' | 'draft',
@@ -40,6 +43,7 @@ export const AddProductDialog = () => {
       description: { ru: '', en: '', uz: '' },
       category: '',
       country: '',
+      manufacturer_id: '',
       images: { cover: null, gallery: [null, null] },
       features: { ru: [''], en: [''], uz: [''] },
       status: 'active' as 'active' | 'draft',
@@ -80,6 +84,7 @@ export const AddProductDialog = () => {
 
       await addProduct({
         ...formData,
+        manufacturer_id: formData.manufacturer_id || null,
         price: formData.price || null,
         currency: formData.currency,
         images: cleanImages,
@@ -234,8 +239,8 @@ export const AddProductDialog = () => {
                 </div>
               </div>
 
-              {/* Category and Country */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Category, Manufacturer and Country */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <Label htmlFor="category">Категория</Label>
                   <Select value={formData.category} onValueChange={(value) => setFormData(prev => ({ ...prev, category: value }))}>
@@ -252,10 +257,39 @@ export const AddProductDialog = () => {
                   </Select>
                 </div>
                 <div>
-                  <Label htmlFor="country">Страна-производитель</Label>
-                  <Select value={formData.country} onValueChange={(value) => setFormData(prev => ({ ...prev, country: value }))}>
+                  <Label htmlFor="manufacturer">Производитель</Label>
+                  <Select
+                    value={formData.manufacturer_id}
+                    onValueChange={(value) => {
+                      const manufacturer = manufacturers.find(m => m.id === value);
+                      setFormData(prev => ({
+                        ...prev,
+                        manufacturer_id: value,
+                        country: manufacturer?.country_code || prev.country
+                      }));
+                    }}
+                  >
                     <SelectTrigger>
-                      <SelectValue placeholder="Выберите страну" />
+                      <SelectValue placeholder="Выберите производителя" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {manufacturers.map(manufacturer => (
+                        <SelectItem key={manufacturer.id} value={manufacturer.id}>
+                          {manufacturer.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="country">Страна-производитель</Label>
+                  <Select 
+                    value={formData.country} 
+                    onValueChange={(value) => setFormData(prev => ({ ...prev, country: value }))}
+                    disabled={!!formData.manufacturer_id}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder={formData.manufacturer_id ? "Заполняется автоматически" : "Выберите страну"} />
                     </SelectTrigger>
                     <SelectContent>
                       {countries.map(country => (
