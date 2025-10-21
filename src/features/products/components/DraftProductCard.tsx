@@ -14,6 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import { Product } from '@/hooks/useProducts';
 import { useCategories } from '@/hooks/useCategories';
 import { useManufacturers } from '@/hooks/useManufacturers';
+import { getCountryName } from '@/utils/countries';
 
 interface DraftProductCardProps {
   product: Product;
@@ -91,8 +92,11 @@ const DraftProductCard = ({ product, onArchive, onPublish }: DraftProductCardPro
                   <span className="font-medium">Производитель:</span>
                   <span>
                     {manufacturers.find(m => m.id === product.manufacturer_id)?.name || 'Не указан'}
-                    {manufacturers.find(m => m.id === product.manufacturer_id)?.country_code && 
-                      ` (${manufacturers.find(m => m.id === product.manufacturer_id)?.country_code})`}
+                    {(() => {
+                      const manufacturer = manufacturers.find(m => m.id === product.manufacturer_id);
+                      const countryName = manufacturer?.country_code ? getCountryName(manufacturer.country_code, 'ru') : null;
+                      return countryName ? ` (${countryName})` : '';
+                    })()}
                   </span>
                 </p>
               )}

@@ -24,6 +24,7 @@ import { useManufacturers } from '@/hooks/useManufacturers';
 import { useCategories } from '@/hooks/useCategories';
 import { AddProductDialog } from '../components/AddProductDialog';
 import DraftManager from '../components/DraftManager';
+import { getCountryName } from '@/utils/countries';
 
 const AdminProducts = () => {
   const navigate = useNavigate();
@@ -278,8 +279,11 @@ const AdminProducts = () => {
                                     <span className="font-medium">Производитель:</span>
                                     <span>
                                       {manufacturers.find(m => m.id === product.manufacturer_id)?.name || 'Не указан'}
-                                      {manufacturers.find(m => m.id === product.manufacturer_id)?.country_code && 
-                                        ` (${manufacturers.find(m => m.id === product.manufacturer_id)?.country_code})`}
+                                      {(() => {
+                                        const manufacturer = manufacturers.find(m => m.id === product.manufacturer_id);
+                                        const countryName = manufacturer?.country_code ? getCountryName(manufacturer.country_code, 'ru') : null;
+                                        return countryName ? ` (${countryName})` : '';
+                                      })()}
                                     </span>
                                   </p>
                                 )}
