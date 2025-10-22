@@ -193,12 +193,24 @@ export const EnhancedLeadModal = ({ lead, isOpen, onClose, onLeadUpdate }: Enhan
                       </div>
                     </div>
                     
+                    {lead.lead_created_date && (
+                      <div>
+                        <label className="text-sm font-medium text-muted-foreground">Дата создания лида</label>
+                        <div className="flex items-center gap-2 mt-1">
+                          <Calendar className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-sm">
+                            {format(new Date(lead.lead_created_date), 'dd.MM.yyyy HH:mm', { locale: ru })}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                    
                     <div>
-                      <label className="text-sm font-medium text-muted-foreground">Дата создания</label>
+                      <label className="text-sm font-medium text-muted-foreground">Создан в CRM</label>
                       <div className="flex items-center gap-2 mt-1">
                         <Calendar className="h-4 w-4 text-muted-foreground" />
                         <span className="text-sm">
-                          {format(new Date(lead.created_at), 'dd MMMM yyyy, HH:mm', { locale: ru })}
+                          {format(new Date(lead.created_at), 'dd.MM.yyyy HH:mm', { locale: ru })}
                         </span>
                       </div>
                     </div>
@@ -208,7 +220,7 @@ export const EnhancedLeadModal = ({ lead, isOpen, onClose, onLeadUpdate }: Enhan
                       <div className="flex items-center gap-2 mt-1">
                         <Clock className="h-4 w-4 text-muted-foreground" />
                         <span className="text-sm">
-                          {format(new Date(lead.updated_at), 'dd MMMM yyyy, HH:mm', { locale: ru })}
+                          {format(new Date(lead.updated_at), 'dd.MM.yyyy HH:mm', { locale: ru })}
                         </span>
                       </div>
                     </div>
@@ -293,7 +305,7 @@ export const EnhancedLeadModal = ({ lead, isOpen, onClose, onLeadUpdate }: Enhan
                     <div className="flex items-center gap-2 mt-1">
                       <Calendar className="h-4 w-4 text-muted-foreground" />
                       <span className="text-sm">
-                        {format(new Date(lead.qualification_date), 'dd MMMM yyyy, HH:mm', { locale: ru })}
+                        {format(new Date(lead.qualification_date), 'dd.MM.yyyy HH:mm', { locale: ru })}
                       </span>
                     </div>
                   </div>
@@ -332,7 +344,7 @@ export const EnhancedLeadModal = ({ lead, isOpen, onClose, onLeadUpdate }: Enhan
                   <div className="flex items-center gap-2 mt-1">
                     <Calendar className="h-4 w-4 text-muted-foreground" />
                     <span className="text-sm">
-                      {format(new Date(lead.closed_at), 'dd MMMM yyyy, HH:mm', { locale: ru })}
+                      {format(new Date(lead.closed_at), 'dd.MM.yyyy HH:mm', { locale: ru })}
                     </span>
                   </div>
                 </div>

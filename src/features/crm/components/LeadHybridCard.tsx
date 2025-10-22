@@ -116,10 +116,12 @@ export const LeadHybridCard = ({
                 <span>{lead.city}</span>
               </div>
             )}
-            <div className="flex items-center gap-1">
-              <Calendar className="h-3 w-3" />
-              <span>{new Date(lead.created_at).toLocaleDateString('ru-RU')}</span>
-            </div>
+            {lead.lead_created_date && (
+              <div className="flex items-center gap-1">
+                <Calendar className="h-3 w-3" />
+                <span>{new Date(lead.lead_created_date).toLocaleDateString('ru-RU')}</span>
+              </div>
+            )}
             {lead.assigned_to && (
               <div className="flex items-center gap-1">
                 <User className="h-3 w-3" />
