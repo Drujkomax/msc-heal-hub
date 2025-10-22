@@ -441,7 +441,7 @@ export type Database = {
           entity_id: string | null
           entity_type: string | null
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           session_duration: number | null
           user_agent: string | null
           user_id: string
@@ -454,7 +454,7 @@ export type Database = {
           entity_id?: string | null
           entity_type?: string | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           session_duration?: number | null
           user_agent?: string | null
           user_id: string
@@ -467,7 +467,7 @@ export type Database = {
           entity_id?: string | null
           entity_type?: string | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           session_duration?: number | null
           user_agent?: string | null
           user_id?: string
@@ -595,6 +595,7 @@ export type Database = {
           email: string | null
           equipment_interest: string | null
           id: string
+          lead_created_date: string | null
           lead_quality: string | null
           name: string
           notes: string | null
@@ -622,6 +623,7 @@ export type Database = {
           email?: string | null
           equipment_interest?: string | null
           id?: string
+          lead_created_date?: string | null
           lead_quality?: string | null
           name: string
           notes?: string | null
@@ -649,6 +651,7 @@ export type Database = {
           email?: string | null
           equipment_interest?: string | null
           id?: string
+          lead_created_date?: string | null
           lead_quality?: string | null
           name?: string
           notes?: string | null
@@ -1034,7 +1037,7 @@ export type Database = {
           created_at: string
           details: Json | null
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           level: string
           message: string
           stack_trace: string | null
@@ -1047,7 +1050,7 @@ export type Database = {
           created_at?: string
           details?: Json | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           level?: string
           message: string
           stack_trace?: string | null
@@ -1060,7 +1063,7 @@ export type Database = {
           created_at?: string
           details?: Json | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           level?: string
           message?: string
           stack_trace?: string | null
@@ -1191,7 +1194,7 @@ export type Database = {
           created_at: string
           details: Json | null
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           target_id: string | null
           target_type: string | null
           user_agent: string | null
@@ -1202,7 +1205,7 @@ export type Database = {
           created_at?: string
           details?: Json | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           target_id?: string | null
           target_type?: string | null
           user_agent?: string | null
@@ -1213,7 +1216,7 @@ export type Database = {
           created_at?: string
           details?: Json | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           target_id?: string | null
           target_type?: string | null
           user_agent?: string | null
@@ -1304,14 +1307,8 @@ export type Database = {
         Args: { p_invite_id: string; p_user_id: string }
         Returns: Json
       }
-      confirm_user_registration: {
-        Args: { user_id: string }
-        Returns: Json
-      }
-      create_first_director: {
-        Args: { director_email: string }
-        Returns: Json
-      }
+      confirm_user_registration: { Args: { user_id: string }; Returns: Json }
+      create_first_director: { Args: { director_email: string }; Returns: Json }
       create_user_invite: {
         Args: {
           invite_email: string
@@ -1329,7 +1326,7 @@ export type Database = {
         }[]
       }
       get_employee_profiles: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           avatar_url: string
           email: string
@@ -1338,7 +1335,7 @@ export type Database = {
         }[]
       }
       get_employees_with_roles: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           email: string
           full_name: string
@@ -1358,7 +1355,7 @@ export type Database = {
         }[]
       }
       get_pending_invites: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           created_at: string
           email: string
@@ -1444,10 +1441,7 @@ export type Database = {
         Args: { director_email: string; user_id: string }
         Returns: Json
       }
-      unarchive_product: {
-        Args: { product_id: string }
-        Returns: undefined
-      }
+      unarchive_product: { Args: { product_id: string }; Returns: undefined }
       update_conversion_analytics: {
         Args: { p_date?: string; p_product_id: string }
         Returns: undefined

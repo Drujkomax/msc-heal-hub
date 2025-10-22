@@ -32,7 +32,8 @@ export const AddLeadDialog = ({ open, onClose, onSuccess }: AddLeadDialogProps) 
     notes: '',
     source: 'manual',
     stage: 'new',
-    lead_quality: ''
+    lead_quality: '',
+    lead_created_date: new Date().toISOString().slice(0, 16)
   });
 
   const leadSources = [
@@ -116,7 +117,8 @@ export const AddLeadDialog = ({ open, onClose, onSuccess }: AddLeadDialogProps) 
         notes: formData.notes.trim() || undefined,
         source: formData.source,
         stage: formData.stage,
-        lead_quality: formData.lead_quality ? (formData.lead_quality as 'A' | 'B' | 'C') : undefined
+        lead_quality: formData.lead_quality ? (formData.lead_quality as 'A' | 'B' | 'C') : undefined,
+        lead_created_date: formData.lead_created_date || undefined
       });
 
       toast({
@@ -138,7 +140,8 @@ export const AddLeadDialog = ({ open, onClose, onSuccess }: AddLeadDialogProps) 
         notes: '',
         source: 'manual',
         stage: 'new',
-        lead_quality: ''
+        lead_quality: '',
+        lead_created_date: new Date().toISOString().slice(0, 16)
       });
 
       onSuccess?.();
@@ -171,6 +174,19 @@ export const AddLeadDialog = ({ open, onClose, onSuccess }: AddLeadDialogProps) 
           {/* Основная информация */}
           <div className="space-y-4">
             <h3 className="text-lg font-medium">Основная информация</h3>
+            
+            <div className="space-y-2">
+              <Label htmlFor="lead_created_date" className="flex items-center gap-2">
+                <Clock className="h-4 w-4" />
+                Дата создания лида
+              </Label>
+              <Input
+                id="lead_created_date"
+                type="datetime-local"
+                value={formData.lead_created_date}
+                onChange={(e) => handleInputChange('lead_created_date', e.target.value)}
+              />
+            </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">

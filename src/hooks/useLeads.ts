@@ -28,6 +28,7 @@ export interface Lead {
   qualification_date?: string;
   qualified_by?: string;
   lead_quality?: 'A' | 'B' | 'C';
+  lead_created_date?: string;
 }
 
 export const useLeads = () => {
@@ -68,6 +69,7 @@ export const useLeads = () => {
     timeline?: string;
     assigned_to?: string;
     lead_quality?: 'A' | 'B' | 'C';
+    lead_created_date?: string;
   }) => {
     try {
       // Получаем текущего пользователя для автоназначения лида
