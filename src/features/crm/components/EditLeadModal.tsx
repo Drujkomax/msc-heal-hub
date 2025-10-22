@@ -63,7 +63,8 @@ export const EditLeadModal = ({ lead, isOpen, onClose, onSuccess }: EditLeadModa
     position: '',
     value: '',
     notes: '',
-    lead_quality: ''
+    lead_quality: '',
+    lead_created_date: ''
   });
 
   useEffect(() => {
@@ -79,7 +80,8 @@ export const EditLeadModal = ({ lead, isOpen, onClose, onSuccess }: EditLeadModa
         position: lead.position || '',
         value: lead.value?.toString() || '',
         notes: lead.notes || '',
-        lead_quality: lead.lead_quality || ''
+        lead_quality: lead.lead_quality || '',
+        lead_created_date: lead.lead_created_date ? new Date(lead.lead_created_date).toISOString().slice(0, 16) : ''
       });
     }
   }, [lead]);
@@ -101,7 +103,8 @@ export const EditLeadModal = ({ lead, isOpen, onClose, onSuccess }: EditLeadModa
         position: formData.position.trim() || undefined,
         value: formData.value ? parseFloat(formData.value) : undefined,
         notes: formData.notes.trim() || undefined,
-        lead_quality: formData.lead_quality ? (formData.lead_quality as 'A' | 'B' | 'C') : undefined
+        lead_quality: formData.lead_quality ? (formData.lead_quality as 'A' | 'B' | 'C') : undefined,
+        lead_created_date: formData.lead_created_date || undefined
       });
       
       toast({
@@ -143,6 +146,17 @@ export const EditLeadModal = ({ lead, isOpen, onClose, onSuccess }: EditLeadModa
           <div className="space-y-4">
             <h3 className="text-lg font-medium text-foreground border-b pb-2">Основная информация</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="lead_created_date">Дата создания лида</Label>
+                <Input
+                  id="lead_created_date"
+                  type="datetime-local"
+                  value={formData.lead_created_date}
+                  onChange={(e) => handleInputChange('lead_created_date', e.target.value)}
+                  className="focus:ring-2 focus:ring-primary"
+                />
+              </div>
+              
               <div className="space-y-2">
                 <Label htmlFor="name">Имя *</Label>
                 <Input

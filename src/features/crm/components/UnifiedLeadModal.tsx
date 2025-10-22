@@ -260,10 +260,21 @@ export const UnifiedLeadModal = ({ lead, isOpen, onClose, onLeadUpdate }: Unifie
                     Системная информация
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {lead.lead_created_date && (
+                      <div className="flex items-center gap-3">
+                        <Calendar className="h-4 w-4 text-muted-foreground" />
+                        <div>
+                          <div className="text-sm text-muted-foreground">Дата создания лида</div>
+                          <div className="font-medium">
+                            {format(new Date(lead.lead_created_date), 'dd.MM.yyyy HH:mm', { locale: ru })}
+                          </div>
+                        </div>
+                      </div>
+                    )}
                     <div className="flex items-center gap-3">
                       <Calendar className="h-4 w-4 text-muted-foreground" />
                       <div>
-                        <div className="text-sm text-muted-foreground">Создан</div>
+                        <div className="text-sm text-muted-foreground">Создан в CRM</div>
                         <div className="font-medium">
                           {format(new Date(lead.created_at), 'dd.MM.yyyy HH:mm', { locale: ru })}
                         </div>
