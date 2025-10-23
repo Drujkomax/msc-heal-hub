@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -121,6 +122,7 @@ const Leads = () => {
   const [addLeadModalOpen, setAddLeadModalOpen] = useState(false);
   const [selectedDuplicateGroup, setSelectedDuplicateGroup] = useState<DuplicateGroup | null>(null);
   const [isDuplicateModalOpen, setIsDuplicateModalOpen] = useState(false);
+  const [selectedLeadIds, setSelectedLeadIds] = useState<string[]>([]);
 
   const leadStages = [
     { value: 'new', label: 'Новые', count: 0, color: 'bg-blue-500' },
@@ -287,6 +289,84 @@ const Leads = () => {
     }, 1500);
   };
 
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      setSelectedLeadIds(filteredLeads.map(lead => lead.id));
+    } else {
+      setSelectedLeadIds([]);
+    }
+  };
+
+  const handleSelectLead = (leadId: string, checked: boolean) => {
+    if (checked) {
+      setSelectedLeadIds(prev => [...prev, leadId]);
+    } else {
+      setSelectedLeadIds(prev => prev.filter(id => id !== leadId));
+    }
+  };
+
+  const handleBulkAssign = async (assignToId: string) => {
+    try {
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      if (!currentUser) throw new Error('Пользователь не авторизован');
+
+      const updates = selectedLeadIds.map(leadId => 
+        supabase
+          .from('leads')
+          .update({ 
+            assigned_to: assignToId,
+            assigned_by: currentUser.id
+          })
+          .eq('id', leadId)
+      );
+
+      await Promise.all(updates);
+
+      toast({
+        title: "Успешно",
+        description: `${selectedLeadIds.length} лидов назначено`,
+      });
+
+      setSelectedLeadIds([]);
+      refetch();
+    } catch (error) {
+      toast({
+        title: "Ошибка",
+        description: "Не удалось назначить лидов",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleBulkArchive = async () => {
+    try {
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      if (!currentUser) throw new Error('Пользователь не авторизован');
+
+      const updates = selectedLeadIds.map(leadId => 
+        supabase.rpc('archive_lead', { lead_id: leadId, user_id: currentUser.id })
+      );
+
+      await Promise.all(updates);
+
+      toast({
+        title: "Успешно",
+        description: `${selectedLeadIds.length} лидов архивировано`,
+      });
+
+      setSelectedLeadIds([]);
+      refetch();
+    } catch (error) {
+      toast({
+        title: "Ошибка",
+        description: "Не удалось архивировать лидов",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const isDirector = role === 'director';
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -306,7 +386,10 @@ const Leads = () => {
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-3xl font-bold">Лиды</h2>
-          <p className="text-muted-foreground">Управление заявками клиентов</p>
+          <p className="text-muted-foreground">
+            Управление заявками клиентов
+            {selectedLeadIds.length > 0 && ` | Выбрано: ${selectedLeadIds.length}`}
+          </p>
         </div>
         <RoleBasedAccess roles={['director', 'admin', 'sales_manager', 'salesperson']}>
           <Button onClick={() => setAddLeadModalOpen(true)} className="flex items-center gap-2">
@@ -315,6 +398,36 @@ const Leads = () => {
           </Button>
         </RoleBasedAccess>
       </div>
+
+      {/* Bulk Actions Panel */}
+      {isDirector && selectedLeadIds.length > 0 && (
+        <Card className="border-primary/20 bg-primary/5">
+          <CardContent className="pt-6">
+            <div className="flex flex-wrap gap-3 items-center">
+              <span className="text-sm font-medium">Массовые действия:</span>
+              <Select onValueChange={handleBulkAssign}>
+                <SelectTrigger className="w-[200px]">
+                  <SelectValue placeholder="Назначить на..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {employees.map((emp) => (
+                    <SelectItem key={emp.id} value={emp.id}>
+                      {emp.full_name || emp.email}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Button variant="destructive" onClick={handleBulkArchive}>
+                <Archive className="mr-2 h-4 w-4" />
+                Архивировать ({selectedLeadIds.length})
+              </Button>
+              <Button variant="outline" onClick={() => setSelectedLeadIds([])}>
+                Отменить выбор
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Duplicate Alerts */}
       {hasDuplicates && (
@@ -516,6 +629,14 @@ const Leads = () => {
             <Table>
               <TableHeader>
                 <TableRow>
+                  {isDirector && (
+                    <TableHead className="w-12">
+                      <Checkbox 
+                        checked={selectedLeadIds.length === filteredLeads.length && filteredLeads.length > 0}
+                        onCheckedChange={handleSelectAll}
+                      />
+                    </TableHead>
+                  )}
                   <TableHead>Имя</TableHead>
                   <TableHead>Компания</TableHead>
                   <TableHead>Город</TableHead>
@@ -536,18 +657,27 @@ const Leads = () => {
                     key={lead.id} 
                     className="cursor-pointer hover:bg-muted/50"
                     onClick={(e) => {
-                      // Проверяем, что клик не по dropdown меню или кнопкам
+                      // Проверяем, что клик не по dropdown меню или кнопкам или чекбоксам
                       const target = e.target as HTMLElement;
-                      const isDropdownClick = target.closest('[role="combobox"]') || 
+                      const isInteractiveClick = target.closest('[role="combobox"]') || 
                                               target.closest('[data-radix-collection-item]') ||
                                               target.closest('button') ||
-                                              target.closest('[role="menuitem"]');
+                                              target.closest('[role="menuitem"]') ||
+                                              target.closest('[role="checkbox"]');
                       
-                      if (!isDropdownClick) {
+                      if (!isInteractiveClick) {
                         handleViewLead(lead);
                       }
                     }}
                   >
+                    {isDirector && (
+                      <TableCell onClick={(e) => e.stopPropagation()}>
+                        <Checkbox 
+                          checked={selectedLeadIds.includes(lead.id)}
+                          onCheckedChange={(checked) => handleSelectLead(lead.id, checked as boolean)}
+                        />
+                      </TableCell>
+                    )}
                     <TableCell className="font-medium">{lead.name}</TableCell>
                     <TableCell>{lead.company || '-'}</TableCell>
                     <TableCell>{lead.city || '-'}</TableCell>
