@@ -71,3 +71,47 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+
+## Environment Configuration & Secrets
+
+This project uses **Supabase Edge Function Secrets** for managing sensitive credentials. No `.env` files are used in production.
+
+### Public Configuration
+
+Public constants are centralized in `src/shared/config/constants.ts`:
+- Edge Functions base URL
+- Telegram bot username
+- Support email
+- App metadata
+
+To update public config, edit `constants.ts` directly.
+
+### Server-Side Secrets
+
+Sensitive credentials are stored in **Supabase Dashboard → Project Settings → Edge Functions → Secrets**:
+
+Required secrets:
+- `TELEGRAM_BOT_TOKEN` - Bot token from @BotFather
+- `BOT_BACKEND_JWT` - JWT for bot authorization (generate with `openssl rand -base64 64`)
+- `SUPABASE_SERVICE_ROLE_KEY` - Auto-provided by Supabase
+
+### Setting Up Secrets
+
+1. Open [Supabase Dashboard](https://supabase.com/dashboard)
+2. Select your project
+3. Navigate to Settings → Edge Functions → Secrets
+4. Add each secret with its value
+5. Edge Functions will automatically use these secrets via `Deno.env.get()`
+
+### Stage vs Production
+
+Use **separate Lovable/Supabase projects**:
+- `msc-heal-hub-stage` - Testing environment
+- `msc-heal-hub-prod` - Production environment
+
+Each project has its own:
+- Supabase credentials
+- Edge Function secrets
+- `EDGE_BASE_URL` in `constants.ts`
+
+See `ENV_AUDIT.md` and `SECURITY_ROTATION.md` for detailed procedures.
