@@ -21,8 +21,7 @@ import { DuplicateDetailModal } from '../components/DuplicateDetailModal';
 import { UnifiedLeadModal } from '../components/UnifiedLeadModal';
 import CreateDealFromLeadDialog from '../components/CreateDealFromLeadDialog';
 import { AddLeadDialog } from '../components/AddLeadDialog';
-import { ExportLeads } from '../components/ExportLeads';
-import { 
+import {
   Search, 
   Edit,
   Archive,
@@ -36,7 +35,8 @@ import {
   LayoutGrid,
   Plus,
   MoreHorizontal,
-  ChevronDown
+  ChevronDown,
+  ArrowUpDown
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
@@ -124,6 +124,8 @@ const Leads = () => {
   const [selectedDuplicateGroup, setSelectedDuplicateGroup] = useState<DuplicateGroup | null>(null);
   const [isDuplicateModalOpen, setIsDuplicateModalOpen] = useState(false);
   const [selectedLeadIds, setSelectedLeadIds] = useState<string[]>([]);
+  const [sortField, setSortField] = useState<'name' | 'company' | 'city' | 'created_at' | 'lead_created_date'>('lead_created_date');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
   const leadStages = [
     { value: 'new', label: 'Новые', count: 0, color: 'bg-blue-500' },
@@ -182,35 +184,84 @@ const Leads = () => {
     }
   };
 
-  const filteredLeads = leads.filter(lead => {
-    // Filter out archived leads
-    if (lead.archived) return false;
-    
-    // Продавцы видят только назначенных им лидов
-    if (role === 'salesperson' && lead.assigned_to !== user?.id) {
-      return false;
+  const handleSort = (field: 'name' | 'company' | 'city' | 'created_at' | 'lead_created_date') => {
+    if (sortField === field) {
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortOrder('desc');
     }
+  };
 
-    const matchesSearch = 
-      lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      lead.phone?.includes(searchTerm) ||
-      lead.city?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      lead.company?.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesStage = stageFilter === 'all' || lead.stage === stageFilter;
-    
-    const matchesAssigned = assignedFilter === 'all' || 
-      (assignedFilter === 'unassigned' && !lead.assigned_to) ||
-      (assignedFilter !== 'unassigned' && lead.assigned_to === assignedFilter);
-    
-    const matchesQuality = qualityFilter === 'all' || lead.lead_quality === qualityFilter;
-    
-    const leadDate = new Date(lead.created_at);
-    const matchesDateRange = (!startDate || leadDate >= startDate) && 
-                             (!endDate || leadDate <= endDate);
-    
-    return matchesSearch && matchesStage && matchesAssigned && matchesQuality && matchesDateRange;
-  });
+  const filteredAndSortedLeads = leads
+    .filter(lead => {
+      // Filter out archived leads
+      if (lead.archived) return false;
+      
+      // Продавцы видят только назначенных им лидов
+      if (role === 'salesperson' && lead.assigned_to !== user?.id) {
+        return false;
+      }
+
+      const matchesSearch = 
+        lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        lead.phone?.includes(searchTerm) ||
+        lead.city?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        lead.company?.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      const matchesStage = stageFilter === 'all' || lead.stage === stageFilter;
+      
+      const matchesAssigned = assignedFilter === 'all' || 
+        (assignedFilter === 'unassigned' && !lead.assigned_to) ||
+        (assignedFilter !== 'unassigned' && lead.assigned_to === assignedFilter);
+      
+      const matchesQuality = qualityFilter === 'all' || lead.lead_quality === qualityFilter;
+      
+      const leadDate = new Date(lead.created_at);
+      const matchesDateRange = (!startDate || leadDate >= startDate) && 
+                               (!endDate || leadDate <= endDate);
+      
+      return matchesSearch && matchesStage && matchesAssigned && matchesQuality && matchesDateRange;
+    })
+    .sort((a, b) => {
+      let aValue: any;
+      let bValue: any;
+
+      switch (sortField) {
+        case 'name':
+          aValue = a.name || '';
+          bValue = b.name || '';
+          break;
+        case 'company':
+          aValue = a.company || '';
+          bValue = b.company || '';
+          break;
+        case 'city':
+          aValue = a.city || '';
+          bValue = b.city || '';
+          break;
+        case 'created_at':
+          aValue = new Date(a.created_at).getTime();
+          bValue = new Date(b.created_at).getTime();
+          break;
+        case 'lead_created_date':
+          aValue = a.lead_created_date ? new Date(a.lead_created_date).getTime() : 0;
+          bValue = b.lead_created_date ? new Date(b.lead_created_date).getTime() : 0;
+          break;
+        default:
+          return 0;
+      }
+
+      if (typeof aValue === 'string') {
+        return sortOrder === 'asc' 
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
+      } else {
+        return sortOrder === 'asc' 
+          ? aValue - bValue
+          : bValue - aValue;
+      }
+    });
 
   const handleArchiveLead = async (id: string) => {
     try {
@@ -292,7 +343,7 @@ const Leads = () => {
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
-      setSelectedLeadIds(filteredLeads.map(lead => lead.id));
+      setSelectedLeadIds(filteredAndSortedLeads.map(lead => lead.id));
     } else {
       setSelectedLeadIds([]);
     }
@@ -397,17 +448,12 @@ const Leads = () => {
             {selectedLeadIds.length > 0 && ` | Выбрано: ${selectedLeadIds.length}`}
           </p>
         </div>
-        <div className="flex gap-2">
-          <RoleBasedAccess roles={['director', 'admin', 'sales_manager']}>
-            <ExportLeads leads={filteredLeads} />
-          </RoleBasedAccess>
-          <RoleBasedAccess roles={['director', 'admin', 'sales_manager', 'salesperson']}>
-            <Button onClick={() => setAddLeadModalOpen(true)} className="flex items-center gap-2">
-              <Plus className="h-4 w-4" />
-              Добавить лида
-            </Button>
-          </RoleBasedAccess>
-        </div>
+        <RoleBasedAccess roles={['director', 'admin', 'sales_manager', 'salesperson']}>
+          <Button onClick={() => setAddLeadModalOpen(true)} className="flex items-center gap-2">
+            <Plus className="h-4 w-4" />
+            Добавить лида
+          </Button>
+        </RoleBasedAccess>
       </div>
 
       {/* Bulk Actions Panel */}
@@ -631,7 +677,7 @@ const Leads = () => {
       {/* Leads Table */}
       <Card>
         <CardContent className="p-0">
-          {filteredLeads.length === 0 ? (
+          {filteredAndSortedLeads.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-8">
               <AlertTriangle className="h-12 w-12 text-muted-foreground mb-4" />
               <h3 className="text-lg font-medium mb-2">Лиды не найдены</h3>
@@ -646,19 +692,59 @@ const Leads = () => {
                   {isDirector && (
                     <TableHead className="w-12">
                       <Checkbox 
-                        checked={selectedLeadIds.length === filteredLeads.length && filteredLeads.length > 0}
+                        checked={selectedLeadIds.length === filteredAndSortedLeads.length && filteredAndSortedLeads.length > 0}
                         onCheckedChange={handleSelectAll}
                       />
                     </TableHead>
                   )}
-                  <TableHead>Имя</TableHead>
-                  <TableHead>Компания</TableHead>
-                  <TableHead>Город</TableHead>
+                  <TableHead 
+                    className="cursor-pointer hover:bg-muted/50"
+                    onClick={() => handleSort('name')}
+                  >
+                    <div className="flex items-center gap-2">
+                      Имя
+                      {sortField === 'name' && <ArrowUpDown className="h-4 w-4" />}
+                    </div>
+                  </TableHead>
+                  <TableHead 
+                    className="cursor-pointer hover:bg-muted/50"
+                    onClick={() => handleSort('company')}
+                  >
+                    <div className="flex items-center gap-2">
+                      Компания
+                      {sortField === 'company' && <ArrowUpDown className="h-4 w-4" />}
+                    </div>
+                  </TableHead>
+                  <TableHead 
+                    className="cursor-pointer hover:bg-muted/50"
+                    onClick={() => handleSort('city')}
+                  >
+                    <div className="flex items-center gap-2">
+                      Город
+                      {sortField === 'city' && <ArrowUpDown className="h-4 w-4" />}
+                    </div>
+                  </TableHead>
                   <TableHead>Телефон</TableHead>
                   <TableHead>Статус</TableHead>
                   <TableHead>Качество</TableHead>
-                  <TableHead>Дата создания лида</TableHead>
-                  <TableHead>Создан в CRM</TableHead>
+                  <TableHead 
+                    className="cursor-pointer hover:bg-muted/50"
+                    onClick={() => handleSort('lead_created_date')}
+                  >
+                    <div className="flex items-center gap-2">
+                      Дата создания лида
+                      {sortField === 'lead_created_date' && <ArrowUpDown className="h-4 w-4" />}
+                    </div>
+                  </TableHead>
+                  <TableHead 
+                    className="cursor-pointer hover:bg-muted/50"
+                    onClick={() => handleSort('created_at')}
+                  >
+                    <div className="flex items-center gap-2">
+                      Создан в CRM
+                      {sortField === 'created_at' && <ArrowUpDown className="h-4 w-4" />}
+                    </div>
+                  </TableHead>
                   <RoleBasedAccess roles={['director', 'admin', 'sales_manager']}>
                     <TableHead>Назначен</TableHead>
                   </RoleBasedAccess>
@@ -666,7 +752,7 @@ const Leads = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredLeads.map((lead) => (
+                {filteredAndSortedLeads.map((lead) => (
                   <TableRow 
                     key={lead.id} 
                     className="cursor-pointer hover:bg-muted/50"
