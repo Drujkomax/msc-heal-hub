@@ -21,6 +21,7 @@ import { DuplicateDetailModal } from '../components/DuplicateDetailModal';
 import { UnifiedLeadModal } from '../components/UnifiedLeadModal';
 import CreateDealFromLeadDialog from '../components/CreateDealFromLeadDialog';
 import { AddLeadDialog } from '../components/AddLeadDialog';
+import { ExportLeads } from '../components/ExportLeads';
 import { 
   Search, 
   Edit,
@@ -396,12 +397,17 @@ const Leads = () => {
             {selectedLeadIds.length > 0 && ` | Выбрано: ${selectedLeadIds.length}`}
           </p>
         </div>
-        <RoleBasedAccess roles={['director', 'admin', 'sales_manager', 'salesperson']}>
-          <Button onClick={() => setAddLeadModalOpen(true)} className="flex items-center gap-2">
-            <Plus className="h-4 w-4" />
-            Добавить лида
-          </Button>
-        </RoleBasedAccess>
+        <div className="flex gap-2">
+          <RoleBasedAccess roles={['director', 'admin', 'sales_manager']}>
+            <ExportLeads leads={filteredLeads} />
+          </RoleBasedAccess>
+          <RoleBasedAccess roles={['director', 'admin', 'sales_manager', 'salesperson']}>
+            <Button onClick={() => setAddLeadModalOpen(true)} className="flex items-center gap-2">
+              <Plus className="h-4 w-4" />
+              Добавить лида
+            </Button>
+          </RoleBasedAccess>
+        </div>
       </div>
 
       {/* Bulk Actions Panel */}
