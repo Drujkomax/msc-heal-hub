@@ -7,6 +7,8 @@ import ROICalculator from '@/components/Calculator/ROICalculator';
 import LeadForm from '@/components/forms/LeadForm';
 import { useTranslation } from 'react-i18next';
 import SEOHead from "@/components/SEO/SEOHead";
+import { useAuth } from '@/hooks/useAuth';
+import { MessageCircle } from 'lucide-react';
 
 interface HomeProps {
   language: 'ru' | 'en' | 'uz';
@@ -17,6 +19,7 @@ const Home = ({ language }: HomeProps) => {
   const [isVisible, setIsVisible] = useState(false);
   const [showConsultationForm, setShowConsultationForm] = useState(false);
   const { t } = useTranslation();
+  const { user } = useAuth();
 
   useEffect(() => {
     setIsVisible(true);
@@ -95,6 +98,16 @@ const Home = ({ language }: HomeProps) => {
                   {t('home.hero.getConsultation')}
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
+                {user && (
+                  <Button
+                    size="lg"
+                    className="bg-[#0088cc] hover:bg-[#0088cc]/90 text-white font-semibold px-8 py-4 text-lg flex-1 sm:flex-none sm:min-w-[240px]"
+                    onClick={() => window.open(`https://t.me/medscuz_bot?start=${user.id}`, '_blank')}
+                  >
+                    <MessageCircle className="mr-2 w-5 h-5" />
+                    Привязать Telegram
+                  </Button>
+                )}
               </div>
             </div>
 
