@@ -91,7 +91,7 @@ const MonitoringDashboard: React.FC = () => {
   const cleanupOldLogs = async (daysToKeep: number = 7) => {
     try {
       const { data, error } = await supabase
-        .rpc('cleanup_old_logs', { days_to_keep: daysToKeep });
+        .rpc('cleanup_old_logs' as any, { days_to_keep: daysToKeep });
 
       if (error) throw error;
       
