@@ -61,3 +61,16 @@ After running `supabase/export/storage.sql`, the following buckets and policies 
 
 No additional manual steps are required unless you need to adjust permissions.
 
+## 5. Post-import verification
+
+After completing the import, run the following sanity checks to confirm everything
+is wired correctly:
+
+1. **Confirm roles are seeded** – `select * from public.user_roles limit 5;`
+   ensures the `handle_new_user` trigger populated default roles.
+2. **Smoke-test Edge Functions** – invoke a lightweight request against each
+   deployed function using `supabase functions invoke <name>` with the required
+   headers to confirm secrets are loaded.
+3. **Validate storage policies** – upload and fetch a file in both buckets to
+   verify RLS behaviour for authenticated and unauthenticated users.
+
