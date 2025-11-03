@@ -1,21 +1,29 @@
+import { createClient } from "jsr:@supabase/supabase-js@2";
 
-import { createClient } from "npm:@supabase/supabase-js@2.43.1";
+type SupabaseClient = ReturnType<typeof createClient>;
 
-const supabaseUrl = Deno.env.get("SUPABASE_URL");
-const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
+const SERVICE_ROLE_KEY = Deno.env.get("SERVICE_ROLE_KEY");
 
-if (!supabaseUrl) {
-  console.error("SUPABASE_URL is not set in environment variables");
-  throw new Error("SUPABASE_URL is not set");
+if (!SUPABASE_URL) {
+  throw new Error("SUPABASE_URL is not set in environment variables");
 }
 
-if (!supabaseKey) {
-  console.error("SUPABASE_SERVICE_ROLE_KEY is not set in environment variables");
-  throw new Error("SUPABASE_SERVICE_ROLE_KEY is not set");
+if (!SERVICE_ROLE_KEY) {
+  throw new Error("SERVICE_ROLE_KEY is not set in environment variables");
 }
 
-export const supabaseClient = createClient(supabaseUrl, supabaseKey, {
-  auth: {
-    persistSession: false,
+export const supabaseClient: SupabaseClient = createClient(
+  SUPABASE_URL,
+  SERVICE_ROLE_KEY,
+  {
+    auth: {
+      persistSession: false,
+    },
+    global: {
+      headers: {
+        "X-Client-Info": "msc-heal-hub-bot/1.0.0",
+      },
+    },
   },
-});
+);
