@@ -161,7 +161,8 @@ const rolePermissions: Record<string, Permission[]> = {
     'view_archive'
   ],
   'accountant': [
-    // Бухгалтер: сделки, задачи, товары
+    // Бухгалтер: сделки, задачи, товары, лиды (только просмотр)
+    'view_all_leads',
     'view_deals',
     'manage_deals',
     'view_tasks',
