@@ -87,7 +87,7 @@ const Contacts = () => {
       emailField: 'Email',
       message: 'Сообщение',
       send: 'Отправить',
-      fullAddress: 'г. Ташкент, ул. Асака, 32',
+      fullAddress: 'г. Ташкент, сквер Амира Темура',
       ourLocation: 'Наше местоположение',
       locationDescription: 'Найдите нас на карте'
     },
@@ -108,7 +108,7 @@ const Contacts = () => {
       emailField: 'Email',
       message: 'Message',
       send: 'Send',
-      fullAddress: 'Tashkent, Asaka str. 32',
+      fullAddress: 'Tashkent, Amir Temur Square',
       ourLocation: 'Our Location',
       locationDescription: 'Find us on the map'
     },
@@ -129,7 +129,7 @@ const Contacts = () => {
       emailField: 'Email',
       message: 'Xabar',
       send: 'Yuborish',
-      fullAddress: 'Toshkent, Asaka ko\'chasi 32',
+      fullAddress: 'Toshkent, Amir Temur maydoni',
       ourLocation: 'Bizning joylashuvimiz',
       locationDescription: 'Bizni xaritada toping'
     }

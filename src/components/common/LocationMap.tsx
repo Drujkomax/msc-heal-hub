@@ -6,29 +6,29 @@ import { Button } from '@/components/ui/button';
 const LocationMap: React.FC = () => {
   const { i18n } = useTranslation();
   
-  // Tashkent, Asaka 32 coordinates
-  const latitude = 41.3111;
-  const longitude = 69.2797;
+  // Tashkent, Amir Temur Square coordinates
+  const latitude = 41.316163;
+  const longitude = 69.301548;
   
   const content = {
     ru: {
       title: 'Med Service Centre',
-      address: 'г. Ташкент, ул. Асака 32',
-      description: 'Наш офис находится по адресу Асака 32',
+      address: 'г. Ташкент, сквер Амира Темура',
+      description: 'Наш офис находится на сквере Амира Темура',
       openInMaps: 'Открыть в картах',
       getDirections: 'Построить маршрут'
     },
     en: {
       title: 'Med Service Centre', 
-      address: 'Tashkent, Asaka str. 32',
-      description: 'Our office is located at Asaka 32',
+      address: 'Tashkent, Amir Temur Square',
+      description: 'Our office is located at Amir Temur Square',
       openInMaps: 'Open in Maps',
       getDirections: 'Get Directions'
     },
     uz: {
       title: 'Med Service Centre',
-      address: 'Toshkent, Asaka ko\'chasi 32', 
-      description: 'Bizning ofisimiz Asaka 32 manzilida joylashgan',
+      address: 'Toshkent, Amir Temur maydoni', 
+      description: 'Bizning ofisimiz Amir Temur maydonida joylashgan',
       openInMaps: 'Xaritada ochish',
       getDirections: 'Yo\'lni ko\'rsatish'
     }
