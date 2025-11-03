@@ -12,7 +12,7 @@ const Footer = ({ language }: FooterProps) => {
       quickLinks: 'Быстрые ссылки',
       contacts: 'Контакты',
       services: 'Услуги',
-      address: 'г. Ташкент, Мирзо Улугбекский р-н, ул. Асака, 32',
+      address: 'г. Ташкент, ул. Асака, 32',
       rights: 'Все права защищены',
       links: [
         { name: 'Каталог', href: '/catalog' },
@@ -33,7 +33,7 @@ const Footer = ({ language }: FooterProps) => {
       quickLinks: 'Quick Links',
       contacts: 'Contacts',
       services: 'Services',
-      address: 'Tashkent, Mirzo Ulugbek district, Asaka street, 32',
+      address: 'Tashkent, Asaka str. 32',
       rights: 'All rights reserved',
       links: [
         { name: 'Catalog', href: '/catalog' },
@@ -54,7 +54,7 @@ const Footer = ({ language }: FooterProps) => {
       quickLinks: 'Tezkor havolalar',
       contacts: 'Aloqa',
       services: 'Xizmatlar',
-      address: 'Toshkent sh., Mirzo Ulug\'bek tumani, Asaka ko\'chasi, 32',
+      address: 'Toshkent, Asaka ko\'chasi 32',
       rights: 'Barcha huquqlar himoyalangan',
       links: [
         { name: 'Katalog', href: '/catalog' },
@@ -120,7 +120,7 @@ const Footer = ({ language }: FooterProps) => {
               <div className="flex items-center space-x-3">
                 <MapPin className="w-5 h-5 text-msc-accent" />
                 <a 
-                  href="https://yandex.ru/maps/?text=г. Ташкент, Мирзо Улугбекский р-н, ул. Асака, 32"
+                  href="https://yandex.uz/maps/?ll=69.2797,41.3111&z=17&pt=69.2797,41.3111"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-msc-accent transition-colors"

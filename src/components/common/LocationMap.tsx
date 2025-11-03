@@ -6,29 +6,29 @@ import { Button } from '@/components/ui/button';
 const LocationMap: React.FC = () => {
   const { i18n } = useTranslation();
   
-  // Tashkent, Uzbekistan coordinates
-  const latitude = 41.2995;
-  const longitude = 69.2401;
+  // Tashkent, Asaka 32 coordinates
+  const latitude = 41.3111;
+  const longitude = 69.2797;
   
   const content = {
     ru: {
       title: 'Med Service Centre',
-      address: 'г. Ташкент, Узбекистан',
-      description: 'Наш офис находится в центре Ташкента',
+      address: 'г. Ташкент, ул. Асака 32',
+      description: 'Наш офис находится по адресу Асака 32',
       openInMaps: 'Открыть в картах',
       getDirections: 'Построить маршрут'
     },
     en: {
       title: 'Med Service Centre', 
-      address: 'Tashkent, Uzbekistan',
-      description: 'Our office is located in the center of Tashkent',
+      address: 'Tashkent, Asaka str. 32',
+      description: 'Our office is located at Asaka 32',
       openInMaps: 'Open in Maps',
       getDirections: 'Get Directions'
     },
     uz: {
       title: 'Med Service Centre',
-      address: 'Toshkent, O\'zbekiston', 
-      description: 'Bizning ofisimiz Toshkent markazida joylashgan',
+      address: 'Toshkent, Asaka ko\'chasi 32', 
+      description: 'Bizning ofisimiz Asaka 32 manzilida joylashgan',
       openInMaps: 'Xaritada ochish',
       getDirections: 'Yo\'lni ko\'rsatish'
     }
@@ -37,9 +37,9 @@ const LocationMap: React.FC = () => {
   const currentContent = content[i18n.language as 'ru' | 'en' | 'uz'] || content['ru'];
 
   const handleOpenInMaps = () => {
-    // Always open Yandex Maps using the provided share link
-    const yandexShareUrl = 'https://yandex.uz/maps/-/CLuCZ-Om';
-    window.open(yandexShareUrl, '_blank', 'noopener,noreferrer');
+    // Open Yandex Maps at the specific coordinates
+    const yandexUrl = `https://yandex.uz/maps/?ll=${longitude},${latitude}&z=17&pt=${longitude},${latitude}`;
+    window.open(yandexUrl, '_blank', 'noopener,noreferrer');
   };
 
   const handleGetDirections = () => {
