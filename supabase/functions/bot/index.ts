@@ -86,18 +86,14 @@ bot.on("message", async (ctx) => {
     const normalized = normalizePhone(fromContact || fromText);
 
     if (!normalized) {
-      await ctx.reply(
-        "❗️ Пожалуйста, отправьте номер телефона в формате +998XXXXXXXXX.",
-      );
+      await ctx.reply("❗️ Пожалуйста, отправьте номер телефона в формате +998XXXXXXXXX.");
       return;
     }
 
     ctx.session.phone = normalized;
     ctx.session.step = "waiting_name";
 
-    await ctx.reply("Как вас зовут?", {
-      reply_markup: { remove_keyboard: true },
-    });
+    await ctx.reply("Как вас зовут?", { reply_markup: { remove_keyboard: true } });
     return;
   }
 
@@ -136,9 +132,7 @@ bot.on("message", async (ctx) => {
 
       if (error) {
         console.error("Failed to insert lead", error);
-        await ctx.reply(
-          "⚠️ Произошла ошибка при сохранении данных. Попробуйте позже.",
-        );
+        await ctx.reply("⚠️ Произошла ошибка при сохранении данных. Попробуйте позже.");
         ctx.session = initialSession();
         return;
       }
@@ -152,9 +146,7 @@ bot.on("message", async (ctx) => {
       });
     } catch (insertError) {
       console.error("Unexpected error while saving lead", insertError);
-      await ctx.reply(
-        "⚠️ Произошла непредвиденная ошибка. Попробуйте позже.",
-      );
+      await ctx.reply("⚠️ Произошла непредвиденная ошибка. Попробуйте позже.");
     } finally {
       ctx.session = initialSession();
     }
