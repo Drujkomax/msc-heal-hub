@@ -101,12 +101,20 @@ const Footer = ({ language }: FooterProps) => {
             <div className="space-y-3">
               <div className="flex items-center space-x-3">
                 <Phone className="w-5 h-5 text-msc-accent" />
-                <a 
-                  href="tel:+998712373308"
-                  className="hover:text-msc-accent transition-colors"
-                >
-                  +998 (71) 237-33-08
-                </a>
+                <div className="flex flex-col">
+                  <a 
+                    href="tel:+998712373308"
+                    className="hover:text-msc-accent transition-colors"
+                  >
+                    +998 (71) 237-33-08
+                  </a>
+                  <a 
+                    href="tel:+998944444885"
+                    className="hover:text-msc-accent transition-colors"
+                  >
+                    +998 94 444 48 85
+                  </a>
+                </div>
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="w-5 h-5 text-msc-accent" />
