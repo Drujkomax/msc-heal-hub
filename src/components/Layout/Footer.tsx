@@ -12,7 +12,7 @@ const Footer = ({ language }: FooterProps) => {
       quickLinks: 'Быстрые ссылки',
       contacts: 'Контакты',
       services: 'Услуги',
-      address: 'г. Ташкент, сквер Амира Темура',
+      address: 'Узбекистан, Ташкент, ул. Асака, 32',
       rights: 'Все права защищены',
       links: [
         { name: 'Каталог', href: '/catalog' },
@@ -33,7 +33,7 @@ const Footer = ({ language }: FooterProps) => {
       quickLinks: 'Quick Links',
       contacts: 'Contacts',
       services: 'Services',
-      address: 'Tashkent, Amir Temur Square',
+      address: 'Uzbekistan, Tashkent, Asaka St., 32',
       rights: 'All rights reserved',
       links: [
         { name: 'Catalog', href: '/catalog' },
@@ -54,7 +54,7 @@ const Footer = ({ language }: FooterProps) => {
       quickLinks: 'Tezkor havolalar',
       contacts: 'Aloqa',
       services: 'Xizmatlar',
-      address: 'Toshkent, Amir Temur maydoni',
+      address: 'O\'zbekiston, Toshkent, Asaka ko\'chasi, 32',
       rights: 'Barcha huquqlar himoyalangan',
       links: [
         { name: 'Katalog', href: '/catalog' },

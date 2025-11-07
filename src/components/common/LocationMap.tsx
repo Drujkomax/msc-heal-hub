@@ -13,22 +13,22 @@ const LocationMap: React.FC = () => {
   const content = {
     ru: {
       title: 'Med Service Centre',
-      address: 'г. Ташкент, сквер Амира Темура',
-      description: 'Наш офис находится на сквере Амира Темура',
+      address: 'Узбекистан, Ташкент, ул. Асака, 32',
+      description: 'Наш офис находится по адресу: ул. Асака, 32',
       openInMaps: 'Открыть в картах',
       getDirections: 'Построить маршрут'
     },
     en: {
       title: 'Med Service Centre', 
-      address: 'Tashkent, Amir Temur Square',
-      description: 'Our office is located at Amir Temur Square',
+      address: 'Uzbekistan, Tashkent, Asaka St., 32',
+      description: 'Our office is located at Asaka St., 32',
       openInMaps: 'Open in Maps',
       getDirections: 'Get Directions'
     },
     uz: {
       title: 'Med Service Centre',
-      address: 'Toshkent, Amir Temur maydoni', 
-      description: 'Bizning ofisimiz Amir Temur maydonida joylashgan',
+      address: 'O\'zbekiston, Toshkent, Asaka ko\'chasi, 32', 
+      description: 'Bizning ofisimiz Asaka ko\'chasi, 32 da joylashgan',
       openInMaps: 'Xaritada ochish',
       getDirections: 'Yo\'lni ko\'rsatish'
     }
