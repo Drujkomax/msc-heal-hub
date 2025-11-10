@@ -132,9 +132,13 @@ const ProductDetail = () => {
     );
   }
 
-  const productName = typeof product.name === 'object' 
-    ? (product.name[language] || product.name.ru || product.name.en || 'Медицинское оборудование Med Service Centre')
-    : product.name || 'Медицинское оборудование Med Service Centre';
+  const productName = (() => {
+    if (typeof product.name === 'object' && product.name !== null) {
+      const objName = product.name as Record<string, string>;
+      return objName[language] || objName.ru || objName.en || 'Медицинское оборудование Med Service Centre';
+    }
+    return product.name || 'Медицинское оборудование Med Service Centre';
+  })();
   
   const manufacturerName = (() => {
     if (!manufacturer?.name) return '';
