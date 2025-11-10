@@ -1,16 +1,28 @@
-import { useState } from 'react';
-import { useWarehouse } from '@/hooks/useWarehouse';
+import { useState, useEffect } from 'react';
+import { useWarehouse, LowStockItem } from '@/hooks/useWarehouse';
 import { AddWarehouseItemDialog } from '../components/Warehouse/AddWarehouseItemDialog';
+import { EditWarehouseItemDialog } from '../components/Warehouse/EditWarehouseItemDialog';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Package, MapPin, Archive, Pencil, Trash2, Search } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Package, MapPin, Archive, Pencil, Trash2, Search, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const Warehouse = () => {
-  const { items, loading, archiveItem, deleteItem } = useWarehouse();
+  const { items, loading, archiveItem, deleteItem, getLowStockItems } = useWarehouse();
   const [searchTerm, setSearchTerm] = useState('');
+  const [editingItem, setEditingItem] = useState<any>(null);
+  const [lowStockItems, setLowStockItems] = useState<LowStockItem[]>([]);
+
+  useEffect(() => {
+    const fetchLowStock = async () => {
+      const lowStock = await getLowStockItems();
+      setLowStockItems(lowStock);
+    };
+    fetchLowStock();
+  }, [items]);
 
   const filteredItems = items.filter(item =>
     item.name.ru.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -63,6 +75,24 @@ export const Warehouse = () => {
         </div>
         <AddWarehouseItemDialog />
       </div>
+
+      {/* Low Stock Alerts */}
+      {lowStockItems.length > 0 && (
+        <Alert variant="destructive">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertTitle>Низкие остатки на складе</AlertTitle>
+          <AlertDescription>
+            <div className="mt-2 space-y-1">
+              {lowStockItems.map((item) => (
+                <div key={item.id} className="text-sm">
+                  <span className="font-medium">{item.name.ru}</span> - осталось {item.quantity} из минимум {item.minimum_stock}
+                  {item.location && <span className="text-muted-foreground ml-2">({item.location})</span>}
+                </div>
+              ))}
+            </div>
+          </AlertDescription>
+        </Alert>
+      )}
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -166,7 +196,12 @@ export const Warehouse = () => {
               )}
 
               <div className="flex gap-2 pt-2">
-                <Button variant="outline" size="sm" className="flex-1">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="flex-1"
+                  onClick={() => setEditingItem(item)}
+                >
                   <Pencil className="h-3 w-3 mr-1" />
                   Изменить
                 </Button>
@@ -198,6 +233,15 @@ export const Warehouse = () => {
             {searchTerm ? 'Попробуйте изменить параметры поиска' : 'Начните добавлять товары на склад'}
           </p>
         </div>
+      )}
+
+      {/* Edit Dialog */}
+      {editingItem && (
+        <EditWarehouseItemDialog
+          item={editingItem}
+          open={!!editingItem}
+          onOpenChange={(open) => !open && setEditingItem(null)}
+        />
       )}
     </div>
   );

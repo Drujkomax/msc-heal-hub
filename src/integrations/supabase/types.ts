@@ -1436,8 +1436,10 @@ export type Database = {
           id: string
           images: Json | null
           location: string | null
+          minimum_stock: number | null
           name: Json
           notes: string | null
+          notify_low_stock: boolean | null
           product_id: string | null
           purchase_price: number | null
           quantity: number
@@ -1457,8 +1459,10 @@ export type Database = {
           id?: string
           images?: Json | null
           location?: string | null
+          minimum_stock?: number | null
           name?: Json
           notes?: string | null
+          notify_low_stock?: boolean | null
           product_id?: string | null
           purchase_price?: number | null
           quantity?: number
@@ -1478,8 +1482,10 @@ export type Database = {
           id?: string
           images?: Json | null
           location?: string | null
+          minimum_stock?: number | null
           name?: Json
           notes?: string | null
+          notify_low_stock?: boolean | null
           product_id?: string | null
           purchase_price?: number | null
           quantity?: number
@@ -1585,6 +1591,17 @@ export type Database = {
           info_count: number
           total_logs: number
           warn_count: number
+        }[]
+      }
+      get_low_stock_items: {
+        Args: never
+        Returns: {
+          id: string
+          location: string
+          minimum_stock: number
+          name: Json
+          product_id: string
+          quantity: number
         }[]
       }
       get_pending_invites: {

@@ -26,6 +26,8 @@ export interface WarehouseItem {
   purchase_price?: number;
   selling_price?: number;
   notes?: string;
+  minimum_stock?: number;
+  notify_low_stock?: boolean;
   created_by?: string;
   updated_by?: string;
   created_at: string;
@@ -33,6 +35,19 @@ export interface WarehouseItem {
   archived: boolean;
   archived_at?: string;
   archived_by?: string;
+}
+
+export interface LowStockItem {
+  id: string;
+  name: {
+    ru: string;
+    en: string;
+    uz: string;
+  };
+  quantity: number;
+  minimum_stock: number;
+  location?: string;
+  product_id?: string;
 }
 
 export const useWarehouse = () => {
@@ -141,6 +156,17 @@ export const useWarehouse = () => {
     }
   };
 
+  const getLowStockItems = async (): Promise<LowStockItem[]> => {
+    try {
+      const { data, error } = await supabase.rpc('get_low_stock_items');
+      if (error) throw error;
+      return (data || []) as LowStockItem[];
+    } catch (err: any) {
+      console.error('Error fetching low stock items:', err);
+      return [];
+    }
+  };
+
   useEffect(() => {
     fetchItems();
   }, []);
@@ -153,6 +179,7 @@ export const useWarehouse = () => {
     updateItem,
     deleteItem,
     archiveItem,
+    getLowStockItems,
     refetch: fetchItems
   };
 };
