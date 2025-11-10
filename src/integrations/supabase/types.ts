@@ -56,6 +56,44 @@ export type Database = {
         }
         Relationships: []
       }
+      client_interaction_logs: {
+        Row: {
+          client_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          interaction_type: string
+          message: string
+          subject: string | null
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          interaction_type: string
+          message: string
+          subject?: string | null
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          interaction_type?: string
+          message?: string
+          subject?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_interaction_logs_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       client_stock: {
         Row: {
           average_monthly_consumption: number | null
@@ -306,6 +344,7 @@ export type Database = {
           name: string
           notes: string | null
           phone: string | null
+          telegram_chat_id: string | null
           updated_at: string
           updated_by: string | null
         }
@@ -328,6 +367,7 @@ export type Database = {
           name: string
           notes?: string | null
           phone?: string | null
+          telegram_chat_id?: string | null
           updated_at?: string
           updated_by?: string | null
         }
@@ -350,6 +390,7 @@ export type Database = {
           name?: string
           notes?: string | null
           phone?: string | null
+          telegram_chat_id?: string | null
           updated_at?: string
           updated_by?: string | null
         }
