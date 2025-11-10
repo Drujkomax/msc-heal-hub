@@ -132,8 +132,19 @@ const ProductDetail = () => {
     );
   }
 
-  const productName = product.name?.[language] || product.name?.ru || product.name?.en || 'Медицинское оборудование Med Service Centre';
-  const manufacturerName = manufacturer?.name?.[language] || manufacturer?.name?.ru || manufacturer?.name?.en || '';
+  const productName = typeof product.name === 'object' 
+    ? (product.name[language] || product.name.ru || product.name.en || 'Медицинское оборудование Med Service Centre')
+    : product.name || 'Медицинское оборудование Med Service Centre';
+  
+  const manufacturerName = (() => {
+    if (!manufacturer?.name) return '';
+    const name = manufacturer.name;
+    if (typeof name === 'object') {
+      const objName = name as Record<string, string>;
+      return objName[language] || objName.ru || objName.en || '';
+    }
+    return String(name);
+  })();
   const categoryLabel = getCategoryLabel(product.category, language);
 
   const rawDescription = `${productName} — ${categoryLabel} оборудование Med Service Centre для клиник Узбекистана с поддержкой сервиса, аренды и поставки от официального партнёра.`;

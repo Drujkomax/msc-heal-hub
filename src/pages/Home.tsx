@@ -114,12 +114,12 @@ const Home = ({ language }: HomeProps) => {
                 <div className="absolute inset-0 animate-[spin_20s_linear_infinite]">
                   {/* Process Icons positioned in perfect circle */}
                   {[
-                    { icon: FileText, label: t('home.process.quote'), angle: 0 },
-                    { icon: Truck, label: t('home.process.supply'), angle: 60 },
-                    { icon: Settings, label: t('home.process.installation'), angle: 120 },
-                    { icon: GraduationCap, label: t('home.process.training'), angle: 180 },
-                    { icon: Wrench, label: t('home.process.service'), angle: 240 },
-                    { icon: TrendingUp, label: t('home.process.roi'), angle: 300 }
+                    { icon: FileText, label: t('home.process.quote'), angle: 0, path: '/catalog' },
+                    { icon: Truck, label: t('home.process.supply'), angle: 60, path: '/catalog' },
+                    { icon: Settings, label: t('home.process.installation'), angle: 120, path: '/services' },
+                    { icon: GraduationCap, label: t('home.process.training'), angle: 180, path: '/services' },
+                    { icon: Wrench, label: t('home.process.service'), angle: 240, path: '/services' },
+                    { icon: TrendingUp, label: t('home.process.roi'), angle: 300, path: '/#roi-calculator-section' }
                   ].map((item, index) => {
                     const IconComponent = item.icon;
                     const radius = window.innerWidth < 768 ? 120 : 180; // Distance from center - smaller on mobile
@@ -136,10 +136,20 @@ const Home = ({ language }: HomeProps) => {
                       >
                         <div className="text-center animate-[counter-rotate_20s_linear_infinite]">
                           <div className="relative">
-                             <div className="w-10 h-10 sm:w-14 sm:h-14 lg:w-20 lg:h-20 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto shadow-lg hover:scale-110 transition-transform">
+                             <div 
+                               className="w-10 h-10 sm:w-14 sm:h-14 lg:w-20 lg:h-20 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto shadow-lg hover:scale-110 transition-transform cursor-pointer"
+                               onClick={() => {
+                                 if (item.path.startsWith('/#')) {
+                                   const section = document.querySelector(item.path.substring(1));
+                                   section?.scrollIntoView({ behavior: 'smooth' });
+                                 } else {
+                                   navigate(item.path);
+                                 }
+                               }}
+                             >
                                <IconComponent className="w-5 h-5 sm:w-8 sm:h-8 lg:w-14 lg:h-14 text-white" />
                             </div>
-                            <span className="text-white text-xs sm:text-sm font-medium block whitespace-nowrap absolute top-full left-1/2 transform -translate-x-1/2 mt-1 sm:mt-2">
+                            <span className="text-white text-xs sm:text-sm font-medium block whitespace-nowrap absolute top-full left-1/2 transform -translate-x-1/2 mt-1 sm:mt-2 pointer-events-none">
                               {item.label}
                             </span>
                           </div>
