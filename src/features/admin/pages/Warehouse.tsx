@@ -1,13 +1,17 @@
-import { useState, useEffect } from 'react';
-import { useWarehouse, LowStockItem } from '@/hooks/useWarehouse';
+import { useState, useEffect, useMemo } from 'react';
+import { useWarehouse, LowStockItem, WarehouseItem } from '@/hooks/useWarehouse';
 import { AddWarehouseItemDialog } from '../components/Warehouse/AddWarehouseItemDialog';
 import { EditWarehouseItemDialog } from '../components/Warehouse/EditWarehouseItemDialog';
+import { WarehouseFiltersPanel, WarehouseFilters } from '../components/Warehouse/WarehouseFiltersPanel';
+import { BulkActionsDialog } from '../components/Warehouse/BulkActionsDialog';
+import { SeedWarehouseButton } from '../components/Warehouse/SeedWarehouseButton';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Package, MapPin, Archive, Pencil, Trash2, Search, AlertTriangle } from 'lucide-react';
+import { Package, MapPin, Archive, Pencil, Trash2, Search, AlertTriangle, CheckSquare, X } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const Warehouse = () => {
@@ -15,6 +19,12 @@ export const Warehouse = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [editingItem, setEditingItem] = useState<any>(null);
   const [lowStockItems, setLowStockItems] = useState<LowStockItem[]>([]);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [bulkActionsOpen, setBulkActionsOpen] = useState(false);
+  const [filters, setFilters] = useState<WarehouseFilters>({
+    sortBy: 'created_at',
+    sortOrder: 'desc'
+  });
 
   useEffect(() => {
     const fetchLowStock = async () => {
@@ -24,10 +34,87 @@ export const Warehouse = () => {
     fetchLowStock();
   }, [items]);
 
-  const filteredItems = items.filter(item =>
-    item.name.ru.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.location?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Get unique locations for filter
+  const locations = useMemo(() => {
+    const locs = items
+      .map(item => item.location)
+      .filter((loc): loc is string => !!loc);
+    return Array.from(new Set(locs));
+  }, [items]);
+
+  // Apply filters and sorting
+  const filteredItems = useMemo(() => {
+    let result = [...items];
+
+    // Search filter
+    if (searchTerm) {
+      result = result.filter(item =>
+        item.name.ru.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.location?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    // Condition filter
+    if (filters.condition) {
+      result = result.filter(item => item.condition === filters.condition);
+    }
+
+    // Location filter
+    if (filters.location) {
+      result = result.filter(item => item.location === filters.location);
+    }
+
+    // Price range filter
+    if (filters.priceMin !== undefined) {
+      result = result.filter(item => (item.selling_price || 0) >= filters.priceMin!);
+    }
+    if (filters.priceMax !== undefined) {
+      result = result.filter(item => (item.selling_price || 0) <= filters.priceMax!);
+    }
+
+    // Low stock filter
+    if (filters.lowStock) {
+      result = result.filter(item => 
+        item.notify_low_stock && 
+        item.minimum_stock !== undefined && 
+        item.quantity <= item.minimum_stock
+      );
+    }
+
+    // Sorting
+    const sortBy = filters.sortBy || 'created_at';
+    const sortOrder = filters.sortOrder || 'desc';
+
+    result.sort((a, b) => {
+      let aValue: any;
+      let bValue: any;
+
+      if (sortBy === 'name') {
+        aValue = a.name.ru.toLowerCase();
+        bValue = b.name.ru.toLowerCase();
+      } else if (sortBy === 'quantity') {
+        aValue = a.quantity;
+        bValue = b.quantity;
+      } else if (sortBy === 'selling_price') {
+        aValue = a.selling_price || 0;
+        bValue = b.selling_price || 0;
+      } else if (sortBy === 'purchase_price') {
+        aValue = a.purchase_price || 0;
+        bValue = b.purchase_price || 0;
+      } else {
+        aValue = new Date(a.created_at).getTime();
+        bValue = new Date(b.created_at).getTime();
+      }
+
+      if (sortOrder === 'asc') {
+        return aValue > bValue ? 1 : -1;
+      } else {
+        return aValue < bValue ? 1 : -1;
+      }
+    });
+
+    return result;
+  }, [items, searchTerm, filters]);
 
   const getConditionBadge = (condition: string) => {
     const variants: Record<string, { label: string; variant: any }> = {
@@ -42,6 +129,7 @@ export const Warehouse = () => {
     if (window.confirm('Вы уверены, что хотите архивировать этот товар?')) {
       try {
         await archiveItem(id);
+        setSelectedIds(selectedIds.filter(sid => sid !== id));
       } catch (error) {
         console.error('Error archiving item:', error);
       }
@@ -52,10 +140,25 @@ export const Warehouse = () => {
     if (window.confirm('Вы уверены, что хотите удалить этот товар? Это действие необратимо.')) {
       try {
         await deleteItem(id);
+        setSelectedIds(selectedIds.filter(sid => sid !== id));
       } catch (error) {
         console.error('Error deleting item:', error);
       }
     }
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.length === filteredItems.length) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(filteredItems.map(item => item.id));
+    }
+  };
+
+  const toggleSelectItem = (id: string) => {
+    setSelectedIds(prev =>
+      prev.includes(id) ? prev.filter(sid => sid !== id) : [...prev, id]
+    );
   };
 
   if (loading) {
@@ -73,7 +176,15 @@ export const Warehouse = () => {
           <h1 className="text-3xl font-bold">Склад</h1>
           <p className="text-muted-foreground">Управление складскими товарами</p>
         </div>
-        <AddWarehouseItemDialog />
+        <div className="flex gap-2">
+          <SeedWarehouseButton />
+          <WarehouseFiltersPanel 
+            filters={filters} 
+            onFiltersChange={setFilters}
+            locations={locations}
+          />
+          <AddWarehouseItemDialog />
+        </div>
       </div>
 
       {/* Low Stock Alerts */}
@@ -130,21 +241,70 @@ export const Warehouse = () => {
         </Card>
       </div>
 
-      {/* Search */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input
-          placeholder="Поиск по названию или местоположению..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="pl-10"
-        />
+      {/* Search and Bulk Actions */}
+      <div className="flex items-center gap-4">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Поиск по названию или местоположению..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+        
+        {selectedIds.length > 0 && (
+          <div className="flex items-center gap-2">
+            <Badge variant="secondary" className="text-sm">
+              Выбрано: {selectedIds.length}
+            </Badge>
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => setBulkActionsOpen(true)}
+            >
+              <CheckSquare className="h-4 w-4 mr-2" />
+              Массовые действия
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setSelectedIds([])}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+        )}
       </div>
+
+      {/* Select All Checkbox */}
+      {filteredItems.length > 0 && (
+        <div className="flex items-center gap-2 px-1">
+          <Checkbox
+            checked={selectedIds.length === filteredItems.length}
+            onCheckedChange={toggleSelectAll}
+            id="select-all"
+          />
+          <label 
+            htmlFor="select-all" 
+            className="text-sm text-muted-foreground cursor-pointer"
+          >
+            Выбрать все ({filteredItems.length})
+          </label>
+        </div>
+      )}
 
       {/* Items Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredItems.map((item) => (
           <Card key={item.id} className="overflow-hidden">
+            <div className="absolute top-3 left-3 z-10">
+              <Checkbox
+                checked={selectedIds.includes(item.id)}
+                onCheckedChange={() => toggleSelectItem(item.id)}
+                className="bg-background"
+              />
+            </div>
             <div className="aspect-video bg-muted relative">
               {item.images.cover ? (
                 <img
@@ -243,6 +403,16 @@ export const Warehouse = () => {
           onOpenChange={(open) => !open && setEditingItem(null)}
         />
       )}
+
+      {/* Bulk Actions Dialog */}
+      <BulkActionsDialog
+        selectedIds={selectedIds}
+        open={bulkActionsOpen}
+        onOpenChange={setBulkActionsOpen}
+        onComplete={() => {
+          setSelectedIds([]);
+        }}
+      />
     </div>
   );
 };
