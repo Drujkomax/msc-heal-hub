@@ -56,42 +56,302 @@ export type Database = {
         }
         Relationships: []
       }
+      client_stock: {
+        Row: {
+          average_monthly_consumption: number | null
+          client_id: string
+          created_at: string
+          created_by: string | null
+          custom_item_description: string | null
+          custom_item_name: Json | null
+          estimated_depletion_date: string | null
+          id: string
+          last_refill_date: string | null
+          location: string | null
+          minimum_stock: number | null
+          notes: string | null
+          notification_threshold_days: number | null
+          notify_low_stock: boolean | null
+          product_id: string | null
+          quantity: number
+          serial_numbers: string[] | null
+          unit: string
+          updated_at: string
+          updated_by: string | null
+          warehouse_item_id: string | null
+        }
+        Insert: {
+          average_monthly_consumption?: number | null
+          client_id: string
+          created_at?: string
+          created_by?: string | null
+          custom_item_description?: string | null
+          custom_item_name?: Json | null
+          estimated_depletion_date?: string | null
+          id?: string
+          last_refill_date?: string | null
+          location?: string | null
+          minimum_stock?: number | null
+          notes?: string | null
+          notification_threshold_days?: number | null
+          notify_low_stock?: boolean | null
+          product_id?: string | null
+          quantity?: number
+          serial_numbers?: string[] | null
+          unit?: string
+          updated_at?: string
+          updated_by?: string | null
+          warehouse_item_id?: string | null
+        }
+        Update: {
+          average_monthly_consumption?: number | null
+          client_id?: string
+          created_at?: string
+          created_by?: string | null
+          custom_item_description?: string | null
+          custom_item_name?: Json | null
+          estimated_depletion_date?: string | null
+          id?: string
+          last_refill_date?: string | null
+          location?: string | null
+          minimum_stock?: number | null
+          notes?: string | null
+          notification_threshold_days?: number | null
+          notify_low_stock?: boolean | null
+          product_id?: string | null
+          quantity?: number
+          serial_numbers?: string[] | null
+          unit?: string
+          updated_at?: string
+          updated_by?: string | null
+          warehouse_item_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_stock_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "client_stock_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "client_stock_warehouse_item_id_fkey"
+            columns: ["warehouse_item_id"]
+            isOneToOne: false
+            referencedRelation: "warehouse_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      client_stock_alerts: {
+        Row: {
+          acknowledged: boolean | null
+          acknowledged_at: string | null
+          acknowledged_by: string | null
+          alert_type: string
+          client_id: string
+          client_stock_id: string
+          created_at: string
+          id: string
+          message: string
+          resolved: boolean | null
+          resolved_at: string | null
+          severity: string
+          telegram_sent: boolean | null
+          telegram_sent_at: string | null
+        }
+        Insert: {
+          acknowledged?: boolean | null
+          acknowledged_at?: string | null
+          acknowledged_by?: string | null
+          alert_type: string
+          client_id: string
+          client_stock_id: string
+          created_at?: string
+          id?: string
+          message: string
+          resolved?: boolean | null
+          resolved_at?: string | null
+          severity?: string
+          telegram_sent?: boolean | null
+          telegram_sent_at?: string | null
+        }
+        Update: {
+          acknowledged?: boolean | null
+          acknowledged_at?: string | null
+          acknowledged_by?: string | null
+          alert_type?: string
+          client_id?: string
+          client_stock_id?: string
+          created_at?: string
+          id?: string
+          message?: string
+          resolved?: boolean | null
+          resolved_at?: string | null
+          severity?: string
+          telegram_sent?: boolean | null
+          telegram_sent_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_stock_alerts_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "client_stock_alerts_client_stock_id_fkey"
+            columns: ["client_stock_id"]
+            isOneToOne: false
+            referencedRelation: "client_stock"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      client_stock_transactions: {
+        Row: {
+          client_id: string
+          client_stock_id: string
+          created_at: string
+          deal_id: string | null
+          document_url: string | null
+          id: string
+          notes: string | null
+          performed_by: string | null
+          quantity: number
+          quantity_after: number
+          quantity_before: number
+          reason: string | null
+          transaction_type: string
+        }
+        Insert: {
+          client_id: string
+          client_stock_id: string
+          created_at?: string
+          deal_id?: string | null
+          document_url?: string | null
+          id?: string
+          notes?: string | null
+          performed_by?: string | null
+          quantity: number
+          quantity_after: number
+          quantity_before: number
+          reason?: string | null
+          transaction_type: string
+        }
+        Update: {
+          client_id?: string
+          client_stock_id?: string
+          created_at?: string
+          deal_id?: string | null
+          document_url?: string | null
+          id?: string
+          notes?: string | null
+          performed_by?: string | null
+          quantity?: number
+          quantity_after?: number
+          quantity_before?: number
+          reason?: string | null
+          transaction_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_stock_transactions_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "client_stock_transactions_client_stock_id_fkey"
+            columns: ["client_stock_id"]
+            isOneToOne: false
+            referencedRelation: "client_stock"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "client_stock_transactions_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "deals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       clients: {
         Row: {
+          address: string | null
+          archived: boolean | null
+          archived_at: string | null
+          archived_by: string | null
+          city: string | null
           company: string | null
+          contact_person: string | null
+          country: string | null
           created_at: string
           created_by: string | null
           email: string | null
           id: string
+          inn: string | null
           last_contact: string | null
+          legal_name: string | null
           name: string
           notes: string | null
           phone: string | null
           updated_at: string
+          updated_by: string | null
         }
         Insert: {
+          address?: string | null
+          archived?: boolean | null
+          archived_at?: string | null
+          archived_by?: string | null
+          city?: string | null
           company?: string | null
+          contact_person?: string | null
+          country?: string | null
           created_at?: string
           created_by?: string | null
           email?: string | null
           id?: string
+          inn?: string | null
           last_contact?: string | null
+          legal_name?: string | null
           name: string
           notes?: string | null
           phone?: string | null
           updated_at?: string
+          updated_by?: string | null
         }
         Update: {
+          address?: string | null
+          archived?: boolean | null
+          archived_at?: string | null
+          archived_by?: string | null
+          city?: string | null
           company?: string | null
+          contact_person?: string | null
+          country?: string | null
           created_at?: string
           created_by?: string | null
           email?: string | null
           id?: string
+          inn?: string | null
           last_contact?: string | null
+          legal_name?: string | null
           name?: string
           notes?: string | null
           phone?: string | null
           updated_at?: string
+          updated_by?: string | null
         }
         Relationships: []
       }
@@ -607,6 +867,7 @@ export type Database = {
           assigned_to: string | null
           budget_range: string | null
           city: string | null
+          client_id: string | null
           closed_at: string | null
           company: string | null
           created_at: string
@@ -637,6 +898,7 @@ export type Database = {
           assigned_to?: string | null
           budget_range?: string | null
           city?: string | null
+          client_id?: string | null
           closed_at?: string | null
           company?: string | null
           created_at?: string
@@ -667,6 +929,7 @@ export type Database = {
           assigned_to?: string | null
           budget_range?: string | null
           city?: string | null
+          client_id?: string | null
           closed_at?: string | null
           company?: string | null
           created_at?: string
@@ -689,7 +952,15 @@ export type Database = {
           value?: number | null
           visit_goal?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "leads_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       manufacturers: {
         Row: {
@@ -1524,6 +1795,10 @@ export type Database = {
         }
         Returns: undefined
       }
+      archive_client: {
+        Args: { p_client_id: string; p_user_id: string }
+        Returns: undefined
+      }
       archive_lead: {
         Args: { lead_id: string; user_id: string }
         Returns: undefined
@@ -1554,6 +1829,15 @@ export type Database = {
           invite_role: Database["public"]["Enums"]["app_role"]
         }
         Returns: Json
+      }
+      get_clients_with_low_stock: {
+        Args: never
+        Returns: {
+          client_id: string
+          client_name: string
+          critical_count: number
+          low_stock_count: number
+        }[]
       }
       get_employee_performance_metrics: {
         Args: { p_end_date?: string; p_start_date?: string; p_user_id: string }

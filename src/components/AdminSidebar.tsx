@@ -35,7 +35,8 @@ import {
   Archive,
   Tags,
   Factory,
-  Warehouse
+  Warehouse,
+  Building2
 } from 'lucide-react';
 
 export function AdminSidebar() {
