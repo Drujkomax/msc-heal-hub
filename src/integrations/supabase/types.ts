@@ -627,6 +627,7 @@ export type Database = {
           timeline: string | null
           updated_at: string
           value: number | null
+          visit_goal: string | null
         }
         Insert: {
           archived?: boolean | null
@@ -656,6 +657,7 @@ export type Database = {
           timeline?: string | null
           updated_at?: string
           value?: number | null
+          visit_goal?: string | null
         }
         Update: {
           archived?: boolean | null
@@ -685,6 +687,7 @@ export type Database = {
           timeline?: string | null
           updated_at?: string
           value?: number | null
+          visit_goal?: string | null
         }
         Relationships: []
       }
@@ -1421,6 +1424,80 @@ export type Database = {
         }
         Relationships: []
       }
+      warehouse_items: {
+        Row: {
+          archived: boolean | null
+          archived_at: string | null
+          archived_by: string | null
+          condition: string
+          created_at: string
+          created_by: string | null
+          description: Json | null
+          id: string
+          images: Json | null
+          location: string | null
+          name: Json
+          notes: string | null
+          product_id: string | null
+          purchase_price: number | null
+          quantity: number
+          selling_price: number | null
+          unit: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          archived?: boolean | null
+          archived_at?: string | null
+          archived_by?: string | null
+          condition?: string
+          created_at?: string
+          created_by?: string | null
+          description?: Json | null
+          id?: string
+          images?: Json | null
+          location?: string | null
+          name?: Json
+          notes?: string | null
+          product_id?: string | null
+          purchase_price?: number | null
+          quantity?: number
+          selling_price?: number | null
+          unit?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          archived?: boolean | null
+          archived_at?: string | null
+          archived_by?: string | null
+          condition?: string
+          created_at?: string
+          created_by?: string | null
+          description?: Json | null
+          id?: string
+          images?: Json | null
+          location?: string | null
+          name?: Json
+          notes?: string | null
+          product_id?: string | null
+          purchase_price?: number | null
+          quantity?: number
+          selling_price?: number | null
+          unit?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "warehouse_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -1447,6 +1524,10 @@ export type Database = {
       }
       archive_product: {
         Args: { product_id: string; user_id: string }
+        Returns: undefined
+      }
+      archive_warehouse_item: {
+        Args: { item_id: string; user_id: string }
         Returns: undefined
       }
       assign_role_from_invite: {
@@ -1594,6 +1675,10 @@ export type Database = {
         Returns: Json
       }
       unarchive_product: { Args: { product_id: string }; Returns: undefined }
+      unarchive_warehouse_item: {
+        Args: { item_id: string }
+        Returns: undefined
+      }
       update_conversion_analytics: {
         Args: { p_date?: string; p_product_id: string }
         Returns: undefined

@@ -34,7 +34,8 @@ import {
   CheckSquare,
   Archive,
   Tags,
-  Factory
+  Factory,
+  Warehouse
 } from 'lucide-react';
 
 export function AdminSidebar() {
@@ -97,6 +98,11 @@ export function AdminSidebar() {
     // Контакты - доступны при наличии права на контакты
     if (hasPermission('view_contacts')) {
       conditionalItems.push({ name: t('admin.contacts'), href: '/admin/contacts', icon: MessageSquare, permission: 'view_contacts' });
+    }
+    
+    // Склад - доступен при наличии права на товары
+    if (hasPermission('view_products')) {
+      conditionalItems.push({ name: 'Склад', href: '/admin/warehouse', icon: Warehouse, permission: 'view_products' });
     }
     
     // Аналитика - доступна при наличии права на аналитику
