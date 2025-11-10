@@ -23,14 +23,14 @@ export const EditWarehouseItemDialog = ({ item, open, onOpenChange }: EditWareho
     name: item.name,
     description: item.description || { ru: '', en: '', uz: '' },
     images: item.images,
-    quantity: item.quantity,
+    quantity: item.quantity.toString(),
     unit: item.unit,
     location: item.location || '',
     condition: item.condition,
     purchase_price: item.purchase_price?.toString() || '',
     selling_price: item.selling_price?.toString() || '',
     notes: item.notes || '',
-    minimum_stock: item.minimum_stock || 0,
+    minimum_stock: (item.minimum_stock || 0).toString(),
     notify_low_stock: item.notify_low_stock || false
   });
 
@@ -39,14 +39,14 @@ export const EditWarehouseItemDialog = ({ item, open, onOpenChange }: EditWareho
       name: item.name,
       description: item.description || { ru: '', en: '', uz: '' },
       images: item.images,
-      quantity: item.quantity,
+      quantity: item.quantity.toString(),
       unit: item.unit,
       location: item.location || '',
       condition: item.condition,
       purchase_price: item.purchase_price?.toString() || '',
       selling_price: item.selling_price?.toString() || '',
       notes: item.notes || '',
-      minimum_stock: item.minimum_stock || 0,
+      minimum_stock: (item.minimum_stock || 0).toString(),
       notify_low_stock: item.notify_low_stock || false
     });
   }, [item]);
@@ -60,14 +60,14 @@ export const EditWarehouseItemDialog = ({ item, open, onOpenChange }: EditWareho
         name: formData.name,
         description: formData.description,
         images: formData.images,
-        quantity: Number(formData.quantity),
+        quantity: formData.quantity ? Number(formData.quantity) : 0,
         unit: formData.unit,
         location: formData.location || null,
         condition: formData.condition,
         purchase_price: formData.purchase_price ? Number(formData.purchase_price) : null,
         selling_price: formData.selling_price ? Number(formData.selling_price) : null,
         notes: formData.notes || null,
-        minimum_stock: Number(formData.minimum_stock),
+        minimum_stock: formData.minimum_stock ? Number(formData.minimum_stock) : 0,
         notify_low_stock: formData.notify_low_stock
       };
 
@@ -129,7 +129,8 @@ export const EditWarehouseItemDialog = ({ item, open, onOpenChange }: EditWareho
                 required
                 min="0"
                 value={formData.quantity}
-                onChange={(e) => setFormData({ ...formData, quantity: Number(e.target.value) })}
+                onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
+                placeholder="0"
               />
             </div>
             <div>
@@ -220,11 +221,11 @@ export const EditWarehouseItemDialog = ({ item, open, onOpenChange }: EditWareho
                   type="number"
                   min="0"
                   value={formData.minimum_stock}
-                  onChange={(e) => setFormData({ ...formData, minimum_stock: Number(e.target.value) })}
+                  onChange={(e) => setFormData({ ...formData, minimum_stock: e.target.value })}
                   placeholder="Укажите минимальное количество для уведомления"
                 />
                 <p className="text-xs text-muted-foreground mt-1">
-                  Уведомление появится когда количество будет ≤ {formData.minimum_stock} {formData.unit}
+                  Уведомление появится когда количество будет ≤ {formData.minimum_stock || 0} {formData.unit}
                 </p>
               </div>
             )}

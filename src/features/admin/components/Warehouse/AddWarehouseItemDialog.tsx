@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
 import { Plus } from 'lucide-react';
 import { ProductImageUpload } from '@/components/common/ProductImageUpload';
 import { useWarehouse } from '@/hooks/useWarehouse';
@@ -22,13 +23,15 @@ export const AddWarehouseItemDialog = () => {
     name: { ru: '', en: '', uz: '' },
     description: { ru: '', en: '', uz: '' },
     images: { cover: null as string | null, gallery: [] as string[] },
-    quantity: 0,
+    quantity: '',
     unit: 'шт',
     location: '',
     condition: 'new' as 'new' | 'used' | 'refurbished',
     purchase_price: '',
     selling_price: '',
-    notes: ''
+    notes: '',
+    minimum_stock: '',
+    notify_low_stock: false
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -41,13 +44,15 @@ export const AddWarehouseItemDialog = () => {
         name: formData.name,
         description: formData.description,
         images: formData.images,
-        quantity: Number(formData.quantity),
+        quantity: formData.quantity ? Number(formData.quantity) : 0,
         unit: formData.unit,
         location: formData.location || null,
         condition: formData.condition,
         purchase_price: formData.purchase_price ? Number(formData.purchase_price) : null,
         selling_price: formData.selling_price ? Number(formData.selling_price) : null,
-        notes: formData.notes || null
+        notes: formData.notes || null,
+        minimum_stock: formData.minimum_stock ? Number(formData.minimum_stock) : 0,
+        notify_low_stock: formData.notify_low_stock
       };
 
       await addItem(itemData);
@@ -65,13 +70,15 @@ export const AddWarehouseItemDialog = () => {
       name: { ru: '', en: '', uz: '' },
       description: { ru: '', en: '', uz: '' },
       images: { cover: null, gallery: [] },
-      quantity: 0,
+      quantity: '',
       unit: 'шт',
       location: '',
       condition: 'new',
       purchase_price: '',
       selling_price: '',
-      notes: ''
+      notes: '',
+      minimum_stock: '',
+      notify_low_stock: false
     });
     setUseExistingProduct(false);
     setSelectedProductId('');
@@ -183,7 +190,8 @@ export const AddWarehouseItemDialog = () => {
                 required
                 min="0"
                 value={formData.quantity}
-                onChange={(e) => setFormData({ ...formData, quantity: Number(e.target.value) })}
+                onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
+                placeholder="0"
               />
             </div>
             <div>
@@ -248,6 +256,40 @@ export const AddWarehouseItemDialog = () => {
                 onChange={(e) => setFormData({ ...formData, selling_price: e.target.value })}
               />
             </div>
+          </div>
+
+          {/* Low Stock Notification Settings */}
+          <div className="border rounded-lg p-4 space-y-4 bg-muted/30">
+            <h3 className="font-medium text-sm">Уведомления о низких остатках</h3>
+            
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <Label>Включить уведомления</Label>
+                <p className="text-sm text-muted-foreground">
+                  Получать уведомления когда количество достигнет минимума
+                </p>
+              </div>
+              <Switch
+                checked={formData.notify_low_stock}
+                onCheckedChange={(checked) => setFormData({ ...formData, notify_low_stock: checked })}
+              />
+            </div>
+
+            {formData.notify_low_stock && (
+              <div>
+                <Label>Минимальное количество</Label>
+                <Input
+                  type="number"
+                  min="0"
+                  value={formData.minimum_stock}
+                  onChange={(e) => setFormData({ ...formData, minimum_stock: e.target.value })}
+                  placeholder="Укажите минимальное количество для уведомления"
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Уведомление появится когда количество будет ≤ {formData.minimum_stock || 0} {formData.unit}
+                </p>
+              </div>
+            )}
           </div>
 
           <div>
