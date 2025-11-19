@@ -59,12 +59,24 @@ export const useCurrencyRates = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const convertToUZS = (amount: string | number, currency: 'USD' | 'EUR' | 'UZS'): number => {
-    if (currency === 'UZS') return typeof amount === 'string' ? parseFloat(amount.replace(/\s+/g, '')) : amount;
+  const convertToUZS = (priceString: string | number, currency: 'USD' | 'EUR' | 'UZS'): number => {
+    if (currency === 'UZS') {
+      const value = typeof priceString === 'string' ? priceString.replace(/\s+/g, '') : String(priceString);
+      return parseFloat(value) || 0;
+    }
+    
     if (!rates) return 0;
-    const numAmount = typeof amount === 'string' ? parseFloat(amount.replace(/\s+/g, '')) : amount;
-    if (isNaN(numAmount)) return 0;
-    return numAmount * rates[currency];
+    
+    // Clean the price string - remove all spaces
+    const cleanPrice = typeof priceString === 'string' ? priceString.replace(/\s+/g, '') : String(priceString);
+    const priceNumber = parseFloat(cleanPrice);
+    
+    if (isNaN(priceNumber)) return 0;
+    
+    // Multiply by exchange rate
+    const convertedAmount = priceNumber * rates[currency];
+    
+    return Math.round(convertedAmount * 100) / 100; // Round to 2 decimal places
   };
 
   const formatPrice = (amount: string | null, currency: 'USD' | 'EUR' | 'UZS'): string => {
