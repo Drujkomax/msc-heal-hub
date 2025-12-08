@@ -339,17 +339,33 @@ export const Warehouse = () => {
               )}
 
               {(item.purchase_price || item.selling_price) && (
-                <div className="flex justify-between text-sm">
-                  {item.purchase_price && (
-                    <div>
-                      <span className="text-muted-foreground">Закупка: </span>
-                      <span className="font-medium">${item.purchase_price}</span>
-                    </div>
-                  )}
-                  {item.selling_price && (
-                    <div>
-                      <span className="text-muted-foreground">Продажа: </span>
-                      <span className="font-medium">${item.selling_price}</span>
+                <div className="space-y-1 text-sm">
+                  <div className="flex justify-between">
+                    {item.purchase_price && (
+                      <div>
+                        <span className="text-muted-foreground">Закупка: </span>
+                        <span className="font-medium">${item.purchase_price}</span>
+                      </div>
+                    )}
+                    {item.selling_price && (
+                      <div>
+                        <span className="text-muted-foreground">Продажа: </span>
+                        <span className="font-medium">${item.selling_price}</span>
+                      </div>
+                    )}
+                  </div>
+                  {item.purchase_price && item.selling_price && item.purchase_price > 0 && (
+                    <div className="flex justify-between items-center pt-1 border-t border-border/50">
+                      <span className="text-muted-foreground">Маржа: </span>
+                      <span className={`font-semibold ${
+                        ((item.selling_price - item.purchase_price) / item.purchase_price * 100) >= 20 
+                          ? 'text-green-600' 
+                          : ((item.selling_price - item.purchase_price) / item.purchase_price * 100) >= 10 
+                            ? 'text-yellow-600' 
+                            : 'text-red-600'
+                      }`}>
+                        ${(item.selling_price - item.purchase_price).toFixed(0)} ({((item.selling_price - item.purchase_price) / item.purchase_price * 100).toFixed(1)}%)
+                      </span>
                     </div>
                   )}
                 </div>
