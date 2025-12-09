@@ -148,7 +148,7 @@ const AdminProductPreview = () => {
             {product.status === 'active' && (
               <Button 
                 variant="outline"
-                onClick={() => window.open(`/product/${product.id}`, '_blank')}
+                onClick={() => window.open(`/catalog/products/${product.id}`, '_blank')}
               >
                 <ExternalLink className="h-4 w-4 mr-2" />
                 Открыть на сайте

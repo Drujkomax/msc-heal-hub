@@ -94,7 +94,7 @@ const ProductPreview = () => {
             </Button>
             <Button 
               variant="outline"
-              onClick={() => navigate(`/product/${product.id}`)}
+              onClick={() => navigate(`/catalog/products/${product.id}`)}
             >
               <Eye className="h-4 w-4 mr-2" />
               Просмотр как пользователь

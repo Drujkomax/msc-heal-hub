@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useParams } from "react-router-dom";
 import ErrorBoundary from "@/components/providers/ErrorBoundary";
 import { setupGlobalErrorHandling } from "@/utils/globalErrorHandler";
 import Header from "./components/Layout/Header";
@@ -40,6 +40,11 @@ const queryClient = new QueryClient({
   },
 });
 
+const ProductRedirect = () => {
+  const { id } = useParams();
+  return <Navigate to={`/catalog/products/${id}`} replace />;
+};
+
 const App = () => {
   const [language, setLanguage] = useState<'ru' | 'en' | 'uz'>('ru');
 
@@ -69,7 +74,9 @@ const App = () => {
                     <Route path="/director-registration" element={<DirectorRegistration />} />
                     <Route path="/auth" element={<AuthPage />} />
                     <Route path="/catalog" element={<Catalog />} />
-                    <Route path="/product/:id" element={<ProductDetail />} />
+                    <Route path="/catalog/products/:id" element={<ProductDetail />} />
+                    <Route path="/product/:id" element={<ProductRedirect />} />
+                    <Route path="/products/:id" element={<ProductRedirect />} />
                     <Route path="/services" element={<Services />} />
                     <Route path="/cases" element={<Cases />} />
                     <Route path="/about" element={<div className="py-20 text-center">About Page - Coming Soon</div>} />
