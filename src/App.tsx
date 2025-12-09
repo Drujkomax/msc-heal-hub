@@ -18,6 +18,7 @@ import AuthPage from "./pages/Auth";
 import RegisterWithInvite from "./pages/RegisterWithInvite";
 import CreateFirstDirector from "./pages/CreateFirstDirector";
 import DirectorRegistration from "./pages/DirectorRegistration";
+import Cases from "./pages/Cases";
 
 // Admin Components
 import AdminWrapper from "./features/admin/components/AdminWrapper";
@@ -70,7 +71,7 @@ const App = () => {
                     <Route path="/catalog" element={<Catalog />} />
                     <Route path="/product/:id" element={<ProductDetail />} />
                     <Route path="/services" element={<Services />} />
-                    <Route path="/cases" element={<div className="py-20 text-center">Cases Page - Coming Soon</div>} />
+                    <Route path="/cases" element={<Cases />} />
                     <Route path="/about" element={<div className="py-20 text-center">About Page - Coming Soon</div>} />
                     <Route path="/contacts" element={<Contacts />} />
                     
