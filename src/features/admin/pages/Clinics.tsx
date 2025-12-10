@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { useClients, type ClientWithStockInfo, type Client } from '@/hooks/useClients';
 import { useEmployeesByRole } from '@/hooks/useEmployeesByRole';
 import { logClinicActivity } from '@/hooks/useClinicActivityLogs';
@@ -6,13 +7,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { AlertCircle, Building2, Plus, Search, Archive, Edit, Trash2, AlertTriangle, User } from 'lucide-react';
+import { AlertCircle, Building2, Plus, Search, Archive, Edit, Trash2, AlertTriangle, User, Package, FileText, BarChart3 } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
 import AddClientDialog from '@/features/admin/components/Clients/AddClientDialog';
 import EditClientDialog from '@/features/admin/components/Clients/EditClientDialog';
 import ClinicDetailView from '@/features/admin/components/Clients/ClinicDetailView';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { Helmet } from 'react-helmet-async';
 
 const CONTRACT_STATUS_LABELS: Record<string, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
   active: { label: 'Активный', variant: 'default' },
@@ -101,22 +103,45 @@ export default function Clinics() {
 
   return (
     <div className="container mx-auto p-6 space-y-6">
+      <Helmet>
+        <title>Клиники — Панель управления | Med Service Centre</title>
+        <meta name="robots" content="noindex, nofollow" />
+        <meta name="description" content="Управление клиниками и их инвентарем медицинского оборудования" />
+        <link rel="canonical" href="https://medsc.uz/admin/clinics" />
+      </Helmet>
+      
       {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-2">
             <Building2 className="h-8 w-8" />
-            Клиники
+            Клиники — Управление клиентами
           </h1>
           <p className="text-muted-foreground mt-1">
-            Управление клиентами и их инвентарем
+            Управление клиентами и их инвентарем медицинского оборудования
           </p>
         </div>
         <Button onClick={() => setIsAddDialogOpen(true)}>
           <Plus className="h-4 w-4 mr-2" />
           Добавить клинику
         </Button>
-      </div>
+      </header>
+
+      {/* Internal Navigation Links */}
+      <nav className="flex flex-wrap gap-2" aria-label="Связанные разделы">
+        <Link to="/admin/warehouse" className="text-sm text-primary hover:underline flex items-center gap-1">
+          <Package className="h-4 w-4" />
+          Склад
+        </Link>
+        <Link to="/admin/leads" className="text-sm text-primary hover:underline flex items-center gap-1">
+          <FileText className="h-4 w-4" />
+          Лиды
+        </Link>
+        <Link to="/admin/analytics" className="text-sm text-primary hover:underline flex items-center gap-1">
+          <BarChart3 className="h-4 w-4" />
+          Аналитика
+        </Link>
+      </nav>
 
       {/* Low Stock Alerts */}
       {lowStockClients.length > 0 && (
@@ -134,60 +159,68 @@ export default function Clinics() {
         </Alert>
       )}
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card>
-          <CardHeader className="pb-3">
-            <CardDescription>Всего клиник</CardDescription>
-            <CardTitle className="text-3xl">{clients.length}</CardTitle>
-          </CardHeader>
-        </Card>
-        <Card>
-          <CardHeader className="pb-3">
-            <CardDescription>С низкими остатками</CardDescription>
-            <CardTitle className="text-3xl text-orange-500">{lowStockClients.length}</CardTitle>
-          </CardHeader>
-        </Card>
-        <Card>
-          <CardHeader className="pb-3">
-            <CardDescription>Критические остатки</CardDescription>
-            <CardTitle className="text-3xl text-red-500">
-              {lowStockClients.reduce((sum, c) => sum + (c.critical_count || 0), 0)}
-            </CardTitle>
-          </CardHeader>
-        </Card>
-      </div>
+      {/* Stats Section */}
+      <section aria-labelledby="stats-heading">
+        <h2 id="stats-heading" className="text-xl font-semibold mb-4">Статистика клиник</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Card>
+            <CardHeader className="pb-3">
+              <CardDescription>Всего клиник</CardDescription>
+              <CardTitle className="text-3xl">{clients.length}</CardTitle>
+            </CardHeader>
+          </Card>
+          <Card>
+            <CardHeader className="pb-3">
+              <CardDescription>С низкими остатками</CardDescription>
+              <CardTitle className="text-3xl text-orange-500">{lowStockClients.length}</CardTitle>
+            </CardHeader>
+          </Card>
+          <Card>
+            <CardHeader className="pb-3">
+              <CardDescription>Критические остатки</CardDescription>
+              <CardTitle className="text-3xl text-red-500">
+                {lowStockClients.reduce((sum, c) => sum + (c.critical_count || 0), 0)}
+              </CardTitle>
+            </CardHeader>
+          </Card>
+        </div>
+      </section>
 
-      {/* Search */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input
-          placeholder="Поиск клиник..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="pl-10"
-        />
-      </div>
+      {/* Search Section */}
+      <section aria-labelledby="search-heading">
+        <h2 id="search-heading" className="sr-only">Поиск клиник</h2>
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Поиск клиник..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+      </section>
 
-      {/* Clients Grid */}
-      {filteredClients.length === 0 ? (
-        <Card>
-          <CardContent className="py-12 text-center">
-            <Building2 className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <p className="text-muted-foreground">
-              {searchTerm ? 'Клиники не найдены' : 'Нет клиник. Добавьте первую клинику.'}
-            </p>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredClients.map((client: Client) => {
-            const lowStockInfo = lowStockClients.find(c => c.client_id === client.id);
-            const contractStatus = CONTRACT_STATUS_LABELS[client.contract_status || 'onboarding'];
-            const managerName = getManagerName(client.assigned_manager);
+      {/* Clients Grid Section */}
+      <section aria-labelledby="clients-heading">
+        <h2 id="clients-heading" className="text-xl font-semibold mb-4">Список клиник</h2>
+        {filteredClients.length === 0 ? (
+          <Card>
+            <CardContent className="py-12 text-center">
+              <Building2 className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+              <p className="text-muted-foreground">
+                {searchTerm ? 'Клиники не найдены' : 'Нет клиник. Добавьте первую клинику.'}
+              </p>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {filteredClients.map((client: Client) => {
+              const lowStockInfo = lowStockClients.find(c => c.client_id === client.id);
+              const contractStatus = CONTRACT_STATUS_LABELS[client.contract_status || 'onboarding'];
+              const managerName = getManagerName(client.assigned_manager);
 
-            return (
-              <Card key={client.id} className="hover:shadow-lg transition-shadow cursor-pointer">
+              return (
+                <Card key={client.id} className="hover:shadow-lg transition-shadow cursor-pointer">
                 <CardHeader onClick={() => setViewingClientId(client.id)}>
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
@@ -265,6 +298,7 @@ export default function Clinics() {
           })}
         </div>
       )}
+      </section>
 
       {/* Dialogs */}
       <AddClientDialog
