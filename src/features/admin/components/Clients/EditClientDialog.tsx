@@ -58,33 +58,49 @@ export default function EditClientDialog({ open, onOpenChange, client, onUpdate 
     priority: 'medium',
   });
 
-  // Reset form data when dialog opens or client changes
+  // Reset form data immediately when client changes - use JSON.stringify for deep comparison
+  const clientData = client ? JSON.stringify({
+    id: client.id,
+    name: client.name,
+    legal_name: client.legal_name,
+    contact_person: client.contact_person,
+    email: client.email,
+    phone: client.phone,
+    address: client.address,
+    city: client.city,
+    country: client.country,
+    inn: client.inn,
+    notes: client.notes,
+    contract_start_date: client.contract_start_date,
+    contract_end_date: client.contract_end_date,
+    contract_status: client.contract_status,
+    cooperation_type: client.cooperation_type,
+    assigned_manager: client.assigned_manager,
+    priority: client.priority,
+  }) : null;
+
   useEffect(() => {
-    if (open && client) {
-      // Use a timeout to ensure state is fresh after dialog animation
-      const timer = setTimeout(() => {
-        setFormData({
-          name: client.name || '',
-          legal_name: client.legal_name || '',
-          contact_person: client.contact_person || '',
-          email: client.email || '',
-          phone: client.phone || '',
-          address: client.address || '',
-          city: client.city || '',
-          country: client.country || '',
-          inn: client.inn || '',
-          notes: client.notes || '',
-          contract_start_date: client.contract_start_date || '',
-          contract_end_date: client.contract_end_date || '',
-          contract_status: client.contract_status || 'onboarding',
-          cooperation_type: Array.isArray(client.cooperation_type) ? [...client.cooperation_type] : [],
-          assigned_manager: client.assigned_manager || '',
-          priority: client.priority || 'medium',
-        });
-      }, 0);
-      return () => clearTimeout(timer);
+    if (client) {
+      setFormData({
+        name: client.name || '',
+        legal_name: client.legal_name || '',
+        contact_person: client.contact_person || '',
+        email: client.email || '',
+        phone: client.phone || '',
+        address: client.address || '',
+        city: client.city || '',
+        country: client.country || '',
+        inn: client.inn || '',
+        notes: client.notes || '',
+        contract_start_date: client.contract_start_date || '',
+        contract_end_date: client.contract_end_date || '',
+        contract_status: client.contract_status || 'onboarding',
+        cooperation_type: Array.isArray(client.cooperation_type) ? [...client.cooperation_type] : [],
+        assigned_manager: client.assigned_manager || '',
+        priority: client.priority || 'medium',
+      });
     }
-  }, [open, client?.id, client?.name, client?.legal_name, client?.contact_person, client?.email, client?.phone, client?.address, client?.city, client?.country, client?.inn, client?.notes, client?.contract_start_date, client?.contract_end_date, client?.contract_status, client?.cooperation_type, client?.assigned_manager, client?.priority]);
+  }, [clientData]);
 
   const handleCooperationTypeChange = (value: string, checked: boolean) => {
     if (checked) {
