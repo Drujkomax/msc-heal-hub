@@ -231,7 +231,8 @@ export default function Clinics() {
                       className="flex-1"
                       onClick={(e) => {
                         e.stopPropagation();
-                        setEditingClient(client);
+                        // Create a fresh copy to ensure useEffect triggers
+                        setEditingClient({ ...client });
                       }}
                     >
                       <Edit className="h-3 w-3 mr-1" />
