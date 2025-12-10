@@ -37,8 +37,8 @@ serve(async (req) => {
     const body = await req.json();
     
     // Support multiple field names for flexibility
-    const name = body.name || body.full_name || body.fio;
-    const phone = body.phone || body.phone_number;
+    const name = (body.name || body.full_name || body.fio || '').toString().trim();
+    const phone = (body.phone || body.phone_number || '').toString().trim();
 
     if (!name || !phone) {
       return new Response(JSON.stringify({ error: 'Name and phone are required' }), {
@@ -47,10 +47,54 @@ serve(async (req) => {
       });
     }
 
-    const email = body.email || null;
-    const company = body.company || null;
+    // Input validation
+    if (name.length > 100) {
+      return new Response(JSON.stringify({ error: 'Name too long (max 100 chars)' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Phone format validation (international format)
+    const phoneRegex = /^\+?[1-9]\d{6,14}$/;
+    const cleanPhone = phone.replace(/[\s\-\(\)]/g, '');
+    if (!phoneRegex.test(cleanPhone)) {
+      return new Response(JSON.stringify({ error: 'Invalid phone format' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    const email = body.email ? body.email.toString().trim() : null;
+    const company = body.company ? body.company.toString().trim() : null;
     const source = body.source || 'tg_bot';
-    const notes = body.notes || null;
+    const notes = body.notes ? body.notes.toString().trim() : null;
+
+    // Email format validation if provided
+    if (email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email) || email.length > 255) {
+        return new Response(JSON.stringify({ error: 'Invalid email format' }), {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+    }
+
+    // Length validation for optional fields
+    if (company && company.length > 200) {
+      return new Response(JSON.stringify({ error: 'Company name too long (max 200 chars)' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    if (notes && notes.length > 1000) {
+      return new Response(JSON.stringify({ error: 'Notes too long (max 1000 chars)' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
