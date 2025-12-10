@@ -22,6 +22,8 @@ const Footer = ({ language }: FooterProps) => {
       links: [
         { name: 'Каталог', href: '/catalog' },
         { name: 'Услуги', href: '/services' },
+        { name: 'Контакты', href: '/contacts' },
+        { name: 'О компании', href: '/about' },
       ],
       servicesList: [
         'Поставка оборудования',
@@ -41,6 +43,8 @@ const Footer = ({ language }: FooterProps) => {
       links: [
         { name: 'Catalog', href: '/catalog' },
         { name: 'Services', href: '/services' },
+        { name: 'Contacts', href: '/contacts' },
+        { name: 'About', href: '/about' },
       ],
       servicesList: [
         'Equipment Supply',
@@ -60,6 +64,8 @@ const Footer = ({ language }: FooterProps) => {
       links: [
         { name: 'Katalog', href: '/catalog' },
         { name: 'Xizmatlar', href: '/services' },
+        { name: 'Aloqa', href: '/contacts' },
+        { name: 'Biz haqimizda', href: '/about' },
       ],
       servicesList: [
         'Uskunalar yetkazib berish',

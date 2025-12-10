@@ -81,7 +81,7 @@ const Home = ({ language }: HomeProps) => {
             <div className={`max-w-2xl space-y-8 ${isVisible ? 'animate-reveal' : ''}`}>
               <div className="space-y-4">
                 <h1 className="font-heading text-5xl lg:text-6xl font-bold leading-tight">
-                  Med Service Centre — Медтехника в Узбекистане
+                  Med Service Centre — Медицинское оборудование в Узбекистане
                 </h1>
                 <p className="text-xl lg:text-2xl text-white/90 font-medium">
                   {t('home.hero.subtitle')}
@@ -198,46 +198,113 @@ const Home = ({ language }: HomeProps) => {
         </div>
       </section>
 
-      {/* About Section - SEO Content */}
+      {/* Equipment Section - SEO Content */}
       <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-5xl mx-auto">
+            <h2 className="font-heading text-3xl lg:text-4xl font-bold text-msc-primary mb-10 text-center">
+              Наши услуги и оборудование
+            </h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+              {/* УЗИ аппараты */}
+              <div className="bg-msc-bg/30 rounded-lg p-6">
+                <h3 className="font-heading text-xl font-bold text-msc-primary mb-3">УЗИ аппараты</h3>
+                <p className="text-msc-text-light mb-4">
+                  Современные ультразвуковые системы от ведущих мировых производителей для точной диагностики. 
+                  Портативные и стационарные модели для любых медицинских задач.
+                </p>
+                <Link to="/catalog?category=diagnostic" className="text-msc-accent hover:underline font-medium inline-flex items-center">
+                  Смотреть УЗИ аппараты <ArrowRight className="ml-1 w-4 h-4" />
+                </Link>
+              </div>
+              
+              {/* Анализаторы ABL */}
+              <div className="bg-msc-bg/30 rounded-lg p-6">
+                <h3 className="font-heading text-xl font-bold text-msc-primary mb-3">Анализаторы ABL</h3>
+                <p className="text-msc-text-light mb-4">
+                  Газоанализаторы крови{' '}
+                  <a href="https://www.radiometer.com/en/products/blood-gas-testing/abl800-flex" target="_blank" rel="noopener noreferrer" className="text-msc-accent hover:underline">
+                    ABL800 Flex от Radiometer
+                  </a>{' '}
+                  — точный анализ газов крови и метаболитов за секунды.
+                </p>
+                <Link to="/catalog?category=laboratory" className="text-msc-accent hover:underline font-medium inline-flex items-center">
+                  Смотреть анализаторы <ArrowRight className="ml-1 w-4 h-4" />
+                </Link>
+              </div>
+              
+              {/* Системы BOWA */}
+              <div className="bg-msc-bg/30 rounded-lg p-6">
+                <h3 className="font-heading text-xl font-bold text-msc-primary mb-3">Системы BOWA ARC 400</h3>
+                <p className="text-msc-text-light mb-4">
+                  Электрохирургические генераторы{' '}
+                  <a href="https://www.bowa-medical.com/" target="_blank" rel="noopener noreferrer" className="text-msc-accent hover:underline">
+                    BOWA ARC 400
+                  </a>{' '}
+                  для точной и безопасной хирургии с минимальной травматизацией тканей.
+                </p>
+                <Link to="/catalog?category=surgical" className="text-msc-accent hover:underline font-medium inline-flex items-center">
+                  Смотреть электроскальпели <ArrowRight className="ml-1 w-4 h-4" />
+                </Link>
+              </div>
+            </div>
+            
+            <div className="text-center">
+              <Link to="/catalog" className="inline-flex items-center bg-msc-accent hover:bg-msc-accent/90 text-white font-semibold px-6 py-3 rounded-lg transition-colors">
+                Посмотреть всё оборудование
+                <ArrowRight className="ml-2 w-5 h-5" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Why Choose Us Section */}
+      <section className="py-16 bg-gradient-to-br from-msc-primary/5 to-msc-accent/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto">
             <h2 className="font-heading text-3xl lg:text-4xl font-bold text-msc-primary mb-6 text-center">
-              О компании Med Service Centre
+              Почему выбирают Med Service Centre
             </h2>
             <div className="prose prose-lg max-w-none text-msc-text-light space-y-4">
               <p>
-                <strong>Med Service Centre</strong> — ведущий поставщик медицинского оборудования в Узбекистане с более чем 8-летним опытом работы на рынке. 
+                <strong>Med Service Centre</strong> — ведущий поставщик медицинского оборудования в Узбекистане с более чем 8-летним опытом работы. 
                 Мы специализируемся на поставке, аренде и сервисном обслуживании современной медицинской техники для клиник, 
                 больниц и медицинских центров по всей территории страны.
               </p>
               <p>
-                Наш <Link to="/catalog" className="text-msc-accent hover:underline font-medium">каталог оборудования</Link> включает 
-                диагностические УЗИ-аппараты ведущих мировых производителей, газоанализаторы крови{' '}
-                <a href="https://www.radiometer.com/en/products/blood-gas-testing/abl800-flex" target="_blank" rel="noopener noreferrer" className="text-msc-accent hover:underline font-medium">
-                  ABL800 Flex от Radiometer
-                </a>, электрохирургические системы{' '}
-                <a href="https://www.bfruk.co.uk/arc-400-electrosurgery-unit" target="_blank" rel="noopener noreferrer" className="text-msc-accent hover:underline font-medium">
-                  BOWA ARC 400
-                </a>, лабораторное и хирургическое оборудование.
-              </p>
-              <p>
-                Мы понимаем, что приобретение дорогостоящего оборудования — серьёзное решение. Поэтому предлагаем 
-                гибкие условия сотрудничества: покупку, долгосрочную аренду или лизинг. Наша команда технических специалистов 
-                обеспечивает полный цикл <Link to="/services" className="text-msc-accent hover:underline font-medium">сервисных услуг</Link>: 
-                от установки и настройки до регулярного технического обслуживания и оперативного ремонта.
-              </p>
-              <p>
-                Почему клиники Узбекистана выбирают Med Service Centre? Мы гарантируем качество поставляемого оборудования, 
+                Почему клиники Узбекистана доверяют нам? Мы гарантируем качество поставляемого оборудования, 
                 предоставляем официальную гарантию, обучаем медицинский персонал работе с техникой и обеспечиваем 
                 техническую поддержку 24/7. За годы работы мы успешно реализовали более 300 проектов по оснащению 
                 медицинских учреждений в Ташкенте и регионах.
               </p>
-              <p className="text-center mt-8">
-                <Link to="/contacts" className="text-msc-accent hover:underline font-medium">
-                  Свяжитесь с нами
-                </Link> для бесплатной консультации и подбора оборудования под ваши задачи.
-              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Services Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="font-heading text-3xl lg:text-4xl font-bold text-msc-primary mb-6">
+              Сервис, продажа и аренда для клиник
+            </h2>
+            <p className="text-lg text-msc-text-light mb-8">
+              Мы понимаем, что приобретение дорогостоящего оборудования — серьёзное решение. Поэтому предлагаем 
+              гибкие условия сотрудничества: покупку, долгосрочную аренду или лизинг. Наша команда технических специалистов 
+              обеспечивает полный цикл сервисных услуг: от установки и настройки до регулярного технического обслуживания и оперативного ремонта.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link to="/services" className="inline-flex items-center bg-msc-primary hover:bg-msc-primary/90 text-white font-semibold px-6 py-3 rounded-lg transition-colors">
+                Подробнее об услугах
+                <ArrowRight className="ml-2 w-5 h-5" />
+              </Link>
+              <Link to="/contacts" className="inline-flex items-center border-2 border-msc-primary text-msc-primary hover:bg-msc-primary hover:text-white font-semibold px-6 py-3 rounded-lg transition-colors">
+                Связаться с нами
+                <ArrowRight className="ml-2 w-5 h-5" />
+              </Link>
             </div>
           </div>
         </div>
