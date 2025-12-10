@@ -11,12 +11,14 @@ import { ArrowLeft, Building2, Edit, Package, Truck, FileText, CheckSquare, Brie
 import ClientStockTab from './ClientStockTab';
 import ClientAlertsTab from './ClientAlertsTab';
 import { ClientInteractionLogsTab } from './ClientInteractionLogsTab';
+import { ClinicActivityLogsTab } from './ClinicActivityLogsTab';
 import ClinicShipmentsTab from './ClinicShipmentsTab';
 import ClinicDocumentsTab from './ClinicDocumentsTab';
 import ClinicTasksTab from './ClinicTasksTab';
 import ClinicDealsTab from './ClinicDealsTab';
 import ClinicInvoicesTab from './ClinicInvoicesTab';
 import EditClientDialog from './EditClientDialog';
+import { logClinicActivity } from '@/hooks/useClinicActivityLogs';
 import { format } from 'date-fns';
 
 interface ClinicDetailViewProps {
@@ -274,7 +276,7 @@ export default function ClinicDetailView({ clientId, onBack }: ClinicDetailViewP
         </TabsContent>
 
         <TabsContent value="activity" className="mt-6">
-          <ClientInteractionLogsTab clientId={clientId} />
+          <ClinicActivityLogsTab clientId={clientId} />
         </TabsContent>
       </Tabs>
 
@@ -284,7 +286,30 @@ export default function ClinicDetailView({ clientId, onBack }: ClinicDetailViewP
         onOpenChange={setEditDialogOpen}
         client={client}
         onUpdate={async (data) => {
+          // Track changed fields
+          const changedFields: Record<string, { old: any; new: any }> = {};
+          const fieldKeys = ['name', 'legal_name', 'contact_person', 'email', 'phone', 'address', 'city', 'country', 'inn', 'notes', 'contract_status', 'contract_start_date', 'contract_end_date', 'cooperation_type', 'assigned_manager', 'priority'];
+          
+          fieldKeys.forEach(key => {
+            const oldVal = (client as any)[key];
+            const newVal = (data as any)[key];
+            if (JSON.stringify(oldVal) !== JSON.stringify(newVal)) {
+              changedFields[key] = { old: oldVal, new: newVal };
+            }
+          });
+          
           await updateClient(client.id, data);
+          
+          // Log the update activity
+          if (Object.keys(changedFields).length > 0) {
+            await logClinicActivity(
+              client.id,
+              'updated',
+              `Информация о клинике "${client.name}" обновлена`,
+              changedFields
+            );
+          }
+          
           loadClient();
         }}
       />

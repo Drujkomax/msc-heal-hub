@@ -414,6 +414,50 @@ export type Database = {
         }
         Relationships: []
       }
+      clinic_activity_logs: {
+        Row: {
+          action_description: string
+          action_type: string
+          changed_fields: Json | null
+          client_id: string
+          created_at: string
+          id: string
+          user_email: string | null
+          user_id: string | null
+          user_name: string | null
+        }
+        Insert: {
+          action_description: string
+          action_type: string
+          changed_fields?: Json | null
+          client_id: string
+          created_at?: string
+          id?: string
+          user_email?: string | null
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Update: {
+          action_description?: string
+          action_type?: string
+          changed_fields?: Json | null
+          client_id?: string
+          created_at?: string
+          id?: string
+          user_email?: string | null
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clinic_activity_logs_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       clinic_documents: {
         Row: {
           category: string | null
@@ -2211,6 +2255,15 @@ export type Database = {
       is_temporary_employee_active: {
         Args: { _user_id: string }
         Returns: boolean
+      }
+      log_clinic_activity: {
+        Args: {
+          p_action_description: string
+          p_action_type: string
+          p_changed_fields?: Json
+          p_client_id: string
+        }
+        Returns: string
       }
       log_employee_activity: {
         Args: {
