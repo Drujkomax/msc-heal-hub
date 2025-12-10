@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useClients, type ClientWithStockInfo, type Client } from '@/hooks/useClients';
 import { useEmployeesByRole } from '@/hooks/useEmployeesByRole';
+import { logClinicActivity } from '@/hooks/useClinicActivityLogs';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -55,14 +56,19 @@ export default function Clinics() {
   };
 
   const handleArchive = async (id: string) => {
+    const clientToArchive = clients.find(c => c.id === id);
     if (confirm('Вы уверены, что хотите архивировать эту клинику?')) {
       await archiveClient(id);
+      if (clientToArchive) {
+        await logClinicActivity(id, 'archived', `Клиника "${clientToArchive.name}" архивирована`);
+      }
       refetch();
     }
   };
 
   const handleDelete = async () => {
     if (deleteConfirmId) {
+      // Note: Activity log for delete is not stored since the client record is cascade-deleted
       await deleteClient(deleteConfirmId);
       setDeleteConfirmId(null);
       refetch();
@@ -264,7 +270,10 @@ export default function Clinics() {
         open={isAddDialogOpen}
         onOpenChange={setIsAddDialogOpen}
         onAdd={async (data) => {
-          await addClient(data);
+          const newClient = await addClient(data);
+          if (newClient?.id) {
+            await logClinicActivity(newClient.id, 'created', `Клиника "${data.name}" создана`);
+          }
           refetch();
         }}
       />
@@ -275,7 +284,30 @@ export default function Clinics() {
           onOpenChange={(open) => !open && setEditingClient(null)}
           client={editingClient}
           onUpdate={async (data) => {
+            // Track changed fields
+            const changedFields: Record<string, { old: any; new: any }> = {};
+            const fieldKeys = ['name', 'legal_name', 'contact_person', 'email', 'phone', 'address', 'city', 'country', 'inn', 'notes', 'contract_status', 'contract_start_date', 'contract_end_date', 'cooperation_type', 'assigned_manager', 'priority'];
+            
+            fieldKeys.forEach(key => {
+              const oldVal = (editingClient as any)[key];
+              const newVal = (data as any)[key];
+              if (JSON.stringify(oldVal) !== JSON.stringify(newVal)) {
+                changedFields[key] = { old: oldVal, new: newVal };
+              }
+            });
+            
             await updateClient(editingClient.id, data);
+            
+            // Log the update activity
+            if (Object.keys(changedFields).length > 0) {
+              await logClinicActivity(
+                editingClient.id,
+                'updated',
+                `Информация о клинике "${editingClient.name}" обновлена`,
+                changedFields
+              );
+            }
+            
             setEditingClient(null);
             refetch();
           }}
