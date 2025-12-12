@@ -17,6 +17,7 @@ import { CategoryDialog } from '@/components/common/CategoryDialog';
 import { useCategories } from '@/hooks/useCategories';
 import { useManufacturers } from '@/hooks/useManufacturers';
 import { countries } from '@/utils/countries';
+import { generateSlug } from '@/lib/slugify';
 
 const currencyOptions = [
   { value: 'USD', label: 'USD ($)' },
@@ -42,6 +43,7 @@ const AddProduct = () => {
   const [formData, setFormData] = useState({
     name: { ru: '', en: '', uz: '' },
     description: { ru: '', en: '', uz: '' },
+    slug: '',
     category: '',
     country: '',
     manufacturer_id: '',
@@ -52,6 +54,16 @@ const AddProduct = () => {
     features: { ru: [''], en: [''], uz: [''] },
     images: { cover: null, gallery: [] }
   });
+
+  // Auto-generate slug from English name
+  useEffect(() => {
+    if (formData.name.en) {
+      setFormData(prev => ({
+        ...prev,
+        slug: generateSlug(formData.name.en)
+      }));
+    }
+  }, [formData.name.en]);
 
   // Log form data changes
   useEffect(() => {
@@ -117,6 +129,7 @@ const AddProduct = () => {
       const productData = {
         name: formData.name,
         description: formData.description,
+        slug: formData.slug || generateSlug(formData.name.en || formData.name.ru),
         category: formData.category,
         country: formData.country,
         manufacturer_id: formData.manufacturer_id || null,

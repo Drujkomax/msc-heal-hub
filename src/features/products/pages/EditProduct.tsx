@@ -16,6 +16,7 @@ import { ImageUpload } from '@/components/common/ImageUpload';
 import { countries } from '@/utils/countries';
 import { useCategories } from '@/hooks/useCategories';
 import { useManufacturers } from '@/hooks/useManufacturers';
+import { generateSlug } from '@/lib/slugify';
 
 const statusOptions = [
   { value: 'active', label: 'Активный' },
@@ -36,6 +37,7 @@ const EditProduct = () => {
   const [formData, setFormData] = useState({
     name: { ru: '', en: '', uz: '' },
     description: { ru: '', en: '', uz: '' },
+    slug: '',
     category: '',
     country: '',
     manufacturer_id: '',
@@ -52,6 +54,7 @@ const EditProduct = () => {
       setFormData({
         name: product.name,
         description: product.description,
+        slug: productData.slug || '',
         category: product.category,
         country: product.country || '',
         manufacturer_id: productData.manufacturer_id || '',
@@ -145,6 +148,7 @@ const EditProduct = () => {
       const updateData = {
         name: formData.name,
         description: formData.description,
+        slug: formData.slug || generateSlug(formData.name.en || formData.name.ru),
         category: formData.category,
         country: formData.country,
         manufacturer_id: formData.manufacturer_id || null,
