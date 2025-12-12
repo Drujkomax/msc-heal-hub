@@ -58,7 +58,7 @@ const translations = {
 const ProductDetail = () => {
   const { t, i18n } = useTranslation();
   const language = i18n.language as 'ru' | 'en' | 'uz' || 'ru';
-  const { id } = useParams();
+  const { slug } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isFavorite, setIsFavorite] = useState(false);
@@ -72,7 +72,7 @@ const ProductDetail = () => {
     message: ''
   });
 
-  const { product, loading, error } = useProduct(id || '');
+  const { product, loading, error } = useProduct(slug || '');
   const { manufacturers } = useManufacturers();
   const { convertToUZS, formatPrice } = useCurrencyRates();
   

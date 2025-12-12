@@ -4,6 +4,7 @@ import { useToast } from '@/hooks/use-toast';
 
 export interface Product {
   id: string;
+  slug?: string | null;
   name: {
     ru: string;
     en: string;
@@ -336,7 +337,8 @@ export const useAdminProducts = () => {
   };
 };
 
-export const useProduct = (id: string) => {
+// Hook to fetch product by slug or ID (for public pages)
+export const useProduct = (slugOrId: string) => {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -344,13 +346,24 @@ export const useProduct = (id: string) => {
   const fetchProduct = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
+      
+      // Try to fetch by slug first, then by ID
+      let query = supabase
         .from('products')
         .select('*')
-        .eq('id', id)
         .eq('status', 'active')
-        .eq('archived', false)
-        .maybeSingle();
+        .eq('archived', false);
+
+      // Check if it's a UUID format
+      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(slugOrId);
+      
+      if (isUUID) {
+        query = query.eq('id', slugOrId);
+      } else {
+        query = query.eq('slug', slugOrId);
+      }
+
+      const { data, error } = await query.maybeSingle();
 
       if (error) throw error;
       setProduct(data as unknown as Product);
@@ -362,10 +375,10 @@ export const useProduct = (id: string) => {
   };
 
   useEffect(() => {
-    if (id) {
+    if (slugOrId) {
       fetchProduct();
     }
-  }, [id]);
+  }, [slugOrId]);
 
   return {
     product,

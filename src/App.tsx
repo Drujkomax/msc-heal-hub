@@ -42,6 +42,7 @@ const queryClient = new QueryClient({
 
 const ProductRedirect = () => {
   const { id } = useParams();
+  // Support both old ID-based URLs and new slug-based URLs
   return <Navigate to={`/catalog/products/${id}`} replace />;
 };
 
@@ -74,8 +75,9 @@ const App = () => {
                     <Route path="/director-registration" element={<DirectorRegistration />} />
                     <Route path="/auth" element={<AuthPage />} />
                     <Route path="/catalog" element={<Catalog />} />
-                    <Route path="/catalog/products/:id" element={<ProductDetail />} />
+                    <Route path="/catalog/products/:slug" element={<ProductDetail />} />
                     <Route path="/product/:id" element={<ProductRedirect />} />
+                    <Route path="/products/:id" element={<ProductRedirect />} />
                     <Route path="/products/:id" element={<ProductRedirect />} />
                     <Route path="/services" element={<Services />} />
                     <Route path="/cases" element={<Cases />} />

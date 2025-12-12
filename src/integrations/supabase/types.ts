@@ -1381,6 +1381,7 @@ export type Database = {
           price_history: Json | null
           quote_requests_count: number | null
           revenue_attributed: number | null
+          slug: string | null
           status: string
           updated_at: string
           updated_by: string | null
@@ -1411,6 +1412,7 @@ export type Database = {
           price_history?: Json | null
           quote_requests_count?: number | null
           revenue_attributed?: number | null
+          slug?: string | null
           status?: string
           updated_at?: string
           updated_by?: string | null
@@ -1441,6 +1443,7 @@ export type Database = {
           price_history?: Json | null
           quote_requests_count?: number | null
           revenue_attributed?: number | null
+          slug?: string | null
           status?: string
           updated_at?: string
           updated_by?: string | null
