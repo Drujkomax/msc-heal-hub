@@ -226,7 +226,7 @@
   "roles": {
     "director": "Director",
     "salesManager": "Sales Manager",
-    "admin": "Administrator", 
+    "admin": "Administrator",
     "salesperson": "Salesperson",
     "accountant": "Accountant",
     "engineer": "Engineer",
@@ -274,9 +274,36 @@
       "free": "Free"
     }
   },
+  "pages": {
+    "cases": {
+      "title": "Case studies",
+      "description": "Explore real-world projects where we delivered, installed, and supported medical equipment.",
+      "cta": "Browse the catalog",
+      "seo": {
+        "title": "Case studies — Med Service Centre",
+        "description": "Real projects with medical equipment supply, installation, and service by Med Service Centre.",
+        "keywords": "case studies, medical equipment projects, Med Service Centre"
+      }
+    },
+    "notFound": {
+      "message": "Oops! Page not found",
+      "cta": "Return to Home",
+      "seo": {
+        "title": "Page not found — Med Service Centre",
+        "description": "The page you are looking for does not exist. Return to the Med Service Centre homepage.",
+        "keywords": "404, page not found, Med Service Centre"
+      }
+    },
+    "index": {
+      "title": "Welcome to Your Blank App",
+      "description": "Start building your amazing project here!"
+    }
+  },
   "home": {
     "hero": {
       "title": "Med Service Centre",
+      "headline": "Med Service Centre — medical equipment in Uzbekistan",
+      "logoAlt": "Med Service Centre — medical equipment in Uzbekistan",
       "subtitle": "Leading medical equipment integrator in Uzbekistan",
       "description": "Supply, installation,\nstaff training\nand technical support",
       "cta": "Calculate ROI",
@@ -284,6 +311,15 @@
       "projects": "projects",
       "clients": "Satisfied clients",
       "getConsultation": "Get Consultation"
+    },
+    "seo": {
+      "title": "Med Service Centre — medical equipment in Uzbekistan",
+      "description": "Med Service Centre supplies, installs, and services medical equipment: diagnostic systems, laboratory analyzers (ABL800 Flex), and surgical equipment (BOWA ARC 400).",
+      "keywords": "medical equipment, diagnostic equipment, laboratory analyzers, ABL800 Flex, surgical equipment, BOWA ARC 400, medical equipment service",
+      "ogTitle": "Med Service Centre — medical equipment in Uzbekistan",
+      "ogDescription": "Supply, installation, and service of medical equipment in Uzbekistan, including ABL800 Flex analyzers and BOWA ARC 400 surgical systems.",
+      "twitterTitle": "Med Service Centre — medical equipment in Uzbekistan",
+      "twitterDescription": "Supply, installation, and service of medical equipment in Uzbekistan."
     },
     "process": {
       "quote": "Quote",
@@ -299,6 +335,40 @@
       "contactUs": "Contact Us",
       "consultationOffer": "Get consultation \"How to quickly pay back equipment in 2025\" in 24 hours!"
     },
+    "equipment": {
+      "title": "Equipment we deliver and support",
+      "cards": {
+        "diagnostic": {
+          "title": "Diagnostic equipment",
+          "body": "Ultrasound, X-ray, MRI, CT, and other diagnostic systems with installation and maintenance.",
+          "link": "Explore diagnostic equipment"
+        },
+        "laboratory": {
+          "title": "ABL analyzers",
+          "bodyPrefix": "Blood gas and electrolyte analyzers",
+          "bodySuffix": "for accurate laboratory diagnostics.",
+          "link": "Explore laboratory equipment"
+        },
+        "surgical": {
+          "title": "BOWA ARC 400",
+          "bodyPrefix": "Electrosurgical system",
+          "bodySuffix": "for modern operating rooms and safe surgery.",
+          "link": "Explore surgical equipment"
+        }
+      },
+      "cta": "Browse the full catalog"
+    },
+    "whyChoose": {
+      "title": "Why choose Med Service Centre",
+      "paragraph1": "Med Service Centre has over 8 years of experience delivering complex medical equipment projects. We handle selection, delivery, installation, training, and service with a dedicated engineering team.",
+      "paragraph2": "We build long-term partnerships, provide 24/7 support, and have completed 300+ projects across Uzbekistan."
+    },
+    "servicesSection": {
+      "title": "Services that keep your equipment running",
+      "description": "From installation and training to preventive maintenance and rapid support, we keep your equipment performing safely and efficiently.",
+      "primaryCta": "View services",
+      "secondaryCta": "Contact us"
+    },
     "categories": {
       "title": "Equipment Categories",
       "description": "Wide range of medical equipment for all medical fields",
@@ -307,7 +377,8 @@
       "rehabilitation": "Rehabilitation Equipment",
       "laboratory": "Laboratory Equipment",
       "dental": "Dental Equipment",
-      "ophthalmology": "Ophthalmology Equipment"
+      "ophthalmology": "Ophthalmology Equipment",
+      "cta": "See all equipment"
     },
     "advantages": {
       "title": "Why Choose Us",
@@ -334,6 +405,70 @@
       "description": "Our experts will help you find the optimal solution for your needs and budget",
       "requestButton": "Submit Request",
       "managerButton": "Manager will call back within 15 minutes"
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "subtitle": "Answers to common questions about our services and equipment.",
+      "items": [
+        {
+          "question": "What medical equipment do you supply?",
+          "answer": "We supply diagnostic, laboratory, surgical, rehabilitation, dental, and ophthalmology equipment from leading manufacturers."
+        },
+        {
+          "question": "Do you provide installation and training?",
+          "answer": "Yes. Our engineers install equipment and train staff with documentation and practical sessions."
+        },
+        {
+          "question": "What warranty and service do you offer?",
+          "answer": "We provide warranty, preventive maintenance, and 24/7 technical support."
+        },
+        {
+          "question": "How long does delivery take?",
+          "answer": "Typical delivery takes 2–6 weeks depending on manufacturer and configuration."
+        },
+        {
+          "question": "How can I get a quote?",
+          "answer": "Send a request through the site or contact us, and we will prepare a tailored quote."
+        }
+      ]
+    }
+  },
+  "footer": {
+    "company": "Med Service Centre",
+    "stats": "8 years experience • 300+ projects",
+    "description": "Leading integrator of medical equipment and services in Uzbekistan",
+    "quickLinks": "Quick Links",
+    "contacts": "Contacts",
+    "services": "Services",
+    "address": "Uzbekistan, Tashkent, Asaka St., 32",
+    "rights": "All rights reserved",
+    "links": [
+      {
+        "name": "Catalog",
+        "href": "/catalog"
+      },
+      {
+        "name": "Services",
+        "href": "/services"
+      },
+      {
+        "name": "Contacts",
+        "href": "/contacts"
+      },
+      {
+        "name": "About",
+        "href": "/about"
+      }
+    ],
+    "servicesList": [
+      "Equipment Supply",
+      "Installation & Setup",
+      "Staff Training",
+      "Technical Support"
+    ],
+    "downloads": {
+      "terms": "Terms of Use",
+      "catalog": "MSC Catalog"
     }
   }
 }

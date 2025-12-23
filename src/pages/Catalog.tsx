@@ -36,7 +36,8 @@ const translations = {
   features: { ru: "Особенности", en: "Features", uz: "Xususiyatlar" },
   details: { ru: "Подробнее", en: "Details", uz: "Batafsil" },
   requestQuote: { ru: "Запросить КП", en: "Request Quote", uz: "KP so'rash" },
-  noProducts: { ru: "Товары не найдены", en: "No products found", uz: "Mahsulotlar topilmadi" }
+  noProducts: { ru: "Товары не найдены", en: "No products found", uz: "Mahsulotlar topilmadi" },
+  loading: { ru: "Загружаем каталог...", en: "Loading catalog...", uz: "Katalog yuklanmoqda..." }
 };
 
 const Catalog = () => {
@@ -111,7 +112,7 @@ const Catalog = () => {
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 flex items-center justify-center">
         <div className="flex items-center space-x-2">
           <Loader2 className="h-8 w-8 animate-spin" />
-          <span className="text-lg">Загружаем каталог...</span>
+          <span className="text-lg">{translations.loading[language]}</span>
         </div>
       </div>
     );

@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { ArrowRight, CheckCircle, Zap, Shield, Headphones, Globe, Stethoscope, Scissors, Heart, TestTube, Smile, Eye, FileText, Truck, Settings, GraduationCap, Wrench, TrendingUp, ChevronDown, ChevronUp } from 'lucide-react';
+import { ArrowRight, CheckCircle, Zap, Shield, Headphones, Globe, Stethoscope, Scissors, Heart, TestTube, Smile, Eye, FileText, Truck, Settings, GraduationCap, Wrench, TrendingUp, ChevronDown, ChevronUp, Loader2, Package } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import ROICalculator from '@/components/Calculator/ROICalculator';
 import LeadForm from '@/components/forms/LeadForm';
 import { useTranslation } from 'react-i18next';
 import SEOHead from "@/components/SEO/SEOHead";
+import { useProducts } from '@/hooks/useProducts';
+import { useManufacturers } from '@/hooks/useManufacturers';
+import { useCategories } from '@/hooks/useCategories';
 
 interface HomeProps {
   language: 'ru' | 'en' | 'uz';
@@ -20,48 +24,57 @@ const Home = ({ language }: HomeProps) => {
   const { t, i18n } = useTranslation();
   
   const currentLanguage = (i18n.language || 'ru') as 'ru' | 'en' | 'uz';
+  const { products, loading: productsLoading } = useProducts();
+  const { categories: dbCategories } = useCategories();
+  const { manufacturers } = useManufacturers();
 
   useEffect(() => {
     setIsVisible(true);
   }, []);
 
-  const faqItems = [
-    {
-      question: 'Какое медицинское оборудование вы поставляете?',
-      answer: 'Мы поставляем широкий спектр медицинского оборудования: УЗИ аппараты, газоанализаторы крови ABL800 Flex, электрохирургические системы BOWA ARC 400, лабораторное оборудование, хирургические инструменты и многое другое.'
-    },
-    {
-      question: 'Предоставляете ли вы оборудование в аренду?',
-      answer: 'Да, мы предлагаем гибкие условия аренды медицинского оборудования. Это особенно удобно для клиник, которые хотят протестировать оборудование перед покупкой или нуждаются в нём на определённый период.'
-    },
-    {
-      question: 'Какие услуги сервиса вы оказываете?',
-      answer: 'Наши специалисты выполняют установку, настройку, техническое обслуживание и ремонт медицинского оборудования. Мы также проводим обучение персонала работе с техникой.'
-    },
-    {
-      question: 'Работаете ли вы по всему Узбекистану?',
-      answer: 'Да, Med Service Centre работает по всей территории Узбекистана. Наш главный офис находится в Ташкенте, но мы обслуживаем клиники во всех регионах страны.'
-    },
-    {
-      question: 'Как связаться с вами для консультации?',
-      answer: 'Вы можете связаться с нами через форму на сайте, по телефону или через Telegram. Наши специалисты ответят на все ваши вопросы и помогут подобрать оптимальное решение.'
-    }
-  ];
+  const faqItems = t('home.faq.items', { returnObjects: true }) as Array<{
+    question: string;
+    answer: string;
+  }>;
+
+  const fallbackCategories = {
+    all: { ru: 'Все категории', en: 'All categories', uz: 'Barcha kategoriyalar' }
+  };
+
+  const allCategories = {
+    ...fallbackCategories,
+    ...dbCategories.reduce((acc, cat) => {
+      acc[cat.value] = cat.name;
+      return acc;
+    }, {} as Record<string, { ru: string; en: string; uz: string }>)
+  };
+
+  const getCategoryTag = (category: string) => {
+    return allCategories[category]?.[currentLanguage] || category;
+  };
+
+  const getManufacturerSlug = (manufacturerId: string | null | undefined) => {
+    if (!manufacturerId) return 'unknown';
+    const manufacturer = manufacturers.find(m => m.id === manufacturerId);
+    return manufacturer?.slug || 'unknown';
+  };
+
+  const featuredProducts = products.slice(0, 3);
 
   return (
     <div className="min-h-screen">
       <SEOHead
-        title="Med Service Centre — Медтехника для клиник Узбекистана"
-        description="Med Service Centre — поставщик медоборудования в Узбекистане: УЗИ, анализаторы ABL, электроскальпели BOWA, продажа, сервис и аренда для клиник."
-        keywords="медицинское оборудование Узбекистан, УЗИ аппарат Ташкент, ABL800 Flex аренда, BOWA ARC 400, сервис медтехники"
+        title={t('home.seo.title')}
+        description={t('home.seo.description')}
+        keywords={t('home.seo.keywords')}
         type="website"
         canonical="https://medsc.uz/"
-        ogTitle="Med Service Centre — Медтехника для клиник Узбекистана"
-        ogDescription="Поставка, аренда и сервис медицинского оборудования: УЗИ, анализаторы ABL800 Flex, электроскальпели BOWA ARC 400."
+        ogTitle={t('home.seo.ogTitle')}
+        ogDescription={t('home.seo.ogDescription')}
         ogUrl="https://medsc.uz/"
         ogImage="https://medsc.uz/lovable-uploads/ea1f50a2-d3d1-418f-b6ce-f6e08a722162.png"
-        twitterTitle="Med Service Centre — Медтехника для клиник Узбекистана"
-        twitterDescription="Поставка, аренда и сервис медицинского оборудования в Узбекистане."
+        twitterTitle={t('home.seo.twitterTitle')}
+        twitterDescription={t('home.seo.twitterDescription')}
         twitterImage="https://medsc.uz/lovable-uploads/ea1f50a2-d3d1-418f-b6ce-f6e08a722162.png"
       />
       
@@ -80,9 +93,7 @@ const Home = ({ language }: HomeProps) => {
             {/* Hero Content */}
             <div className={`max-w-2xl space-y-8 ${isVisible ? 'animate-reveal' : ''}`}>
               <div className="space-y-4">
-                <h1 className="font-heading text-5xl lg:text-6xl font-bold leading-tight">
-                  Med Service Centre — Медицинское оборудование в Узбекистане
-                </h1>
+                <h1 className="font-heading text-5xl lg:text-6xl font-bold leading-tight">{t('home.hero.headline')}</h1>
                 <p className="text-xl lg:text-2xl text-white/90 font-medium">
                   {t('home.hero.subtitle')}
                 </p>
@@ -137,7 +148,7 @@ const Home = ({ language }: HomeProps) => {
                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-52 h-52 lg:w-60 lg:h-60 flex items-center justify-center z-10">
                   <img 
                     src="/lovable-uploads/acdce942-978c-4243-9068-38f2c5bb0284.png" 
-                    alt="Med Service Centre логотип — поставщик медицинского оборудования в Узбекистане" 
+                    alt={t('home.hero.logoAlt')} 
                     className="w-44 h-44 lg:w-52 lg:h-52 object-contain"
                   />
                 </div>
@@ -202,58 +213,103 @@ const Home = ({ language }: HomeProps) => {
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-5xl mx-auto">
-            <h2 className="font-heading text-3xl lg:text-4xl font-bold text-msc-primary mb-10 text-center">
-              Наши услуги и оборудование
-            </h2>
+            <h2 className="font-heading text-3xl lg:text-4xl font-bold text-msc-primary mb-10 text-center">{t('home.equipment.title')}</h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-              {/* УЗИ аппараты */}
-              <div className="bg-msc-bg/30 rounded-lg p-6">
-                <h3 className="font-heading text-xl font-bold text-msc-primary mb-3">УЗИ аппараты</h3>
-                <p className="text-msc-text-light mb-4">
-                  Современные ультразвуковые системы от ведущих мировых производителей для точной диагностики. 
-                  Портативные и стационарные модели для любых медицинских задач.
-                </p>
-                <Link to="/catalog?category=diagnostic" className="text-msc-accent hover:underline font-medium inline-flex items-center">
-                  Смотреть УЗИ аппараты <ArrowRight className="ml-1 w-4 h-4" />
-                </Link>
+            {productsLoading ? (
+              <div className="flex items-center justify-center gap-3 py-10 text-msc-text-light">
+                <Loader2 className="h-6 w-6 animate-spin" />
+                <span className="text-lg">{t('common.loading')}</span>
               </div>
-              
-              {/* Анализаторы ABL */}
-              <div className="bg-msc-bg/30 rounded-lg p-6">
-                <h3 className="font-heading text-xl font-bold text-msc-primary mb-3">Анализаторы ABL</h3>
-                <p className="text-msc-text-light mb-4">
-                  Газоанализаторы крови{' '}
-                  <a href="https://www.radiometer.com/en/products/blood-gas-testing/abl800-flex" target="_blank" rel="noopener noreferrer" className="text-msc-accent hover:underline">
-                    ABL800 Flex от Radiometer
-                  </a>{' '}
-                  — точный анализ газов крови и метаболитов за секунды.
-                </p>
-                <Link to="/catalog?category=laboratory" className="text-msc-accent hover:underline font-medium inline-flex items-center">
-                  Смотреть анализаторы <ArrowRight className="ml-1 w-4 h-4" />
-                </Link>
+            ) : featuredProducts.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                {featuredProducts.map((product) => (
+                  <Card key={product.id} className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 flex flex-col h-full">
+                    <div className="relative overflow-hidden rounded-t-lg aspect-[1080/1350]">
+                      {product.images?.cover ? (
+                        <img
+                          src={product.images.cover}
+                          alt={product.name[currentLanguage]}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          onError={(e) => {
+                            e.currentTarget.src = '/placeholder.svg';
+                          }}
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-muted flex items-center justify-center">
+                          <Package className="w-16 h-16 text-muted-foreground" />
+                        </div>
+                      )}
+                      <div className="absolute top-4 left-4">
+                        <Badge variant="default">
+                          {getCategoryTag(product.category)}
+                        </Badge>
+                      </div>
+                    </div>
+
+                    <CardHeader className="flex-grow">
+                      <CardTitle className="text-lg line-clamp-2">
+                        {product.name[currentLanguage]}
+                      </CardTitle>
+                      <CardDescription className="line-clamp-3">
+                        {product.description[currentLanguage]}
+                      </CardDescription>
+                    </CardHeader>
+
+                    <CardContent className="mt-auto">
+                      <Button
+                        className="w-full"
+                        onClick={() => {
+                          const manufacturerSlug = getManufacturerSlug(product.manufacturer_id);
+                          const productSlug = product.slug || product.id;
+                          navigate(`/catalog/${manufacturerSlug}/${productSlug}`);
+                        }}
+                      >
+                        {t('common.view')}
+                        <ArrowRight className="ml-2 w-4 h-4" />
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
-              
-              {/* Системы BOWA */}
-              <div className="bg-msc-bg/30 rounded-lg p-6">
-                <h3 className="font-heading text-xl font-bold text-msc-primary mb-3">Системы BOWA ARC 400</h3>
-                <p className="text-msc-text-light mb-4">
-                  Электрохирургические генераторы{' '}
-                  <a href="https://www.bowa-medical.com/" target="_blank" rel="noopener noreferrer" className="text-msc-accent hover:underline">
-                    BOWA ARC 400
-                  </a>{' '}
-                  для точной и безопасной хирургии с минимальной травматизацией тканей.
-                </p>
-                <Link to="/catalog?category=surgical" className="text-msc-accent hover:underline font-medium inline-flex items-center">
-                  Смотреть электроскальпели <ArrowRight className="ml-1 w-4 h-4" />
-                </Link>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                <div className="bg-msc-bg/30 rounded-lg p-6">
+                  <h3 className="font-heading text-xl font-bold text-msc-primary mb-3">{t('home.equipment.cards.diagnostic.title')}</h3>
+                  <p className="text-msc-text-light mb-4">{t('home.equipment.cards.diagnostic.body')}</p>
+                  <Link to="/catalog?category=diagnostic" className="text-msc-accent hover:underline font-medium inline-flex items-center">{t('home.equipment.cards.diagnostic.link')} <ArrowRight className="ml-1 w-4 h-4" />
+                  </Link>
+                </div>
+                
+                <div className="bg-msc-bg/30 rounded-lg p-6">
+                  <h3 className="font-heading text-xl font-bold text-msc-primary mb-3">{t('home.equipment.cards.laboratory.title')}</h3>
+                  <p className="text-msc-text-light mb-4">
+                    {t('home.equipment.cards.laboratory.bodyPrefix')}{' '}
+                    <a href="https://www.radiometer.com/en/products/blood-gas-testing/abl800-flex" target="_blank" rel="noopener noreferrer" className="text-msc-accent hover:underline">
+                      ABL800 Flex, Radiometer
+                    </a>{' '}
+                    {t('home.equipment.cards.laboratory.bodySuffix')}
+                  </p>
+                  <Link to="/catalog?category=laboratory" className="text-msc-accent hover:underline font-medium inline-flex items-center">{t('home.equipment.cards.laboratory.link')} <ArrowRight className="ml-1 w-4 h-4" />
+                  </Link>
+                </div>
+                
+                <div className="bg-msc-bg/30 rounded-lg p-6">
+                  <h3 className="font-heading text-xl font-bold text-msc-primary mb-3">{t('home.equipment.cards.surgical.title')}</h3>
+                  <p className="text-msc-text-light mb-4">
+                    {t('home.equipment.cards.surgical.bodyPrefix')}{' '}
+                    <a href="https://www.bowa-medical.com/" target="_blank" rel="noopener noreferrer" className="text-msc-accent hover:underline">
+                      BOWA ARC 400
+                    </a>{' '}
+                    {t('home.equipment.cards.surgical.bodySuffix')}
+                  </p>
+                  <Link to="/catalog?category=surgical" className="text-msc-accent hover:underline font-medium inline-flex items-center">{t('home.equipment.cards.surgical.link')} <ArrowRight className="ml-1 w-4 h-4" />
+                  </Link>
+                </div>
               </div>
-            </div>
-            
+            )}
+
             <div className="text-center">
-              <Link to="/catalog" className="inline-flex items-center bg-msc-accent hover:bg-msc-accent/90 text-white font-semibold px-6 py-3 rounded-lg transition-colors">
-                Посмотреть всё оборудование
-                <ArrowRight className="ml-2 w-5 h-5" />
+              <Link to="/catalog" className="inline-flex items-center bg-msc-accent hover:bg-msc-accent/90 text-white font-semibold px-6 py-3 rounded-lg transition-colors">{t('home.equipment.cta')} <ArrowRight className="ml-2 w-5 h-5" />
               </Link>
             </div>
           </div>
@@ -264,21 +320,10 @@ const Home = ({ language }: HomeProps) => {
       <section className="py-16 bg-gradient-to-br from-msc-primary/5 to-msc-accent/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto">
-            <h2 className="font-heading text-3xl lg:text-4xl font-bold text-msc-primary mb-6 text-center">
-              Почему выбирают Med Service Centre
-            </h2>
+            <h2 className="font-heading text-3xl lg:text-4xl font-bold text-msc-primary mb-6 text-center">{t('home.whyChoose.title')}</h2>
             <div className="prose prose-lg max-w-none text-msc-text-light space-y-4">
-              <p>
-                <strong>Med Service Centre</strong> — ведущий поставщик медицинского оборудования в Узбекистане с более чем 8-летним опытом работы. 
-                Мы специализируемся на поставке, аренде и сервисном обслуживании современной медицинской техники для клиник, 
-                больниц и медицинских центров по всей территории страны.
-              </p>
-              <p>
-                Почему клиники Узбекистана доверяют нам? Мы гарантируем качество поставляемого оборудования, 
-                предоставляем официальную гарантию, обучаем медицинский персонал работе с техникой и обеспечиваем 
-                техническую поддержку 24/7. За годы работы мы успешно реализовали более 300 проектов по оснащению 
-                медицинских учреждений в Ташкенте и регионах.
-              </p>
+              <p>{t('home.whyChoose.paragraph1')}</p>
+              <p>{t('home.whyChoose.paragraph2')}</p>
             </div>
           </div>
         </div>
@@ -288,22 +333,12 @@ const Home = ({ language }: HomeProps) => {
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="font-heading text-3xl lg:text-4xl font-bold text-msc-primary mb-6">
-              Сервис, продажа и аренда для клиник
-            </h2>
-            <p className="text-lg text-msc-text-light mb-8">
-              Мы понимаем, что приобретение дорогостоящего оборудования — серьёзное решение. Поэтому предлагаем 
-              гибкие условия сотрудничества: покупку, долгосрочную аренду или лизинг. Наша команда технических специалистов 
-              обеспечивает полный цикл сервисных услуг: от установки и настройки до регулярного технического обслуживания и оперативного ремонта.
-            </p>
+            <h2 className="font-heading text-3xl lg:text-4xl font-bold text-msc-primary mb-6">{t('home.servicesSection.title')}</h2>
+            <p className="text-lg text-msc-text-light mb-8">{t('home.servicesSection.description')}</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/services" className="inline-flex items-center bg-msc-primary hover:bg-msc-primary/90 text-white font-semibold px-6 py-3 rounded-lg transition-colors">
-                Подробнее об услугах
-                <ArrowRight className="ml-2 w-5 h-5" />
+              <Link to="/services" className="inline-flex items-center bg-msc-primary hover:bg-msc-primary/90 text-white font-semibold px-6 py-3 rounded-lg transition-colors">{t('home.servicesSection.primaryCta')} <ArrowRight className="ml-2 w-5 h-5" />
               </Link>
-              <Link to="/contacts" className="inline-flex items-center border-2 border-msc-primary text-msc-primary hover:bg-msc-primary hover:text-white font-semibold px-6 py-3 rounded-lg transition-colors">
-                Связаться с нами
-                <ArrowRight className="ml-2 w-5 h-5" />
+              <Link to="/contacts" className="inline-flex items-center border-2 border-msc-primary text-msc-primary hover:bg-msc-primary hover:text-white font-semibold px-6 py-3 rounded-lg transition-colors">{t('home.servicesSection.secondaryCta')} <ArrowRight className="ml-2 w-5 h-5" />
               </Link>
             </div>
           </div>
@@ -314,9 +349,7 @@ const Home = ({ language }: HomeProps) => {
       <section id="roi-calculator-section" className="py-20 bg-gradient-to-br from-msc-bg to-msc-accent/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="font-heading text-3xl lg:text-4xl font-bold text-msc-primary mb-4">
-              {t('home.roiCalculator.title')}
-            </h2>
+            <h2 className="font-heading text-3xl lg:text-4xl font-bold text-msc-primary mb-4">{t('home.roiCalculator.title')}</h2>
             <p className="text-lg text-msc-text-light max-w-2xl mx-auto">
               {t('home.roiCalculator.description')}
             </p>
@@ -346,9 +379,7 @@ const Home = ({ language }: HomeProps) => {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="font-heading text-3xl lg:text-4xl font-bold text-msc-primary mb-4">
-              {t('home.categories.title')}
-            </h2>
+            <h2 className="font-heading text-3xl lg:text-4xl font-bold text-msc-primary mb-4">{t('home.categories.title')}</h2>
             <p className="text-lg text-msc-text-light max-w-2xl mx-auto">
               {t('home.categories.description')}
             </p>
@@ -379,9 +410,7 @@ const Home = ({ language }: HomeProps) => {
           </div>
 
           <div className="text-center mt-8">
-            <Link to="/catalog" className="inline-flex items-center text-msc-accent hover:underline font-medium text-lg">
-              Смотреть весь каталог оборудования
-              <ArrowRight className="ml-2 w-5 h-5" />
+            <Link to="/catalog" className="inline-flex items-center text-msc-accent hover:underline font-medium text-lg">{t('home.categories.cta')} <ArrowRight className="ml-2 w-5 h-5" />
             </Link>
           </div>
         </div>
@@ -438,12 +467,8 @@ const Home = ({ language }: HomeProps) => {
       <section className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="font-heading text-3xl lg:text-4xl font-bold text-msc-primary mb-4">
-              Часто задаваемые вопросы
-            </h2>
-            <p className="text-lg text-msc-text-light">
-              Ответы на популярные вопросы о медицинском оборудовании и наших услугах
-            </p>
+            <h2 className="font-heading text-3xl lg:text-4xl font-bold text-msc-primary mb-4">{t('home.faq.title')}</h2>
+            <p className="text-lg text-msc-text-light">{t('home.faq.subtitle')}</p>
           </div>
 
           <div className="space-y-4">
@@ -516,3 +541,13 @@ const Home = ({ language }: HomeProps) => {
 };
 
 export default Home;
+
+
+
+
+
+
+
+
+
+

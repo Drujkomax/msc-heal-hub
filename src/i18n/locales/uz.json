@@ -283,7 +283,9 @@
       "experience": "yillik tajriba",
       "projects": "loyiha",
       "clients": "Mamnun mijozlar",
-      "getConsultation": "Maslahat olish"
+      "getConsultation": "Maslahat olish",
+      "headline": "Med Service Centre — O'zbekistonda tibbiy uskunalar",
+      "logoAlt": "Med Service Centre — O'zbekistonda tibbiy uskunalar"
     },
     "process": {
       "quote": "Taklif",
@@ -307,7 +309,8 @@
       "rehabilitation": "Reabilitatsiya uskunalari",
       "laboratory": "Laboratoriya uskunalari",
       "dental": "Stomatologiya uskunalari",
-      "ophthalmology": "Oftalmologiya uskunalari"
+      "ophthalmology": "Oftalmologiya uskunalari",
+      "cta": "Barcha uskunalarni ko'rish"
     },
     "advantages": {
       "title": "Nega bizni tanlashadi?",
@@ -334,6 +337,138 @@
       "description": "Mutaxassislarimiz sizning ehtiyojlaringizga muvofiq optimal yechim topishda yordam beradi",
       "requestButton": "Ariza qoldirish",
       "managerButton": "Menejer 15 daqiqa ichida qo'ng'iroq qiladi"
+    },
+    "seo": {
+      "title": "Med Service Centre — O'zbekistonda tibbiy uskunalar",
+      "description": "Med Service Centre tibbiy uskunalarni yetkazib beradi, o'rnatadi va servis qiladi: diagnostika tizimlari, laboratoriya analizatorlari (ABL800 Flex) va jarrohlik uskunalari (BOWA ARC 400).",
+      "keywords": "tibbiy uskunalar, diagnostika uskunalari, laboratoriya analizatorlari, ABL800 Flex, jarrohlik uskunalari, BOWA ARC 400, tibbiy uskunalar servisi",
+      "ogTitle": "Med Service Centre — O'zbekistonda tibbiy uskunalar",
+      "ogDescription": "O'zbekistonda tibbiy uskunalarni yetkazib berish, o'rnatish va servis, jumladan ABL800 Flex analizatorlari va BOWA ARC 400 jarrohlik tizimlari.",
+      "twitterTitle": "Med Service Centre — O'zbekistonda tibbiy uskunalar",
+      "twitterDescription": "O'zbekistonda tibbiy uskunalarni yetkazib berish, o'rnatish va servis."
+    },
+    "equipment": {
+      "title": "Yetkazib beriladigan va xizmat ko'rsatiladigan uskunalar",
+      "cards": {
+        "diagnostic": {
+          "title": "Diagnostika uskunalari",
+          "body": "UZI, rentgen, MRT, KT va boshqa diagnostika tizimlari o'rnatish va servis bilan.",
+          "link": "Diagnostika uskunalarini ko'rish"
+        },
+        "laboratory": {
+          "title": "ABL analizatorlari",
+          "bodyPrefix": "Qon gazlari va elektrolitlar analizatorlari",
+          "bodySuffix": "aniq laboratoriya diagnostikasi uchun.",
+          "link": "Laboratoriya uskunalarini ko'rish"
+        },
+        "surgical": {
+          "title": "BOWA ARC 400",
+          "bodyPrefix": "Elektrojarrohlik tizimi",
+          "bodySuffix": "zamonaviy operatsion xonalar va xavfsiz jarrohlik uchun.",
+          "link": "Jarrohlik uskunalarini ko'rish"
+        }
+      },
+      "cta": "To'liq katalogni ko'rish"
+    },
+    "whyChoose": {
+      "title": "Nega Med Service Centre",
+      "paragraph1": "Med Service Centre 8 yildan ortiq tibbiy uskunalar bo'yicha kompleks loyihalarni amalga oshiradi. Tanlash, yetkazib berish, o'rnatish, o'qitish va servisni ta'minlaymiz.",
+      "paragraph2": "Biz uzoq muddatli hamkorlikni yo'lga qo'yamiz, 24/7 qo'llab-quvvatlaymiz va O'zbekiston bo'ylab 300+ loyiha bajarganmiz."
+    },
+    "servicesSection": {
+      "title": "Uskunalaringizni ishlatishda xizmat",
+      "description": "O'rnatish va o'qitishdan tortib profilaktika va tezkor yordamgacha — uskunalar xavfsiz va samarali ishlashini ta'minlaymiz.",
+      "primaryCta": "Xizmatlarni ko'rish",
+      "secondaryCta": "Biz bilan bog'laning"
+    },
+    "faq": {
+      "title": "Tez-tez so'raladigan savollar",
+      "subtitle": "Xizmatlarimiz va uskunalarimiz bo'yicha ommabop savollarga javoblar.",
+      "items": [
+        {
+          "question": "Qanday tibbiy uskunalarni yetkazib berasiz?",
+          "answer": "Diagnostika, laboratoriya, jarrohlik, reabilitatsiya, stomatologiya va oftalmologiya uskunalarini yetkazib beramiz."
+        },
+        {
+          "question": "O'rnatish va xodimlarni o'qitishni ta'minlaysizmi?",
+          "answer": "Ha. Muhandislarimiz uskunalarni o'rnatadi va hujjatlar hamda amaliy mashg'ulotlar bilan o'qitadi."
+        },
+        {
+          "question": "Kafolat va servis qanday?",
+          "answer": "Kafolat, profilaktik xizmat va 24/7 texnik yordamni ta'minlaymiz."
+        },
+        {
+          "question": "Yetkazib berish qancha vaqt oladi?",
+          "answer": "Odatda ishlab chiqaruvchi va komplektatsiyaga qarab 2–6 hafta."
+        },
+        {
+          "question": "Tijorat taklifini qanday olsam bo'ladi?",
+          "answer": "Sayt orqali so'rov yuboring yoki biz bilan bog'laning — sizga mos taklif tayyorlaymiz."
+        }
+      ]
+    }
+  },
+  "pages": {
+    "cases": {
+      "title": "Keyslar",
+      "description": "Tibbiy uskunalarni yetkazib berish, o'rnatish va servis bo'yicha real loyihalar.",
+      "cta": "Katalogni ko'rish",
+      "seo": {
+        "title": "Keyslar — Med Service Centre",
+        "description": "Med Service Centre tomonidan tibbiy uskunalarni yetkazib berish, o'rnatish va servis bo'yicha real loyihalar.",
+        "keywords": "keyslar, loyihalar, tibbiy uskunalar, Med Service Centre"
+      }
+    },
+    "notFound": {
+      "message": "Sahifa topilmadi",
+      "cta": "Bosh sahifaga qaytish",
+      "seo": {
+        "title": "Sahifa topilmadi — Med Service Centre",
+        "description": "Siz izlagan sahifa mavjud emas. Med Service Centre bosh sahifasiga qayting.",
+        "keywords": "404, sahifa topilmadi, Med Service Centre"
+      }
+    },
+    "index": {
+      "title": "Bo'sh ilovangizga xush kelibsiz",
+      "description": "Ajoyib loyihangizni shu yerda boshlang!"
+    }
+  },
+  "footer": {
+    "company": "Med Service Centre",
+    "stats": "8 yil tajriba • 300+ loyiha",
+    "description": "O'zbekistonda tibbiy asbob-uskunalar va xizmatlarning yetakchi integratori",
+    "quickLinks": "Tezkor havolalar",
+    "contacts": "Aloqa",
+    "services": "Xizmatlar",
+    "address": "O'zbekiston, Toshkent, Asaka ko'chasi, 32",
+    "rights": "Barcha huquqlar himoyalangan",
+    "links": [
+      {
+        "name": "Katalog",
+        "href": "/catalog"
+      },
+      {
+        "name": "Xizmatlar",
+        "href": "/services"
+      },
+      {
+        "name": "Aloqa",
+        "href": "/contacts"
+      },
+      {
+        "name": "Biz haqimizda",
+        "href": "/about"
+      }
+    ],
+    "servicesList": [
+      "Uskunalar yetkazib berish",
+      "O'rnatish va sozlash",
+      "Xodimlarni o'qitish",
+      "Texnik xizmat ko'rsatish"
+    ],
+    "downloads": {
+      "terms": "Foydalanish shartlari",
+      "catalog": "MSC Katalogi"
     }
   }
 }
