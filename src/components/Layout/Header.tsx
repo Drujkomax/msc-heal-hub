@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -27,7 +27,7 @@ const Header = () => {
 
   const languages = [
     { code: 'ru' as const, name: 'Русский', flag: '🇷🇺' },
-    { code: 'en' as const, name: 'English', flag: '🇺🇸' },
+    { code: 'en' as const, name: 'English', flag: '🇬🇧' },
     { code: 'uz' as const, name: "O'zbekcha", flag: '🇺🇿' },
   ];
 
@@ -52,9 +52,9 @@ const Header = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center">
-            <img 
-              src="/lovable-uploads/cebee8f0-cb8b-4449-8cdc-3cf173144e75.png" 
-              alt="Med Service Centre" 
+            <img
+              src="/lovable-uploads/cebee8f0-cb8b-4449-8cdc-3cf173144e75.png"
+              alt="Med Service Centre"
               className="h-12 w-auto object-contain"
             />
           </Link>
@@ -83,7 +83,7 @@ const Header = () => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="text-msc-text hover:text-msc-accent"
+                  className="text-msc-text hover:text-msc-accent hover:bg-msc-accent/10 data-[state=open]:text-msc-accent data-[state=open]:bg-msc-accent/10"
                 >
                   {currentLanguage.flag}
                   <span className="ml-1">{currentLanguage.code.toUpperCase()}</span>
