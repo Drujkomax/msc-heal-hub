@@ -203,7 +203,7 @@ const KanbanBoard = ({ showNavigation = false }: KanbanBoardProps) => {
               </div>
             </div>
 
-            <div className="flex gap-6 pt-7 pb-4 min-w-max">
+            <div className="flex gap-6 pb-4 min-w-max">
               {stages.map((stage) => (
                 <div
                   key={stage.id}
