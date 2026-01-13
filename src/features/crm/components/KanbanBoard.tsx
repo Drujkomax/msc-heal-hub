@@ -167,9 +167,9 @@ const KanbanBoard = ({ showNavigation = false }: KanbanBoardProps) => {
   };
 
   return (
-    <div className="p-6">
-      {/* Fixed navigation bar */}
-      <div className="sticky left-0 z-10 mb-6">
+    <div className="relative">
+      {/* Fixed navigation bar - outside scrollable area */}
+      <div className="sticky top-0 z-20 bg-background p-6 pb-4 border-b">
         <div className="flex flex-wrap items-center gap-2">
           {showNavigation && stages.map((stage) => (
             <Button
@@ -190,18 +190,19 @@ const KanbanBoard = ({ showNavigation = false }: KanbanBoardProps) => {
         </div>
       </div>
       
-      {/* Duplicate alerts */}
-      {duplicateGroups.length > 0 && (
-        <div className="mb-6 space-y-2">
-          {duplicateGroups.slice(0, 3).map((group, index) => (
-            <DuplicateAlert key={index} duplicateGroup={group} />
-          ))}
-        </div>
-      )}
+      <div className="p-6 pt-4">
+        {/* Duplicate alerts */}
+        {duplicateGroups.length > 0 && (
+          <div className="mb-6 space-y-2">
+            {duplicateGroups.slice(0, 3).map((group, index) => (
+              <DuplicateAlert key={index} duplicateGroup={group} />
+            ))}
+          </div>
+        )}
 
-      <DragDropContext onDragEnd={onDragEnd}>
-        <div className="overflow-x-auto">
-          <div className="flex gap-6 pb-4 min-w-max">
+        <DragDropContext onDragEnd={onDragEnd}>
+          <div className="overflow-x-auto">
+            <div className="flex gap-6 pb-4 min-w-max">
           {stages.map((stage) => (
             <div key={stage.id} data-stage-id={stage.id} className="bg-gray-50 rounded-lg p-4 min-w-80 flex-shrink-0">
               <div className="flex items-center mb-4">
@@ -274,9 +275,10 @@ const KanbanBoard = ({ showNavigation = false }: KanbanBoardProps) => {
               </Droppable>
             </div>
           ))}
+            </div>
           </div>
-        </div>
-      </DragDropContext>
+        </DragDropContext>
+      </div>
 
       <AddLeadDialog
         open={isAddLeadOpen}
