@@ -167,7 +167,7 @@ const KanbanBoard = ({ showNavigation = false }: KanbanBoardProps) => {
   return (
     <div className="relative">
       <div className="p-6">
-        <div>
+        <div className="py-2">
           <h2 className="text-3xl font-bold">Канбан-доска лидов</h2>
           <p className="text-muted-foreground">
             На этой странице отображаются все лиды по стадиям воронки продаж. Используйте навигацию выше для перехода
