@@ -248,8 +248,8 @@
     "deleted": "Task deleted"
   },
   "dashboard": {
-    "mainPanel":"Main Panel",
-      "monitoringSystem":"Monitoring System"
+    "mainPanel": "Main Panel",
+    "monitoringSystem": "Monitoring System",
     "title": "Dashboard",
     "analytics": "Analytics and statistics",
     "totalLeads": "Total Leads",
@@ -641,12 +641,7 @@
         "href": "/about"
       }
     ],
-    "servicesList": [
-      "Equipment Supply",
-      "Installation & Setup",
-      "Staff Training",
-      "Technical Support"
-    ],
+    "servicesList": ["Equipment Supply", "Installation & Setup", "Staff Training", "Technical Support"],
     "downloads": {
       "terms": "Terms of Use",
       "catalog": "MSC Catalog"
