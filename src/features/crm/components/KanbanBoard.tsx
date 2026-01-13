@@ -179,8 +179,8 @@ const KanbanBoard = ({ showNavigation = false }: KanbanBoardProps) => {
         <DragDropContext onDragEnd={onDragEnd}>
           <div className="overflow-x-auto relative">
             {/* Sticky navigation panel with add button - centered relative to kanban container */}
-            <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-10 flex justify-center">
-              <div className="bg-background/95 backdrop-blur-sm border rounded-full shadow-lg px-2 sm:px-4 py-2 flex items-center gap-1 sm:gap-2">
+            <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-10 flex justify-center max-w-[90vw]">
+              <div className="bg-background/95 backdrop-blur-sm border rounded-full shadow-lg px-2 sm:px-3 py-1.5 flex items-center gap-0.5 sm:gap-1 overflow-x-auto">
                 {showNavigation &&
                   stages.map((stage) => (
                     <Button
