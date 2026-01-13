@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 
 const Dashboard = () => {
   const { hasPermission } = useUserPermissions();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   // Только директора и админы могут видеть мониторинг
   const canViewMonitoring = hasPermission("view_analytics");
 
