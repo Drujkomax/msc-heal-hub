@@ -191,9 +191,9 @@ const EnhancedDealList = ({ onEditDeal, onViewDeal }: EnhancedDealListProps) => 
       {/* Header with Actions */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-bold">{t('deals.listView')}</h2>
+          <h2 className="text-2xl font-bold">{t('deals.listView', 'Список')}</h2>
           <p className="text-muted-foreground">
-            {filteredAndSortedDeals.length} из {deals.length} сделок
+            {t('deals.list.showing', '{{filtered}} из {{total}} сделок', { filtered: filteredAndSortedDeals.length, total: deals.length })}
           </p>
         </div>
         <div className="flex items-center gap-3">

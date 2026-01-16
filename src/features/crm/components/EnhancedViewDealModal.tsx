@@ -88,10 +88,10 @@ const EnhancedViewDealModal = ({ open, onClose, deal, onEdit }: EnhancedViewDeal
 
   const getPaymentStatusInfo = (status?: string) => {
     const statusMap = {
-      'waiting': { label: 'Ожидание', color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200', icon: Clock },
-      'paid': { label: 'Оплачено', color: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200', icon: DollarSign },
-      'not_realized': { label: 'Не реализовано', color: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200', icon: FileText },
-      'debt': { label: 'Задолженность', color: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200', icon: AlertCircle }
+      'waiting': { label: t('deals.payment.waiting', 'Ожидание'), color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200', icon: Clock },
+      'paid': { label: t('deals.payment.paid', 'Оплачено'), color: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200', icon: DollarSign },
+      'not_realized': { label: t('deals.payment.notRealized', 'Не реализовано'), color: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200', icon: FileText },
+      'debt': { label: t('deals.payment.debt', 'Задолженность'), color: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200', icon: AlertCircle }
     };
     return statusMap[status as keyof typeof statusMap] || statusMap['waiting'];
   };
@@ -176,7 +176,7 @@ const EnhancedViewDealModal = ({ open, onClose, deal, onEdit }: EnhancedViewDeal
                     <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                       <div className="flex items-center gap-2">
                         <CreditCard className="w-4 h-4 text-muted-foreground" />
-                        <span className="text-sm font-medium">Статус оплаты</span>
+                        <span className="text-sm font-medium">{t('deals.paymentStatus', 'Статус оплаты')}</span>
                       </div>
                       <Badge className={paymentStatusInfo.color}>
                         {paymentStatusInfo.label}
@@ -186,7 +186,7 @@ const EnhancedViewDealModal = ({ open, onClose, deal, onEdit }: EnhancedViewDeal
                       <div className="flex items-center justify-between p-3 bg-red-50 dark:bg-red-950/20 rounded-lg border border-red-200 dark:border-red-900">
                         <div className="flex items-center gap-2">
                           <AlertCircle className="w-4 h-4 text-red-600" />
-                          <span className="text-sm font-medium text-red-900 dark:text-red-200">Сумма задолженности</span>
+                          <span className="text-sm font-medium text-red-900 dark:text-red-200">{t('deals.debtAmount', 'Сумма задолженности')}</span>
                         </div>
                         <div className="text-lg font-bold text-red-600">
                           ${deal.debt_amount.toLocaleString()}
@@ -286,7 +286,7 @@ const EnhancedViewDealModal = ({ open, onClose, deal, onEdit }: EnhancedViewDeal
                         </div>
                         {timeInfo && (
                           <div className={`text-xs ${timeInfo.isOverdue ? 'text-red-600' : 'text-muted-foreground'}`}>
-                            {timeInfo.isOverdue ? 'Просрочено на' : 'Осталось'} {timeInfo.distance}
+                            {timeInfo.isOverdue ? t('deals.overdueBy', 'Просрочено на') : t('deals.remaining', 'Осталось')} {timeInfo.distance}
                           </div>
                         )}
                       </div>

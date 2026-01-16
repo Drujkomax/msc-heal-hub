@@ -99,31 +99,31 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
     const newErrors: { [key: string]: string } = {};
     
     if (!formData.title.trim()) {
-      newErrors.title = 'Название обязательно';
+      newErrors.title = t('deals.form.titleRequired', 'Название обязательно');
     }
     
     // Валидация только если выбран тип сделки
     if (formData.deal_type) {
       if (formData.deal_type === 'product' && !formData.product_id) {
-        newErrors.deal_type = 'Выберите товар';
+        newErrors.deal_type = t('deals.form.selectProduct', 'Выберите товар');
       } else if (formData.deal_type === 'service' && !formData.service_id) {
-        newErrors.deal_type = 'Выберите услугу';
+        newErrors.deal_type = t('deals.form.selectService', 'Выберите услугу');
       } else if (formData.deal_type === 'both' && !formData.product_id && !formData.service_id) {
-        newErrors.deal_type = 'Выберите товар и/или услугу';
+        newErrors.deal_type = t('deals.form.selectProductOrService', 'Выберите товар и/или услугу');
       }
     }
     
     if (formData.amount && isNaN(Number(formData.amount))) {
-      newErrors.amount = 'Неверный формат числа';
+      newErrors.amount = t('deals.form.invalidNumber', 'Неверный формат числа');
     }
     
     if (formData.payment_status === 'debt' && formData.debt_amount && isNaN(Number(formData.debt_amount))) {
-      newErrors.debt_amount = 'Неверный формат числа';
+      newErrors.debt_amount = t('deals.form.invalidNumber', 'Неверный формат числа');
     }
 
     if (Object.keys(newErrors).length > 0) {
       toast({
-        title: 'Проверьте форму',
+        title: t('deals.form.checkForm', 'Проверьте форму'),
         description: Object.values(newErrors)[0],
         variant: 'destructive'
       });
@@ -161,22 +161,22 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
       if (deal) {
         await updateDeal(deal.id, dealData);
         toast({
-          title: 'Сделка обновлена',
-          description: 'Сделка успешно обновлена'
+          title: t('deals.updated', 'Сделка обновлена'),
+          description: t('deals.updatedDesc', 'Сделка успешно обновлена')
         });
       } else {
         await addDeal(dealData);
         toast({
-          title: 'Сделка создана',
-          description: 'Сделка успешно создана'
+          title: t('deals.created', 'Сделка создана'),
+          description: t('deals.createdDesc', 'Сделка успешно создана')
         });
       }
       
       onClose();
     } catch (error) {
       toast({
-        title: 'Ошибка',
-        description: 'Ошибка при сохранении сделки',
+        title: t('common.error', 'Ошибка'),
+        description: t('deals.saveError', 'Ошибка при сохранении сделки'),
         variant: 'destructive'
       });
     } finally {
@@ -213,7 +213,7 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
 
   const getLeadName = (leadId: string) => {
     const lead = leads.find(l => l.id === leadId);
-    return lead ? `${lead.name} (${lead.company || 'Без компании'})` : '';
+    return lead ? `${lead.name} (${lead.company || t('deals.form.noCompany', 'Без компании')})` : '';
   };
 
   const getProductName = (productId: string) => {
@@ -234,10 +234,10 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Target className="w-5 h-5" />
-            {deal ? 'Редактировать сделку' : 'Добавить сделку'}
+            {deal ? t('deals.editDeal', 'Редактировать сделку') : t('deals.addDeal', 'Добавить сделку')}
           </DialogTitle>
           <DialogDescription>
-            {deal ? 'Обновите данные сделки' : 'Заполните форму для создания сделки'}
+            {deal ? t('deals.form.updateDescription', 'Обновите данные сделки') : t('deals.form.createDescription', 'Заполните форму для создания сделки')}
           </DialogDescription>
         </DialogHeader>
 
@@ -249,27 +249,27 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <FileText className="w-4 h-4" />
-                    Основная информация
+                    {t('deals.form.basicInfo', 'Основная информация')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <Label htmlFor="title">Название сделки *</Label>
+                    <Label htmlFor="title">{t('deals.form.dealTitle', 'Название сделки')} *</Label>
                     <Input
                       id="title"
                       value={formData.title}
                       onChange={(e) => handleInputChange('title', e.target.value)}
-                      placeholder="Введите название сделки"
+                      placeholder={t('deals.form.dealTitlePlaceholder', 'Введите название сделки')}
                       className={errors.title ? 'border-red-500' : ''}
                     />
                     {errors.title && <p className="text-sm text-red-500 mt-1">{errors.title}</p>}
                   </div>
 
                   <div>
-                    <Label htmlFor="lead_id">Лид</Label>
+                    <Label htmlFor="lead_id">{t('deals.form.lead', 'Лид')}</Label>
                     <Select value={formData.lead_id} onValueChange={(value) => handleInputChange('lead_id', value)}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Выберите лид" />
+                        <SelectValue placeholder={t('deals.form.selectLead', 'Выберите лид')} />
                       </SelectTrigger>
                       <SelectContent>
                         {leads.map((lead) => (
@@ -282,15 +282,15 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
                   </div>
 
                   <div>
-                    <Label htmlFor="deal_type">Тип сделки</Label>
+                    <Label htmlFor="deal_type">{t('deals.form.dealType', 'Тип сделки')}</Label>
                     <Select value={formData.deal_type} onValueChange={(value) => handleInputChange('deal_type', value)}>
                       <SelectTrigger className={errors.deal_type ? 'border-red-500' : ''}>
-                        <SelectValue placeholder="Выберите тип сделки" />
+                        <SelectValue placeholder={t('deals.form.selectDealType', 'Выберите тип сделки')} />
                       </SelectTrigger>
                        <SelectContent>
-                         <SelectItem value="product">Товар</SelectItem>
-                         <SelectItem value="service">Услуга</SelectItem>
-                         <SelectItem value="both">И товар и услуга</SelectItem>
+                         <SelectItem value="product">{t('deals.form.product', 'Товар')}</SelectItem>
+                         <SelectItem value="service">{t('deals.form.service', 'Услуга')}</SelectItem>
+                         <SelectItem value="both">{t('deals.form.productAndService', 'И товар и услуга')}</SelectItem>
                        </SelectContent>
                     </Select>
                     {errors.deal_type && <p className="text-sm text-red-500 mt-1">{errors.deal_type}</p>}
@@ -298,10 +298,10 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
 
                   {(formData.deal_type === 'product' || formData.deal_type === 'both') && (
                     <div>
-                      <Label htmlFor="product_id">Товар</Label>
+                      <Label htmlFor="product_id">{t('deals.form.product', 'Товар')}</Label>
                       <Select value={formData.product_id} onValueChange={(value) => handleInputChange('product_id', value)}>
                         <SelectTrigger>
-                          <SelectValue placeholder="Выберите товар" />
+                          <SelectValue placeholder={t('deals.form.selectProduct', 'Выберите товар')} />
                         </SelectTrigger>
                         <SelectContent>
                           {products
@@ -321,10 +321,10 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
 
                   {(formData.deal_type === 'service' || formData.deal_type === 'both') && (
                     <div>
-                      <Label htmlFor="service_id">Услуга</Label>
+                      <Label htmlFor="service_id">{t('deals.form.service', 'Услуга')}</Label>
                       <Select value={formData.service_id} onValueChange={(value) => handleInputChange('service_id', value)}>
                         <SelectTrigger>
-                          <SelectValue placeholder="Выберите услугу" />
+                          <SelectValue placeholder={t('deals.form.selectService', 'Выберите услугу')} />
                         </SelectTrigger>
                         <SelectContent>
                           {services
@@ -344,7 +344,7 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="stage">Этап сделки *</Label>
+                      <Label htmlFor="stage">{t('deals.form.dealStage', 'Этап сделки')} *</Label>
                       <Select value={formData.stage} onValueChange={(value) => handleInputChange('stage', value)}>
                         <SelectTrigger>
                           <SelectValue />
@@ -367,7 +367,7 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
                     </div>
 
                     <div>
-                      <Label htmlFor="close_date">Дата закрытия</Label>
+                      <Label htmlFor="close_date">{t('deals.form.closeDate', 'Дата закрытия')}</Label>
                       <Input
                         id="close_date"
                         type="date"
@@ -378,12 +378,12 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
                   </div>
 
                   <div>
-                    <Label htmlFor="notes">Заметки</Label>
+                    <Label htmlFor="notes">{t('deals.form.notes', 'Заметки')}</Label>
                     <Textarea
                       id="notes"
                       value={formData.notes}
                       onChange={(e) => handleInputChange('notes', e.target.value)}
-                      placeholder="Добавить заметки о сделке"
+                      placeholder={t('deals.form.notesPlaceholder', 'Добавить заметки о сделке')}
                       rows={3}
                     />
                   </div>
@@ -394,12 +394,12 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <DollarSign className="w-4 h-4" />
-                    Финансовые детали
+                    {t('deals.form.financialDetails', 'Финансовые детали')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <Label htmlFor="amount">Сумма сделки</Label>
+                    <Label htmlFor="amount">{t('deals.form.dealAmount', 'Сумма сделки')}</Label>
                     <Input
                       id="amount"
                       type="number"
@@ -416,15 +416,15 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
 
               {canEditPaymentStatus && (
                 <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <CreditCard className="w-4 h-4" />
-                      Статус оплаты
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <CreditCard className="w-4 h-4" />
+                    {t('deals.form.paymentStatus', 'Статус оплаты')}
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div>
-                      <Label htmlFor="payment_status">Статус оплаты</Label>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label htmlFor="payment_status">{t('deals.form.paymentStatus', 'Статус оплаты')}</Label>
                       <Select 
                         value={formData.payment_status} 
                         onValueChange={(value) => handleInputChange('payment_status', value)}
@@ -433,17 +433,17 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="waiting">Ожидание</SelectItem>
-                          <SelectItem value="paid">Оплачено</SelectItem>
-                          <SelectItem value="not_realized">Не реализовано</SelectItem>
-                          <SelectItem value="debt">Задолженность</SelectItem>
+                          <SelectItem value="waiting">{t('deals.payment.waiting', 'Ожидание')}</SelectItem>
+                          <SelectItem value="paid">{t('deals.payment.paid', 'Оплачено')}</SelectItem>
+                          <SelectItem value="not_realized">{t('deals.payment.notRealized', 'Не реализовано')}</SelectItem>
+                          <SelectItem value="debt">{t('deals.payment.debt', 'Задолженность')}</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
 
                     {formData.payment_status === 'debt' && (
                       <div>
-                        <Label htmlFor="debt_amount">Сумма задолженности</Label>
+                        <Label htmlFor="debt_amount">{t('deals.form.debtAmount', 'Сумма задолженности')}</Label>
                         <Input
                           id="debt_amount"
                           type="number"
@@ -465,13 +465,13 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <TrendingUp className="w-4 h-4" />
-                    Сводка по сделке
+                    {t('deals.form.dealSummary', 'Сводка по сделке')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {currentStage && (
                     <div>
-                      <Label>Текущий этап</Label>
+                      <Label>{t('deals.form.currentStage', 'Текущий этап')}</Label>
                       <Badge className={`w-full justify-center mt-1 ${currentStage.color}`}>
                         {currentStage.label}
                       </Badge>
@@ -480,7 +480,7 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
 
                   {formData.lead_id && (
                     <div>
-                      <Label>Выбранный лид</Label>
+                      <Label>{t('deals.form.selectedLead', 'Выбранный лид')}</Label>
                       <div className="mt-1 p-2 bg-muted rounded text-sm">
                         <div className="flex items-center gap-2">
                           <User className="w-4 h-4" />
@@ -495,9 +495,9 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
                      (formData.deal_type === 'both' && (formData.product_id || formData.service_id))) && (
                      <div>
                        <Label>
-                         {formData.deal_type === 'product' ? 'Выбранный товар' : 
-                          formData.deal_type === 'service' ? 'Выбранная услуга' :
-                          'Выбранные товар и услуга'}
+                         {formData.deal_type === 'product' ? t('deals.form.selectedProduct', 'Выбранный товар') : 
+                          formData.deal_type === 'service' ? t('deals.form.selectedService', 'Выбранная услуга') :
+                          t('deals.form.selectedProductAndService', 'Выбранные товар и услуга')}
                        </Label>
                        <div className="mt-1 space-y-1">
                          {formData.product_id && (
@@ -522,10 +522,10 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
 
                    {formData.amount && (
                      <div>
-                       <Label>Финансовая сводка</Label>
+                       <Label>{t('deals.form.financialSummary', 'Финансовая сводка')}</Label>
                        <div className="mt-1 space-y-2">
                           <div className="flex justify-between text-sm">
-                            <span>Стоимость сделки:</span>
+                            <span>{t('deals.form.dealValue', 'Стоимость сделки')}:</span>
                             <span className="font-medium">{Number(formData.amount).toLocaleString()} UZS</span>
                           </div>
                        </div>
@@ -534,7 +534,7 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
 
                   {formData.close_date && (
                     <div>
-                      <Label>Ожидаемое закрытие</Label>
+                      <Label>{t('deals.form.expectedClose', 'Ожидаемое закрытие')}</Label>
                       <div className="mt-1 p-2 bg-muted rounded text-sm">
                         <div className="flex items-center gap-2">
                           <Calendar className="w-4 h-4" />
@@ -552,10 +552,10 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
 
           <div className="flex justify-end gap-3">
             <Button type="button" variant="outline" onClick={onClose}>
-              Отмена
+              {t('common.cancel', 'Отмена')}
             </Button>
             <Button type="submit" disabled={loading}>
-              {loading ? 'Сохранение...' : deal ? 'Обновить' : 'Создать'}
+              {loading ? t('common.saving', 'Сохранение...') : deal ? t('common.update', 'Обновить') : t('common.create', 'Создать')}
             </Button>
           </div>
         </form>

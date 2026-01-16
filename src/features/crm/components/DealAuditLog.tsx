@@ -6,7 +6,8 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { supabase } from '@/integrations/supabase/client';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
-import { 
+import { useTranslation } from 'react-i18next';
+import {
   FileText, 
   Clock, 
   User,
@@ -37,6 +38,7 @@ interface DealAuditLogProps {
 }
 
 const DealAuditLog = ({ dealId }: DealAuditLogProps) => {
+  const { t } = useTranslation();
   const [auditLogs, setAuditLogs] = useState<AuditLogEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -88,26 +90,26 @@ const DealAuditLog = ({ dealId }: DealAuditLogProps) => {
 
   const getActionLabel = (actionType: string) => {
     const labelMap: { [key: string]: string } = {
-      created: 'Создана',
-      updated: 'Обновлена',
-      deleted: 'Удалена',
-      stage_changed: 'Изменен статус',
-      payment_status_changed: 'Изменен статус оплаты',
-      assigned: 'Назначение изменено'
+      created: t('deals.audit.created', 'Создана'),
+      updated: t('deals.audit.updated', 'Обновлена'),
+      deleted: t('deals.audit.deleted', 'Удалена'),
+      stage_changed: t('deals.audit.stageChanged', 'Изменен статус'),
+      payment_status_changed: t('deals.audit.paymentStatusChanged', 'Изменен статус оплаты'),
+      assigned: t('deals.audit.assigned', 'Назначение изменено')
     };
     return labelMap[actionType] || actionType;
   };
 
   const getFieldLabel = (field: string) => {
     const labelMap: { [key: string]: string } = {
-      title: 'Название',
-      amount: 'Сумма',
-      stage: 'Статус',
-      payment_status: 'Статус оплаты',
-      debt_amount: 'Сумма задолженности',
-      assignments: 'Назначения',
-      notes: 'Заметки',
-      probability: 'Вероятность'
+      title: t('deals.audit.fields.title', 'Название'),
+      amount: t('deals.audit.fields.amount', 'Сумма'),
+      stage: t('deals.audit.fields.stage', 'Статус'),
+      payment_status: t('deals.audit.fields.paymentStatus', 'Статус оплаты'),
+      debt_amount: t('deals.audit.fields.debtAmount', 'Сумма задолженности'),
+      assignments: t('deals.audit.fields.assignments', 'Назначения'),
+      notes: t('deals.audit.fields.notes', 'Заметки'),
+      probability: t('deals.audit.fields.probability', 'Вероятность')
     };
     return labelMap[field] || field;
   };
@@ -116,7 +118,7 @@ const DealAuditLog = ({ dealId }: DealAuditLogProps) => {
     if (log.action_type === 'created') {
       return (
         <div className="text-sm text-muted-foreground">
-          Сделка создана пользователем {log.user_email}
+          {t('deals.audit.dealCreatedBy', 'Сделка создана пользователем {{email}}', { email: log.user_email })}
         </div>
       );
     }
@@ -162,12 +164,12 @@ const DealAuditLog = ({ dealId }: DealAuditLogProps) => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <FileText className="w-5 h-5" />
-            Аудит изменений
+            {t('deals.audit.title', 'Аудит изменений')}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-center text-muted-foreground py-8">
-            Загрузка...
+            {t('common.loading', 'Загрузка...')}
           </div>
         </CardContent>
       </Card>
@@ -180,12 +182,12 @@ const DealAuditLog = ({ dealId }: DealAuditLogProps) => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <FileText className="w-5 h-5" />
-            Аудит изменений
+            {t('deals.audit.title', 'Аудит изменений')}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-center text-muted-foreground py-8">
-            История изменений пуста
+            {t('deals.audit.empty', 'История изменений пуста')}
           </div>
         </CardContent>
       </Card>
@@ -197,7 +199,7 @@ const DealAuditLog = ({ dealId }: DealAuditLogProps) => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <FileText className="w-5 h-5" />
-          Аудит изменений
+          {t('deals.audit.title', 'Аудит изменений')}
         </CardTitle>
       </CardHeader>
       <CardContent>
