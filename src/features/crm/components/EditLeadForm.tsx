@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Lead, useLeads } from '@/hooks/useLeads';
 import { useToast } from '@/hooks/use-toast';
+import { useTranslation } from 'react-i18next';
 import { Loader2, Save, User, Phone, Building, FileText, Tag, Target, DollarSign, Clock, Briefcase } from 'lucide-react';
 
 interface EditLeadFormProps {
@@ -15,59 +16,60 @@ interface EditLeadFormProps {
   embedded?: boolean;
 }
 
-const stages = [
-  { value: 'new', label: 'Новый' },
-  { value: 'contacted', label: 'Связались' },
-  { value: 'qualified', label: 'Квалифицирован' },
-  { value: 'proposal', label: 'Предложение' },
-  { value: 'negotiation', label: 'Переговоры' },
-  { value: 'closed', label: 'Закрыт' },
-  { value: 'lost', label: 'Потерян' }
-];
-
-const sources = [
-  { value: 'manual', label: 'Ручной ввод' },
-  { value: 'website_form', label: 'Форма на сайте' },
-  { value: 'phone_call', label: 'Телефонный звонок' },
-  { value: 'email', label: 'Email' },
-  { value: 'social_media', label: 'Социальные сети' },
-  { value: 'referral', label: 'Рекомендация' },
-  { value: 'other', label: 'Другое' }
-];
-
-const budgetRanges = [
-  { value: 'under_10k', label: 'До $10,000' },
-  { value: '10k_50k', label: '$10,000 - $50,000' },
-  { value: '50k_100k', label: '$50,000 - $100,000' },
-  { value: '100k_500k', label: '$100,000 - $500,000' },
-  { value: 'over_500k', label: 'Свыше $500,000' },
-  { value: 'not_specified', label: 'Не указан' }
-];
-
-const equipmentTypes = [
-  { value: 'mri', label: 'МРТ' },
-  { value: 'ct', label: 'КТ' },
-  { value: 'ultrasound', label: 'УЗИ' },
-  { value: 'xray', label: 'Рентген' },
-  { value: 'mammography', label: 'Маммография' },
-  { value: 'endoscopy', label: 'Эндоскопия' },
-  { value: 'laboratory', label: 'Лабораторное оборудование' },
-  { value: 'other', label: 'Другое' }
-];
-
-const timelines = [
-  { value: 'immediate', label: 'Немедленно (в течение месяца)' },
-  { value: 'quarter', label: 'В течение квартала' },
-  { value: 'half_year', label: 'В течение полугода' },
-  { value: 'year', label: 'В течение года' },
-  { value: 'over_year', label: 'Более года' },
-  { value: 'research', label: 'Пока изучаем рынок' }
-];
-
 export const EditLeadForm = ({ lead, onSuccess, embedded = false }: EditLeadFormProps) => {
+  const { t } = useTranslation();
   const { updateLead } = useLeads();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+
+  const stages = [
+    { value: 'new', label: t('leads.stages.new', 'Новый') },
+    { value: 'contacted', label: t('leads.stages.contacted', 'Связались') },
+    { value: 'qualified', label: t('leads.stages.qualified', 'Квалифицирован') },
+    { value: 'proposal', label: t('leads.stages.proposal', 'Предложение') },
+    { value: 'negotiation', label: t('leads.stages.negotiation', 'Переговоры') },
+    { value: 'closed', label: t('leads.stages.closed', 'Закрыт') },
+    { value: 'lost', label: t('leads.stages.lost', 'Потерян') }
+  ];
+
+  const sources = [
+    { value: 'manual', label: t('leads.addLeadDialog.sources.manual', 'Ручной ввод') },
+    { value: 'website_form', label: t('leads.addLeadDialog.sources.website_form', 'Форма на сайте') },
+    { value: 'phone_call', label: t('leads.addLeadDialog.sources.phone_call', 'Телефонный звонок') },
+    { value: 'email', label: t('leads.addLeadDialog.sources.email', 'Email') },
+    { value: 'social_media', label: t('leads.addLeadDialog.sources.social_media', 'Социальные сети') },
+    { value: 'referral', label: t('leads.addLeadDialog.sources.referral', 'Рекомендация') },
+    { value: 'other', label: t('leads.addLeadDialog.sources.other', 'Другое') }
+  ];
+
+  const budgetRanges = [
+    { value: 'under_10k', label: t('leads.addLeadDialog.budgetRanges.under_10k', 'До $10,000') },
+    { value: '10k_50k', label: t('leads.addLeadDialog.budgetRanges.10k_50k', '$10,000 - $50,000') },
+    { value: '50k_100k', label: t('leads.addLeadDialog.budgetRanges.50k_100k', '$50,000 - $100,000') },
+    { value: '100k_500k', label: t('leads.addLeadDialog.budgetRanges.100k_500k', '$100,000 - $500,000') },
+    { value: 'over_500k', label: t('leads.addLeadDialog.budgetRanges.over_500k', 'Свыше $500,000') },
+    { value: 'not_specified', label: t('leads.addLeadDialog.budgetRanges.not_specified', 'Не указан') }
+  ];
+
+  const equipmentTypes = [
+    { value: 'mri', label: t('leads.addLeadDialog.equipmentTypes.mri', 'МРТ') },
+    { value: 'ct', label: t('leads.addLeadDialog.equipmentTypes.ct', 'КТ') },
+    { value: 'ultrasound', label: t('leads.addLeadDialog.equipmentTypes.ultrasound', 'УЗИ') },
+    { value: 'xray', label: t('leads.addLeadDialog.equipmentTypes.xray', 'Рентген') },
+    { value: 'mammography', label: t('leads.enhancedLeadModal.equipmentTypes.mammography', 'Маммография') },
+    { value: 'endoscopy', label: t('leads.enhancedLeadModal.equipmentTypes.endoscopy', 'Эндоскопия') },
+    { value: 'laboratory', label: t('leads.addLeadDialog.equipmentTypes.laboratory', 'Лабораторное оборудование') },
+    { value: 'other', label: t('leads.addLeadDialog.equipmentTypes.other', 'Другое') }
+  ];
+
+  const timelines = [
+    { value: 'immediate', label: t('leads.enhancedLeadModal.timelines.immediate', 'Немедленно (в течение месяца)') },
+    { value: 'quarter', label: t('leads.enhancedLeadModal.timelines.quarter', 'В течение квартала') },
+    { value: 'half_year', label: t('leads.enhancedLeadModal.timelines.half_year', 'В течение полугода') },
+    { value: 'year', label: t('leads.enhancedLeadModal.timelines.year', 'В течение года') },
+    { value: 'over_year', label: t('leads.enhancedLeadModal.timelines.over_year', 'Более года') },
+    { value: 'research', label: t('leads.enhancedLeadModal.timelines.research', 'Пока изучаем рынок') }
+  ];
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -126,15 +128,15 @@ export const EditLeadForm = ({ lead, onSuccess, embedded = false }: EditLeadForm
       });
       
       toast({
-        title: 'Успешно',
-        description: 'Лид обновлен',
+        title: t('common.success', 'Успешно'),
+        description: t('leads.editForm.success', 'Лид обновлен'),
       });
       
       onSuccess?.();
     } catch (error) {
       toast({
-        title: 'Ошибка',
-        description: 'Ошибка при обновлении лида',
+        title: t('common.error', 'Ошибка'),
+        description: t('leads.editForm.error', 'Ошибка при обновлении лида'),
         variant: 'destructive',
       });
     } finally {
@@ -155,64 +157,64 @@ export const EditLeadForm = ({ lead, onSuccess, embedded = false }: EditLeadForm
       <div className="space-y-4">
         <h3 className="text-lg font-semibold flex items-center gap-2">
           <User className="h-5 w-5" />
-          Основная информация
+          {t('leads.editForm.sections.basicInfo', 'Основная информация')}
         </h3>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="name" className="flex items-center gap-2">
               <User className="h-4 w-4" />
-              Имя *
+              {t('leads.name', 'Имя')} *
             </Label>
             <Input
               id="name"
               value={formData.name}
               onChange={(e) => handleInputChange('name', e.target.value)}
-              placeholder="Введите имя"
+              placeholder={t('leads.editForm.placeholders.name', 'Введите имя')}
               required
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{t('leads.editForm.fields.email', 'Email')}</Label>
             <Input
               id="email"
               type="email"
               value={formData.email}
               onChange={(e) => handleInputChange('email', e.target.value)}
-              placeholder="Введите email"
+              placeholder={t('leads.editForm.placeholders.email', 'Введите email')}
             />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="phone" className="flex items-center gap-2">
               <Phone className="h-4 w-4" />
-              Телефон
+              {t('leads.phone', 'Телефон')}
             </Label>
             <Input
               id="phone"
               type="tel"
               value={formData.phone}
               onChange={(e) => handleInputChange('phone', e.target.value)}
-              placeholder="Введите телефон"
+              placeholder={t('leads.editForm.placeholders.phone', 'Введите телефон')}
             />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="company" className="flex items-center gap-2">
               <Building className="h-4 w-4" />
-              Компания
+              {t('leads.company', 'Компания')}
             </Label>
             <Input
               id="company"
               value={formData.company}
               onChange={(e) => handleInputChange('company', e.target.value)}
-              placeholder="Введите название компании"
+              placeholder={t('leads.editForm.placeholders.company', 'Введите название компании')}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="value">Потенциальная сумма ($)</Label>
+            <Label htmlFor="value">{t('leads.editForm.fields.value', 'Потенциальная сумма ($)')}</Label>
             <Input
               id="value"
               type="number"
@@ -230,15 +232,15 @@ export const EditLeadForm = ({ lead, onSuccess, embedded = false }: EditLeadForm
       <div className="space-y-4">
         <h3 className="text-lg font-semibold flex items-center gap-2">
           <Tag className="h-5 w-5" />
-          Статус и источник
+          {t('leads.editForm.sections.statusAndSource', 'Статус и источник')}
         </h3>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="stage">Статус</Label>
+            <Label htmlFor="stage">{t('leads.status', 'Статус')}</Label>
             <Select value={formData.stage} onValueChange={(value) => handleInputChange('stage', value)}>
               <SelectTrigger>
-                <SelectValue placeholder="Выберите статус" />
+                <SelectValue placeholder={t('leads.editForm.placeholders.stage', 'Выберите статус')} />
               </SelectTrigger>
               <SelectContent className="bg-background z-50">
                 {stages.map((stage) => (
@@ -251,10 +253,10 @@ export const EditLeadForm = ({ lead, onSuccess, embedded = false }: EditLeadForm
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="source">Источник</Label>
+            <Label htmlFor="source">{t('leads.addLeadDialog.fields.source', 'Источник')}</Label>
             <Select value={formData.source} onValueChange={(value) => handleInputChange('source', value)}>
               <SelectTrigger>
-                <SelectValue placeholder="Выберите источник" />
+                <SelectValue placeholder={t('leads.editForm.placeholders.source', 'Выберите источник')} />
               </SelectTrigger>
               <SelectContent className="bg-background z-50">
                 {sources.map((source) => (
@@ -272,18 +274,18 @@ export const EditLeadForm = ({ lead, onSuccess, embedded = false }: EditLeadForm
       <div className="space-y-4">
         <h3 className="text-lg font-semibold flex items-center gap-2">
           <Target className="h-5 w-5" />
-          Квалификация лида
+          {t('leads.editForm.sections.qualification', 'Квалификация лида')}
         </h3>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="budget_range" className="flex items-center gap-2">
               <DollarSign className="h-4 w-4" />
-              Бюджет
+              {t('leads.addLeadDialog.fields.budgetRange', 'Бюджет')}
             </Label>
             <Select value={formData.budget_range} onValueChange={(value) => handleInputChange('budget_range', value)}>
               <SelectTrigger>
-                <SelectValue placeholder="Выберите диапазон бюджета" />
+                <SelectValue placeholder={t('leads.addLeadDialog.placeholders.budgetRange', 'Выберите диапазон бюджета')} />
               </SelectTrigger>
               <SelectContent className="bg-background z-50">
                 {budgetRanges.map((range) => (
@@ -298,24 +300,24 @@ export const EditLeadForm = ({ lead, onSuccess, embedded = false }: EditLeadForm
           <div className="space-y-2">
             <Label htmlFor="position" className="flex items-center gap-2">
               <Briefcase className="h-4 w-4" />
-              Позиция/Должность
+              {t('leads.editForm.fields.position', 'Позиция/Должность')}
             </Label>
             <Input
               id="position"
               value={formData.position}
               onChange={(e) => handleInputChange('position', e.target.value)}
-              placeholder="Например: Главный врач, Директор"
+              placeholder={t('leads.editForm.placeholders.position', 'Например: Главный врач, Директор')}
             />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="equipment_interest" className="flex items-center gap-2">
               <Building className="h-4 w-4" />
-              Интерес к оборудованию
+              {t('leads.addLeadDialog.fields.equipmentInterest', 'Интерес к оборудованию')}
             </Label>
             <Select value={formData.equipment_interest} onValueChange={(value) => handleInputChange('equipment_interest', value)}>
               <SelectTrigger>
-                <SelectValue placeholder="Выберите тип оборудования" />
+                <SelectValue placeholder={t('leads.addLeadDialog.placeholders.equipmentInterest', 'Выберите тип оборудования')} />
               </SelectTrigger>
               <SelectContent className="bg-background z-50">
                 {equipmentTypes.map((type) => (
@@ -330,11 +332,11 @@ export const EditLeadForm = ({ lead, onSuccess, embedded = false }: EditLeadForm
           <div className="space-y-2">
             <Label htmlFor="timeline" className="flex items-center gap-2">
               <Clock className="h-4 w-4" />
-              Сроки реализации
+              {t('leads.editForm.fields.timeline', 'Сроки реализации')}
             </Label>
             <Select value={formData.timeline} onValueChange={(value) => handleInputChange('timeline', value)}>
               <SelectTrigger>
-                <SelectValue placeholder="Выберите временные рамки" />
+                <SelectValue placeholder={t('leads.editForm.placeholders.timeline', 'Выберите временные рамки')} />
               </SelectTrigger>
               <SelectContent className="bg-background z-50">
                 {timelines.map((timeline) => (
@@ -349,16 +351,16 @@ export const EditLeadForm = ({ lead, onSuccess, embedded = false }: EditLeadForm
           <div className="space-y-2">
             <Label htmlFor="lead_quality" className="flex items-center gap-2">
               <Target className="h-4 w-4" />
-              Качество лида
+              {t('leads.leadQuality', 'Качество лида')}
             </Label>
             <Select value={formData.lead_quality} onValueChange={(value) => handleInputChange('lead_quality', value)}>
               <SelectTrigger>
-                <SelectValue placeholder="Выберите качество лида" />
+                <SelectValue placeholder={t('leads.addLeadDialog.placeholders.leadQuality', 'Выберите качество лида')} />
               </SelectTrigger>
               <SelectContent className="bg-background z-50">
-                <SelectItem value="A">A - Целевой</SelectItem>
-                <SelectItem value="B">B - Потенциальный</SelectItem>
-                <SelectItem value="C">C - Мусор</SelectItem>
+                <SelectItem value="A">{t('leads.qualityA', 'A - Целевой')}</SelectItem>
+                <SelectItem value="B">{t('leads.qualityB', 'B - Потенциальный')}</SelectItem>
+                <SelectItem value="C">{t('leads.qualityC', 'C - Мусор')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -366,8 +368,7 @@ export const EditLeadForm = ({ lead, onSuccess, embedded = false }: EditLeadForm
 
         <div className="p-4 bg-muted/50 rounded-lg">
           <p className="text-sm text-muted-foreground">
-            <span className="font-medium">Совет:</span> Заполните поля квалификации во время телефонного разговора с клиентом. 
-            Эта информация поможет лучше понять потребности лида и подготовить персональное предложение.
+            <span className="font-medium">{t('leads.editForm.tip', 'Совет:')}</span> {t('leads.editForm.tipText', 'Заполните поля квалификации во время телефонного разговора с клиентом. Эта информация поможет лучше понять потребности лида и подготовить персональное предложение.')}
           </p>
         </div>
       </div>
@@ -376,21 +377,21 @@ export const EditLeadForm = ({ lead, onSuccess, embedded = false }: EditLeadForm
       <div className="space-y-4">
         <h3 className="text-lg font-semibold flex items-center gap-2">
           <FileText className="h-5 w-5" />
-          Заметки
+          {t('leads.editForm.sections.notes', 'Заметки')}
         </h3>
         
         <div className="space-y-2">
-          <Label htmlFor="notes">Основные заметки</Label>
+          <Label htmlFor="notes">{t('leads.editForm.fields.mainNotes', 'Основные заметки')}</Label>
           <Textarea
             id="notes"
             value={formData.notes}
             onChange={(e) => handleInputChange('notes', e.target.value)}
-            placeholder="Введите заметки о лиде"
+            placeholder={t('leads.editForm.placeholders.notes', 'Введите заметки о лиде')}
             rows={4}
             className="resize-none"
           />
           <p className="text-xs text-muted-foreground">
-            Эти заметки отображаются в основной информации лида. Для детального общения используйте вкладку "Активность"
+            {t('leads.editForm.notesHelp', 'Эти заметки отображаются в основной информации лида. Для детального общения используйте вкладку "Активность"')}
           </p>
         </div>
       </div>
@@ -399,7 +400,7 @@ export const EditLeadForm = ({ lead, onSuccess, embedded = false }: EditLeadForm
         <Button type="submit" disabled={loading || !formData.name.trim()}>
           {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           <Save className="mr-2 h-4 w-4" />
-          Сохранить изменения
+          {t('leads.editForm.saveButton', 'Сохранить изменения')}
         </Button>
       </div>
     </form>
@@ -412,7 +413,7 @@ export const EditLeadForm = ({ lead, onSuccess, embedded = false }: EditLeadForm
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Редактировать лид</CardTitle>
+        <CardTitle>{t('leads.editForm.title', 'Редактировать лид')}</CardTitle>
       </CardHeader>
       <CardContent>
         {content}
