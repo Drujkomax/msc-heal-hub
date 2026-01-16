@@ -423,6 +423,68 @@
       "error": "Error adding lead",
       "adding": "Adding...",
       "addButton": "Add Lead"
+    },
+    "unifiedLeadModal": {
+      "id": "ID",
+      "editButton": "Edit",
+      "sections": {
+        "contactInfo": "Contact Information",
+        "systemInfo": "System Information",
+        "qualificationData": "Qualification Data",
+        "notes": "Notes",
+        "activityHistory": "Activity History"
+      },
+      "fields": {
+        "email": "Email",
+        "phone": "Phone",
+        "company": "Company",
+        "position": "Position",
+        "city": "City",
+        "leadCreatedDate": "Lead Creation Date",
+        "createdInCRM": "Created in CRM",
+        "updated": "Updated",
+        "source": "Source",
+        "potentialValue": "Potential Value",
+        "assignedTo": "Assigned To",
+        "budget": "Budget",
+        "equipmentInterest": "Equipment Interest",
+        "timeline": "Timeline"
+      },
+      "notSpecified": "Not specified",
+      "loading": "Loading...",
+      "statusUpdated": "Lead status updated",
+      "statusUpdateError": "Error updating status",
+      "sources": {
+        "websiteForm": "Website Form"
+      },
+      "budgetRanges": {
+        "under_50k": "Up to $50,000",
+        "50k_100k": "$50,000 - $100,000",
+        "100k_500k": "$100,000 - $500,000",
+        "500k_1m": "$500,000 - $1,000,000",
+        "over_1m": "Over $1,000,000",
+        "not_disclosed": "Not disclosed"
+      },
+      "equipmentTypes": {
+        "mri": "MRI equipment",
+        "ct": "CT equipment",
+        "ultrasound": "Ultrasound equipment",
+        "xray": "X-ray equipment",
+        "laboratory": "Laboratory equipment",
+        "surgical": "Surgical equipment",
+        "anesthesia": "Anesthesia equipment",
+        "monitoring": "Monitoring equipment",
+        "rehabilitation": "Rehabilitation equipment",
+        "other": "Other"
+      },
+      "timelines": {
+        "immediate": "Immediately",
+        "within_month": "Within a month",
+        "within_quarter": "Within a quarter",
+        "within_year": "Within a year",
+        "over_year": "Over a year",
+        "research": "Researching the market"
+      }
     }
   },
   "services": {
