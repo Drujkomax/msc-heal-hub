@@ -485,6 +485,90 @@
         "over_year": "Over a year",
         "research": "Researching the market"
       }
+    },
+    "enhancedLeadModal": {
+      "id": "ID",
+      "tabs": {
+        "overview": "Overview",
+        "activity": "Activity",
+        "edit": "Edit"
+      },
+      "sections": {
+        "contactInfo": "Contact Information",
+        "systemInfo": "System Information",
+        "leadQualification": "Lead Qualification",
+        "notes": "Main Notes"
+      },
+      "fields": {
+        "name": "Name",
+        "phone": "Phone",
+        "email": "Email",
+        "company": "Company",
+        "status": "Status",
+        "leadCreatedDate": "Lead Creation Date",
+        "createdInCRM": "Created in CRM",
+        "lastUpdated": "Last Updated",
+        "source": "Source",
+        "budget": "Budget",
+        "position": "Position/Role",
+        "equipmentInterest": "Equipment Interest",
+        "timeline": "Implementation Timeline",
+        "qualificationDate": "Qualification Date",
+        "assignedTo": "Assigned To",
+        "closedDate": "Closed Date",
+        "potentialAmount": "Potential Amount"
+      },
+      "sources": {
+        "websiteForm": "Website Form",
+        "manual": "Manual Entry",
+        "phoneCall": "Phone Call"
+      },
+      "budgetRanges": {
+        "under_10k": "Up to $10,000",
+        "10k_50k": "$10,000 - $50,000",
+        "50k_100k": "$50,000 - $100,000",
+        "100k_500k": "$100,000 - $500,000",
+        "over_500k": "Over $500,000",
+        "not_specified": "Not specified"
+      },
+      "equipmentTypes": {
+        "mri": "MRI",
+        "ct": "CT",
+        "ultrasound": "Ultrasound",
+        "xray": "X-ray",
+        "mammography": "Mammography",
+        "endoscopy": "Endoscopy",
+        "laboratory": "Laboratory equipment",
+        "other": "Other"
+      },
+      "timelines": {
+        "immediate": "Immediately (within a month)",
+        "quarter": "Within a quarter",
+        "half_year": "Within half a year",
+        "year": "Within a year",
+        "over_year": "Over a year",
+        "research": "Researching the market"
+      }
+    },
+    "viewLeadModal": {
+      "title": "View Lead",
+      "loading": "Loading...",
+      "fields": {
+        "name": "Name",
+        "phone": "Phone",
+        "company": "Company",
+        "status": "Status",
+        "leadQuality": "Lead Quality",
+        "leadCreatedDate": "Lead Creation Date",
+        "createdInCRM": "Created in CRM",
+        "lastUpdated": "Last Updated",
+        "notes": "Notes",
+        "assigned": "Assigned",
+        "closedDate": "Closed Date"
+      },
+      "qualityA": "A - Target",
+      "qualityB": "B - Potential",
+      "qualityC": "C - Trash"
     }
   },
   "services": {
