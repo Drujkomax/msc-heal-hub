@@ -84,6 +84,9 @@
     "closed": "Closed",
     "lost": "Lost"
   },
+  "common": {
+    "filters": "Filters"
+  },
   "clients": {
     "title": "Clients",
     "subtitle": "Client database management",
