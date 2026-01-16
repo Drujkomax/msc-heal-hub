@@ -189,7 +189,7 @@ const DealsPage = () => {
                           {stat.change}
                         </span>
                         <span className="text-xs text-muted-foreground ml-1">
-                          {t('deals.stats.fromLastMonth')}
+                          {t('deals.stats.fromLastMonth', 'к прошлому месяцу')}
                         </span>
                       </div>
                     )}
