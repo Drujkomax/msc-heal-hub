@@ -20,7 +20,8 @@
     "close": "Close",
     "day": "day",
     "days": "days",
-    "over": "Over"
+    "over": "Over",
+    "forDays": "For {{count}} days"
   },
   "navigation": {
     "home": "Home",
