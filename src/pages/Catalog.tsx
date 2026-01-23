@@ -134,6 +134,27 @@ const Catalog = () => {
     );
   }
 
+  const categoryName = getCategoryTag(selectedCategory, language, allCategories);
+
+const seoTitle =
+  selectedCategory === 'all'
+    ? {
+        ru: 'Каталог медицинского оборудования в Узбекистане',
+        en: 'Medical Equipment Catalog in Uzbekistan',
+        uz: 'O‘zbekistonda tibbiy uskunalar katalogi'
+      }[language]
+    : `${categoryName} — медицинское оборудование в Узбекистане`;
+
+const seoDescription =
+  selectedCategory === 'all'
+    ? {
+        ru: 'Продажа и аренда медицинского оборудования: УЗИ, анализаторы, хирургические системы. Поставка по Узбекистану.',
+        en: 'Medical equipment sales and rental in Uzbekistan.',
+        uz: 'O‘zbekistonda tibbiy uskunalarni sotish va ijaraga berish.'
+      }[language]
+    : `${categoryName}. Продажа, сервис и аренда медицинского оборудования по Узбекистану.`;
+
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
       <SEOHead
