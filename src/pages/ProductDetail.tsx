@@ -1,104 +1,206 @@
-import { useState } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState } from "react";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, Heart, FileText, Loader2, Package, Globe } from "lucide-react";
+import {
+  ArrowLeft,
+  Heart,
+  FileText,
+  Loader2,
+  Package,
+  Globe,
+} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useProduct } from '@/hooks/useProducts';
-import { useManufacturers } from '@/hooks/useManufacturers';
-import { useTranslation } from 'react-i18next';
-import { getCountryName, getCountryFlag } from '@/utils/countries';
+import { useProduct } from "@/hooks/useProducts";
+import { useManufacturers } from "@/hooks/useManufacturers";
+import { useTranslation } from "react-i18next";
+import { getCountryName, getCountryFlag } from "@/utils/countries";
 import SEOHead from "@/components/SEO/SEOHead";
-import { useCurrencyRates } from '@/hooks/useCurrencyRates';
-import { formatUzbekPhoneNumber, validateUzbekPhoneNumber, isValidUzbekPhoneLength, isCompleteUzbekPhone } from '@/lib/phoneValidation';
+import { useCurrencyRates } from "@/hooks/useCurrencyRates";
+import {
+  formatUzbekPhoneNumber,
+  validateUzbekPhoneNumber,
+  isValidUzbekPhoneLength,
+  isCompleteUzbekPhone,
+} from "@/lib/phoneValidation";
 
-const getCategoryLabel = (category: string, language: 'ru' | 'en' | 'uz') => {
+const getCategoryLabel = (category: string, language: "ru" | "en" | "uz") => {
   const categoryLabels = {
-    diagnostic: { ru: 'Диагностическое', en: 'Diagnostic', uz: 'Diagnostika' },
-    surgical: { ru: 'Хирургическое', en: 'Surgical', uz: 'Jarrohlik' },
-    monitoring: { ru: 'Мониторинг', en: 'Monitoring', uz: 'Monitoring' },
-    laboratory: { ru: 'Лабораторное', en: 'Laboratory', uz: 'Laboratoriya' },
-    rehabilitation: { ru: 'Реабилитационное', en: 'Rehabilitation', uz: 'Reabilitatsiya' },
-    dental: { ru: 'Стоматологическое', en: 'Dental', uz: 'Stomatologiya' },
-    ophthalmology: { ru: 'Офтальмологическое', en: 'Ophthalmology', uz: 'Oftalmologiya' },
-    furniture: { ru: 'Медицинская мебель', en: 'Medical Furniture', uz: 'Tibbiy mebel' }
+    diagnostic: { ru: "Диагностическое", en: "Diagnostic", uz: "Diagnostika" },
+    surgical: { ru: "Хирургическое", en: "Surgical", uz: "Jarrohlik" },
+    monitoring: { ru: "Мониторинг", en: "Monitoring", uz: "Monitoring" },
+    laboratory: { ru: "Лабораторное", en: "Laboratory", uz: "Laboratoriya" },
+    rehabilitation: {
+      ru: "Реабилитационное",
+      en: "Rehabilitation",
+      uz: "Reabilitatsiya",
+    },
+    dental: { ru: "Стоматологическое", en: "Dental", uz: "Stomatologiya" },
+    ophthalmology: {
+      ru: "Офтальмологическое",
+      en: "Ophthalmology",
+      uz: "Oftalmologiya",
+    },
+    furniture: {
+      ru: "Медицинская мебель",
+      en: "Medical Furniture",
+      uz: "Tibbiy mebel",
+    },
   };
-  
-  return categoryLabels[category as keyof typeof categoryLabels]?.[language] || category;
+
+  return (
+    categoryLabels[category as keyof typeof categoryLabels]?.[language] ||
+    category
+  );
 };
 
 const translations = {
-  backToCatalog: { ru: "Назад к каталогу", en: "Back to Catalog", uz: "Katalogga qaytish" },
+  backToCatalog: {
+    ru: "Назад к каталогу",
+    en: "Back to Catalog",
+    uz: "Katalogga qaytish",
+  },
   inStock: { ru: "В наличии", en: "In Stock", uz: "Mavjud" },
   outOfStock: { ru: "Под заказ", en: "On Order", uz: "Buyurtma bo'yicha" },
   features: { ru: "Характеристики", en: "Features", uz: "Xususiyatlar" },
   category: { ru: "Категория", en: "Category", uz: "Kategoriya" },
   requestQuote: { ru: "Запросить КП", en: "Request Quote", uz: "KP so'rash" },
-  requestQuoteTitle: { ru: "Запрос коммерческого предложения", en: "Request Commercial Proposal", uz: "Tijoriy taklif so'rovi" },
-  requestQuoteDesc: { ru: "Заполните форму и мы свяжемся с вами в ближайшее время", en: "Fill out the form and we will contact you soon", uz: "Shaklni to'ldiring va biz tez orada siz bilan bog'lanamiz" },
-  companyName: { ru: "Название организации", en: "Company Name", uz: "Tashkilot nomi" },
-  contactPerson: { ru: "Контактное лицо", en: "Contact Person", uz: "Aloqa shaxsi" },
+  requestQuoteTitle: {
+    ru: "Запрос коммерческого предложения",
+    en: "Request Commercial Proposal",
+    uz: "Tijoriy taklif so'rovi",
+  },
+  requestQuoteDesc: {
+    ru: "Заполните форму и мы свяжемся с вами в ближайшее время",
+    en: "Fill out the form and we will contact you soon",
+    uz: "Shaklni to'ldiring va biz tez orada siz bilan bog'lanamiz",
+  },
+  companyName: {
+    ru: "Название организации",
+    en: "Company Name",
+    uz: "Tashkilot nomi",
+  },
+  contactPerson: {
+    ru: "Контактное лицо",
+    en: "Contact Person",
+    uz: "Aloqa shaxsi",
+  },
   phone: { ru: "Телефон", en: "Phone", uz: "Telefon" },
   email: { ru: "Email", en: "Email", uz: "Email" },
-  message: { ru: "Дополнительные пожелания", en: "Additional Requirements", uz: "Qo'shimcha talablar" },
-  submit: { ru: "Отправить заявку", en: "Submit Request", uz: "So'rov yuborish" },
-  successMessage: { ru: "Заявка отправлена! Мы свяжемся с вами в ближайшее время.", en: "Request sent! We will contact you soon.", uz: "So'rov yuborildi! Biz tez orada siz bilan bog'lanamiz." },
-  productNotFound: { ru: "Товар не найден", en: "Product not found", uz: "Mahsulot topilmadi" },
-  loading: { ru: "Загружаем товар...", en: "Loading product...", uz: "Mahsulot yuklanmoqda..." },
+  message: {
+    ru: "Дополнительные пожелания",
+    en: "Additional Requirements",
+    uz: "Qo'shimcha talablar",
+  },
+  submit: {
+    ru: "Отправить заявку",
+    en: "Submit Request",
+    uz: "So'rov yuborish",
+  },
+  successMessage: {
+    ru: "Заявка отправлена! Мы свяжемся с вами в ближайшее время.",
+    en: "Request sent! We will contact you soon.",
+    uz: "So'rov yuborildi! Biz tez orada siz bilan bog'lanamiz.",
+  },
+  productNotFound: {
+    ru: "Товар не найден",
+    en: "Product not found",
+    uz: "Mahsulot topilmadi",
+  },
+  loading: {
+    ru: "Загружаем товар...",
+    en: "Loading product...",
+    uz: "Mahsulot yuklanmoqda...",
+  },
   error: { ru: "Ошибка загрузки", en: "Loading error", uz: "Yuklash xatosi" },
-  keyFeatures: { ru: "Ключевые особенности", en: "Key Features", uz: "Asosiy xususiyatlar" },
-  manufacturer: { ru: "Производитель", en: "Manufacturer", uz: "Ishlab chiqaruvchi" },
-  country: { ru: "Страна", en: "Country", uz: "Mamlakat" }
+  keyFeatures: {
+    ru: "Ключевые особенности",
+    en: "Key Features",
+    uz: "Asosiy xususiyatlar",
+  },
+  manufacturer: {
+    ru: "Производитель",
+    en: "Manufacturer",
+    uz: "Ishlab chiqaruvchi",
+  },
+  country: { ru: "Страна", en: "Country", uz: "Mamlakat" },
 };
 
 const ProductDetail = () => {
   const { t, i18n } = useTranslation();
-  const language = i18n.language as 'ru' | 'en' | 'uz' || 'ru';
+  const language = (i18n.language as "ru" | "en" | "uz") || "ru";
   const { manufacturerSlug, productSlug } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isFavorite, setIsFavorite] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [phoneError, setPhoneError] = useState('');
+  const [phoneError, setPhoneError] = useState("");
   const [formData, setFormData] = useState({
-    companyName: '',
-    contactPerson: '',
-    phone: '',
-    email: '',
-    message: ''
+    companyName: "",
+    contactPerson: "",
+    phone: "",
+    email: "",
+    message: "",
   });
 
   const handlePhoneChange = (value: string) => {
     if (!isValidUzbekPhoneLength(value)) return;
-    
+
     const formatted = formatUzbekPhoneNumber(value);
-    setFormData(prev => ({ ...prev, phone: formatted }));
-    
+    setFormData((prev) => ({ ...prev, phone: formatted }));
+
     if (formatted.length > 0) {
       if (!isCompleteUzbekPhone(formatted)) {
-        setPhoneError(language === 'ru' ? 'Номер должен содержать 9 цифр' : language === 'en' ? 'Number must contain 9 digits' : 'Raqam 9 ta raqamdan iborat bo\'lishi kerak');
+        setPhoneError(
+          language === "ru"
+            ? "Номер должен содержать 9 цифр"
+            : language === "en"
+              ? "Number must contain 9 digits"
+              : "Raqam 9 ta raqamdan iborat bo'lishi kerak",
+        );
       } else if (!validateUzbekPhoneNumber(formatted)) {
-        setPhoneError(language === 'ru' ? 'Неверный формат номера' : language === 'en' ? 'Invalid phone format' : 'Noto\'g\'ri telefon formati');
+        setPhoneError(
+          language === "ru"
+            ? "Неверный формат номера"
+            : language === "en"
+              ? "Invalid phone format"
+              : "Noto'g'ri telefon formati",
+        );
       } else {
-        setPhoneError('');
+        setPhoneError("");
       }
     } else {
-      setPhoneError('');
+      setPhoneError("");
     }
   };
 
   // Fetch product by productSlug (manufacturerSlug is for SEO/URL structure)
-  const { product, loading, error } = useProduct(productSlug || '');
+  const { product, loading, error } = useProduct(productSlug || "");
   const { manufacturers } = useManufacturers();
   const { convertToUZS, formatPrice } = useCurrencyRates();
-  
-  const manufacturer = manufacturers.find(m => m.id === product?.manufacturer_id);
+
+  const manufacturer = manufacturers.find(
+    (m) => m.id === product?.manufacturer_id,
+  );
   const countryCode = manufacturer?.country_code || product?.country || null;
 
   if (loading) {
@@ -128,9 +230,11 @@ const ProductDetail = () => {
           noindex
         />
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-destructive mb-2">{translations.error[language]}</h2>
+          <h2 className="text-2xl font-bold text-destructive mb-2">
+            {translations.error[language]}
+          </h2>
           <p className="text-muted-foreground">{error}</p>
-          <Button onClick={() => navigate('/catalog')} className="mt-4">
+          <Button onClick={() => navigate("/catalog")} className="mt-4">
             <ArrowLeft className="h-4 w-4 mr-2" />
             {translations.backToCatalog[language]}
           </Button>
@@ -149,8 +253,10 @@ const ProductDetail = () => {
           noindex
         />
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-foreground mb-4">{translations.productNotFound[language]}</h1>
-          <Button onClick={() => navigate('/catalog')}>
+          <h1 className="text-2xl font-bold text-foreground mb-4">
+            {translations.productNotFound[language]}
+          </h1>
+          <Button onClick={() => navigate("/catalog")}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             {translations.backToCatalog[language]}
           </Button>
@@ -160,27 +266,37 @@ const ProductDetail = () => {
   }
 
   const productName = (() => {
-    if (typeof product.name === 'object' && product.name !== null) {
+    if (typeof product.name === "object" && product.name !== null) {
       const objName = product.name as Record<string, string>;
-      return objName[language] || objName.ru || objName.en || 'Медицинское оборудование Med Service Centre';
+      return (
+        objName[language] ||
+        objName.ru ||
+        objName.en ||
+        "Медицинское оборудование Med Service Centre"
+      );
     }
-    return String(product.name) || 'Медицинское оборудование Med Service Centre';
+    return (
+      String(product.name) || "Медицинское оборудование Med Service Centre"
+    );
   })();
 
   const productDescription = (() => {
-    if (typeof product.description === 'object' && product.description !== null) {
+    if (
+      typeof product.description === "object" &&
+      product.description !== null
+    ) {
       const objDesc = product.description as Record<string, string>;
-      return objDesc[language] || objDesc.ru || objDesc.en || '';
+      return objDesc[language] || objDesc.ru || objDesc.en || "";
     }
-    return String(product.description) || '';
+    return String(product.description) || "";
   })();
-  
+
   const manufacturerName = (() => {
-    if (!manufacturer?.name) return '';
+    if (!manufacturer?.name) return "";
     const name = manufacturer.name;
-    if (typeof name === 'object') {
+    if (typeof name === "object") {
       const objName = name as Record<string, string>;
-      return objName[language] || objName.ru || objName.en || '';
+      return objName[language] || objName.ru || objName.en || "";
     }
     return String(name);
   })();
@@ -202,12 +318,12 @@ const ProductDetail = () => {
     categoryLabel,
     `купить ${productName}`,
     "медицинское оборудование Ташкент",
-    'медицинское оборудование Узбекистан',
-    'Med Service Centre',
-    'аренда медоборудования'
+    "медицинское оборудование Узбекистан",
+    "Med Service Centre",
+    "аренда медоборудования",
   ]
     .filter(Boolean)
-    .join(', ');
+    .join(", ");
 
   const seoBlurb =
     language === "ru"
@@ -227,31 +343,40 @@ const ProductDetail = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validate phone before submit
-    if (!isCompleteUzbekPhone(formData.phone) || !validateUzbekPhoneNumber(formData.phone)) {
-      setPhoneError(language === 'ru' ? 'Введите корректный узбекский номер' : language === 'en' ? 'Enter a valid Uzbek number' : 'To\'g\'ri O\'zbek raqamini kiriting');
+    if (
+      !isCompleteUzbekPhone(formData.phone) ||
+      !validateUzbekPhoneNumber(formData.phone)
+    ) {
+      setPhoneError(
+        language === "ru"
+          ? "Введите корректный узбекский номер"
+          : language === "en"
+            ? "Enter a valid Uzbek number"
+            : "To'g'ri O'zbek raqamini kiriting",
+      );
       return;
     }
-    
+
     toast({
       title: translations.successMessage[language],
       description: `${productName} - ${formData.companyName}`,
     });
     setIsDialogOpen(false);
     setFormData({
-      companyName: '',
-      contactPerson: '',
-      phone: '',
-      email: '',
-      message: ''
+      companyName: "",
+      contactPerson: "",
+      phone: "",
+      email: "",
+      message: "",
     });
-    setPhoneError('');
+    setPhoneError("");
   };
 
   // Generate canonical URL
   const canonicalUrl = (() => {
-    const baseUrl = 'https://medsc.uz/catalog';
+    const baseUrl = "https://medsc.uz/catalog";
     const productSlugValue = product.slug || product.id;
     if (manufacturer?.slug) {
       return `${baseUrl}/${manufacturer.slug}/${productSlugValue}`;
@@ -259,16 +384,18 @@ const ProductDetail = () => {
     return `${baseUrl}/${productSlugValue}`;
   })();
 
-  const defaultImage = `${baseUrl}/lovable-uploads/ea1f50a2-d3d1-418f-b6ce-f6e08a722162.png`;
-  const ogImage = productImageUrl || defaultImage;
-
-  const productSchema = {
+  // Build Product structured data for SEO
+  const productStructuredData = {
     "@context": "https://schema.org",
     "@type": "Product",
     name: productName,
     description: productDescription || metaDescription,
-    image: ogImage ? [ogImage] : undefined,
-    sku: product.slug || product.id,
+    image: product.images?.cover
+      ? product.images.cover.startsWith("http")
+        ? product.images.cover
+        : `https://medsc.uz${product.images.cover}`
+      : "https://medsc.uz/lovable-uploads/ea1f50a2-d3d1-418f-b6ce-f6e08a722162.png",
+    sku: product.id,
     brand: {
       "@type": "Brand",
       name: manufacturerName || "Med Service Centre",
@@ -279,53 +406,65 @@ const ProductDetail = () => {
     },
     category: categoryLabel,
     url: canonicalUrl,
-    offers:
-      product.price && product.currency
-        ? {
-            "@type": "Offer",
-            url: canonicalUrl,
-            priceCurrency: product.currency || "USD",
-            price: product.price,
-            availability: "https://schema.org/InStock",
-            seller: {
-              "@type": "Organization",
-              name: "Med Service Centre",
-              url: baseUrl,
-            },
-          }
-        : undefined,
+    ...(product.price && {
+      offers: {
+        "@type": "Offer",
+        url: canonicalUrl,
+        priceCurrency: product.currency || "USD",
+        price: product.price,
+        availability: "https://schema.org/InStock",
+        seller: {
+          "@type": "Organization",
+          name: "Med Service Centre",
+          url: "https://medsc.uz",
+        },
+      },
+    }),
   };
 
-  const breadcrumbSchema = {
+  // BreadcrumbList for better SEO navigation
+  const breadcrumbStructuredData = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
       {
         "@type": "ListItem",
         position: 1,
-        name: language === "ru" ? "Главная" : language === "en" ? "Home" : "Bosh sahifa",
-        item: baseUrl,
+        name: "Главная",
+        item: "https://medsc.uz",
       },
       {
         "@type": "ListItem",
         position: 2,
-        name: language === "ru" ? "Каталог" : language === "en" ? "Catalog" : "Katalog",
-        item: `${baseUrl}/catalog`,
+        name: "Каталог",
+        item: "https://medsc.uz/catalog",
       },
+      ...(manufacturer?.slug
+        ? [
+            {
+              "@type": "ListItem",
+              position: 3,
+              name: manufacturerName,
+              item: `https://medsc.uz/catalog?manufacturer=${manufacturer.slug}`,
+            },
+          ]
+        : []),
       {
         "@type": "ListItem",
-        position: 3,
-        name: categoryLabel,
-        item: `${baseUrl}/catalog?category=${product.category}`,
-      },
-      {
-        "@type": "ListItem",
-        position: 4,
+        position: manufacturer?.slug ? 4 : 3,
         name: productName,
         item: canonicalUrl,
       },
     ],
   };
+
+  // OG Image - use product cover or fallback
+  const ogImage = product.images?.cover
+    ? product.images.cover.startsWith("http")
+      ? product.images.cover
+      : `https://medsc.uz${product.images.cover}`
+    : "https://medsc.uz/lovable-uploads/ea1f50a2-d3d1-418f-b6ce-f6e08a722162.png";
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
       <SEOHead
@@ -339,13 +478,16 @@ const ProductDetail = () => {
         twitterTitle={productName}
         twitterDescription={`${productName} — ${categoryLabel} оборудование. Купить или арендовать в Med Service Centre.`}
         twitterImage={ogImage}
-        type="product"
-        structuredData={[productSchema, breadcrumbSchema]}
+        structuredData={[productStructuredData, breadcrumbStructuredData]}
       />
       <div className="container mx-auto px-4 py-8">
         <nav className="text-sm text-muted-foreground mb-4">
           <Link to="/catalog" className="hover:underline">
-            {language === 'ru' ? 'Каталог' : language === 'en' ? 'Catalog' : 'Katalog'}
+            {language === "ru"
+              ? "Каталог"
+              : language === "en"
+                ? "Catalog"
+                : "Katalog"}
           </Link>
           <span className="mx-2">/</span>
           <Link to={categoryPath} className="hover:underline">
@@ -354,9 +496,9 @@ const ProductDetail = () => {
           <span className="mx-2">/</span>
           <span className="text-foreground">{productName}</span>
         </nav>
-        <Button 
-          variant="outline" 
-          onClick={() => navigate('/catalog')}
+        <Button
+          variant="outline"
+          onClick={() => navigate("/catalog")}
           className="mb-6"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
@@ -374,7 +516,7 @@ const ProductDetail = () => {
                   alt={productName}
                   className="w-full h-full object-cover"
                   onError={(e) => {
-                    e.currentTarget.src = '/placeholder.svg';
+                    e.currentTarget.src = "/placeholder.svg";
                   }}
                 />
               ) : (
@@ -389,8 +531,8 @@ const ProductDetail = () => {
                   className="bg-background/80 backdrop-blur-sm"
                   onClick={() => setIsFavorite(!isFavorite)}
                 >
-                  <Heart 
-                    className={`h-4 w-4 ${isFavorite ? 'fill-red-500 text-red-500' : ''}`} 
+                  <Heart
+                    className={`h-4 w-4 ${isFavorite ? "fill-red-500 text-red-500" : ""}`}
                   />
                 </Button>
               </div>
@@ -401,9 +543,11 @@ const ProductDetail = () => {
               <div className="grid grid-cols-4 gap-2">
                 {/* Cover as first thumbnail */}
                 {product.images.cover && (
-                  <div 
+                  <div
                     className={`aspect-square rounded-lg overflow-hidden bg-muted cursor-pointer border-2 transition-colors ${
-                      !selectedImage ? 'border-primary' : 'border-transparent hover:border-primary/50'
+                      !selectedImage
+                        ? "border-primary"
+                        : "border-transparent hover:border-primary/50"
                     }`}
                     onClick={() => setSelectedImage(null)}
                   >
@@ -412,18 +556,20 @@ const ProductDetail = () => {
                       alt={`${productName} - основное изображение`}
                       className="w-full h-full object-cover"
                       onError={(e) => {
-                        e.currentTarget.src = '/placeholder.svg';
+                        e.currentTarget.src = "/placeholder.svg";
                       }}
                     />
                   </div>
                 )}
-                
+
                 {/* Gallery images */}
                 {product.images.gallery.map((image, index) => (
-                  <div 
-                    key={index} 
+                  <div
+                    key={index}
                     className={`aspect-square rounded-lg overflow-hidden bg-muted cursor-pointer border-2 transition-colors ${
-                      selectedImage === image ? 'border-primary' : 'border-transparent hover:border-primary/50'
+                      selectedImage === image
+                        ? "border-primary"
+                        : "border-transparent hover:border-primary/50"
                     }`}
                     onClick={() => setSelectedImage(image)}
                   >
@@ -432,7 +578,7 @@ const ProductDetail = () => {
                       alt={`${productName} - изображение ${index + 1}`}
                       className="w-full h-full object-cover"
                       onError={(e) => {
-                        e.currentTarget.src = '/placeholder.svg';
+                        e.currentTarget.src = "/placeholder.svg";
                       }}
                     />
                   </div>
@@ -455,9 +601,7 @@ const ProductDetail = () => {
               <p className="text-lg text-muted-foreground mb-6">
                 {productDescription}
               </p>
-              <p className="text-sm text-muted-foreground">
-                {seoBlurb}
-              </p>
+              <p className="text-sm text-muted-foreground">{seoBlurb}</p>
 
               {/* Price Display */}
               {product.price && product.currency && (
@@ -471,12 +615,17 @@ const ProductDetail = () => {
                         {product.currency}
                       </span>
                     </div>
-                    {product.currency !== 'UZS' && (
+                    {product.currency !== "UZS" && (
                       <div className="mt-2 text-sm text-muted-foreground">
-                        ≈ {formatPrice(
-                          convertToUZS(parseFloat(product.price), product.currency).toString(), 
-                          'UZS'
-                        )} <span className="font-medium">UZS</span>
+                        ≈{" "}
+                        {formatPrice(
+                          convertToUZS(
+                            parseFloat(product.price),
+                            product.currency,
+                          ).toString(),
+                          "UZS",
+                        )}{" "}
+                        <span className="font-medium">UZS</span>
                         <div className="text-xs mt-1 opacity-70">
                           По курсу НБУ на сегодня
                         </div>
@@ -488,67 +637,101 @@ const ProductDetail = () => {
             </div>
 
             {/* Features */}
-            {product.features && product.features[language] && product.features[language].length > 0 && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-xl">
-                    <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
-                        <span className="text-primary font-medium text-sm">✓</span>
+            {product.features &&
+              product.features[language] &&
+              product.features[language].length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-xl">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                          <span className="text-primary font-medium text-sm">
+                            ✓
+                          </span>
+                        </div>
+                        {translations.keyFeatures[language]}
                       </div>
-                      {translations.keyFeatures[language]}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid gap-3">
+                      {product.features[language].map((feature, index) => (
+                        <div
+                          key={index}
+                          className="flex items-start gap-3 p-3 rounded-lg bg-muted/30"
+                        >
+                          <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0" />
+                          <span className="text-foreground leading-relaxed">
+                            {feature}
+                          </span>
+                        </div>
+                      ))}
                     </div>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid gap-3">
-                    {product.features[language].map((feature, index) => (
-                      <div key={index} className="flex items-start gap-3 p-3 rounded-lg bg-muted/30">
-                        <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0" />
-                        <span className="text-foreground leading-relaxed">{feature}</span>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+                  </CardContent>
+                </Card>
+              )}
 
             {/* Manufacturer Info */}
             {(manufacturer || product.country) && (
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">{translations.manufacturer[language]}</CardTitle>
+                  <CardTitle className="text-lg">
+                    {translations.manufacturer[language]}
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {manufacturer ? (
                     <div className="space-y-4">
                       {manufacturer.logo_url && (
                         <div className="flex items-center gap-3 pb-3 border-b">
-                          <img 
-                            src={manufacturer.logo_url} 
+                          <img
+                            src={manufacturer.logo_url}
                             alt={`${manufacturer.name} logo`}
                             className="h-12 w-auto object-contain"
                             onError={(e) => {
-                              e.currentTarget.style.display = 'none';
+                              e.currentTarget.style.display = "none";
                             }}
                           />
                         </div>
                       )}
                       <div className="space-y-2">
-                        <div className="font-medium text-lg">{manufacturer.name}</div>
+                        <div className="font-medium text-lg">
+                          {manufacturer.name}
+                        </div>
                         {manufacturer.legal_name && (
-                          <div className="text-sm text-muted-foreground">{manufacturer.legal_name}</div>
+                          <div className="text-sm text-muted-foreground">
+                            {manufacturer.legal_name}
+                          </div>
                         )}
                         <div className="flex items-center gap-2 text-sm">
-                          <span className="text-xl leading-none inline-block" style={{ fontFamily: 'Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, sans-serif' }}>{getCountryFlag(countryCode)}</span>
-                          <span className="font-medium">{getCountryName(countryCode, language) || translations.country[language]}</span>
+                          <span
+                            className="text-xl leading-none inline-block"
+                            style={{
+                              fontFamily:
+                                "Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, sans-serif",
+                            }}
+                          >
+                            {getCountryFlag(countryCode)}
+                          </span>
+                          <span className="font-medium">
+                            {getCountryName(countryCode, language) ||
+                              translations.country[language]}
+                          </span>
                         </div>
                       </div>
                     </div>
                   ) : product.country ? (
                     <div className="flex items-center gap-2">
                       <Globe className="w-4 h-4 text-muted-foreground" />
-                      <span className="text-xl leading-none inline-block mr-1" style={{ fontFamily: 'Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, sans-serif' }}>{getCountryFlag(product.country)}</span>
+                      <span
+                        className="text-xl leading-none inline-block mr-1"
+                        style={{
+                          fontFamily:
+                            "Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, sans-serif",
+                        }}
+                      >
+                        {getCountryFlag(product.country)}
+                      </span>
                       <span>{getCountryName(product.country, language)}</span>
                     </div>
                   ) : null}
@@ -559,43 +742,66 @@ const ProductDetail = () => {
             {/* CTA Button */}
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
-                <Button size="lg" className="w-full bg-primary hover:bg-primary/90">
+                <Button
+                  size="lg"
+                  className="w-full bg-primary hover:bg-primary/90"
+                >
                   <FileText className="h-5 w-5 mr-2" />
                   {translations.requestQuote[language]}
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-md">
                 <DialogHeader>
-                  <DialogTitle>{translations.requestQuoteTitle[language]}</DialogTitle>
+                  <DialogTitle>
+                    {translations.requestQuoteTitle[language]}
+                  </DialogTitle>
                   <DialogDescription>
                     {translations.requestQuoteDesc[language]}
                   </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
-                    <Label htmlFor="companyName">{translations.companyName[language]}</Label>
+                    <Label htmlFor="companyName">
+                      {translations.companyName[language]}
+                    </Label>
                     <Input
                       id="companyName"
                       value={formData.companyName}
-                      onChange={(e) => setFormData({...formData, companyName: e.target.value})}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          companyName: e.target.value,
+                        })
+                      }
                       required
                     />
                   </div>
                   <div>
-                    <Label htmlFor="contactPerson">{translations.contactPerson[language]}</Label>
+                    <Label htmlFor="contactPerson">
+                      {translations.contactPerson[language]}
+                    </Label>
                     <Input
                       id="contactPerson"
                       value={formData.contactPerson}
-                      onChange={(e) => setFormData({...formData, contactPerson: e.target.value})}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          contactPerson: e.target.value,
+                        })
+                      }
                       required
                     />
                   </div>
                   <div>
-                    <Label htmlFor="phone">{translations.phone[language]}</Label>
+                    <Label htmlFor="phone">
+                      {translations.phone[language]}
+                    </Label>
                     <div className="relative">
                       <div className="absolute left-3 top-2.5 flex items-center gap-1.5 pointer-events-none">
                         <span className="text-base">🇺🇿</span>
-                        <span className="text-foreground font-medium text-sm">+998</span>
+                        <span className="text-foreground font-medium text-sm">
+                          +998
+                        </span>
                         <div className="w-px h-3 bg-border mx-1"></div>
                       </div>
                       <Input
@@ -604,7 +810,7 @@ const ProductDetail = () => {
                         value={formData.phone}
                         onChange={(e) => handlePhoneChange(e.target.value)}
                         required
-                        className={`pl-20 ${phoneError ? 'border-destructive' : ''}`}
+                        className={`pl-20 ${phoneError ? "border-destructive" : ""}`}
                         placeholder="XX XXX XX XX"
                         maxLength={12}
                       />
@@ -616,21 +822,29 @@ const ProductDetail = () => {
                     )}
                   </div>
                   <div>
-                    <Label htmlFor="email">{translations.email[language]}</Label>
+                    <Label htmlFor="email">
+                      {translations.email[language]}
+                    </Label>
                     <Input
                       id="email"
                       type="email"
                       value={formData.email}
-                      onChange={(e) => setFormData({...formData, email: e.target.value})}
+                      onChange={(e) =>
+                        setFormData({ ...formData, email: e.target.value })
+                      }
                       required
                     />
                   </div>
                   <div>
-                    <Label htmlFor="message">{translations.message[language]}</Label>
+                    <Label htmlFor="message">
+                      {translations.message[language]}
+                    </Label>
                     <Textarea
                       id="message"
                       value={formData.message}
-                      onChange={(e) => setFormData({...formData, message: e.target.value})}
+                      onChange={(e) =>
+                        setFormData({ ...formData, message: e.target.value })
+                      }
                       rows={3}
                       className="resize-none"
                     />
