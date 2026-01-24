@@ -22,6 +22,13 @@ const Services = () => {
     ru: {
       title: "Наши услуги",
       subtitle: "Комплексное сервисное обслуживание медицинского оборудования",
+      seo: {
+        title: "Услуги — поставка, аренда и сервис — Med Service Centre",
+        description:
+          "Поставка медоборудования, аренда ABL800 Flex, внедрение, обучение и сервисное обслуживание по Узбекистану.",
+        keywords:
+          "услуги медоборудование, поставка медоборудования, аренда ABL800 Flex, внедрение оборудования, обучение медперсонала, сервисное обслуживание медтехники",
+      },
       services: [
         {
           icon: <Wrench className="w-8 h-8" />,
@@ -87,6 +94,13 @@ const Services = () => {
     en: {
       title: "Our Services",
       subtitle: "Comprehensive service for medical equipment",
+      seo: {
+        title: "Services — supply, rental, and support — Med Service Centre",
+        description:
+          "Medical equipment supply, rental, commissioning, training, and service support across Uzbekistan.",
+        keywords:
+          "medical equipment services, supply in Uzbekistan, equipment rental, commissioning, staff training, technical support",
+      },
       services: [
         {
           icon: <Wrench className="w-8 h-8" />,
@@ -152,6 +166,13 @@ const Services = () => {
     uz: {
       title: "Bizning xizmatlarimiz",
       subtitle: "Tibbiy asbob-uskunalar uchun keng qamrovli xizmat",
+      seo: {
+        title: "Xizmatlar — yetkazib berish, ijara va servis — Med Service Centre",
+        description:
+          "O‘zbekistonda tibbiy uskunalarni yetkazib berish, ijara, o‘rnatish, o‘qitish va servis xizmati.",
+        keywords:
+          "tibbiy uskunalar xizmatlari, O‘zbekiston yetkazib berish, uskunalar ijarasi, o‘rnatish, xodimlarni o‘qitish, servis",
+      },
       services: [
         {
           icon: <Wrench className="w-8 h-8" />,
@@ -217,6 +238,37 @@ const Services = () => {
   };
 
   const currentContent = content[i18n.language as 'ru' | 'en' | 'uz'] || content['ru'];
+  const baseUrl = "https://medsc.uz";
+  const canonicalUrl = `${baseUrl}/services`;
+
+  const pageSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: currentContent.seo.title,
+    description: currentContent.seo.description,
+    url: canonicalUrl,
+    inLanguage: i18n.language,
+  };
+
+  const servicesSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    itemListElement: currentContent.services.map((service, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      item: {
+        "@type": "Service",
+        name: service.title,
+        description: service.description,
+        provider: {
+          "@type": "Organization",
+          name: "Med Service Centre",
+          url: baseUrl,
+        },
+        areaServed: "UZ",
+      },
+    })),
+  };
 
   const handleOrderService = (serviceName: string) => {
     setSelectedService(serviceName);
@@ -263,9 +315,11 @@ const Services = () => {
   return (
     <div className="min-h-screen bg-background py-20">
       <SEOHead
-        title="Услуги — поставка, аренда и сервис — Med Service Centre"
-        description="Поставка медоборудования, аренда ABL800 Flex, внедрение, обучение и сервисное обслуживание по Узбекистану."
-        keywords="услуги медоборудование, поставка медоборудования, аренда ABL800 Flex, внедрение оборудования, обучение медперсонала, сервисное обслуживание медтехники"
+        title={currentContent.seo.title}
+        description={currentContent.seo.description}
+        keywords={currentContent.seo.keywords}
+        canonical={canonicalUrl}
+        structuredData={[pageSchema, servicesSchema]}
       />
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">

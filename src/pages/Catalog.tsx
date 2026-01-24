@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -35,7 +35,7 @@ import {
   Package,
   Menu,
 } from "lucide-react";
-import { useProducts } from "@/hooks/useProducts";
+import { useProducts, type Product } from "@/hooks/useProducts";
 import { useManufacturers } from "@/hooks/useManufacturers";
 import { useCategories } from "@/hooks/useCategories";
 import { toast } from "sonner";
@@ -97,9 +97,10 @@ const translations = {
 
 const Catalog = () => {
   const { t, i18n } = useTranslation();
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(
+    searchParams.get("search") || "",
+  );
   const [selectedCategory, setSelectedCategory] = useState(
     searchParams.get("category") || "all",
   );
@@ -119,6 +120,7 @@ const Catalog = () => {
     useCategories();
   const { manufacturers } = useManufacturers();
   const { convertToUZS, formatPrice } = useCurrencyRates();
+  const baseUrl = "https://medsc.uz";
 
   // Helper to get manufacturer slug by ID
   const getManufacturerSlug = (manufacturerId: string | null | undefined) => {
@@ -127,13 +129,26 @@ const Catalog = () => {
     return manufacturer?.slug || "unknown";
   };
 
+  const buildProductPath = (product: Product) => {
+    const manufacturerSlug = getManufacturerSlug(product.manufacturer_id);
+    const productSlug = product.slug || product.id;
+    return manufacturerSlug && manufacturerSlug !== "unknown"
+      ? `/catalog/${manufacturerSlug}/${productSlug}`
+      : `/catalog/${productSlug}`;
+  };
+
   // Update selected category when URL changes
   useEffect(() => {
-    const categoryFromUrl = searchParams.get("category");
-    if (categoryFromUrl && categoryFromUrl !== selectedCategory) {
+    const categoryFromUrl = searchParams.get("category") || "all";
+    if (categoryFromUrl !== selectedCategory) {
       setSelectedCategory(categoryFromUrl);
     }
   }, [searchParams, selectedCategory]);
+
+  useEffect(() => {
+    const searchFromUrl = searchParams.get("search") || "";
+    setSearchTerm((prev) => (prev === searchFromUrl ? prev : searchFromUrl));
+  }, [searchParams]);
 
   const language = (i18n.language as "ru" | "en" | "uz") || "ru";
 
@@ -228,6 +243,22 @@ const Catalog = () => {
         }[language]
       : `${categoryName}. Продажа, сервис и аренда медицинского оборудования по Узбекистану.`;
 
+  const seoKeywords =
+    selectedCategory === "all"
+      ? [
+          "медицинское оборудование Узбекистан",
+          "купить медтехнику Ташкент",
+          "аренда медицинского оборудования",
+          "каталог медоборудования",
+          "Med Service Centre",
+        ]
+      : [
+          `${categoryName} оборудование`,
+          `купить ${categoryName.toLowerCase()}`,
+          "медицинское оборудование Узбекистан",
+          "Med Service Centre",
+        ];
+
   // Structured data для каталога
   const catalogSchema = {
     "@context": "https://schema.org",
@@ -242,14 +273,35 @@ const Catalog = () => {
     },
   };
 
+  const itemListSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    itemListElement: currentProducts.map((product, index) => {
+      const productPath = buildProductPath(product);
+      const productUrl = `${baseUrl}${productPath}`;
+      const productImage = product.images?.cover || null;
+      return {
+        "@type": "ListItem",
+        position: startIndex + index + 1,
+        item: {
+          "@type": "Product",
+          name: product.name[language],
+          url: productUrl,
+          image: productImage ? `${baseUrl}${productImage}` : undefined,
+        },
+      };
+    }),
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
       <SEOHead
         title={seoTitle}
         description={seoDescription}
+        keywords={seoKeywords.join(", ")}
         canonical={`https://medsc.uz/catalog${selectedCategory !== "all" ? `?category=${selectedCategory}` : ""}`}
         type="website"
-        structuredData={catalogSchema}
+        structuredData={[catalogSchema, itemListSchema]}
       />
       {/* Header */}
       <div
@@ -280,17 +332,18 @@ const Catalog = () => {
               </h3>
               <nav className="space-y-2">
                 {Object.entries(allCategories).map(([key, value]) => (
-                  <button
+                  <Link
                     key={key}
+                    to={key === "all" ? "/catalog" : `/catalog?category=${key}`}
                     onClick={() => setSelectedCategory(key)}
-                    className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors ${
+                    className={`block w-full text-left px-3 py-2 rounded-md text-sm leading-snug transition-colors ${
                       selectedCategory === key
                         ? "bg-primary text-primary-foreground"
                         : "hover:bg-muted"
                     }`}
                   >
                     {value[language]}
-                  </button>
+                  </Link>
                 ))}
               </nav>
             </div>
@@ -326,20 +379,21 @@ const Catalog = () => {
                       </h3>
                       <nav className="space-y-2">
                         {Object.entries(allCategories).map(([key, value]) => (
-                          <button
+                          <Link
                             key={key}
+                            to={key === "all" ? "/catalog" : `/catalog?category=${key}`}
                             onClick={() => {
                               setSelectedCategory(key);
                               // Close sheet after selection
                             }}
-                            className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors ${
+                            className={`block w-full text-left px-3 py-2 rounded-md text-sm leading-snug transition-colors ${
                               selectedCategory === key
                                 ? "bg-primary text-primary-foreground"
                                 : "hover:bg-muted"
                             }`}
                           >
                             {value[language]}
-                          </button>
+                          </Link>
                         ))}
                       </nav>
                     </div>
@@ -358,12 +412,18 @@ const Catalog = () => {
             ) : (
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                  {currentProducts.map((product) => (
-                    <Card
-                      key={product.id}
-                      className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 flex flex-col h-full"
-                    >
-                      <div className="relative overflow-hidden rounded-t-lg aspect-[1080/1350]">
+                  {currentProducts.map((product) => {
+                    const productUrl = buildProductPath(product);
+                    return (
+                      <Card
+                        key={product.id}
+                        className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 flex flex-col h-full"
+                      >
+                      <Link
+                        to={productUrl}
+                        className="relative overflow-hidden rounded-t-lg aspect-[1080/1350] block"
+                        aria-label={`${translations.details[language]}: ${product.name[language]}`}
+                      >
                         {product.images?.cover ? (
                           <img
                             src={product.images.cover}
@@ -387,12 +447,18 @@ const Catalog = () => {
                             )}
                           </Badge>
                         </div>
-                      </div>
+                      </Link>
 
                       <CardHeader className="flex-grow">
                         <div className="flex items-start justify-between mb-2">
                           <CardTitle className="text-sm sm:text-lg flex-1 line-clamp-2">
-                            {product.name[language]}
+                            <Link
+                              to={productUrl}
+                              className="hover:underline"
+                              aria-label={`${translations.details[language]}: ${product.name[language]}`}
+                            >
+                              {product.name[language]}
+                            </Link>
                           </CardTitle>
                           {product.country && (
                             <div className="bg-black text-white text-xs px-2 py-1 rounded-sm flex items-center gap-1 ml-2 whitespace-nowrap">
@@ -465,23 +531,16 @@ const Catalog = () => {
 
                         <div className="flex flex-col gap-2">
                           <Button
+                            asChild
                             className="w-full text-xs sm:text-sm"
-                            onClick={() => {
-                              const manufacturerSlug = getManufacturerSlug(
-                                product.manufacturer_id,
-                              );
-                              const productSlug = product.slug || product.id;
-                              // SEO-friendly: use /catalog/manufacturer/product or /catalog/product (if no manufacturer)
-                              const url =
-                                manufacturerSlug &&
-                                manufacturerSlug !== "unknown"
-                                  ? `/catalog/${manufacturerSlug}/${productSlug}`
-                                  : `/catalog/${productSlug}`;
-                              navigate(url);
-                            }}
                           >
-                            <Eye className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                            {translations.details[language]}
+                            <Link
+                              to={productUrl}
+                              aria-label={`${translations.details[language]}: ${product.name[language]}`}
+                            >
+                              <Eye className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                              {translations.details[language]}
+                            </Link>
                           </Button>
                           <Button
                             variant="outline"
@@ -496,7 +555,8 @@ const Catalog = () => {
                         </div>
                       </CardContent>
                     </Card>
-                  ))}
+                    );
+                  })}
                 </div>
 
                 {/* Pagination */}

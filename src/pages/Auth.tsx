@@ -82,6 +82,8 @@ const AuthPage = () => {
         title="Вход в админ-панель Med Service Centre"
         description="Вход в админ-панель Med Service Centre™: авторизация команды, контроль каталога, заявок и CRM-системы, вход по e-mail/паролю для админов и менеджеров."
         keywords="админ панель вход, авторизация Med Service Centre, вход CRM, e-mail пароль доступ, управление каталогом, доступ менеджеров"
+        noindex
+        nofollow
       />
       <Card className="w-full max-w-md">
         <CardHeader className="text-center space-y-2">

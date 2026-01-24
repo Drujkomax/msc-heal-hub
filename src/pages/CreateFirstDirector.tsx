@@ -15,6 +15,15 @@ const CreateFirstDirector = () => {
   const [email, setEmail] = useState('');
   const [inviteLink, setInviteLink] = useState('');
   const [created, setCreated] = useState(false);
+  const seoProps = {
+    title: "Создание первого директора - Med Service Centre",
+    description:
+      "Шаг создания директора Med Service Centre: отправьте приглашение, копируйте ссылку регистрации и включите админскую CRM для контроля каталога и ролей.",
+    keywords:
+      "создание директора, приглашение администратора, регистрация админ панели, Med Service Centre, запуск CRM, контроль ролей",
+    noindex: true,
+    nofollow: true,
+  };
 
   const handleCreateDirector = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -79,6 +88,7 @@ const CreateFirstDirector = () => {
   if (created) {
     return (
       <div className="space-y-6">
+        <SEOHead {...seoProps} />
         <Card className="border-green-200 bg-green-50">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-green-800">
@@ -121,11 +131,7 @@ const CreateFirstDirector = () => {
 
   return (
     <div className="space-y-6">
-      <SEOHead
-        title="Создание первого директора - Med Service Centre"
-        description="Шаг создания директора Med Service Centre: отправьте приглашение, копируйте ссылку регистрации и включите админскую CRM для контроля каталога и ролей."
-        keywords="создание директора, приглашение администратора, регистрация админ панели, Med Service Centre, запуск CRM, контроль ролей"
-      />
+      <SEOHead {...seoProps} />
       <div>
         <h2 className="text-3xl font-bold flex items-center gap-2">
           <Crown className="h-8 w-8 text-yellow-600" />

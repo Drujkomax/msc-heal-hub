@@ -26,6 +26,7 @@ import RegisterWithInvite from "./pages/RegisterWithInvite";
 import CreateFirstDirector from "./pages/CreateFirstDirector";
 import DirectorRegistration from "./pages/DirectorRegistration";
 import Cases from "./pages/Cases";
+import About from "./pages/About";
 import ScrollToTop from "./components/common/ScrollToTop";
 import AdminWrapper from "./features/admin/components/AdminWrapper";
 
@@ -123,11 +124,7 @@ const App = () => {
                           <Route path="/cases" element={<Cases />} />
                           <Route
                             path="/about"
-                            element={
-                              <div className="py-20 text-center">
-                                About Page - Coming Soon
-                              </div>
-                            }
+                            element={<About />}
                           />
                           <Route path="/contacts" element={<Contacts />} />
                           <Route path="*" element={<NotFound />} />

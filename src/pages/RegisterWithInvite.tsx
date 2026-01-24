@@ -201,6 +201,8 @@ const RegisterWithInvite = () => {
           title="Проверка приглашения - Med Service Centre"
           description="Проверяем приглашение Med Service Centre™. Подтверждаем доступ к CRM™, чтобы продолжить регистрацию и управлять каталогом, заявками и сервисом клиник."
           keywords="приглашение Med Service Centre, проверка доступа, регистрация администратора, CRM проверка, управление каталогом"
+          noindex
+          nofollow
         />
         <Card className="w-full max-w-md">
           <CardContent className="flex items-center justify-center py-8">
@@ -221,6 +223,8 @@ const RegisterWithInvite = () => {
           title="Приглашение недействительно - Med Service Centre"
           description="Приглашение Med Service Centre™ недействительно. Проверьте ссылку и запросите новую, чтобы вернуть доступ к админской CRM™, каталогу, заявкам и ролям."
           keywords="приглашение недействительно, Med Service Centre, повторное приглашение, админская CRM, доступ к каталогу"
+          noindex
+          nofollow
         />
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
@@ -248,6 +252,8 @@ const RegisterWithInvite = () => {
         title="Регистрация по приглашению - Med Service Centre"
         description="Регистрация по приглашению Med Service Centre™: задайте пароль, активируйте роль и войдите в админскую CRM™ чтобы управлять каталогом и лидами клиник."
         keywords="регистрация по приглашению, Med Service Centre, активация роли, пароль CRM, админская панель, управление каталогом, лиды клиник"
+        noindex
+        nofollow
       />
       <Card className="w-full max-w-md">
         <CardHeader className="text-center space-y-2">

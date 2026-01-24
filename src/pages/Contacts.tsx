@@ -78,7 +78,9 @@ const Contacts = () => {
     en: 'Uzbekistan, Tashkent, Asaka St., 32',
     uz: 'O\'zbekiston, Toshkent, Asaka ko\'chasi, 32'
   };
-  
+ 
+  const language = (i18n.language as 'ru' | 'en' | 'uz') || 'ru';
+
   const content = {
     ru: {
       title: 'Контакты',
@@ -148,7 +150,54 @@ const Contacts = () => {
     }
   };
 
-  const currentContent = content[i18n.language as 'ru' | 'en' | 'uz'] || content['ru'];
+  const currentContent = content[language] || content['ru'];
+  const baseUrl = 'https://medsc.uz';
+  const canonicalUrl = `${baseUrl}/contacts`;
+
+  const phoneValue = contactData.phone.replace(/[^\d+]/g, '');
+  const whatsappValue = contactData.whatsapp.replace(/[^\d]/g, '');
+  const telegramUrl = contactData.telegram.startsWith('http')
+    ? contactData.telegram
+    : `https://t.me/${contactData.telegram.replace('@', '')}`;
+  const addressValue = contactData.address || addressTranslations[language];
+
+  const contactSchema = {
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    name: currentContent.title,
+    description: currentContent.subtitle,
+    url: canonicalUrl,
+    inLanguage: language,
+    mainEntity: {
+      "@type": "Organization",
+      name: "Med Service Centre",
+      url: baseUrl,
+      email: contactData.email,
+      telephone: phoneValue || contactData.phone,
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: addressValue,
+        addressLocality: "Tashkent",
+        addressCountry: "UZ",
+      },
+      contactPoint: [
+        {
+          "@type": "ContactPoint",
+          telephone: phoneValue || contactData.phone,
+          contactType: "sales",
+          areaServed: "UZ",
+          availableLanguage: ["ru", "en", "uz"],
+        },
+      ],
+      sameAs: [
+        contactData.facebook,
+        contactData.instagram,
+        contactData.youtube,
+        telegramUrl,
+        whatsappValue ? `https://wa.me/${whatsappValue}` : '',
+      ].filter(Boolean),
+    },
+  };
 
   const handlePhoneClick = () => {
     const phoneNumber = contactData.phone.replace(/[^\d+]/g, '');
@@ -265,6 +314,8 @@ const Contacts = () => {
         title="Контакты Med Service Centre"
         description="Контакты Med Service Centre™: офис в Ташкенте, телефон, e-mail, карта и онлайн-форма для закупки и аренды медтехники, сервисных заявок и консультаций."
         keywords="контакты Med Service Centre, медицинское оборудование Ташкент, телефон медтехника, e-mail медоборудование, карта офиса Ташкент, онлайн форма заявки"
+        canonical={canonicalUrl}
+        structuredData={contactSchema}
       />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}

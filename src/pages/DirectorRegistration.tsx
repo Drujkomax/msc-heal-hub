@@ -108,6 +108,8 @@ const DirectorRegistration = () => {
         title="Регистрация директора - Med Service Centre"
         description="Регистрация директора Med Service Centre™: примите приглашение, задайте пароль и откройте доступ к админской CRM для контроля каталога заявок и ролей."
         keywords="регистрация директора, Med Service Centre, админ панель доступ, пароль директора, CRM вход, управление каталогом, роли и заявки"
+        noindex
+        nofollow
       />
       <Card className="w-full max-w-md">
         <CardHeader className="text-center space-y-2">

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -108,6 +108,7 @@ const ProductDetail = () => {
           title="Загрузка товара - Med Service Centre"
           description="Карточка товара загружается. Скоро появятся данные о медицинском оборудовании Med Service Centre™ для выбора решения и оформления консультации онлайн."
           keywords="каталог медоборудования, загрузка товара, Med Service Centre, медицинская техника, ожидание данных"
+          noindex
         />
         <div className="flex items-center space-x-2">
           <Loader2 className="h-8 w-8 animate-spin" />
@@ -124,6 +125,7 @@ const ProductDetail = () => {
           title="Ошибка загрузки товара - Med Service Centre"
           description="Не удалось загрузить карточку медоборудования. Обновите страницу или вернитесь в каталог Med Service Centre™ для выбора оборудования и аренды клиники."
           keywords="ошибка каталога, медицинское оборудование, Med Service Centre, загрузка товара, возврат в каталог"
+          noindex
         />
         <div className="text-center">
           <h2 className="text-2xl font-bold text-destructive mb-2">{translations.error[language]}</h2>
@@ -144,6 +146,7 @@ const ProductDetail = () => {
           title="Товар не найден - Med Service Centre"
           description="Карточка медицинского оборудования не найдена. Вернитесь в каталог Med Service Centre, чтобы подобрать подходящее решение и сервис аренды для клиники."
           keywords="товар не найден, каталог медоборудования, Med Service Centre, выбор оборудования"
+          noindex
         />
         <div className="text-center">
           <h1 className="text-2xl font-bold text-foreground mb-4">{translations.productNotFound[language]}</h1>
@@ -182,6 +185,7 @@ const ProductDetail = () => {
     return String(name);
   })();
   const categoryLabel = getCategoryLabel(product.category, language);
+  const categoryPath = `/catalog?category=${product.category}`;
 
   const rawDescription = `${productName} — ${categoryLabel} оборудование Med Service Centre для клиник Узбекистана с поддержкой сервиса, аренды и поставки от официального партнёра.`;
   const truncateToMetaLength = (text: string) => {
@@ -196,12 +200,30 @@ const ProductDetail = () => {
     productName,
     manufacturerName,
     categoryLabel,
+    `купить ${productName}`,
+    "медицинское оборудование Ташкент",
     'медицинское оборудование Узбекистан',
     'Med Service Centre',
     'аренда медоборудования'
   ]
     .filter(Boolean)
     .join(', ');
+
+  const seoBlurb =
+    language === "ru"
+      ? `${productName} доступен для клиник Узбекистана: продажа, аренда и сервисное сопровождение от Med Service Centre.`
+      : language === "en"
+        ? `${productName} is available for clinics in Uzbekistan with sales, rental, and service support from Med Service Centre.`
+        : `${productName} O‘zbekiston klinikalari uchun mavjud: sotuv, ijara va Med Service Centre servis xizmati.`;
+
+  const baseUrl = "https://medsc.uz";
+  const productImage =
+    product.images?.cover || product.images?.gallery?.[0] || null;
+  const productImageUrl = productImage
+    ? productImage.startsWith("http")
+      ? productImage
+      : `${baseUrl}${productImage}`
+    : undefined;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -237,79 +259,73 @@ const ProductDetail = () => {
     return `${baseUrl}/${productSlugValue}`;
   })();
 
-  // Build Product structured data for SEO
-  const productStructuredData = {
+  const defaultImage = `${baseUrl}/lovable-uploads/ea1f50a2-d3d1-418f-b6ce-f6e08a722162.png`;
+  const ogImage = productImageUrl || defaultImage;
+
+  const productSchema = {
     "@context": "https://schema.org",
     "@type": "Product",
-    "name": productName,
-    "description": productDescription || metaDescription,
-    "image": product.images?.cover ? 
-      (product.images.cover.startsWith('http') ? product.images.cover : `https://medsc.uz${product.images.cover}`) : 
-      "https://medsc.uz/lovable-uploads/ea1f50a2-d3d1-418f-b6ce-f6e08a722162.png",
-    "sku": product.id,
-    "brand": {
+    name: productName,
+    description: productDescription || metaDescription,
+    image: ogImage ? [ogImage] : undefined,
+    sku: product.slug || product.id,
+    brand: {
       "@type": "Brand",
-      "name": manufacturerName || "Med Service Centre"
+      name: manufacturerName || "Med Service Centre",
     },
-    "manufacturer": {
+    manufacturer: {
       "@type": "Organization",
-      "name": manufacturerName || "Med Service Centre"
+      name: manufacturerName || "Med Service Centre",
     },
-    "category": categoryLabel,
-    "url": canonicalUrl,
-    ...(product.price && {
-      "offers": {
-        "@type": "Offer",
-        "url": canonicalUrl,
-        "priceCurrency": product.currency || "USD",
-        "price": product.price,
-        "availability": "https://schema.org/InStock",
-        "seller": {
-          "@type": "Organization",
-          "name": "Med Service Centre",
-          "url": "https://medsc.uz"
-        }
-      }
-    })
+    category: categoryLabel,
+    url: canonicalUrl,
+    offers:
+      product.price && product.currency
+        ? {
+            "@type": "Offer",
+            url: canonicalUrl,
+            priceCurrency: product.currency || "USD",
+            price: product.price,
+            availability: "https://schema.org/InStock",
+            seller: {
+              "@type": "Organization",
+              name: "Med Service Centre",
+              url: baseUrl,
+            },
+          }
+        : undefined,
   };
 
-  // BreadcrumbList for better SEO navigation
-  const breadcrumbStructuredData = {
+  const breadcrumbSchema = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
-    "itemListElement": [
+    itemListElement: [
       {
         "@type": "ListItem",
-        "position": 1,
-        "name": "Главная",
-        "item": "https://medsc.uz"
+        position: 1,
+        name: language === "ru" ? "Главная" : language === "en" ? "Home" : "Bosh sahifa",
+        item: baseUrl,
       },
       {
         "@type": "ListItem",
-        "position": 2,
-        "name": "Каталог",
-        "item": "https://medsc.uz/catalog"
+        position: 2,
+        name: language === "ru" ? "Каталог" : language === "en" ? "Catalog" : "Katalog",
+        item: `${baseUrl}/catalog`,
       },
-      ...(manufacturer?.slug ? [{
-        "@type": "ListItem",
-        "position": 3,
-        "name": manufacturerName,
-        "item": `https://medsc.uz/catalog?manufacturer=${manufacturer.slug}`
-      }] : []),
       {
         "@type": "ListItem",
-        "position": manufacturer?.slug ? 4 : 3,
-        "name": productName,
-        "item": canonicalUrl
-      }
-    ]
+        position: 3,
+        name: categoryLabel,
+        item: `${baseUrl}/catalog?category=${product.category}`,
+      },
+      {
+        "@type": "ListItem",
+        position: 4,
+        name: productName,
+        item: canonicalUrl,
+      },
+    ],
   };
-
-  // OG Image - use product cover or fallback
-  const ogImage = product.images?.cover ? 
-    (product.images.cover.startsWith('http') ? product.images.cover : `https://medsc.uz${product.images.cover}`) : 
-    "https://medsc.uz/lovable-uploads/ea1f50a2-d3d1-418f-b6ce-f6e08a722162.png";
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
       <SEOHead
@@ -323,9 +339,21 @@ const ProductDetail = () => {
         twitterTitle={productName}
         twitterDescription={`${productName} — ${categoryLabel} оборудование. Купить или арендовать в Med Service Centre.`}
         twitterImage={ogImage}
-        structuredData={[productStructuredData, breadcrumbStructuredData]}
+        type="product"
+        structuredData={[productSchema, breadcrumbSchema]}
       />
       <div className="container mx-auto px-4 py-8">
+        <nav className="text-sm text-muted-foreground mb-4">
+          <Link to="/catalog" className="hover:underline">
+            {language === 'ru' ? 'Каталог' : language === 'en' ? 'Catalog' : 'Katalog'}
+          </Link>
+          <span className="mx-2">/</span>
+          <Link to={categoryPath} className="hover:underline">
+            {categoryLabel}
+          </Link>
+          <span className="mx-2">/</span>
+          <span className="text-foreground">{productName}</span>
+        </nav>
         <Button 
           variant="outline" 
           onClick={() => navigate('/catalog')}
@@ -426,6 +454,9 @@ const ProductDetail = () => {
               </div>
               <p className="text-lg text-muted-foreground mb-6">
                 {productDescription}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                {seoBlurb}
               </p>
 
               {/* Price Display */}

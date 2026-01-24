@@ -66,7 +66,7 @@ const SEOHead = ({
 
   // Build alternate URLs for languages
   const currentUrlObject = new URL(currentUrl);
-  const buildLocalizedHref = (lang: "ru" | "uz") => {
+  const buildLocalizedHref = (lang: "ru" | "uz" | "en") => {
     const localized = new URL(currentUrlObject.toString());
     if (lang === "ru") {
       localized.searchParams.delete("lang");
@@ -95,6 +95,7 @@ const SEOHead = ({
 
       {/* Alternate Languages */}
       <link rel="alternate" hrefLang="ru" href={buildLocalizedHref("ru")} />
+      <link rel="alternate" hrefLang="en" href={buildLocalizedHref("en")} />
       <link rel="alternate" hrefLang="uz" href={buildLocalizedHref("uz")} />
       <link rel="alternate" hrefLang="x-default" href={basePathWithSearch} />
 
@@ -106,6 +107,7 @@ const SEOHead = ({
       <meta property="og:image" content={resolvedOgImage} />
       <meta property="og:site_name" content="Med Service Centre" />
       <meta property="og:locale" content="ru_RU" />
+      <meta property="og:locale:alternate" content="en_US" />
       <meta property="og:locale:alternate" content="uz_UZ" />
 
       {/* Twitter Card */}

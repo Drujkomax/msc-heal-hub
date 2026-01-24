@@ -8,7 +8,7 @@ import ROICalculator from '@/components/Calculator/ROICalculator';
 import LeadForm from '@/components/forms/LeadForm';
 import { useTranslation } from 'react-i18next';
 import SEOHead from "@/components/SEO/SEOHead";
-import { useProducts } from '@/hooks/useProducts';
+import { useProducts, type Product } from '@/hooks/useProducts';
 import { useManufacturers } from '@/hooks/useManufacturers';
 import { useCategories } from '@/hooks/useCategories';
 
@@ -27,6 +27,7 @@ const Home = ({ language }: HomeProps) => {
   const { products, loading: productsLoading } = useProducts();
   const { categories: dbCategories } = useCategories();
   const { manufacturers } = useManufacturers();
+  const baseUrl = 'https://medsc.uz';
 
   useEffect(() => {
     setIsVisible(true);
@@ -59,7 +60,53 @@ const Home = ({ language }: HomeProps) => {
     return manufacturer?.slug || 'unknown';
   };
 
+  const buildProductPath = (product: Product) => {
+    const manufacturerSlug = getManufacturerSlug(product.manufacturer_id);
+    const productSlug = product.slug || product.id;
+    return manufacturerSlug && manufacturerSlug !== 'unknown'
+      ? `/catalog/${manufacturerSlug}/${productSlug}`
+      : `/catalog/${productSlug}`;
+  };
+
   const featuredProducts = products.slice(0, 3);
+
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Med Service Centre",
+    url: baseUrl,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${baseUrl}/catalog?search={search_term_string}`,
+      "query-input": "required name=search_term_string"
+    }
+  };
+
+  const featuredProductsSchema = featuredProducts.length > 0 ? {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    itemListElement: featuredProducts.map((product, index) => {
+      const productPath = buildProductPath(product);
+      const productImage = product.images?.cover || '';
+      return {
+        "@type": "ListItem",
+        position: index + 1,
+        item: {
+          "@type": "Product",
+          name: product.name[currentLanguage],
+          url: `${baseUrl}${productPath}`,
+          image: productImage
+            ? (productImage.startsWith('http') ? productImage : `${baseUrl}${productImage}`)
+            : undefined
+        }
+      };
+    })
+  } : null;
+
+  const homeStructuredData = [
+    websiteSchema,
+    ...(featuredProductsSchema ? [featuredProductsSchema] : [])
+  ];
 
   return (
     <div className="min-h-screen">
@@ -76,6 +123,7 @@ const Home = ({ language }: HomeProps) => {
         twitterTitle={t('home.seo.twitterTitle')}
         twitterDescription={t('home.seo.twitterDescription')}
         twitterImage="https://medsc.uz/lovable-uploads/ea1f50a2-d3d1-418f-b6ce-f6e08a722162.png"
+        structuredData={homeStructuredData}
       />
       
       {/* Hero Section */}
@@ -222,54 +270,61 @@ const Home = ({ language }: HomeProps) => {
               </div>
             ) : featuredProducts.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-                {featuredProducts.map((product) => (
-                  <Card key={product.id} className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 flex flex-col h-full">
-                    <div className="relative overflow-hidden rounded-t-lg aspect-[1080/1350]">
-                      {product.images?.cover ? (
-                        <img
-                          src={product.images.cover}
-                          alt={product.name[currentLanguage]}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                          onError={(e) => {
-                            e.currentTarget.src = '/placeholder.svg';
-                          }}
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-muted flex items-center justify-center">
-                          <Package className="w-16 h-16 text-muted-foreground" />
-                        </div>
-                      )}
-                      <div className="absolute top-4 left-4">
-                        <Badge variant="default">
-                          {getCategoryTag(product.category)}
-                        </Badge>
-                      </div>
-                    </div>
-
-                    <CardHeader className="flex-grow">
-                      <CardTitle className="text-lg line-clamp-2">
-                        {product.name[currentLanguage]}
-                      </CardTitle>
-                      <CardDescription className="line-clamp-3">
-                        {product.description[currentLanguage]}
-                      </CardDescription>
-                    </CardHeader>
-
-                    <CardContent className="mt-auto">
-                      <Button
-                        className="w-full"
-                        onClick={() => {
-                          const manufacturerSlug = getManufacturerSlug(product.manufacturer_id);
-                          const productSlug = product.slug || product.id;
-                          navigate(`/catalog/${manufacturerSlug}/${productSlug}`);
-                        }}
+                {featuredProducts.map((product) => {
+                  const productPath = buildProductPath(product);
+                  return (
+                    <Card
+                      key={product.id}
+                      className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 flex flex-col h-full"
+                    >
+                      <Link
+                        to={productPath}
+                        className="relative overflow-hidden rounded-t-lg aspect-[1080/1350] block"
+                        aria-label={`${t('common.view')}: ${product.name[currentLanguage]}`}
                       >
-                        {t('common.view')}
-                        <ArrowRight className="ml-2 w-4 h-4" />
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ))}
+                        {product.images?.cover ? (
+                          <img
+                            src={product.images.cover}
+                            alt={product.name[currentLanguage]}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            onError={(e) => {
+                              e.currentTarget.src = '/placeholder.svg';
+                            }}
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-muted flex items-center justify-center">
+                            <Package className="w-16 h-16 text-muted-foreground" />
+                          </div>
+                        )}
+                        <div className="absolute top-4 left-4">
+                          <Badge variant="default">
+                            {getCategoryTag(product.category)}
+                          </Badge>
+                        </div>
+                      </Link>
+
+                      <CardHeader className="flex-grow">
+                        <CardTitle className="text-lg line-clamp-2">
+                          <Link to={productPath} className="hover:underline">
+                            {product.name[currentLanguage]}
+                          </Link>
+                        </CardTitle>
+                        <CardDescription className="line-clamp-3">
+                          {product.description[currentLanguage]}
+                        </CardDescription>
+                      </CardHeader>
+
+                      <CardContent className="mt-auto">
+                        <Button asChild className="w-full">
+                          <Link to={productPath}>
+                            {t('common.view')}
+                            <ArrowRight className="ml-2 w-4 h-4" />
+                          </Link>
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
@@ -547,10 +602,6 @@ const Home = ({ language }: HomeProps) => {
 };
 
 export default Home;
-
-
-
-
 
 
 

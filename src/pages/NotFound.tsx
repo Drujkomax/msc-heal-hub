@@ -19,6 +19,7 @@ const NotFound = () => {
         title={t("pages.notFound.seo.title")}
         description={t("pages.notFound.seo.description")}
         keywords={t("pages.notFound.seo.keywords")}
+        noindex
       />
       <div className="text-center">
         <h1 className="text-4xl font-bold mb-4">404</h1>
@@ -30,4 +31,3 @@ const NotFound = () => {
 };
 
 export default NotFound;
-

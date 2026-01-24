@@ -13,10 +13,10 @@ const Footer = ({ language }: FooterProps) => {
   return (
     <footer className="bg-msc-primary text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center md:text-left">
           {/* Company Info */}
           <div className="col-span-1 md:col-span-2">
-            <div className="flex items-center space-x-3 mb-4">
+            <div className="flex items-center justify-center md:justify-start space-x-3 mb-4">
               <img
                 src="/lovable-uploads/cebee8f0-cb8b-4449-8cdc-3cf173144e75.png"
                 alt="MSC Logo"
@@ -31,7 +31,7 @@ const Footer = ({ language }: FooterProps) => {
 
             {/* Contact Info */}
             <div className="space-y-3">
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center justify-center md:justify-start space-x-3">
                 <Phone className="w-5 h-5 text-msc-accent" />
                 <div className="flex flex-col">
                   <a
@@ -42,7 +42,7 @@ const Footer = ({ language }: FooterProps) => {
                   </a>
                 </div>
               </div>
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center justify-center md:justify-start space-x-3">
                 <Mail className="w-5 h-5 text-msc-accent" />
                 <a
                   href="mailto:info@medsc.uz"
@@ -51,7 +51,7 @@ const Footer = ({ language }: FooterProps) => {
                   info@medsc.uz
                 </a>
               </div>
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center justify-center md:justify-start space-x-3">
                 <MapPin className="w-5 h-5 text-msc-accent" />
                 <a
                   href="https://yandex.uz/maps/?ll=69.301548,41.316163&z=17&pt=69.301548,41.316163"
@@ -62,7 +62,7 @@ const Footer = ({ language }: FooterProps) => {
                   {t('footer.address')}
                 </a>
               </div>
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center justify-center md:justify-start space-x-3">
                 <Send className="w-5 h-5 text-msc-accent" />
                 <a
                   href="https://t.me/medservice_centre"
@@ -84,7 +84,7 @@ const Footer = ({ language }: FooterProps) => {
                 <li key={link.href}>
                   <a
                     href={link.href}
-                    className="text-white/80 hover:text-msc-accent transition-colors"
+                    className="text-white/80 hover:text-msc-accent transition-colors block"
                   >
                     {link.name}
                   </a>
@@ -101,7 +101,7 @@ const Footer = ({ language }: FooterProps) => {
                 <li key={index}>
                   <a
                     href="/services"
-                    className="text-white/80 text-sm hover:text-msc-accent transition-colors"
+                    className="text-white/80 text-sm hover:text-msc-accent transition-colors block"
                   >
                     {service}
                   </a>
@@ -113,11 +113,11 @@ const Footer = ({ language }: FooterProps) => {
 
         {/* Bottom Bar */}
         <div className="border-t border-white/20 mt-8 pt-6">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-center sm:text-left">
             <p className="text-white/60 text-sm">
               © 2024 {t('footer.company')}. {t('footer.rights')}
             </p>
-            <div className="flex gap-4 text-sm">
+            <div className="flex flex-col sm:flex-row items-center gap-3 text-sm">
               <a
                 href="/Условия использования и дисклеймер Med Service Centre.docx"
                 download
