@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Helmet } from "react-helmet-async";
+import { useLocation } from "react-router-dom";
 
 interface SEOHeadProps {
   title?: string;
@@ -16,9 +16,12 @@ interface SEOHeadProps {
   twitterTitle?: string;
   twitterDescription?: string;
   twitterImage?: string;
+  noindex?: boolean;
+  nofollow?: boolean;
+  structuredData?: object | object[];
 }
 
-const SEOHead = ({ 
+const SEOHead = ({
   title = "Med Service Centre - Медицинское оборудование в Узбекистане",
   description = "Med Service Centre — поставщик медтехники в Узбекистане: УЗИ, анализаторы ABL800 Flex, системы BOWA ARC 400, продажа, сервис и аренда клиникам страны.",
   keywords = "медицинское оборудование Узбекистан, УЗИ аппарат Ташкент, лабораторное оборудование аренда, ABL800 Flex, хирургическое оборудование BOWA ARC 400, медицинская техника клиники Узбекистан",
@@ -32,157 +35,121 @@ const SEOHead = ({
   ogUrl,
   twitterTitle,
   twitterDescription,
-  twitterImage
+  twitterImage,
+  noindex = false,
+  nofollow = false,
+  structuredData,
 }: SEOHeadProps) => {
   const location = useLocation();
-  const currentUrl = url || `${window.location.origin}${location.pathname}${location.search}`;
+
+  // Build full URLs
+  const baseUrl = "https://medsc.uz";
+  const currentUrl = url || `${baseUrl}${location.pathname}${location.search}`;
   const canonicalUrl = canonical || currentUrl;
+  const fullImageUrl = image?.startsWith("http") ? image : `${baseUrl}${image}`;
+
+  // Resolve OG and Twitter values
   const resolvedOgTitle = ogTitle || title;
   const resolvedOgDescription = ogDescription || description;
-  const resolvedOgImage = ogImage || image;
+  const resolvedOgImage = ogImage || fullImageUrl;
   const resolvedOgUrl = ogUrl || canonicalUrl;
   const resolvedTwitterTitle = twitterTitle || resolvedOgTitle;
-  const resolvedTwitterDescription = twitterDescription || resolvedOgDescription;
+  const resolvedTwitterDescription =
+    twitterDescription || resolvedOgDescription;
   const resolvedTwitterImage = twitterImage || resolvedOgImage;
 
-  useEffect(() => {
-    // Update document title
-    document.title = title;
+  // Build robots meta
+  const robotsContent = [];
+  if (noindex) robotsContent.push("noindex");
+  if (nofollow) robotsContent.push("nofollow");
+  if (robotsContent.length === 0) robotsContent.push("index", "follow");
 
-    // Update meta tags
-    const updateMetaTag = (name: string, content: string, property?: boolean) => {
-      const selector = property ? `meta[property="${name}"]` : `meta[name="${name}"]`;
-      let meta = document.querySelector(selector) as HTMLMetaElement;
-      
-      if (!meta) {
-        meta = document.createElement('meta');
-        if (property) {
-          meta.setAttribute('property', name);
-        } else {
-          meta.setAttribute('name', name);
-        }
-        document.head.appendChild(meta);
-      }
-      meta.content = content;
-    };
+  // Build alternate URLs for languages
+  const currentUrlObject = new URL(currentUrl);
+  const buildLocalizedHref = (lang: "ru" | "uz") => {
+    const localized = new URL(currentUrlObject.toString());
+    if (lang === "ru") {
+      localized.searchParams.delete("lang");
+    } else {
+      localized.searchParams.set("lang", lang);
+    }
+    return localized.toString();
+  };
 
-    // Standard meta tags
-    updateMetaTag('description', description);
-    updateMetaTag('keywords', keywords);
-    updateMetaTag('author', 'Med Service Centre');
+  const searchParamsWithoutLang = new URLSearchParams(currentUrlObject.search);
+  searchParamsWithoutLang.delete("lang");
+  const searchWithoutLang = searchParamsWithoutLang.toString();
+  const basePathWithSearch = `${currentUrlObject.origin}${currentUrlObject.pathname}${searchWithoutLang ? `?${searchWithoutLang}` : ""}`;
 
-    // Open Graph tags
-    updateMetaTag('og:title', resolvedOgTitle, true);
-    updateMetaTag('og:description', resolvedOgDescription, true);
-    updateMetaTag('og:type', type, true);
-    updateMetaTag('og:url', resolvedOgUrl, true);
-    updateMetaTag('og:image', resolvedOgImage, true);
-    updateMetaTag('og:site_name', 'Med Service Centre', true);
+  return (
+    <Helmet>
+      {/* Basic Meta Tags */}
+      <title>{title}</title>
+      <meta name="description" content={description} />
+      <meta name="keywords" content={keywords} />
+      <meta name="author" content="Med Service Centre" />
+      <meta name="robots" content={robotsContent.join(", ")} />
 
-    // Twitter tags
-    updateMetaTag('twitter:card', 'summary_large_image');
-    updateMetaTag('twitter:title', resolvedTwitterTitle);
-    updateMetaTag('twitter:description', resolvedTwitterDescription);
-    updateMetaTag('twitter:image', resolvedTwitterImage);
+      {/* Canonical */}
+      <link rel="canonical" href={canonicalUrl} />
 
-    // Link tags (canonical + alternates)
-    const upsertLinkTag = (rel: string, href: string, hreflang?: string) => {
-      const selector = hreflang
-        ? `link[rel="${rel}"][hreflang="${hreflang}"]`
-        : `link[rel="${rel}"]`;
-      let link = document.querySelector(selector) as HTMLLinkElement;
+      {/* Alternate Languages */}
+      <link rel="alternate" hrefLang="ru" href={buildLocalizedHref("ru")} />
+      <link rel="alternate" hrefLang="uz" href={buildLocalizedHref("uz")} />
+      <link rel="alternate" hrefLang="x-default" href={basePathWithSearch} />
 
-      if (!link) {
-        link = document.createElement('link');
-        link.rel = rel;
-        if (hreflang) {
-          link.hreflang = hreflang;
-        }
-        document.head.appendChild(link);
-      }
+      {/* Open Graph */}
+      <meta property="og:title" content={resolvedOgTitle} />
+      <meta property="og:description" content={resolvedOgDescription} />
+      <meta property="og:type" content={type} />
+      <meta property="og:url" content={resolvedOgUrl} />
+      <meta property="og:image" content={resolvedOgImage} />
+      <meta property="og:site_name" content="Med Service Centre" />
+      <meta property="og:locale" content="ru_RU" />
+      <meta property="og:locale:alternate" content="uz_UZ" />
 
-      link.href = href;
-    };
+      {/* Twitter Card */}
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={resolvedTwitterTitle} />
+      <meta name="twitter:description" content={resolvedTwitterDescription} />
+      <meta name="twitter:image" content={resolvedTwitterImage} />
 
-    const currentUrlObject = new URL(currentUrl);
-    const buildLocalizedHref = (lang: 'ru' | 'uz') => {
-      const localized = new URL(currentUrlObject.toString());
-      if (lang === 'ru') {
-        localized.searchParams.delete('lang');
-      } else {
-        localized.searchParams.set('lang', lang);
-      }
-      return localized.toString();
-    };
+      {/* Structured Data (JSON-LD) */}
+      {structuredData && (
+        <script type="application/ld+json">
+          {JSON.stringify(
+            Array.isArray(structuredData) ? structuredData : [structuredData],
+          )}
+        </script>
+      )}
 
-    const searchParamsWithoutLang = new URLSearchParams(currentUrlObject.search);
-    searchParamsWithoutLang.delete('lang');
-    const searchWithoutLang = searchParamsWithoutLang.toString();
-    const basePathWithSearch = `${currentUrlObject.origin}${currentUrlObject.pathname}${searchWithoutLang ? `?${searchWithoutLang}` : ''}`;
-
-    upsertLinkTag('canonical', canonicalUrl);
-    upsertLinkTag('alternate', buildLocalizedHref('ru'), 'ru');
-    upsertLinkTag('alternate', buildLocalizedHref('uz'), 'uz');
-    upsertLinkTag('alternate', basePathWithSearch, 'x-default');
-
-    // JSON-LD structured data for organization
-    const updateStructuredData = () => {
-      const existingScript = document.querySelector('#structured-data');
-      if (existingScript) {
-        existingScript.remove();
-      }
-
-      const script = document.createElement('script');
-      script.id = 'structured-data';
-      script.type = 'application/ld+json';
-      script.textContent = JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "Organization",
-        "name": "Med Service Centre",
-        "description": description,
-        "url": currentUrl,
-        "logo": {
-          "@type": "ImageObject",
-          "url": "/lovable-uploads/ea1f50a2-d3d1-418f-b6ce-f6e08a722162.png"
-        },
-        "contactPoint": {
-          "@type": "ContactPoint",
-          "contactType": "sales",
-          "areaServed": "UZ",
-          "availableLanguage": ["ru", "en", "uz"]
-        },
-        "address": {
-          "@type": "PostalAddress",
-          "addressCountry": "UZ",
-          "addressRegion": "Tashkent"
-        },
-        "sameAs": [
-          currentUrl
-        ]
-      });
-      document.head.appendChild(script);
-    };
-
-    updateStructuredData();
-
-  }, [
-    title,
-    description,
-    keywords,
-    image,
-    currentUrl,
-    canonicalUrl,
-    type,
-    resolvedOgTitle,
-    resolvedOgDescription,
-    resolvedOgImage,
-    resolvedOgUrl,
-    resolvedTwitterTitle,
-    resolvedTwitterDescription,
-    resolvedTwitterImage
-  ]);
-
-  return null;
+      {/* Organization Schema (Default) */}
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "Med Service Centre",
+          description: description,
+          url: baseUrl,
+          logo: {
+            "@type": "ImageObject",
+            url: `${baseUrl}/lovable-uploads/ea1f50a2-d3d1-418f-b6ce-f6e08a722162.png`,
+          },
+          contactPoint: {
+            "@type": "ContactPoint",
+            contactType: "sales",
+            areaServed: "UZ",
+            availableLanguage: ["ru", "en", "uz"],
+          },
+          address: {
+            "@type": "PostalAddress",
+            addressCountry: "UZ",
+            addressRegion: "Tashkent",
+          },
+        })}
+      </script>
+    </Helmet>
+  );
 };
 
 export default SEOHead;
