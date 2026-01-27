@@ -11,6 +11,7 @@ import SEOHead from "@/components/SEO/SEOHead";
 import { useProducts, type Product } from '@/hooks/useProducts';
 import { useManufacturers } from '@/hooks/useManufacturers';
 import { useCategories } from '@/hooks/useCategories';
+import { toUrlSlug } from '@/lib/slugify';
 
 interface HomeProps {
   language: 'ru' | 'en' | 'uz';
@@ -57,7 +58,8 @@ const Home = ({ language }: HomeProps) => {
   const getManufacturerSlug = (manufacturerId: string | null | undefined) => {
     if (!manufacturerId) return 'unknown';
     const manufacturer = manufacturers.find(m => m.id === manufacturerId);
-    return manufacturer?.slug || 'unknown';
+    const safeSlug = toUrlSlug(manufacturer?.slug);
+    return safeSlug || 'unknown';
   };
 
   const buildProductPath = (product: Product) => {
@@ -88,16 +90,18 @@ const Home = ({ language }: HomeProps) => {
     itemListElement: featuredProducts.map((product, index) => {
       const productPath = buildProductPath(product);
       const productImage = product.images?.cover || '';
+      const productImageUrl = productImage
+        ? (productImage.startsWith('http') ? productImage : `${baseUrl}${productImage}`)
+        : undefined;
       return {
         "@type": "ListItem",
         position: index + 1,
         item: {
-          "@type": "Product",
+          // Avoid Product rich-result errors on listing pages without offers/pricing.
+          "@type": "WebPage",
           name: product.name[currentLanguage],
           url: `${baseUrl}${productPath}`,
-          image: productImage
-            ? (productImage.startsWith('http') ? productImage : `${baseUrl}${productImage}`)
-            : undefined
+          image: productImageUrl
         }
       };
     })
@@ -602,7 +606,6 @@ const Home = ({ language }: HomeProps) => {
 };
 
 export default Home;
-
 
 
 

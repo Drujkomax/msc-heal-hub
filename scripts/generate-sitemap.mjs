@@ -36,6 +36,64 @@ const supabaseKey =
   process.env.VITE_SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 const siteUrl = process.env.SITE_URL || "https://medsc.uz";
 
+const cyrillicMap = {
+  а: "a",
+  б: "b",
+  в: "v",
+  г: "g",
+  д: "d",
+  е: "e",
+  ё: "yo",
+  ж: "zh",
+  з: "z",
+  и: "i",
+  й: "y",
+  к: "k",
+  л: "l",
+  м: "m",
+  н: "n",
+  о: "o",
+  п: "p",
+  р: "r",
+  с: "s",
+  т: "t",
+  у: "u",
+  ф: "f",
+  х: "kh",
+  ц: "ts",
+  ч: "ch",
+  ш: "sh",
+  щ: "shch",
+  ъ: "",
+  ы: "y",
+  ь: "",
+  э: "e",
+  ю: "yu",
+  я: "ya",
+};
+
+const transliterateCyrillic = (value) =>
+  value
+    .split("")
+    .map((char) => {
+      const lower = char.toLowerCase();
+      return lower in cyrillicMap ? cyrillicMap[lower] : char;
+    })
+    .join("");
+
+const toAsciiSlug = (value) => {
+  if (!value) return "";
+  const normalized = value.trim().toLowerCase();
+  if (/^[a-z0-9-]+$/.test(normalized)) return normalized;
+  return transliterateCyrillic(value)
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9-]/g, "")
+    .replace(/-+/g, "-")
+    .replace(/^-+|-+$/g, "");
+};
+
 if (!supabaseUrl || !supabaseKey) {
   console.error(
     "Missing env: VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY (or VITE_SUPABASE_PUBLISHABLE_KEY) are required.",
@@ -77,7 +135,7 @@ if (manufacturersError) {
 const manufacturerSlugMap = new Map(
   (manufacturers || [])
     .filter((manufacturer) => manufacturer.slug)
-    .map((manufacturer) => [manufacturer.id, manufacturer.slug]),
+    .map((manufacturer) => [manufacturer.id, toAsciiSlug(manufacturer.slug)]),
 );
 
 const { data: products, error: productsError } = await supabase

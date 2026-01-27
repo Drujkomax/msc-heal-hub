@@ -44,6 +44,7 @@ import QuoteRequestForm from "@/components/forms/QuoteRequestForm";
 import { useTranslation } from "react-i18next";
 import SEOHead from "@/components/SEO/SEOHead";
 import { useCurrencyRates } from "@/hooks/useCurrencyRates";
+import { toUrlSlug } from "@/lib/slugify";
 
 // Function to get category display name
 const getCategoryTag = (
@@ -126,7 +127,8 @@ const Catalog = () => {
   const getManufacturerSlug = (manufacturerId: string | null | undefined) => {
     if (!manufacturerId) return "unknown";
     const manufacturer = manufacturers.find((m) => m.id === manufacturerId);
-    return manufacturer?.slug || "unknown";
+    const safeSlug = toUrlSlug(manufacturer?.slug);
+    return safeSlug || "unknown";
   };
 
   const buildProductPath = (product: Product) => {

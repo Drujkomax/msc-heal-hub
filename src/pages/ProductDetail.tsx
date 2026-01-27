@@ -41,6 +41,7 @@ import {
   isValidUzbekPhoneLength,
   isCompleteUzbekPhone,
 } from "@/lib/phoneValidation";
+import { toUrlSlug } from "@/lib/slugify";
 
 const getCategoryLabel = (category: string, language: "ru" | "en" | "uz") => {
   const categoryLabels = {
@@ -298,6 +299,7 @@ const ProductDetail = () => {
     }
     return String(name);
   })();
+  const manufacturerSlugSafe = toUrlSlug(manufacturer?.slug);
   const categoryLabel = getCategoryLabel(product.category, language);
   const categoryPath = `/catalog?category=${product.category}`;
 
@@ -377,8 +379,8 @@ const ProductDetail = () => {
   const canonicalUrl = (() => {
     const baseUrl = "https://medsc.uz/catalog";
     const productSlugValue = product.slug || product.id;
-    if (manufacturer?.slug) {
-      return `${baseUrl}/${manufacturer.slug}/${productSlugValue}`;
+    if (manufacturerSlugSafe) {
+      return `${baseUrl}/${manufacturerSlugSafe}/${productSlugValue}`;
     }
     return `${baseUrl}/${productSlugValue}`;
   })();
@@ -456,19 +458,19 @@ const ProductDetail = () => {
         name: "Каталог",
         item: "https://medsc.uz/catalog",
       },
-      ...(manufacturer?.slug
+      ...(manufacturerSlugSafe
         ? [
             {
               "@type": "ListItem",
               position: 3,
               name: manufacturerName,
-              item: `https://medsc.uz/catalog?manufacturer=${manufacturer.slug}`,
+              item: `https://medsc.uz/catalog?manufacturer=${manufacturerSlugSafe}`,
             },
           ]
         : []),
       {
         "@type": "ListItem",
-        position: manufacturer?.slug ? 4 : 3,
+        position: manufacturerSlugSafe ? 4 : 3,
         name: productName,
         item: canonicalUrl,
       },

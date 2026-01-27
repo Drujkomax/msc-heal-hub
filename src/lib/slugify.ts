@@ -38,6 +38,17 @@ export const generateSlug = (text: string): string => {
 };
 
 /**
+ * Ensure a slug is URL-safe ASCII. If it already is, keep it.
+ * If not, transliterate and normalize it.
+ */
+export const toUrlSlug = (slug: string | null | undefined): string => {
+  if (!slug) return '';
+  const normalized = slug.trim().toLowerCase();
+  const isAsciiSlug = /^[a-z0-9-]+$/.test(normalized);
+  return isAsciiSlug ? normalized : generateSlug(slug);
+};
+
+/**
  * Remove UUID suffix from existing slugs
  * @param slug - The slug that may contain a UUID suffix
  * @returns Clean slug without UUID suffix
