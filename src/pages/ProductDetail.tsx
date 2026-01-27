@@ -272,12 +272,10 @@ const ProductDetail = () => {
         objName[language] ||
         objName.ru ||
         objName.en ||
-        "Медицинское оборудование Med Service Centre"
+        "Медицинское оборудование"
       );
     }
-    return (
-      String(product.name) || "Медицинское оборудование Med Service Centre"
-    );
+    return String(product.name) || "Медицинское оборудование";
   })();
 
   const productDescription = (() => {

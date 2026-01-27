@@ -381,7 +381,11 @@ const Catalog = () => {
                         {Object.entries(allCategories).map(([key, value]) => (
                           <Link
                             key={key}
-                            to={key === "all" ? "/catalog" : `/catalog?category=${key}`}
+                            to={
+                              key === "all"
+                                ? "/catalog"
+                                : `/catalog?category=${key}`
+                            }
                             onClick={() => {
                               setSelectedCategory(key);
                               // Close sheet after selection
@@ -419,142 +423,142 @@ const Catalog = () => {
                         key={product.id}
                         className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 flex flex-col h-full"
                       >
-                      <Link
-                        to={productUrl}
-                        className="relative overflow-hidden rounded-t-lg aspect-[1080/1350] block"
-                        aria-label={`${translations.details[language]}: ${product.name[language]}`}
-                      >
-                        {product.images?.cover ? (
-                          <img
-                            src={product.images.cover}
-                            alt={product.name[language]}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                            onError={(e) => {
-                              e.currentTarget.src = "/placeholder.svg";
-                            }}
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-muted flex items-center justify-center">
-                            <Package className="w-16 h-16 text-muted-foreground" />
-                          </div>
-                        )}
-                        <div className="absolute top-4 left-4">
-                          <Badge variant="default">
-                            {getCategoryTag(
-                              product.category,
-                              language,
-                              allCategories,
-                            )}
-                          </Badge>
-                        </div>
-                      </Link>
-
-                      <CardHeader className="flex-grow">
-                        <div className="flex items-start justify-between mb-2">
-                          <CardTitle className="text-sm sm:text-lg flex-1 line-clamp-2">
-                            <Link
-                              to={productUrl}
-                              className="hover:underline"
-                              aria-label={`${translations.details[language]}: ${product.name[language]}`}
-                            >
-                              {product.name[language]}
-                            </Link>
-                          </CardTitle>
-                          {product.country && (
-                            <div className="bg-black text-white text-xs px-2 py-1 rounded-sm flex items-center gap-1 ml-2 whitespace-nowrap">
-                              <span className="text-sm">
-                                {getCountryFlag(product.country)}
-                              </span>
-                              <span className="hidden sm:inline">
-                                {getCountryName(product.country, language)}
-                              </span>
+                        <Link
+                          to={productUrl}
+                          className="relative overflow-hidden rounded-t-lg aspect-[1080/1350] block"
+                          aria-label={`${translations.details[language]}: ${product.name[language]}`}
+                        >
+                          {product.images?.cover ? (
+                            <img
+                              src={product.images.cover}
+                              alt={product.name[language]}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                              onError={(e) => {
+                                e.currentTarget.src = "/placeholder.svg";
+                              }}
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-muted flex items-center justify-center">
+                              <Package className="w-16 h-16 text-muted-foreground" />
                             </div>
                           )}
-                        </div>
-                        {/* Hide description on mobile, show on larger screens */}
-                        <CardDescription className="hidden sm:block">
-                          {product.description[language]}
-                        </CardDescription>
-                      </CardHeader>
+                          <div className="absolute top-4 left-4">
+                            <Badge variant="default">
+                              {getCategoryTag(
+                                product.category,
+                                language,
+                                allCategories,
+                              )}
+                            </Badge>
+                          </div>
+                        </Link>
 
-                      <CardContent className="flex flex-col justify-end mt-auto">
-                        {/* Price Display */}
-                        {product.price && product.currency && (
-                          <div className="mb-4 p-3 bg-muted/50 rounded-lg">
-                            <div className="flex items-baseline gap-2">
-                              <span className="text-2xl font-bold text-primary">
-                                {formatPrice(product.price, product.currency)}
-                              </span>
-                              <span className="text-sm text-muted-foreground">
-                                {product.currency}
-                              </span>
-                            </div>
-                            {product.currency !== "UZS" && (
-                              <div className="mt-1 text-xs text-muted-foreground">
-                                ≈{" "}
-                                {formatPrice(
-                                  convertToUZS(
-                                    parseFloat(product.price),
-                                    product.currency,
-                                  ).toString(),
-                                  "UZS",
-                                )}{" "}
-                                UZS
+                        <CardHeader className="flex-grow">
+                          <div className="flex items-start justify-between mb-2">
+                            <CardTitle className="text-sm sm:text-lg flex-1 line-clamp-2">
+                              <Link
+                                to={productUrl}
+                                className="hover:underline"
+                                aria-label={`${translations.details[language]}: ${product.name[language]}`}
+                              >
+                                {product.name[language]}
+                              </Link>
+                            </CardTitle>
+                            {product.country && (
+                              <div className="bg-black text-white text-xs px-2 py-1 rounded-sm flex items-center gap-1 ml-2 whitespace-nowrap">
+                                <span className="text-sm">
+                                  {getCountryFlag(product.country)}
+                                </span>
+                                <span className="hidden sm:inline">
+                                  {getCountryName(product.country, language)}
+                                </span>
                               </div>
                             )}
                           </div>
-                        )}
+                          {/* Hide description on mobile, show on larger screens */}
+                          <CardDescription className="hidden sm:block">
+                            {product.description[language]}
+                          </CardDescription>
+                        </CardHeader>
 
-                        {/* Hide features on mobile, show on larger screens */}
-                        {product.features &&
-                          product.features[language] &&
-                          product.features[language].length > 0 && (
-                            <div className="mb-4 hidden sm:block">
-                              <h4 className="font-medium mb-2">
-                                {translations.features[language]}:
-                              </h4>
-                              <ul className="text-sm text-muted-foreground space-y-1">
-                                {product.features[language].map(
-                                  (feature, index) => (
-                                    <li
-                                      key={index}
-                                      className="flex items-center"
-                                    >
-                                      <span className="w-1.5 h-1.5 bg-primary rounded-full mr-2"></span>
-                                      {feature}
-                                    </li>
-                                  ),
-                                )}
-                              </ul>
+                        <CardContent className="flex flex-col justify-end mt-auto">
+                          {/* Price Display */}
+                          {product.price && product.currency && (
+                            <div className="mb-4 p-3 bg-muted/50 rounded-lg">
+                              <div className="flex items-baseline gap-2">
+                                <span className="text-2xl font-bold text-primary">
+                                  {formatPrice(product.price, product.currency)}
+                                </span>
+                                <span className="text-sm text-muted-foreground">
+                                  {product.currency}
+                                </span>
+                              </div>
+                              {product.currency !== "UZS" && (
+                                <div className="mt-1 text-xs text-muted-foreground">
+                                  ≈{" "}
+                                  {formatPrice(
+                                    convertToUZS(
+                                      parseFloat(product.price),
+                                      product.currency,
+                                    ).toString(),
+                                    "UZS",
+                                  )}{" "}
+                                  UZS
+                                </div>
+                              )}
                             </div>
                           )}
 
-                        <div className="flex flex-col gap-2">
-                          <Button
-                            asChild
-                            className="w-full text-xs sm:text-sm"
-                          >
-                            <Link
-                              to={productUrl}
-                              aria-label={`${translations.details[language]}: ${product.name[language]}`}
+                          {/* Hide features on mobile, show on larger screens */}
+                          {product.features &&
+                            product.features[language] &&
+                            product.features[language].length > 0 && (
+                              <div className="mb-4 hidden sm:block">
+                                <h4 className="font-medium mb-2">
+                                  {translations.features[language]}:
+                                </h4>
+                                <ul className="text-sm text-muted-foreground space-y-1">
+                                  {product.features[language].map(
+                                    (feature, index) => (
+                                      <li
+                                        key={index}
+                                        className="flex items-center"
+                                      >
+                                        <span className="w-1.5 h-1.5 bg-primary rounded-full mr-2"></span>
+                                        {feature}
+                                      </li>
+                                    ),
+                                  )}
+                                </ul>
+                              </div>
+                            )}
+
+                          <div className="flex flex-col gap-2">
+                            <Button
+                              asChild
+                              className="w-full text-xs sm:text-sm"
                             >
-                              <Eye className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                              {translations.details[language]}
-                            </Link>
-                          </Button>
-                          <Button
-                            variant="outline"
-                            className="w-full text-xs sm:text-sm"
-                            onClick={() => {
-                              setSelectedProduct(product);
-                              setShowQuoteForm(true);
-                            }}
-                          >
-                            {translations.requestQuote[language]}
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
+                              <Link
+                                to={productUrl}
+                                aria-label={`${translations.details[language]}: ${product.name[language]}`}
+                              >
+                                <Eye className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                                {translations.details[language]}
+                              </Link>
+                            </Button>
+                            <Button
+                              variant="outline"
+                              className="w-full text-xs sm:text-sm"
+                              onClick={() => {
+                                setSelectedProduct(product);
+                                setShowQuoteForm(true);
+                              }}
+                            >
+                              {translations.requestQuote[language]}
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
                     );
                   })}
                 </div>

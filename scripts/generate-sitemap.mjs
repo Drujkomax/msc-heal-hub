@@ -1,14 +1,44 @@
-import { writeFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { createClient } from "@supabase/supabase-js";
 
+// Lightweight .env loader to make the script work without extra deps.
+const loadDotEnv = async () => {
+  try {
+    const envPath = resolve(".env");
+    const raw = await readFile(envPath, "utf8");
+    raw.split("\n").forEach((line) => {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith("#")) return;
+      const eqIndex = trimmed.indexOf("=");
+      if (eqIndex === -1) return;
+      const key = trimmed.slice(0, eqIndex).trim();
+      let value = trimmed.slice(eqIndex + 1).trim();
+      if (
+        (value.startsWith('"') && value.endsWith('"')) ||
+        (value.startsWith("'") && value.endsWith("'"))
+      ) {
+        value = value.slice(1, -1);
+      }
+      if (key && !(key in process.env)) {
+        process.env[key] = value;
+      }
+    });
+  } catch {
+    // It's fine if .env is missing in CI; env vars can come from the shell.
+  }
+};
+
+await loadDotEnv();
+
 const supabaseUrl = process.env.VITE_SUPABASE_URL;
-const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY;
+const supabaseKey =
+  process.env.VITE_SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 const siteUrl = process.env.SITE_URL || "https://medsc.uz";
 
 if (!supabaseUrl || !supabaseKey) {
   console.error(
-    "Missing env: VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are required.",
+    "Missing env: VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY (or VITE_SUPABASE_PUBLISHABLE_KEY) are required.",
   );
   process.exit(1);
 }
