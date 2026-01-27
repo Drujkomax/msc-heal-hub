@@ -280,14 +280,20 @@ const Catalog = () => {
       const productPath = buildProductPath(product);
       const productUrl = `${baseUrl}${productPath}`;
       const productImage = product.images?.cover || null;
+      const productImageUrl = productImage
+        ? productImage.startsWith("http")
+          ? productImage
+          : `${baseUrl}${productImage}`
+        : undefined;
       return {
         "@type": "ListItem",
         position: startIndex + index + 1,
         item: {
-          "@type": "Product",
+          // Use WebPage here to avoid Product rich-result errors when price/offers are absent.
+          "@type": "WebPage",
           name: product.name[language],
           url: productUrl,
-          image: productImage ? `${baseUrl}${productImage}` : undefined,
+          image: productImageUrl,
         },
       };
     }),

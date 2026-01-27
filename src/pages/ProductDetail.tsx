@@ -338,6 +338,7 @@ const ProductDetail = () => {
       ? productImage
       : `${baseUrl}${productImage}`
     : undefined;
+  const hasOffer = Boolean(product.price && product.currency);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -382,43 +383,61 @@ const ProductDetail = () => {
     return `${baseUrl}/${productSlugValue}`;
   })();
 
-  // Build Product structured data for SEO
-  const productStructuredData = {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    name: productName,
-    description: productDescription || metaDescription,
-    image: product.images?.cover
-      ? product.images.cover.startsWith("http")
-        ? product.images.cover
-        : `https://medsc.uz${product.images.cover}`
-      : "https://medsc.uz/lovable-uploads/ea1f50a2-d3d1-418f-b6ce-f6e08a722162.png",
-    sku: product.id,
-    brand: {
-      "@type": "Brand",
-      name: manufacturerName || "Med Service Centre",
-    },
-    manufacturer: {
-      "@type": "Organization",
-      name: manufacturerName || "Med Service Centre",
-    },
-    category: categoryLabel,
-    url: canonicalUrl,
-    ...(product.price && {
-      offers: {
-        "@type": "Offer",
-        url: canonicalUrl,
-        priceCurrency: product.currency || "USD",
-        price: product.price,
-        availability: "https://schema.org/InStock",
-        seller: {
+  // Build structured data for SEO.
+  // Only emit Product rich-result markup when we have a valid offer (price + currency).
+  const productStructuredData = hasOffer
+    ? {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        name: productName,
+        description: productDescription || metaDescription,
+        image:
+          productImageUrl ||
+          "https://medsc.uz/lovable-uploads/ea1f50a2-d3d1-418f-b6ce-f6e08a722162.png",
+        sku: product.id,
+        brand: {
+          "@type": "Brand",
+          name: manufacturerName || "Med Service Centre",
+        },
+        manufacturer: {
           "@type": "Organization",
+          name: manufacturerName || "Med Service Centre",
+        },
+        category: categoryLabel,
+        url: canonicalUrl,
+        offers: {
+          "@type": "Offer",
+          url: canonicalUrl,
+          priceCurrency: product.currency,
+          price: product.price,
+          availability: "https://schema.org/InStock",
+          seller: {
+            "@type": "Organization",
+            name: "Med Service Centre",
+            url: "https://medsc.uz",
+          },
+        },
+      }
+    : {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        name: productName,
+        description: productDescription || metaDescription,
+        url: canonicalUrl,
+        image:
+          productImageUrl ||
+          "https://medsc.uz/lovable-uploads/ea1f50a2-d3d1-418f-b6ce-f6e08a722162.png",
+        inLanguage: language,
+        isPartOf: {
+          "@type": "WebSite",
           name: "Med Service Centre",
           url: "https://medsc.uz",
         },
-      },
-    }),
-  };
+        about: {
+          "@type": "Thing",
+          name: productName,
+        },
+      };
 
   // BreadcrumbList for better SEO navigation
   const breadcrumbStructuredData = {
@@ -463,6 +482,8 @@ const ProductDetail = () => {
       : `https://medsc.uz${product.images.cover}`
     : "https://medsc.uz/lovable-uploads/ea1f50a2-d3d1-418f-b6ce-f6e08a722162.png";
 
+  const structuredDataList = [productStructuredData, breadcrumbStructuredData];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
       <SEOHead
@@ -476,7 +497,7 @@ const ProductDetail = () => {
         twitterTitle={productName}
         twitterDescription={`${productName} — ${categoryLabel} оборудование. Купить или арендовать в Med Service Centre.`}
         twitterImage={ogImage}
-        structuredData={[productStructuredData, breadcrumbStructuredData]}
+        structuredData={structuredDataList}
       />
       <div className="container mx-auto px-4 py-8">
         <nav className="text-sm text-muted-foreground mb-4">
