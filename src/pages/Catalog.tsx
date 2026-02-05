@@ -311,7 +311,7 @@ const Catalog = () => {
         title={seoTitle}
         description={seoDescription}
         keywords={seoKeywords.join(", ")}
-        canonical={`https://medsc.uz/catalog${selectedCategory !== "all" ? `?category=${selectedCategory}` : ""}`}
+        canonical={`${baseUrl}/catalog${selectedCategory !== "all" ? `?category=${selectedCategory}` : ""}`}
         type="website"
         structuredData={[catalogSchema, itemListSchema]}
       />
@@ -325,10 +325,10 @@ const Catalog = () => {
         <div className="absolute inset-0 bg-black/50"></div>
         <div className="container mx-auto px-4 text-center relative z-10">
           <h1 className="text-4xl md:text-5xl font-heading font-bold text-white mb-4">
-            {translations.title[language]}
+            {selectedCategory === "all" ? translations.title[language] : categoryName}
           </h1>
           <p className="text-lg text-white/90 max-w-2xl mx-auto">
-            {translations.subtitle[language]}
+            {selectedCategory === "all" ? translations.subtitle[language] : seoDescription}
           </p>
         </div>
       </div>
