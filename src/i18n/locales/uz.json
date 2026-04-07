@@ -455,6 +455,10 @@
         "not_disclosed": "Oshkor qilinmagan"
       },
       "equipmentTypes": {
+        "mrt_mskt": "MRT va MSKT uskunasi",
+        "gynecology": "Ginikologiya uskunalari",
+        "physiotherapy": "Fizoterapiya uskunalari",
+        "resuscitation": "Reanimatsiya uskunalari",
         "mri": "MRT uskunasi",
         "ct": "KT uskunasi",
         "ultrasound": "UZI uskunasi",
@@ -580,6 +584,8 @@
         "other": "Boshqa"
       },
       "budgetRanges": {
+        "3k_5k": "3 000-5 000$",
+        "5k_10k": "5 000$ - 10,000$",
         "under_10k": "$10,000 gacha",
         "10k_50k": "$10,000 - $50,000",
         "50k_100k": "$50,000 - $100,000",
@@ -596,13 +602,15 @@
         "not_specified": "Koʻrsatilmagan"
       },
       "equipmentTypes": {
-        "mri": "MRT uskunasi",
-        "ct": "KT skanerlari",
-        "ultrasound": "Ultra tovush mashinalari",
-        "xray": "Rentgen uskunasi",
-        "laboratory": "Laboratoriya uskunasi",
-        "surgical": "Jarrohlik uskunasi",
-        "other": "Boshqa"
+        "mrt_mskt": "MRT va MSKT uskunasi",
+        "ultrasound": "Ultratovush uskunalari",
+        "xray": "Rentgen uskunalari",
+        "gynecology": "Ginikologiya uskunalari",
+        "laboratory": "Labaratoriya uskunalari",
+        "surgical": "Jarroxlik uskunalari",
+        "physiotherapy": "Fizoterapiya uskunalari",
+        "resuscitation": "Reanimatsiya uskunalari",
+        "other": "Boshqalar"
       },
       "validation": {
         "nameRequired": "Mijoz ismi talab qilinadi"
@@ -640,7 +648,23 @@
       "notSpecified": "Koʻrsatilmagan",
       "loading": "Yuklanmoqda...",
       "statusUpdated": "Lid statusi yangilandi",
-      "statusUpdateError": "Statusni yangilashda xatolik"
+      "statusUpdateError": "Statusni yangilashda xatolik",
+      "equipmentTypes": {
+        "mrt_mskt": "MRT va MSKT uskunasi",
+        "gynecology": "Ginikologiya uskunalari",
+        "physiotherapy": "Fizoterapiya uskunalari",
+        "resuscitation": "Reanimatsiya uskunalari",
+        "mri": "MRT uskunasi",
+        "ct": "KT uskunasi",
+        "ultrasound": "Ultratovush uskunalari",
+        "xray": "Rentgen uskunalari",
+        "laboratory": "Laboratoriya uskunalari",
+        "surgical": "Jarrohlik uskunalari",
+        "anesthesia": "Anesteziya uskunasi",
+        "monitoring": "Monitoring uskunasi",
+        "rehabilitation": "Reabilitatsiya uskunasi",
+        "other": "Boshqa"
+      }
     },
     "enhancedLeadModal": {
       "id": "ID",
@@ -673,6 +697,20 @@
         "assignedTo": "Tayinlangan",
         "closedDate": "Yopilish sanasi",
         "potentialAmount": "Potentsial miqdor"
+      },
+      "equipmentTypes": {
+        "mrt_mskt": "MRT va MSKT uskunasi",
+        "gynecology": "Ginikologiya uskunalari",
+        "physiotherapy": "Fizoterapiya uskunalari",
+        "resuscitation": "Reanimatsiya uskunalari",
+        "mri": "MRT",
+        "ct": "KT",
+        "ultrasound": "Ultratovush",
+        "xray": "Rentgen",
+        "mammography": "Mammografiya",
+        "endoscopy": "Endoskopiya",
+        "laboratory": "Laboratoriya uskunalari",
+        "other": "Boshqa"
       }
     },
     "viewLeadModal": {

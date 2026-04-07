@@ -455,6 +455,10 @@
         "not_disclosed": "Not disclosed"
       },
       "equipmentTypes": {
+        "mrt_mskt": "MRI and MSCT equipment",
+        "gynecology": "Gynecology equipment",
+        "physiotherapy": "Physiotherapy equipment",
+        "resuscitation": "Resuscitation equipment",
         "mri": "MRI Equipment",
         "ct": "CT Equipment",
         "ultrasound": "Ultrasound Equipment",
@@ -580,6 +584,8 @@
         "other": "Other"
       },
       "budgetRanges": {
+        "3k_5k": "$3,000 - $5,000",
+        "5k_10k": "$5,000 - $10,000",
         "under_10k": "Up to $10,000",
         "10k_50k": "$10,000 - $50,000",
         "50k_100k": "$50,000 - $100,000",
@@ -596,12 +602,14 @@
         "not_specified": "Not specified"
       },
       "equipmentTypes": {
-        "mri": "MRI equipment",
-        "ct": "CT scanners",
-        "ultrasound": "Ultrasound machines",
+        "mrt_mskt": "MRI and MSCT equipment",
+        "ultrasound": "Ultrasound equipment",
         "xray": "X-ray equipment",
+        "gynecology": "Gynecology equipment",
         "laboratory": "Laboratory equipment",
         "surgical": "Surgical equipment",
+        "physiotherapy": "Physiotherapy equipment",
+        "resuscitation": "Resuscitation equipment",
         "other": "Other"
       },
       "validation": {
@@ -640,7 +648,23 @@
       "notSpecified": "Not specified",
       "loading": "Loading...",
       "statusUpdated": "Lead status updated",
-      "statusUpdateError": "Error updating status"
+      "statusUpdateError": "Error updating status",
+      "equipmentTypes": {
+        "mrt_mskt": "MRI and MSCT equipment",
+        "gynecology": "Gynecology equipment",
+        "physiotherapy": "Physiotherapy equipment",
+        "resuscitation": "Resuscitation equipment",
+        "mri": "MRI equipment",
+        "ct": "CT equipment",
+        "ultrasound": "Ultrasound equipment",
+        "xray": "X-ray equipment",
+        "laboratory": "Laboratory equipment",
+        "surgical": "Surgical equipment",
+        "anesthesia": "Anesthesia equipment",
+        "monitoring": "Monitoring equipment",
+        "rehabilitation": "Rehabilitation equipment",
+        "other": "Other"
+      }
     },
     "enhancedLeadModal": {
       "id": "ID",
@@ -673,6 +697,20 @@
         "assignedTo": "Assigned To",
         "closedDate": "Closed Date",
         "potentialAmount": "Potential Amount"
+      },
+      "equipmentTypes": {
+        "mrt_mskt": "MRI and MSCT equipment",
+        "gynecology": "Gynecology equipment",
+        "physiotherapy": "Physiotherapy equipment",
+        "resuscitation": "Resuscitation equipment",
+        "mri": "MRI",
+        "ct": "CT",
+        "ultrasound": "Ultrasound",
+        "xray": "X-ray",
+        "mammography": "Mammography",
+        "endoscopy": "Endoscopy",
+        "laboratory": "Laboratory equipment",
+        "other": "Other"
       }
     },
     "viewLeadModal": {

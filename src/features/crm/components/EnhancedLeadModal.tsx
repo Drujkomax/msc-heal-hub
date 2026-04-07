@@ -57,6 +57,8 @@ export const EnhancedLeadModal = ({ lead, isOpen, onClose, onLeadUpdate }: Enhan
   };
 
   const budgetLabels = {
+    "3k_5k": t("leads.enhancedLeadModal.budgetRanges.3k_5k", "$3,000 - $5,000"),
+    "5k_10k": t("leads.enhancedLeadModal.budgetRanges.5k_10k", "$5,000 - $10,000"),
     under_10k: t("leads.enhancedLeadModal.budgetRanges.under_10k", "До $10,000"),
     "10k_50k": t("leads.enhancedLeadModal.budgetRanges.10k_50k", "$10,000 - $50,000"),
     "50k_100k": t("leads.enhancedLeadModal.budgetRanges.50k_100k", "$50,000 - $100,000"),
@@ -66,6 +68,10 @@ export const EnhancedLeadModal = ({ lead, isOpen, onClose, onLeadUpdate }: Enhan
   };
 
   const equipmentLabels = {
+    mrt_mskt: t("leads.enhancedLeadModal.equipmentTypes.mrt_mskt", "МРТ и МСКТ"),
+    gynecology: t("leads.enhancedLeadModal.equipmentTypes.gynecology", "Гинекологическое оборудование"),
+    physiotherapy: t("leads.enhancedLeadModal.equipmentTypes.physiotherapy", "Физиотерапевтическое оборудование"),
+    resuscitation: t("leads.enhancedLeadModal.equipmentTypes.resuscitation", "Реанимационное оборудование"),
     mri: t("leads.enhancedLeadModal.equipmentTypes.mri", "МРТ"),
     ct: t("leads.enhancedLeadModal.equipmentTypes.ct", "КТ"),
     ultrasound: t("leads.enhancedLeadModal.equipmentTypes.ultrasound", "УЗИ"),

@@ -43,7 +43,8 @@ export const EditLeadForm = ({ lead, onSuccess, embedded = false }: EditLeadForm
   ];
 
   const budgetRanges = [
-    { value: 'under_10k', label: t('leads.addLeadDialog.budgetRanges.under_10k', 'До $10,000') },
+    { value: '3k_5k', label: t('leads.addLeadDialog.budgetRanges.3k_5k', '$3,000 - $5,000') },
+    { value: '5k_10k', label: t('leads.addLeadDialog.budgetRanges.5k_10k', '$5,000 - $10,000') },
     { value: '10k_50k', label: t('leads.addLeadDialog.budgetRanges.10k_50k', '$10,000 - $50,000') },
     { value: '50k_100k', label: t('leads.addLeadDialog.budgetRanges.50k_100k', '$50,000 - $100,000') },
     { value: '100k_500k', label: t('leads.addLeadDialog.budgetRanges.100k_500k', '$100,000 - $500,000') },
@@ -52,13 +53,14 @@ export const EditLeadForm = ({ lead, onSuccess, embedded = false }: EditLeadForm
   ];
 
   const equipmentTypes = [
-    { value: 'mri', label: t('leads.addLeadDialog.equipmentTypes.mri', 'МРТ') },
-    { value: 'ct', label: t('leads.addLeadDialog.equipmentTypes.ct', 'КТ') },
+    { value: 'mrt_mskt', label: t('leads.addLeadDialog.equipmentTypes.mrt_mskt', 'МРТ и МСКТ') },
     { value: 'ultrasound', label: t('leads.addLeadDialog.equipmentTypes.ultrasound', 'УЗИ') },
     { value: 'xray', label: t('leads.addLeadDialog.equipmentTypes.xray', 'Рентген') },
-    { value: 'mammography', label: t('leads.enhancedLeadModal.equipmentTypes.mammography', 'Маммография') },
-    { value: 'endoscopy', label: t('leads.enhancedLeadModal.equipmentTypes.endoscopy', 'Эндоскопия') },
+    { value: 'gynecology', label: t('leads.addLeadDialog.equipmentTypes.gynecology', 'Гинекология') },
     { value: 'laboratory', label: t('leads.addLeadDialog.equipmentTypes.laboratory', 'Лабораторное оборудование') },
+    { value: 'surgical', label: t('leads.addLeadDialog.equipmentTypes.surgical', 'Хирургическое оборудование') },
+    { value: 'physiotherapy', label: t('leads.addLeadDialog.equipmentTypes.physiotherapy', 'Физиотерапия') },
+    { value: 'resuscitation', label: t('leads.addLeadDialog.equipmentTypes.resuscitation', 'Реанимация') },
     { value: 'other', label: t('leads.addLeadDialog.equipmentTypes.other', 'Другое') }
   ];
 

@@ -79,8 +79,12 @@ export const AddLeadDialog = ({ open, onClose, onSuccess }: AddLeadDialogProps) 
 
   const budgetRanges = [
     {
-      value: "under_10k",
-      label: t("leads.addLeadDialog.budgetRanges.under_10k", "До $10,000"),
+      value: "3k_5k",
+      label: t("leads.addLeadDialog.budgetRanges.3k_5k", "$3,000 - $5,000"),
+    },
+    {
+      value: "5k_10k",
+      label: t("leads.addLeadDialog.budgetRanges.5k_10k", "$5,000 - $10,000"),
     },
     {
       value: "10k_50k",
@@ -133,20 +137,20 @@ export const AddLeadDialog = ({ open, onClose, onSuccess }: AddLeadDialogProps) 
 
   const equipmentTypes = [
     {
-      value: "mri",
-      label: t("leads.addLeadDialog.equipmentTypes.mri", "МРТ оборудование"),
-    },
-    {
-      value: "ct",
-      label: t("leads.addLeadDialog.equipmentTypes.ct", "КТ сканеры"),
+      value: "mrt_mskt",
+      label: t("leads.addLeadDialog.equipmentTypes.mrt_mskt", "МРТ и МСКТ оборудование"),
     },
     {
       value: "ultrasound",
-      label: t("leads.addLeadDialog.equipmentTypes.ultrasound", "УЗИ аппараты"),
+      label: t("leads.addLeadDialog.equipmentTypes.ultrasound", "УЗИ оборудование"),
     },
     {
       value: "xray",
       label: t("leads.addLeadDialog.equipmentTypes.xray", "Рентген оборудование"),
+    },
+    {
+      value: "gynecology",
+      label: t("leads.addLeadDialog.equipmentTypes.gynecology", "Гинекологическое оборудование"),
     },
     {
       value: "laboratory",
@@ -155,6 +159,14 @@ export const AddLeadDialog = ({ open, onClose, onSuccess }: AddLeadDialogProps) 
     {
       value: "surgical",
       label: t("leads.addLeadDialog.equipmentTypes.surgical", "Хирургическое оборудование"),
+    },
+    {
+      value: "physiotherapy",
+      label: t("leads.addLeadDialog.equipmentTypes.physiotherapy", "Физиотерапевтическое оборудование"),
+    },
+    {
+      value: "resuscitation",
+      label: t("leads.addLeadDialog.equipmentTypes.resuscitation", "Реанимационное оборудование"),
     },
     {
       value: "other",

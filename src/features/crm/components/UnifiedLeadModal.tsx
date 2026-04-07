@@ -127,6 +127,10 @@ export const UnifiedLeadModal = ({ lead, isOpen, onClose, onLeadUpdate }: Unifie
   };
 
   const equipmentLabels = {
+    mrt_mskt: t("leads.unifiedLeadModal.equipmentTypes.mrt_mskt", "МРТ и МСКТ оборудование"),
+    gynecology: t("leads.unifiedLeadModal.equipmentTypes.gynecology", "Гинекологическое оборудование"),
+    physiotherapy: t("leads.unifiedLeadModal.equipmentTypes.physiotherapy", "Физиотерапевтическое оборудование"),
+    resuscitation: t("leads.unifiedLeadModal.equipmentTypes.resuscitation", "Реанимационное оборудование"),
     mri: t("leads.unifiedLeadModal.equipmentTypes.mri", "МРТ оборудование"),
     ct: t("leads.unifiedLeadModal.equipmentTypes.ct", "КТ оборудование"),
     ultrasound: t("leads.unifiedLeadModal.equipmentTypes.ultrasound", "УЗИ оборудование"),

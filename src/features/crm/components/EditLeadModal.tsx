@@ -57,15 +57,14 @@ export const EditLeadModal = ({ lead, isOpen, onClose, onSuccess }: EditLeadModa
   ];
 
   const equipmentTypes = [
-    { value: 'mri', label: t('leads.editModal.equipmentTypes.mri', 'МРТ оборудование') },
-    { value: 'ct', label: t('leads.editModal.equipmentTypes.ct', 'КТ оборудование') },
+    { value: 'mrt_mskt', label: t('leads.editModal.equipmentTypes.mrt_mskt', 'МРТ и МСКТ оборудование') },
     { value: 'ultrasound', label: t('leads.editModal.equipmentTypes.ultrasound', 'УЗИ оборудование') },
     { value: 'xray', label: t('leads.editModal.equipmentTypes.xray', 'Рентгеновское оборудование') },
+    { value: 'gynecology', label: t('leads.editModal.equipmentTypes.gynecology', 'Гинекологическое оборудование') },
     { value: 'laboratory', label: t('leads.editModal.equipmentTypes.laboratory', 'Лабораторное оборудование') },
     { value: 'surgical', label: t('leads.editModal.equipmentTypes.surgical', 'Хирургическое оборудование') },
-    { value: 'anesthesia', label: t('leads.editModal.equipmentTypes.anesthesia', 'Оборудование для анестезии') },
-    { value: 'monitoring', label: t('leads.editModal.equipmentTypes.monitoring', 'Мониторинговое оборудование') },
-    { value: 'rehabilitation', label: t('leads.editModal.equipmentTypes.rehabilitation', 'Реабилитационное оборудование') },
+    { value: 'physiotherapy', label: t('leads.editModal.equipmentTypes.physiotherapy', 'Физиотерапевтическое оборудование') },
+    { value: 'resuscitation', label: t('leads.editModal.equipmentTypes.resuscitation', 'Реанимационное оборудование') },
     { value: 'other', label: t('leads.editModal.equipmentTypes.other', 'Другое') }
   ];
 
