@@ -24,7 +24,6 @@ import EmployeeManagement from '../pages/EmployeeManagement';
 import Categories from '../pages/Categories';
 import { Warehouse } from '../pages/Warehouse';
 import Clinics from '../pages/Clinics';
-import VisitsPage from '../pages/VisitsPage';
 import { useResolveInviteRole } from '@/hooks/useResolveInviteRole';
 import { ProtectedRoute } from '@/components/auth/ProtectedRouteAdmin';
 
@@ -180,9 +179,6 @@ const AdminWrapper = () => {
             <Clinics />
           </ProtectedRoute>
         } />
-
-        {/* Обход (визиты из Telegram-бота) */}
-        <Route path="visits" element={<VisitsPage />} />
         
         {/* Архив */}
         <Route path="archived" element={
