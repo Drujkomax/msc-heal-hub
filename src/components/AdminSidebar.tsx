@@ -21,9 +21,9 @@ import {
   SidebarHeader,
   SidebarFooter,
 } from '@/components/ui/sidebar';
-import { 
-  Users, 
-  ShoppingBag, 
+import {
+  Users,
+  ShoppingBag,
   BarChart3,
   Home,
   MessageSquare,
@@ -36,7 +36,8 @@ import {
   Tags,
   Factory,
   Warehouse,
-  Building2
+  Building2,
+  MapPin
 } from 'lucide-react';
 
 export function AdminSidebar() {
@@ -110,7 +111,9 @@ export function AdminSidebar() {
     if (hasPermission('view_products')) {
       conditionalItems.push({ name: t('admin.clinics', 'Клиники'), href: '/admin/clinics', icon: Building2, permission: 'view_products' });
     }
-    
+
+    // Обход — журнал визитов из Telegram-бота
+    conditionalItems.push({ name: t('admin.visits', 'Обход'), href: '/admin/visits', icon: MapPin, permission: 'view_all_leads' });
 
     // Управление сотрудниками - только при наличии права на управление пользователями
     if (hasPermission('manage_users')) {
