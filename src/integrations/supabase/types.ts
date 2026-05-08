@@ -14,6 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      bot_sessions: {
+        Row: {
+          context: Json
+          state: string
+          telegram_id: number
+          updated_at: string
+        }
+        Insert: {
+          context?: Json
+          state: string
+          telegram_id: number
+          updated_at?: string
+        }
+        Update: {
+          context?: Json
+          state?: string
+          telegram_id?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       bot_state: {
         Row: {
           lead: Json
@@ -704,8 +725,10 @@ export type Database = {
           created_at: string
           deal_id: string
           id: string
+          ip_address: unknown
           new_values: Json | null
           old_values: Json | null
+          user_agent: string | null
           user_email: string | null
           user_id: string | null
           user_role: string | null
@@ -716,8 +739,10 @@ export type Database = {
           created_at?: string
           deal_id: string
           id?: string
+          ip_address?: unknown
           new_values?: Json | null
           old_values?: Json | null
+          user_agent?: string | null
           user_email?: string | null
           user_id?: string | null
           user_role?: string | null
@@ -728,8 +753,10 @@ export type Database = {
           created_at?: string
           deal_id?: string
           id?: string
+          ip_address?: unknown
           new_values?: Json | null
           old_values?: Json | null
+          user_agent?: string | null
           user_email?: string | null
           user_id?: string | null
           user_role?: string | null
@@ -1466,6 +1493,11 @@ export type Database = {
           email: string | null
           full_name: string | null
           id: string
+          language: string | null
+          telegram_id: number | null
+          telegram_link_code: string | null
+          telegram_link_code_expires_at: string | null
+          telegram_username: string | null
           updated_at: string | null
         }
         Insert: {
@@ -1474,6 +1506,11 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id: string
+          language?: string | null
+          telegram_id?: number | null
+          telegram_link_code?: string | null
+          telegram_link_code_expires_at?: string | null
+          telegram_username?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -1482,6 +1519,11 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id?: string
+          language?: string | null
+          telegram_id?: number | null
+          telegram_link_code?: string | null
+          telegram_link_code_expires_at?: string | null
+          telegram_username?: string | null
           updated_at?: string | null
         }
         Relationships: []
@@ -1960,6 +2002,94 @@ export type Database = {
         }
         Relationships: []
       }
+      visit_stages: {
+        Row: {
+          completed_at: string
+          id: string
+          payload: Json
+          photo_urls: string[]
+          stage_type: string
+          text_note: string | null
+          visit_id: string
+        }
+        Insert: {
+          completed_at?: string
+          id?: string
+          payload?: Json
+          photo_urls?: string[]
+          stage_type: string
+          text_note?: string | null
+          visit_id: string
+        }
+        Update: {
+          completed_at?: string
+          id?: string
+          payload?: Json
+          photo_urls?: string[]
+          stage_type?: string
+          text_note?: string | null
+          visit_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "visit_stages_visit_id_fkey"
+            columns: ["visit_id"]
+            isOneToOne: false
+            referencedRelation: "visits"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      visits: {
+        Row: {
+          client_id: string | null
+          completed_at: string | null
+          created_at: string
+          id: string
+          outcome: string | null
+          outcome_comment: string | null
+          pending_clinic: Json | null
+          rep_id: string
+          started_at: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          client_id?: string | null
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          outcome?: string | null
+          outcome_comment?: string | null
+          pending_clinic?: Json | null
+          rep_id: string
+          started_at?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string | null
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          outcome?: string | null
+          outcome_comment?: string | null
+          pending_clinic?: Json | null
+          rep_id?: string
+          started_at?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "visits_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       warehouse_activity_logs: {
         Row: {
           action_type: string
@@ -2092,6 +2222,8 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      _audit_ip: { Args: never; Returns: unknown }
+      _audit_ua: { Args: never; Returns: string }
       accept_invite: {
         Args: { invite_id: string; user_password: string }
         Returns: Json
@@ -2127,6 +2259,7 @@ export type Database = {
         Args: { p_invite_id: string; p_user_id: string }
         Returns: Json
       }
+      cleanup_abandoned_visits: { Args: never; Returns: number }
       cleanup_old_logs: {
         Args: { days_to_keep?: number }
         Returns: {
@@ -2141,6 +2274,10 @@ export type Database = {
           invite_role: Database["public"]["Enums"]["app_role"]
         }
         Returns: Json
+      }
+      generate_telegram_link_code: {
+        Args: { target_user_id: string }
+        Returns: string
       }
       get_clients_with_low_stock: {
         Args: never
