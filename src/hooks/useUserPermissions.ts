@@ -150,9 +150,12 @@ const rolePermissions: Record<string, Permission[]> = {
     'manage_deals'
   ],
   'salesperson': [
-    // Специалист по продажам: лиды, сделки, задачи, канбан, архив
+    // Специалист по продажам: полный доступ к лидам, сделки, задачи, канбан, архив
     'view_all_leads',
     'manage_all_leads',
+    'assign_leads',
+    'export_leads',
+    'import_leads',
     'view_deals',
     'manage_deals',
     'view_tasks',

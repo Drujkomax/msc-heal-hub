@@ -470,6 +470,7 @@ const Leads = () => {
   };
 
   const isDirector = role === "director";
+  const canBulkActions = ["director", "admin", "sales_manager", "salesperson"].includes(role || "");
 
   if (loading) {
     return (
@@ -507,7 +508,7 @@ const Leads = () => {
       </div>
 
       {/* Bulk Actions Panel */}
-      {isDirector && selectedLeadIds.length > 0 && (
+      {canBulkActions && selectedLeadIds.length > 0 && (
         <Card className="border-primary/20 bg-primary/5">
           <CardContent className="pt-6">
             <div className="flex flex-wrap gap-3 items-center">
@@ -568,12 +569,10 @@ const Leads = () => {
               <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-primary" />
               <div>
                 <p className="text-xs md:text-sm font-medium leading-tight">
-                  {role === "salesperson" ? t("leads.myLeads", "Мои лиды") : t("leads.totalLeads", "Всего лидов")}
+                  {t("leads.totalLeads", "Всего лидов")}
                 </p>
                 <p className="text-lg md:text-2xl font-bold">
-                  {role === "salesperson"
-                    ? leads.filter((lead) => !lead.archived && lead.assigned_to === user?.id).length
-                    : leads.filter((lead) => !lead.archived).length}
+                  {leads.filter((lead) => !lead.archived).length}
                 </p>
               </div>
             </div>
@@ -588,11 +587,7 @@ const Leads = () => {
                 <div>
                   <p className="text-xs md:text-sm font-medium leading-tight">{stage.label}</p>
                   <p className="text-lg md:text-2xl font-bold">
-                    {role === "salesperson"
-                      ? leads.filter(
-                          (lead) => lead.stage === stage.value && !lead.archived && lead.assigned_to === user?.id,
-                        ).length
-                      : leadCounts[stage.value] || 0}
+                    {leadCounts[stage.value] || 0}
                   </p>
                 </div>
               </div>
@@ -649,7 +644,7 @@ const Leads = () => {
               </Select>
             </div>
 
-            <RoleBasedAccess roles={["director", "admin", "sales_manager"]}>
+            <RoleBasedAccess roles={["director", "admin", "sales_manager", "salesperson"]}>
               <div>
                 <Select value={assignedFilter} onValueChange={setAssignedFilter}>
                   <SelectTrigger>
@@ -731,7 +726,7 @@ const Leads = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  {isDirector && (
+                  {canBulkActions && (
                     <TableHead className="w-12">
                       <Checkbox
                         checked={
@@ -777,7 +772,7 @@ const Leads = () => {
                       {sortField === "created_at" && <ArrowUpDown className="h-4 w-4" />}
                     </div>
                   </TableHead>
-                  <RoleBasedAccess roles={["director", "admin", "sales_manager"]}>
+                  <RoleBasedAccess roles={["director", "admin", "sales_manager", "salesperson"]}>
                     <TableHead>{t("leads.assigned", "Назначен")}</TableHead>
                   </RoleBasedAccess>
                   <TableHead className="text-right">{t("leads.actions", "Действия")}</TableHead>
@@ -803,7 +798,7 @@ const Leads = () => {
                       }
                     }}
                   >
-                    {isDirector && (
+                    {canBulkActions && (
                       <TableCell onClick={(e) => e.stopPropagation()}>
                         <Checkbox
                           checked={selectedLeadIds.includes(lead.id)}
@@ -874,7 +869,7 @@ const Leads = () => {
                         return isNaN(date.getTime()) ? "-" : format(date, "dd.MM.yyyy", { locale: ru });
                       })()}
                     </TableCell>
-                    <RoleBasedAccess roles={["director", "admin", "sales_manager"]}>
+                    <RoleBasedAccess roles={["director", "admin", "sales_manager", "salesperson"]}>
                       <TableCell>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
