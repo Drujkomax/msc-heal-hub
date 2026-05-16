@@ -471,6 +471,7 @@ const Leads = () => {
 
   const isDirector = role === "director";
   const canBulkActions = ["director", "admin", "sales_manager", "salesperson"].includes(role || "");
+  const canAssignLeads = ["director", "admin", "sales_manager"].includes(role || "");
 
   if (loading) {
     return (
@@ -513,19 +514,21 @@ const Leads = () => {
           <CardContent className="pt-6">
             <div className="flex flex-wrap gap-3 items-center">
               <span className="text-sm font-medium">{t("leads.bulkActions", "Массовые действия")}:</span>
-              <Select onValueChange={handleBulkAssign}>
-                <SelectTrigger className="w-[250px]">
-                  <SelectValue placeholder={t("leads.assignTo", "Назначить на...")} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="unassign">❌ {t("leads.removeAssignment", "Снять назначение")}</SelectItem>
-                  {employees.map((emp) => (
-                    <SelectItem key={emp.id} value={emp.id}>
-                      {emp.email}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              {canAssignLeads && (
+                <Select onValueChange={handleBulkAssign}>
+                  <SelectTrigger className="w-[250px]">
+                    <SelectValue placeholder={t("leads.assignTo", "Назначить на...")} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="unassign">❌ {t("leads.removeAssignment", "Снять назначение")}</SelectItem>
+                    {employees.map((emp) => (
+                      <SelectItem key={emp.id} value={emp.id}>
+                        {emp.email}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
               <Button variant="destructive" onClick={handleBulkArchive}>
                 <Archive className="mr-2 h-4 w-4" />
                 {t("leads.archive", "Архивировать")} ({selectedLeadIds.length})
@@ -871,35 +874,43 @@ const Leads = () => {
                     </TableCell>
                     <RoleBasedAccess roles={["director", "admin", "sales_manager", "salesperson"]}>
                       <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 px-3 text-xs font-medium hover:bg-accent">
-                              {lead.assigned_to
-                                ? getAssignedUserName(lead.assigned_to)
-                                : t("leads.notAssigned", "Не назначен")}
-                              <ChevronDown className="ml-1 h-3 w-3" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="start" className="bg-background border shadow-md z-50">
-                            <DropdownMenuItem
-                              onClick={() => handleAssignLead(lead.id, null)}
-                              className="hover:bg-accent"
-                            >
-                              <User className="mr-2 h-4 w-4" />
-                              {t("leads.notAssigned", "Не назначен")}
-                            </DropdownMenuItem>
-                            {employees.map((employee) => (
+                        {canAssignLeads ? (
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" className="h-8 px-3 text-xs font-medium hover:bg-accent">
+                                {lead.assigned_to
+                                  ? getAssignedUserName(lead.assigned_to)
+                                  : t("leads.notAssigned", "Не назначен")}
+                                <ChevronDown className="ml-1 h-3 w-3" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="start" className="bg-background border shadow-md z-50">
                               <DropdownMenuItem
-                                key={employee.id}
-                                onClick={() => handleAssignLead(lead.id, employee.id)}
+                                onClick={() => handleAssignLead(lead.id, null)}
                                 className="hover:bg-accent"
                               >
                                 <User className="mr-2 h-4 w-4" />
-                                {employee.email}
+                                {t("leads.notAssigned", "Не назначен")}
                               </DropdownMenuItem>
-                            ))}
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                              {employees.map((employee) => (
+                                <DropdownMenuItem
+                                  key={employee.id}
+                                  onClick={() => handleAssignLead(lead.id, employee.id)}
+                                  className="hover:bg-accent"
+                                >
+                                  <User className="mr-2 h-4 w-4" />
+                                  {employee.email}
+                                </DropdownMenuItem>
+                              ))}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        ) : (
+                          <span className="text-xs font-medium text-muted-foreground">
+                            {lead.assigned_to
+                              ? getAssignedUserName(lead.assigned_to)
+                              : t("leads.notAssigned", "Не назначен")}
+                          </span>
+                        )}
                       </TableCell>
                     </RoleBasedAccess>
                     <TableCell className="text-right">
