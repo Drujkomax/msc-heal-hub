@@ -241,11 +241,6 @@ const Leads = () => {
       // Filter out archived leads
       if (lead.archived) return false;
 
-      // Salespeople can only see leads assigned to them
-      if (role === "salesperson" && lead.assigned_to !== user?.id) {
-        return false;
-      }
-
       const matchesSearch =
         lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         lead.phone?.includes(searchTerm) ||
