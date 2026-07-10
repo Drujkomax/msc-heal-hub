@@ -783,6 +783,31 @@
     "phone": "Phone",
     "equipmentType": "Equipment type",
     "submit": "Submit request",
+    "sending": "Sending...",
+    "callbackPromise": "A manager will call you back within 15 minutes",
+    "submitError": "Failed to send the request. Please try again.",
+    "success": {
+      "title": "Request sent!",
+      "description": "We've received your request — a manager will call you back within 15 minutes.",
+      "telegram": "While you wait — our Telegram channel",
+      "close": "Close"
+    },
+    "validation": {
+      "nameRequired": "Enter your name",
+      "nameMin": "Name must contain at least 2 characters",
+      "nameMax": "Name must not exceed 50 characters",
+      "nameChars": "Name may contain only letters, spaces and hyphens",
+      "phoneRequired": "Enter your phone number",
+      "phoneIncomplete": "Number must contain 9 digits",
+      "phoneInvalid": "Invalid phone format",
+      "equipmentRequired": "Select equipment type",
+      "equipmentInvalid": "Select a valid equipment type",
+      "emailInvalid": "Invalid email format",
+      "messageRequired": "Write a message",
+      "companyMin": "Company name must contain at least 2 characters",
+      "companyMax": "Company name must not exceed 100 characters",
+      "messageMax": "Message must not exceed 500 characters"
+    },
     "trust1": "Response within an hour",
     "trust2": "Ministry of Health license",
     "equipmentTypes": {
@@ -937,8 +962,7 @@
     "finalCta": {
       "title": "Ready to modernize your medical facility?",
       "description": "Our experts will help you find the optimal solution for your needs and budget",
-      "requestButton": "Submit Request",
-      "managerButton": "Manager will call back within 15 minutes"
+      "requestButton": "Submit Request"
     },
     "faq": {
       "title": "Frequently asked questions",
@@ -976,6 +1000,7 @@
     "services": "Services",
     "address": "Uzbekistan, Tashkent, Asaka St., 32",
     "rights": "All rights reserved",
+    "privacyPolicy": "Privacy Policy",
     "links": [
       {
         "name": "Catalog",

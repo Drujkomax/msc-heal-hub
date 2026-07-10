@@ -173,7 +173,7 @@ const LeadForm: React.FC<LeadFormProps> = ({ onClose }) => {
                   className={`border-msc-primary/20 focus:border-msc-accent transition-all duration-200 h-10 ${validationErrors.name ? 'border-red-500' : ''}`} 
                   placeholder={t('leadForm.name')} 
                 />
-                {validationErrors.name && <p className="text-red-500 text-xs mt-1 animate-in slide-in-from-top-1 duration-200">{validationErrors.name}</p>}
+                {validationErrors.name && <p className="text-red-500 text-xs mt-1 animate-in slide-in-from-top-1 duration-200">{t(validationErrors.name)}</p>}
               </div>
 
               {/* Phone */}

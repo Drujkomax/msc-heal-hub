@@ -3,7 +3,7 @@ import { getProductBySlug, getActiveProducts } from "~/entities/product/api";
 import { getManufacturers } from "~/entities/manufacturer/api";
 import { getLang } from "~/shared/i18n/lang";
 import { SITE_URL, SITE_NAME, type Lang } from "~/shared/config/site";
-import { toUrlSlug } from "@/lib/slugify";
+import { toUrlSlug, decodeParam } from "@/lib/slugify";
 import { ProductDetailView } from "~/widgets/product-detail/product-detail-view";
 
 const FALLBACK_IMAGE =
@@ -83,7 +83,7 @@ export async function generateMetadata({
   params: Promise<{ rest: string[] }>;
 }): Promise<Metadata> {
   const { rest } = await params;
-  const slug = rest[rest.length - 1];
+  const slug = decodeParam(rest[rest.length - 1]);
   const product = await getProductBySlug(slug);
   const lang = (await getLang()) as Lang;
 
@@ -170,7 +170,7 @@ export default async function ProductDetailPage({
   params: Promise<{ rest: string[] }>;
 }) {
   const { rest } = await params;
-  const slug = rest[rest.length - 1];
+  const slug = decodeParam(rest[rest.length - 1]);
   const product = await getProductBySlug(slug);
 
   if (!product) {

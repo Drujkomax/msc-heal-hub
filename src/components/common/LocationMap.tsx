@@ -1,11 +1,11 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { MapPin, Navigation, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useLang } from '~/shared/i18n/i18n-provider';
 
 const LocationMap: React.FC = () => {
-  const { i18n } = useTranslation();
-  
+  const language = useLang() || 'ru';
+
   // Tashkent, Amir Temur Square coordinates
   const latitude = 41.316163;
   const longitude = 69.301548;
@@ -34,7 +34,7 @@ const LocationMap: React.FC = () => {
     }
   };
   
-  const currentContent = content[i18n.language as 'ru' | 'en' | 'uz'] || content['ru'];
+  const currentContent = content[language as 'ru' | 'en' | 'uz'] || content['ru'];
 
   const handleOpenInMaps = () => {
     // Open Yandex Maps at the specific coordinates
@@ -48,19 +48,23 @@ const LocationMap: React.FC = () => {
     window.open(yandexDirectionsUrl, '_blank', 'noopener,noreferrer');
   };
 
+  // Язык виджета Яндекс.Карт (uz недоступен в виджете — фолбэк на ru)
+  const mapLang = language === 'en' ? 'en_US' : 'ru_RU';
+
   return (
-    <div className="w-full rounded-xl overflow-hidden shadow-2xl border border-border/20 bg-background">
+    <div className="w-full rounded-2xl overflow-hidden shadow-[0_30px_80px_-45px_rgba(12,17,57,0.4)] border border-msc-primary/10 bg-white">
       {/* Map Container */}
       <div className="relative h-[400px] w-full">
-        {/* Embedded OpenStreetMap */}
+        {/* Яндекс.Карты (embed-виджет, без API-ключа) */}
         <iframe
-          src={`https://www.openstreetmap.org/export/embed.html?bbox=${longitude-0.01},${latitude-0.01},${longitude+0.01},${latitude+0.01}&layer=mapnik&marker=${latitude},${longitude}`}
+          src={`https://yandex.uz/map-widget/v1/?ll=${longitude},${latitude}&z=17&pt=${longitude},${latitude},pm2bl&lang=${mapLang}`}
           width="100%"
           height="100%"
           style={{ border: 0 }}
           loading="lazy"
+          allowFullScreen
           title="Med Service Centre Location"
-          className="rounded-t-xl"
+          className="rounded-t-2xl"
         />
         
         {/* Overlay with company info */}

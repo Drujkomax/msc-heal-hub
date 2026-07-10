@@ -7,7 +7,7 @@ import { getManufacturers } from "~/entities/manufacturer/api";
 import { getCategoryLabel, categoryIntro } from "~/entities/category/labels";
 import { getLang } from "~/shared/i18n/lang";
 import { SITE_URL, SITE_NAME, type Lang } from "~/shared/config/site";
-import { toUrlSlug } from "@/lib/slugify";
+import { toUrlSlug, decodeParam } from "@/lib/slugify";
 import { CatalogView } from "~/widgets/catalog/catalog-view";
 
 const OG_IMAGE = "https://medsc.uz/images/og-image.png";
@@ -31,7 +31,8 @@ export async function generateMetadata({
 }: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
+  const { slug: rawSlug } = await params;
+  const slug = decodeParam(rawSlug);
   const category = await findCategory(slug);
   if (!category) {
     return { title: "Категория не найдена | Med Service Centre", robots: { index: false, follow: true } };
@@ -76,7 +77,8 @@ export default async function CategoryPage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const { slug } = await params;
+  const { slug: rawSlug } = await params;
+  const slug = decodeParam(rawSlug);
   const [category, products, categories, manufacturers] = await Promise.all([
     findCategory(slug),
     getActiveProducts(),

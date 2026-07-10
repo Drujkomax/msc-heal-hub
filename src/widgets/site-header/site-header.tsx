@@ -123,11 +123,8 @@ export function SiteHeader() {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <Link href="/admin">
-              <Button variant="outline" size="sm">
-                {t('navigation.admin')}
-              </Button>
-            </Link>
+            {/* Кнопка «Админ-панель» убрана из публичной шапки: админка живёт
+                на admin.medsc.uz (см. proxy.ts), клиентам её не показываем */}
 
             {/* Mobile menu button */}
             <Button

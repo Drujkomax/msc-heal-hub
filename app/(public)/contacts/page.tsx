@@ -55,7 +55,7 @@ export default async function ContactsPage() {
     phone: siteContacts?.phone || "",
     email: siteContacts?.email || "info@medsc.uz",
     address: siteContacts?.address || "",
-    telegram: siteContacts?.telegram || "@medservice_centre",
+    telegram: siteContacts?.telegram || "@medsc_uz",
     whatsapp: siteContacts?.whatsapp || "+998 90 944 34 82",
     facebook: siteContacts?.facebook || "https://www.facebook.com/profile.php?id=61576982724139",
     instagram: siteContacts?.instagram || "https://www.instagram.com/medservicecentreuz/",

@@ -1,27 +1,49 @@
 "use client";
 
-import { Mail, MapPin, MessageCircle, Facebook, Instagram, Youtube } from 'lucide-react';
+import { Mail, MapPin, Facebook, Instagram, Youtube, Check, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
 import LocationMap from '@/components/common/LocationMap';
-import { formatUzbekPhoneNumber, validateUzbekPhoneNumber, isValidUzbekPhoneLength, isCompleteUzbekPhone } from '@/lib/phoneValidation';
-import { useLang } from '~/shared/i18n/i18n-provider';
+import { formatUzbekPhoneNumber, validateUzbekPhoneNumber, isValidUzbekPhoneLength, isCompleteUzbekPhone, getFullUzbekPhoneNumber } from '@/lib/phoneValidation';
+import { validateName, sanitizeInput } from '@/lib/formValidation';
+import { useLang, useT } from '~/shared/i18n/i18n-provider';
+
+const FIELD =
+  'h-11 w-full rounded-xl border bg-white px-4 text-[15px] text-msc-text placeholder:text-msc-text-light/60 transition-colors focus:outline-none focus:ring-2 focus:ring-[#2563eb]/25 focus:border-[#2563eb]';
+const FIELD_OK = 'border-msc-primary/15 hover:border-msc-primary/30';
+const FIELD_ERR = 'border-red-400';
+const FORM_LABEL = 'mb-1.5 block text-sm font-medium text-msc-primary';
+const ERROR_TEXT = 'mt-1.5 text-xs text-red-600 animate-in slide-in-from-top-1 duration-200 motion-reduce:animate-none';
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+// Фирменные иконки Telegram/WhatsApp (в lucide брендов нет — там стоял
+// generic-пузырь). Глифы — круглые лого с вырезанным символом, поэтому
+// заливка цветом даёт тот же вид «круг + белый символ», что у остальных карточек.
+const TelegramIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+    <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
+  </svg>
+);
+
+const WhatsAppIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
+  </svg>
+);
 
 export function ContactsView({ siteContacts }: { siteContacts: any }) {
   const language = (useLang() as 'ru' | 'en' | 'uz') || 'ru';
-  const { toast } = useToast();
+  const tr = useT(); // i18n-ключи ошибок из formValidation
 
   // Contact data, seeded from the server-fetched site_contacts row (falls back to defaults).
   const contactData = {
     phone: siteContacts?.phone || '',
     email: siteContacts?.email || 'info@medsc.uz',
     address: siteContacts?.address || '',
-    telegram: siteContacts?.telegram || '@medservice_centre',
+    telegram: siteContacts?.telegram || '@medsc_uz',
     whatsapp: siteContacts?.whatsapp || '+998 90 944 34 82',
     facebook: siteContacts?.facebook || 'https://www.facebook.com/profile.php?id=61576982724139',
     instagram: siteContacts?.instagram || 'https://www.instagram.com/medservicecentreuz/',
@@ -37,7 +59,9 @@ export function ContactsView({ siteContacts }: { siteContacts: any }) {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [phoneError, setPhoneError] = useState('');
+  const [isSent, setIsSent] = useState(false);
+  const [submitError, setSubmitError] = useState(false);
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   const addressTranslations = {
     ru: 'Узбекистан, Ташкент, ул. Асака, 32',
@@ -64,6 +88,11 @@ export function ContactsView({ siteContacts }: { siteContacts: any }) {
       message: 'Сообщение',
       messagePlaceholder: 'Ваше сообщение...',
       send: 'Отправить',
+      sending: 'Отправка...',
+      submitError: 'Не удалось отправить сообщение. Попробуйте ещё раз.',
+      successTitle: 'Сообщение отправлено!',
+      successText: 'Мы свяжемся с вами в ближайшее время.',
+      sendAnother: 'Отправить ещё',
       fullAddress: 'Узбекистан, Ташкент, ул. Асака, 32',
       ourLocation: 'Наше местоположение',
       locationDescription: 'Найдите нас на карте'
@@ -86,6 +115,11 @@ export function ContactsView({ siteContacts }: { siteContacts: any }) {
       message: 'Message',
       messagePlaceholder: 'Your message...',
       send: 'Send',
+      sending: 'Sending...',
+      submitError: 'Failed to send the message. Please try again.',
+      successTitle: 'Message sent!',
+      successText: "We'll contact you shortly.",
+      sendAnother: 'Send another',
       fullAddress: 'Uzbekistan, Tashkent, Asaka St., 32',
       ourLocation: 'Our Location',
       locationDescription: 'Find us on the map'
@@ -108,6 +142,11 @@ export function ContactsView({ siteContacts }: { siteContacts: any }) {
       message: 'Xabar',
       messagePlaceholder: 'Sizning xabaringiz...',
       send: 'Yuborish',
+      sending: 'Yuborilmoqda...',
+      submitError: "Xabarni yuborib bo'lmadi. Qaytadan urinib ko'ring.",
+      successTitle: 'Xabar yuborildi!',
+      successText: 'Tez orada siz bilan bog\'lanamiz.',
+      sendAnother: 'Yana yuborish',
       fullAddress: 'O\'zbekiston, Toshkent, Asaka ko\'chasi, 32',
       ourLocation: 'Bizning joylashuvimiz',
       locationDescription: 'Bizni xaritada toping'
@@ -147,72 +186,63 @@ export function ContactsView({ siteContacts }: { siteContacts: any }) {
   // Form handlers
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
+    if (formErrors[name]) setFormErrors(prev => ({ ...prev, [name]: '' }));
 
     if (name === 'phone') {
-      // Validate and format phone number
       if (!isValidUzbekPhoneLength(value)) return;
-
       const formatted = formatUzbekPhoneNumber(value);
-      setFormData(prev => ({
-        ...prev,
-        [name]: formatted
-      }));
-
-      // Show validation error
-      if (formatted.length > 0) {
-        if (!isCompleteUzbekPhone(formatted)) {
-          setPhoneError(language === 'ru' ? 'Номер должен содержать 9 цифр' : language === 'en' ? 'Number must contain 9 digits' : 'Raqam 9 ta raqamdan iborat bo\'lishi kerak');
-        } else if (!validateUzbekPhoneNumber(formatted)) {
-          setPhoneError(language === 'ru' ? 'Неверный формат номера' : language === 'en' ? 'Invalid phone format' : 'Noto\'g\'ri telefon formati');
-        } else {
-          setPhoneError('');
-        }
-      } else {
-        setPhoneError('');
+      setFormData(prev => ({ ...prev, phone: formatted }));
+      if (formatted.length > 0 && !isCompleteUzbekPhone(formatted)) {
+        setFormErrors(prev => ({ ...prev, phone: 'leadForm.validation.phoneIncomplete' }));
       }
+    } else if (name === 'message') {
+      // eslint-disable-next-line no-control-regex
+      setFormData(prev => ({ ...prev, message: value.replace(/[\x00-\x08\x0b-\x1f\x7f]/g, '').substring(0, 500) }));
     } else {
-      setFormData(prev => ({
-        ...prev,
-        [name]: value
-      }));
+      setFormData(prev => ({ ...prev, [name]: sanitizeInput(value) }));
     }
   };
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
+    setSubmitError(false);
 
+    const name = formData.name.trim().replace(/\s+/g, ' ');
+    const email = formData.email.trim();
+    const message = formData.message.trim();
+    const next: Record<string, string> = {};
+
+    const nameError = validateName(name);
+    if (nameError) next.name = nameError;
+    if (!formData.phone.trim()) next.phone = 'leadForm.validation.phoneRequired';
+    else if (!isCompleteUzbekPhone(formData.phone) || !validateUzbekPhoneNumber(formData.phone)) {
+      next.phone = 'leadForm.validation.phoneInvalid';
+    }
+    if (email && !EMAIL_RE.test(email)) next.email = 'leadForm.validation.emailInvalid';
+    if (!message) next.message = 'leadForm.validation.messageRequired';
+
+    if (Object.keys(next).length) {
+      setFormErrors(next);
+      return;
+    }
+
+    setIsSubmitting(true);
     try {
       const { error } = await supabase
         .from('contact_inquiries' as any)
         .insert({
-          name: formData.name,
-          phone: formData.phone,
-          email: formData.email,
-          message: formData.message
+          name,
+          phone: getFullUzbekPhoneNumber(formData.phone),
+          email: email || null,
+          message
         });
 
       if (error) throw error;
-
-      toast({
-        title: 'Сообщение отправлено',
-        description: 'Мы свяжемся с вами в ближайшее время.',
-      });
-
-      // Reset form
-      setFormData({
-        name: '',
-        phone: '',
-        email: '',
-        message: ''
-      });
+      setIsSent(true);
+      setFormData({ name: '', phone: '', email: '', message: '' });
     } catch (error) {
       console.error('Error submitting form:', error);
-      toast({
-        title: 'Ошибка',
-        description: 'Не удалось отправить сообщение. Попробуйте позже.',
-        variant: 'destructive',
-      });
+      setSubmitError(true);
     } finally {
       setIsSubmitting(false);
     }
@@ -272,9 +302,7 @@ export function ContactsView({ siteContacts }: { siteContacts: any }) {
             onClick={handleTelegramClick}
           >
             <CardContent className="p-8 text-center">
-              <div className="w-16 h-16 bg-msc-primary rounded-full flex items-center justify-center mx-auto mb-4">
-                <MessageCircle className="w-8 h-8 text-white" />
-              </div>
+              <TelegramIcon className="mx-auto mb-4 h-16 w-16 text-msc-primary" />
               <h3 className="font-semibold text-xl text-foreground mb-2">Telegram</h3>
               <p className="text-msc-primary text-lg font-medium">{contactData.telegram}</p>
             </CardContent>
@@ -291,7 +319,7 @@ export function ContactsView({ siteContacts }: { siteContacts: any }) {
           >
             <CardContent className="p-8 text-center">
               <div className="w-16 h-16 bg-msc-primary rounded-full flex items-center justify-center mx-auto mb-4">
-                <MessageCircle className="w-8 h-8 text-white" />
+                <WhatsAppIcon className="h-8 w-8 text-white" />
               </div>
               <h3 className="font-semibold text-xl text-foreground mb-2">WhatsApp</h3>
               <p className="text-msc-primary text-lg font-medium">{contactData.whatsapp}</p>
@@ -351,95 +379,138 @@ export function ContactsView({ siteContacts }: { siteContacts: any }) {
 
         {/* Contact Form */}
         <div className="max-w-2xl mx-auto">
-          <Card>
-            <CardContent className="p-8">
-              <div className="text-center mb-8">
-                <h3 className="font-semibold text-3xl text-foreground mb-2">{currentContent.contactForm}</h3>
-                <p className="text-muted-foreground text-lg">{currentContent.formDescription}</p>
+          <div className="rounded-3xl border border-msc-primary/10 bg-white px-7 py-9 shadow-[0_30px_80px_-45px_rgba(12,17,57,0.4)] sm:px-10">
+            {isSent ? (
+              <div className="py-6 text-center">
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-[#2563eb]/15 bg-gradient-to-br from-[#f3f7fe] to-[#eaf0fd]">
+                  <Check className="h-7 w-7 text-[#2563eb]" />
+                </div>
+                <h3 className="mt-5 font-display text-2xl font-semibold text-msc-primary">
+                  {currentContent.successTitle}
+                </h3>
+                <p className="mx-auto mt-2 max-w-xs text-sm leading-relaxed text-msc-text-light">
+                  {currentContent.successText}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setIsSent(false)}
+                  className="mt-7 inline-flex items-center justify-center rounded-xl border border-msc-primary/20 bg-white px-6 py-3 text-sm font-semibold text-msc-primary transition-colors hover:border-msc-primary/40 hover:bg-msc-primary/[0.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-msc-primary/40"
+                >
+                  {currentContent.sendAnother}
+                </button>
               </div>
+            ) : (
+              <>
+                <div className="text-center mb-8">
+                  <h3 className="font-display text-3xl font-semibold text-msc-primary mb-2">{currentContent.contactForm}</h3>
+                  <p className="text-msc-text-light">{currentContent.formDescription}</p>
+                </div>
 
-              <form className="space-y-6" onSubmit={handleFormSubmit}>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
-                      {currentContent.name}
-                    </label>
-                    <Input
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      className="h-12"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
-                      {currentContent.phoneField}
-                    </label>
-                    <div className="relative">
-                      <div className="absolute left-3 top-3.5 flex items-center gap-1.5 pointer-events-none">
-                        <span className="text-base">🇺🇿</span>
-                        <span className="text-sm font-medium text-foreground">+998</span>
-                        <div className="w-px h-3 bg-gray-300 mx-1"></div>
-                      </div>
-                      <Input
-                        type="tel"
-                        name="phone"
-                        value={formData.phone}
+                <form className="space-y-4" onSubmit={handleFormSubmit} noValidate>
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div>
+                      <label htmlFor="cv-name" className={FORM_LABEL}>
+                        {currentContent.name} <span className="text-[#2563eb]">*</span>
+                      </label>
+                      <input
+                        id="cv-name"
+                        type="text"
+                        name="name"
+                        value={formData.name}
                         onChange={handleInputChange}
-                        className={`h-12 pl-20 ${phoneError ? 'border-red-500' : ''}`}
-                        placeholder="XX XXX XX XX"
-                        maxLength={12}
-                        required
+                        placeholder={currentContent.name}
+                        autoComplete="name"
+                        className={`${FIELD} ${formErrors.name ? FIELD_ERR : FIELD_OK}`}
                       />
-                      {phoneError && (
-                        <p className="text-red-500 text-xs mt-1">{phoneError}</p>
-                      )}
+                      {formErrors.name && <p className={ERROR_TEXT}>{tr(formErrors.name)}</p>}
+                    </div>
+
+                    <div>
+                      <label htmlFor="cv-phone" className={FORM_LABEL}>
+                        {currentContent.phoneField} <span className="text-[#2563eb]">*</span>
+                      </label>
+                      <div className="relative">
+                        <span className="pointer-events-none absolute inset-y-0 left-4 flex items-center gap-2.5">
+                          <span className="text-[15px] font-semibold text-msc-primary">+998</span>
+                          <span className="h-4 w-px bg-msc-primary/15" />
+                        </span>
+                        <input
+                          id="cv-phone"
+                          type="tel"
+                          inputMode="numeric"
+                          name="phone"
+                          value={formData.phone}
+                          onChange={handleInputChange}
+                          placeholder="XX XXX XX XX"
+                          maxLength={12}
+                          autoComplete="tel-national"
+                          className={`${FIELD} pl-[4.75rem] ${formErrors.phone ? FIELD_ERR : FIELD_OK}`}
+                        />
+                      </div>
+                      {formErrors.phone && <p className={ERROR_TEXT}>{tr(formErrors.phone)}</p>}
                     </div>
                   </div>
-                </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    {currentContent.emailField}
-                  </label>
-                  <Input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    className="h-12"
-                    required
-                  />
-                </div>
+                  <div>
+                    <label htmlFor="cv-email" className={FORM_LABEL}>
+                      {currentContent.emailField}
+                    </label>
+                    <input
+                      id="cv-email"
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      placeholder="you@example.com"
+                      autoComplete="email"
+                      className={`${FIELD} ${formErrors.email ? FIELD_ERR : FIELD_OK}`}
+                    />
+                    {formErrors.email && <p className={ERROR_TEXT}>{tr(formErrors.email)}</p>}
+                  </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    {currentContent.message}
-                  </label>
-                  <Textarea
-                    rows={5}
-                    name="message"
-                    value={formData.message}
-                    onChange={handleInputChange}
-                    placeholder={currentContent.messagePlaceholder}
-                    className="resize-none"
-                  />
-                </div>
+                  <div>
+                    <label htmlFor="cv-message" className={FORM_LABEL}>
+                      {currentContent.message} <span className="text-[#2563eb]">*</span>
+                    </label>
+                    <textarea
+                      id="cv-message"
+                      rows={5}
+                      name="message"
+                      value={formData.message}
+                      onChange={handleInputChange}
+                      placeholder={currentContent.messagePlaceholder}
+                      className={`${FIELD} h-auto min-h-[120px] resize-none py-3 ${formErrors.message ? FIELD_ERR : FIELD_OK}`}
+                    />
+                    {formErrors.message && <p className={ERROR_TEXT}>{tr(formErrors.message)}</p>}
+                  </div>
 
-                <Button
-                  type="submit"
-                  size="lg"
-                  className="w-full bg-msc-primary hover:bg-msc-primary/90 text-lg py-3"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? 'Отправка...' : currentContent.send}
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
+                  {submitError && (
+                    <div className="rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-700">
+                      {currentContent.submitError}
+                    </div>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="!mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-msc-primary px-7 py-3.5 text-base font-semibold text-white shadow-[0_12px_32px_-14px_rgba(12,17,57,0.5)] transition-colors hover:bg-msc-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-msc-primary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-60"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white motion-reduce:animate-none" />
+                        {currentContent.sending}
+                      </>
+                    ) : (
+                      <>
+                        <Send className="h-4 w-4" />
+                        {currentContent.send}
+                      </>
+                    )}
+                  </button>
+                </form>
+              </>
+            )}
+          </div>
         </div>
 
         {/* Location Map */}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { imageUrl, BLUR_DATA_URL } from "~/shared/config/site";
+import { imageSrc, BLUR_DATA_URL } from "~/shared/config/site";
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, Zap, Shield, Headphones, Globe, Stethoscope, Scissors, Heart, TestTube, Smile, Eye, ChevronDown, ChevronUp, Package } from 'lucide-react';
@@ -193,7 +193,7 @@ export function HomeView({ products, categories, manufacturers }: { products: an
                       >
                         {product.images?.cover ? (
                           <Image
-                            src={imageUrl(product.images.cover)!}
+                            src={imageSrc(product.images.cover)!}
                             alt={product.name[currentLanguage]}
                             fill
                             sizes="(max-width: 768px) 50vw, 25vw"
@@ -486,13 +486,9 @@ export function HomeView({ products, categories, manufacturers }: { products: an
             <p className="relative mx-auto mt-4 max-w-2xl text-lg text-msc-text-light">
               {t('home.finalCta.description')}
             </p>
-            <div className="relative mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-              <button onClick={() => setShowConsultationForm(true)} className={PRIMARY_BTN}>
+            <div className="relative mt-8 flex justify-center">
+              <button onClick={() => setShowConsultationForm(true)} className={`${PRIMARY_BTN} min-w-[280px]`}>
                 {t('home.finalCta.requestButton')}
-                <ArrowRight className="h-5 w-5" />
-              </button>
-              <button onClick={() => setShowConsultationForm(true)} className={OUTLINE_BTN}>
-                {t('home.finalCta.managerButton')}
                 <ArrowRight className="h-5 w-5" />
               </button>
             </div>

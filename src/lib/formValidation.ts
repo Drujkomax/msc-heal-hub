@@ -1,9 +1,10 @@
-// Form validation utilities
-import validator from 'validator';
+// Form validation utilities.
+// Validators return i18n KEYS (leadForm.validation.*) — the component renders
+// them through t(), so error messages follow the active language.
 
 export interface ValidationResult {
   isValid: boolean;
-  errors: Record<string, string>;
+  errors: Record<string, string>; // field -> i18n key
 }
 
 export interface LeadFormData {
@@ -14,107 +15,81 @@ export interface LeadFormData {
   message?: string;
 }
 
-// Validation rules
-export const validateRequired = (value: string, fieldName: string): string | null => {
-  if (!value || value.trim().length === 0) {
-    return `${fieldName} обязательно для заполнения`;
-  }
-  return null;
-};
+export interface LeadFormOptions {
+  /** Force the equipment select to be filled (consultation form marks it with *). */
+  requireEquipment?: boolean;
+  /** Allowed equipment keys; the quote form uses its own set. */
+  equipmentTypes?: string[];
+}
 
-export const validateMinLength = (value: string, minLength: number, fieldName: string): string | null => {
-  if (value && value.trim().length < minLength) {
-    return `${fieldName} должно содержать минимум ${minLength} символов`;
-  }
-  return null;
-};
+const V = 'leadForm.validation';
 
-export const validateMaxLength = (value: string, maxLength: number, fieldName: string): string | null => {
-  if (value && value.length > maxLength) {
-    return `${fieldName} не должно превышать ${maxLength} символов`;
-  }
-  return null;
-};
+export const DEFAULT_EQUIPMENT_TYPES = ['ultrasound', 'xray', 'mri', 'ct', 'lab', 'other'];
+
+// Буквы латиницы/кириллицы, включая узбекские Ў Қ Ғ Ҳ и апострофы oʻ/gʻ (ʻ ʼ ’),
+// пробелы, дефисы и точку для инициалов.
+const NAME_RE = /^[a-zA-Zа-яА-ЯёЁўЎқҚғҒҳҲʻʼ'’‘\s\-.]+$/;
 
 export const validateName = (name: string): string | null => {
-  const required = validateRequired(name, 'Имя');
-  if (required) return required;
-  
-  const minLength = validateMinLength(name, 2, 'Имя');
-  if (minLength) return minLength;
-  
-  const maxLength = validateMaxLength(name, 50, 'Имя');
-  if (maxLength) return maxLength;
-  
-  // Check for valid characters (letters, spaces, hyphens)
-  const nameRegex = /^[a-zA-Zа-яА-ЯёЁ\s\-']+$/;
-  if (!nameRegex.test(name.trim())) {
-    return 'Имя может содержать только буквы, пробелы и дефисы';
-  }
-  
+  const trimmed = name.trim();
+  if (!trimmed) return `${V}.nameRequired`;
+  if (trimmed.length < 2) return `${V}.nameMin`;
+  if (trimmed.length > 50) return `${V}.nameMax`;
+  if (!NAME_RE.test(trimmed)) return `${V}.nameChars`;
   return null;
 };
 
 export const validateCompany = (company: string): string | null => {
-  if (!company) return null; // Company is optional
-  
-  const minLength = validateMinLength(company, 2, 'Название компании');
-  if (minLength) return minLength;
-  
-  const maxLength = validateMaxLength(company, 100, 'Название компании');
-  if (maxLength) return maxLength;
-  
+  const trimmed = company.trim();
+  if (!trimmed) return null; // company is optional
+  if (trimmed.length < 2) return `${V}.companyMin`;
+  if (trimmed.length > 100) return `${V}.companyMax`;
   return null;
 };
 
 export const validateMessage = (message: string): string | null => {
-  if (!message) return null; // Message is optional
-  
-  const maxLength = validateMaxLength(message, 500, 'Сообщение');
-  if (maxLength) return maxLength;
-  
+  if (message && message.length > 500) return `${V}.messageMax`;
   return null;
 };
 
 // Main form validation function
-export const validateLeadForm = (formData: LeadFormData): ValidationResult => {
+export const validateLeadForm = (formData: LeadFormData, options?: LeadFormOptions): ValidationResult => {
   const errors: Record<string, string> = {};
-  
-  // Validate name
+  const allowedEquipment = options?.equipmentTypes ?? DEFAULT_EQUIPMENT_TYPES;
+
   const nameError = validateName(formData.name);
   if (nameError) errors.name = nameError;
-  
-  // Validate phone (should be handled by existing phone validation)
-  const phoneRequired = validateRequired(formData.phone, 'Номер телефона');
-  if (phoneRequired) errors.phone = phoneRequired;
-  
-  // Validate company if provided
+
+  // Format/completeness of the phone is checked by phoneValidation in the component.
+  if (!formData.phone || !formData.phone.trim()) errors.phone = `${V}.phoneRequired`;
+
   if (formData.company) {
     const companyError = validateCompany(formData.company);
     if (companyError) errors.company = companyError;
   }
-  
-  // Validate message if provided
+
   if (formData.message) {
     const messageError = validateMessage(formData.message);
     if (messageError) errors.message = messageError;
   }
-  
-  // Validate equipment type if provided
-  if (formData.equipmentType && !['ultrasound', 'xray', 'mri', 'ct', 'lab', 'other'].includes(formData.equipmentType)) {
-    errors.equipmentType = 'Выберите корректный тип оборудования';
+
+  if (options?.requireEquipment && !formData.equipmentType) {
+    errors.equipmentType = `${V}.equipmentRequired`;
+  } else if (formData.equipmentType && !allowedEquipment.includes(formData.equipmentType)) {
+    errors.equipmentType = `${V}.equipmentInvalid`;
   }
-  
+
   return {
     isValid: Object.keys(errors).length === 0,
     errors
   };
 };
 
-// Sanitize input to prevent XSS using comprehensive validation
+// Обрезает управляющие символы и ограничивает длину. НЕ экранирует HTML и НЕ
+// трогает пробелы: экранирование на каждый ввод ломало узбекские имена с
+// апострофом (G'ani → G&#x27;ani), а trim не давал набрать пробел между
+// словами. Рендер экранирует React, в БД значения идут параметризованным SQL.
 export const sanitizeInput = (input: string): string => {
-  // Use validator.js for robust HTML escaping
-  let clean = validator.trim(input);
-  clean = validator.escape(clean); // Escapes HTML entities, event handlers, and special chars
-  return clean.substring(0, 200); // Limit length as defense in depth
+  // eslint-disable-next-line no-control-regex
+  return input.replace(/[\x00-\x08\x0b-\x1f\x7f]/g, '').substring(0, 200);
 };

@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:6001";
+// Server-side proxy target for stored media. Prefer the internal Docker address
+// (e.g. http://msc-api:6001) so /storage never hairpins out through the public
+// domain + TLS; falls back to the public API when no internal address is set.
+const API_INTERNAL = process.env.API_INTERNAL_URL || API;
 
 const nextConfig: NextConfig = {
   // Self-host (Docker) build emits a standalone server (`node server.js`); the flag
@@ -22,7 +26,7 @@ const nextConfig: NextConfig = {
   },
   // Serve stored media via the client origin → proxied to the backend (port-independent).
   async rewrites() {
-    return [{ source: "/storage/:path*", destination: `${API}/storage/:path*` }];
+    return [{ source: "/storage/:path*", destination: `${API_INTERNAL}/storage/:path*` }];
   },
   // Preserve the legacy SPA routes after the [...slug] fallback is removed.
   async redirects() {

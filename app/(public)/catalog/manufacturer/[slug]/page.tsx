@@ -5,7 +5,7 @@ import { getActiveProducts } from "~/entities/product/api";
 import { getCategories } from "~/entities/category/api";
 import { getManufacturers } from "~/entities/manufacturer/api";
 import { SITE_URL, SITE_NAME } from "~/shared/config/site";
-import { toUrlSlug } from "@/lib/slugify";
+import { toUrlSlug, decodeParam } from "@/lib/slugify";
 import { CatalogView } from "~/widgets/catalog/catalog-view";
 
 const OG_IMAGE = "https://medsc.uz/images/og-image.png";
@@ -31,7 +31,8 @@ export async function generateMetadata({
 }: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
+  const { slug: rawSlug } = await params;
+  const slug = decodeParam(rawSlug);
   const m = await findManufacturer(slug);
   if (!m) {
     return { title: "Производитель не найден | Med Service Centre", robots: { index: false, follow: true } };
@@ -69,7 +70,8 @@ export default async function ManufacturerPage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const { slug } = await params;
+  const { slug: rawSlug } = await params;
+  const slug = decodeParam(rawSlug);
   const [manufacturer, products, categories, manufacturers] = await Promise.all([
     findManufacturer(slug),
     getActiveProducts(),

@@ -3,25 +3,13 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { toast } from "sonner";
 import { Wrench, GraduationCap, Zap, Calendar, Check, Phone } from "lucide-react";
 import { useLang } from "~/shared/i18n/i18n-provider";
-import {
-  formatUzbekPhoneNumber,
-  validateUzbekPhoneNumber,
-  isValidUzbekPhoneLength,
-  isCompleteUzbekPhone,
-} from "@/lib/phoneValidation";
+import { ServiceOrderForm } from "~/features/service-order-form/service-order-form";
 
 export function ServicesView() {
   const [isOrderDialogOpen, setIsOrderDialogOpen] = useState(false);
   const [selectedService, setSelectedService] = useState<string>("");
-  const [phoneValue, setPhoneValue] = useState("");
-  const [phoneError, setPhoneError] = useState("");
   const [openAccordion, setOpenAccordion] = useState<string>("");
   const language = useLang();
 
@@ -515,65 +503,7 @@ export function ServicesView() {
 
   const handleOrderService = (serviceName: string) => {
     setSelectedService(serviceName);
-    setPhoneValue("");
-    setPhoneError("");
     setIsOrderDialogOpen(true);
-  };
-
-  const handlePhoneChange = (value: string) => {
-    if (!isValidUzbekPhoneLength(value)) return;
-
-    const formatted = formatUzbekPhoneNumber(value);
-    setPhoneValue(formatted);
-
-    if (formatted.length > 0) {
-      if (!isCompleteUzbekPhone(formatted)) {
-        const lang = language;
-        setPhoneError(
-          lang === "ru"
-            ? "Номер должен содержать 9 цифр"
-            : lang === "en"
-              ? "Number must contain 9 digits"
-              : "Raqam 9 ta raqamdan iborat bo'lishi kerak",
-        );
-      } else if (!validateUzbekPhoneNumber(formatted)) {
-        const lang = language;
-        setPhoneError(
-          lang === "ru"
-            ? "Неверный формат номера"
-            : lang === "en"
-              ? "Invalid phone format"
-              : "Noto'g'ri telefon formati",
-        );
-      } else {
-        setPhoneError("");
-      }
-    } else {
-      setPhoneError("");
-    }
-  };
-
-  const handleSubmitOrder = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (
-      phoneValue &&
-      (!isCompleteUzbekPhone(phoneValue) ||
-        !validateUzbekPhoneNumber(phoneValue))
-    ) {
-      const lang = language;
-      setPhoneError(
-        lang === "ru"
-          ? "Введите корректный узбекский номер"
-          : lang === "en"
-            ? "Enter a valid Uzbek number"
-            : "To'g'ri O'zbek raqamini kiriting",
-      );
-      return;
-    }
-
-    toast.success(currentContent.orderForm.success);
-    setIsOrderDialogOpen(false);
   };
 
   return (
@@ -775,68 +705,12 @@ export function ServicesView() {
         </div>
       </div>
 
-      <Dialog open={isOrderDialogOpen} onOpenChange={setIsOrderDialogOpen}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-xl font-bold text-center">
-              {currentContent.orderForm.title}
-            </DialogTitle>
-          </DialogHeader>
-          <form onSubmit={handleSubmitOrder} className="space-y-4">
-            <div>
-              <Label htmlFor="service">{currentContent.orderForm.serviceLabel}</Label>
-              <Input
-                id="service"
-                value={selectedService}
-                readOnly
-                className="bg-muted"
-              />
-            </div>
-            <div>
-              <Label htmlFor="name">{currentContent.orderForm.name}</Label>
-              <Input id="name" required />
-            </div>
-            <div>
-              <Label htmlFor="phone">{currentContent.orderForm.phone}</Label>
-              <div className="relative">
-                <div className="absolute left-3 top-2.5 flex items-center gap-1.5 pointer-events-none">
-                  <span className="text-base">🇺🇿</span>
-                  <span className="text-sm font-medium">+998</span>
-                  <div className="w-px h-3 bg-gray-300 mx-1"></div>
-                </div>
-                <Input
-                  id="phone"
-                  type="tel"
-                  value={phoneValue}
-                  onChange={(e) => handlePhoneChange(e.target.value)}
-                  className={`pl-20 ${phoneError ? "border-red-500" : ""}`}
-                  placeholder="XX XXX XX XX"
-                  maxLength={12}
-                  required
-                />
-                {phoneError && (
-                  <p className="text-red-500 text-xs mt-1">{phoneError}</p>
-                )}
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="email">{currentContent.orderForm.email}</Label>
-              <Input id="email" type="email" required />
-            </div>
-            <div>
-              <Label htmlFor="company">{currentContent.orderForm.company}</Label>
-              <Input id="company" />
-            </div>
-            <div>
-              <Label htmlFor="message">{currentContent.orderForm.message}</Label>
-              <Textarea id="message" rows={3} />
-            </div>
-            <Button type="submit" className="w-full">
-              {currentContent.orderForm.submit}
-            </Button>
-          </form>
-        </DialogContent>
-      </Dialog>
+      {isOrderDialogOpen && (
+        <ServiceOrderForm
+          serviceName={selectedService}
+          onClose={() => setIsOrderDialogOpen(false)}
+        />
+      )}
     </div>
   );
 }

@@ -9,12 +9,34 @@ export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://medsc.uz")
 
 export const SITE_NAME = "Med Service Centre";
 
-// Resolve a stored image path to a direct, absolute API URL. Going straight to the
-// backend (instead of the relative /storage rewrite that hops through Vercel) is
-// faster and avoids intermittent proxy failures that showed images as broken.
+// Resolve a stored image path to a direct, absolute API URL. Used where an
+// absolute URL is REQUIRED: Open Graph / social cards, emails, admin exports.
 export function imageUrl(path?: string | null): string | undefined {
   if (!path) return undefined;
   return path.startsWith("http") ? path : `${API_URL}${path}`;
+}
+
+// Hostnames our own storage/API is served from. A stored cover value may be an
+// absolute URL (https://api.medsc.uz/storage/…) or a bare path (/storage/…).
+const OWN_API_HOSTS = new Set(["api.medsc.uz", "medsc.api.jaragency.uz"]);
+
+// Display variant for next/image. Always returns a SAME-ORIGIN relative path so
+// the photo is fetched from the Next origin and proxied to the INTERNAL backend
+// via the /storage rewrite — skipping the public hairpin + TLS handshake that
+// made catalog images intermittently time out. Use this for <Image src>; use
+// imageUrl() only when an absolute URL is required (see above).
+export function imageSrc(path?: string | null): string | undefined {
+  if (!path) return undefined;
+  if (/^https?:\/\//i.test(path)) {
+    try {
+      const u = new URL(path);
+      if (OWN_API_HOSTS.has(u.hostname)) return `${u.pathname}${u.search}`;
+      return path; // external image (e.g. manufacturer logo) → leave absolute
+    } catch {
+      return path;
+    }
+  }
+  return path.startsWith("/") ? path : `/${path}`;
 }
 
 // Tiny neutral blur shown by next/image while a remote photo loads (replaces the

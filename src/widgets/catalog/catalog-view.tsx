@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import { API_URL, BLUR_DATA_URL } from "~/shared/config/site";
+import { imageSrc, imageUrl, BLUR_DATA_URL } from "~/shared/config/site";
 import {
   Card,
   CardContent,
@@ -171,6 +171,7 @@ export function CatalogView({
   }, [searchParams, selectedManufacturer, initialManufacturer]);
 
   const language = useLang() as "ru" | "en" | "uz";
+  const t = useT();
 
   // Combine fallback categories with database categories
   const allCategories = {
@@ -472,7 +473,13 @@ export function CatalogView({
                       <Card
                         key={product.id}
                         className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 flex flex-col h-full"
+                        itemScope
+                        itemType="https://schema.org/Product"
                       >
+                        {/* Microdata for Yandex listing (it ignores JSON-LD). */}
+                        {product.images?.cover && (
+                          <meta itemProp="image" content={imageUrl(product.images.cover)} />
+                        )}
                         <Link
                           href={productUrl}
                           className="relative overflow-hidden rounded-t-lg aspect-[1080/1350] block"
@@ -480,11 +487,7 @@ export function CatalogView({
                         >
                           {product.images?.cover ? (
                             <Image
-                              src={
-                                product.images.cover.startsWith("http")
-                                  ? product.images.cover
-                                  : `${API_URL}${product.images.cover}`
-                              }
+                              src={imageSrc(product.images.cover)!}
                               alt={product.name[language]}
                               fill
                               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
@@ -515,8 +518,9 @@ export function CatalogView({
                                 href={productUrl}
                                 className="hover:underline"
                                 aria-label={`${translations.details[language]}: ${product.name[language]}`}
+                                itemProp="url"
                               >
-                                {product.name[language]}
+                                <span itemProp="name">{product.name[language]}</span>
                               </Link>
                             </CardTitle>
                             {product.country && (
@@ -539,7 +543,15 @@ export function CatalogView({
                         <CardContent className="flex flex-col justify-end mt-auto">
                           {/* Price Display */}
                           {product.price && product.currency && (
-                            <div className="mb-4 p-3 bg-muted/50 rounded-lg">
+                            <div
+                              className="mb-4 p-3 bg-muted/50 rounded-lg"
+                              itemProp="offers"
+                              itemScope
+                              itemType="https://schema.org/Offer"
+                            >
+                              <meta itemProp="price" content={product.price} />
+                              <meta itemProp="priceCurrency" content={product.currency} />
+                              <link itemProp="availability" href="https://schema.org/InStock" />
                               <div className="flex items-baseline gap-2">
                                 <span className="text-2xl font-bold text-primary">
                                   {formatPrice(product.price, product.currency)}
@@ -625,6 +637,7 @@ export function CatalogView({
                       <PaginationContent>
                         <PaginationItem>
                           <PaginationPrevious
+                            label={t('common.previous')}
                             href="#"
                             onClick={(e) => {
                               e.preventDefault();
@@ -660,6 +673,7 @@ export function CatalogView({
 
                         <PaginationItem>
                           <PaginationNext
+                            label={t('common.next')}
                             href="#"
                             onClick={(e) => {
                               e.preventDefault();

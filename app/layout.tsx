@@ -117,7 +117,7 @@ const orgJsonLd = {
     availableLanguage: ["ru", "uz", "en"],
   },
   sameAs: [
-    "https://t.me/medservice_centre",
+    "https://t.me/medsc_uz",
     "https://www.facebook.com/profile.php?id=61576982724139",
     "https://www.instagram.com/medservicecentreuz/",
     "https://www.youtube.com/@MedService_centre/shorts",

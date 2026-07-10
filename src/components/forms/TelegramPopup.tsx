@@ -11,7 +11,7 @@ const TelegramPopup: React.FC<TelegramPopupProps> = ({ onClose }) => {
   const { t } = useTranslation();
 
   const handleTelegramClick = () => {
-    window.open('https://t.me/medservice_centre/7', '_blank');
+    window.open('https://t.me/medsc_uz', '_blank');
     onClose();
   };
 
@@ -47,7 +47,7 @@ const TelegramPopup: React.FC<TelegramPopupProps> = ({ onClose }) => {
               Консультация экспертов
             </h3>
             <p className="text-gray-600 text-sm leading-relaxed">
-              Ознакомьтесь со статьей <a href="https://t.me/medservice_centre/7" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 underline">"Аренда или покупка? Что выгоднее?"</a>
+              Ознакомьтесь со статьей <a href="https://t.me/medsc_uz" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 underline">"Аренда или покупка? Что выгоднее?"</a>
             </p>
           </div>
 
@@ -59,7 +59,7 @@ const TelegramPopup: React.FC<TelegramPopupProps> = ({ onClose }) => {
               </div>
               <div>
                 <div className="font-medium text-gray-900">Med Service Centre</div>
-                <div className="text-xs text-gray-500">@medservice_centre</div>
+                <div className="text-xs text-gray-500">@medsc_uz</div>
               </div>
             </div>
             <div className="text-sm text-gray-700 leading-relaxed">

@@ -49,6 +49,19 @@ export const toUrlSlug = (slug: string | null | undefined): string => {
 };
 
 /**
+ * Decode a dynamic-route param. App Router передаёт сегменты percent-encoded
+ * («Hemodialysis%20equipment»), а в БД значения хранятся сырыми — без decode
+ * сравнение падает и страница уходит в 404.
+ */
+export const decodeParam = (value: string): string => {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+};
+
+/**
  * Remove UUID suffix from existing slugs
  * @param slug - The slug that may contain a UUID suffix
  * @returns Clean slug without UUID suffix

@@ -1,21 +1,24 @@
 "use client";
 
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import React, { useEffect, useRef, useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useToast } from '@/hooks/use-toast';
-import TelegramPopup from '@/components/forms/TelegramPopup';
 import { useLeads } from '@/hooks/useLeads';
 import { formatUzbekPhoneNumber, validateUzbekPhoneNumber, getFullUzbekPhoneNumber, isValidUzbekPhoneLength, isCompleteUzbekPhone } from '@/lib/phoneValidation';
 import { validateLeadForm, sanitizeInput } from '@/lib/formValidation';
-import { Phone, User, MessageSquare, Send, X, Settings } from 'lucide-react';
-import { useT, useLang } from "~/shared/i18n/i18n-provider";
+import { Check, Send, X } from 'lucide-react';
+import { useT } from "~/shared/i18n/i18n-provider";
+
+const TELEGRAM_CHANNEL_URL = 'https://t.me/medsc_uz';
+
+const FIELD =
+  'h-11 w-full rounded-xl border bg-white px-4 text-[15px] text-msc-text placeholder:text-msc-text-light/60 transition-colors focus:outline-none focus:ring-2 focus:ring-[#2563eb]/25 focus:border-[#2563eb]';
+const FIELD_OK = 'border-msc-primary/15 hover:border-msc-primary/30';
+const FIELD_ERR = 'border-red-400';
+const LABEL = 'mb-1.5 block text-sm font-medium text-msc-primary';
+const ERROR_TEXT = 'mt-1.5 text-xs text-red-600 animate-in slide-in-from-top-1 duration-200 motion-reduce:animate-none';
 
 export function LeadForm({ onClose }: { onClose: () => void }) {
-  const { toast } = useToast();
-  const { addLead } = useLeads();
+  const { addLead } = useLeads({ autoFetch: false });
   const t = useT();
   const [formData, setFormData] = useState({
     name: '',
@@ -23,35 +26,41 @@ export function LeadForm({ onClose }: { onClose: () => void }) {
     equipmentType: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSent, setIsSent] = useState(false);
+  const [submitError, setSubmitError] = useState(false);
   const [phoneError, setPhoneError] = useState('');
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
-  const [showTelegramPopup, setShowTelegramPopup] = useState(false);
-  const language = useLang() || 'ru';
+  const nameRef = useRef<HTMLInputElement>(null);
+
+  // Закрытие по Escape + блокировка прокрутки страницы под модалкой
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    nameRef.current?.focus();
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [onClose]);
+
   const handleInputChange = (field: string, value: string) => {
-    // Clear validation error for this field
     if (validationErrors[field]) {
-      setValidationErrors(prev => ({
-        ...prev,
-        [field]: ''
-      }));
+      setValidationErrors(prev => ({ ...prev, [field]: '' }));
     }
 
     if (field === 'phone') {
-      // Format and validate phone number
-      if (!isValidUzbekPhoneLength(value)) return; // Prevent input beyond max length
+      if (!isValidUzbekPhoneLength(value)) return; // не даём набрать больше 9 цифр
 
       const formatted = formatUzbekPhoneNumber(value);
-      setFormData(prev => ({
-        ...prev,
-        [field]: formatted
-      }));
+      setFormData(prev => ({ ...prev, phone: formatted }));
 
-      // Only show error if user has entered something and it's not complete or invalid
       if (formatted.length > 0) {
         if (!isCompleteUzbekPhone(formatted)) {
-          setPhoneError(language === 'ru' ? 'Номер должен содержать 9 цифр' : language === 'en' ? 'Number must contain 9 digits' : 'Raqam 9 ta raqamdan iborat bo\'lishi kerak');
+          setPhoneError('leadForm.validation.phoneIncomplete');
         } else if (!validateUzbekPhoneNumber(formatted)) {
-          setPhoneError(language === 'ru' ? 'Неверный формат номера' : language === 'en' ? 'Invalid phone format' : 'Noto\'g\'ri telefon formati');
+          setPhoneError('leadForm.validation.phoneInvalid');
         } else {
           setPhoneError('');
         }
@@ -59,179 +68,203 @@ export function LeadForm({ onClose }: { onClose: () => void }) {
         setPhoneError('');
       }
     } else {
-      // Sanitize input for other fields
-      const sanitizedValue = sanitizeInput(value);
-      setFormData(prev => ({
-        ...prev,
-        [field]: sanitizedValue
-      }));
+      setFormData(prev => ({ ...prev, [field]: sanitizeInput(value) }));
     }
   };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Clear previous errors
     setValidationErrors({});
     setPhoneError('');
+    setSubmitError(false);
 
-    // Validate form data
-    const validation = validateLeadForm(formData);
+    const name = formData.name.trim().replace(/\s+/g, ' ');
+    const validation = validateLeadForm({ ...formData, name }, { requireEquipment: true });
     if (!validation.isValid) {
       setValidationErrors(validation.errors);
       return;
     }
 
-    // Validate phone number before submission
-    if (formData.phone && (!isCompleteUzbekPhone(formData.phone) || !validateUzbekPhoneNumber(formData.phone))) {
-      setPhoneError(language === 'ru' ? 'Введите корректный узбекский номер' : language === 'en' ? 'Enter a valid Uzbek number' : 'To\'g\'ri O\'zbek raqamini kiriting');
+    if (!isCompleteUzbekPhone(formData.phone) || !validateUzbekPhoneNumber(formData.phone)) {
+      setPhoneError('leadForm.validation.phoneInvalid');
       return;
     }
+
     setIsSubmitting(true);
     try {
       await addLead({
-        name: formData.name,
-        phone: formData.phone ? getFullUzbekPhoneNumber(formData.phone) : undefined,
+        name,
+        phone: getFullUzbekPhoneNumber(formData.phone),
         notes: formData.equipmentType ? `Тип оборудования: ${t(`leadForm.equipmentTypes.${formData.equipmentType}`)}` : undefined,
         equipment_interest: formData.equipmentType,
         stage: 'new',
         source: 'website_form'
       });
-      toast({
-        title: language === 'ru' ? 'Заявка отправлена!' : language === 'en' ? 'Request sent!' : 'Ariza jo\'natildi!',
-        description: language === 'ru' ? 'Мы свяжемся с вами в ближайшее время' : language === 'en' ? 'We will contact you soon' : 'Tez orada siz bilan bog\'lanamiz'
-      });
-      setFormData({
-        name: '',
-        phone: '',
-        equipmentType: ''
-      });
-      setPhoneError('');
-      setShowTelegramPopup(true);
+      setIsSent(true);
     } catch (error) {
-      toast({
-        title: language === 'ru' ? 'Ошибка!' : language === 'en' ? 'Error!' : 'Xatolik!',
-        description: language === 'ru' ? 'Не удалось отправить заявку' : language === 'en' ? 'Failed to send request' : 'Arizani jo\'natib bo\'lmadi',
-        variant: 'destructive'
-      });
+      setSubmitError(true);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleTelegramPopupClose = () => {
-    setShowTelegramPopup(false);
-    if (onClose) onClose();
-  };
-
   return (
-    <>
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-        <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl animate-in slide-in-from-bottom-4 relative z-10">
-          {/* Header */}
-          <div className="relative bg-gradient-to-r from-msc-primary to-msc-accent text-white p-4 rounded-t-2xl">
-            <button onClick={onClose} className="absolute top-3 right-3 text-white/80 hover:text-white transition-colors">
-              <X className="w-5 h-5" />
-            </button>
-            <div className="text-center">
-              <h2 className="font-heading text-lg font-bold mb-1 flex items-center justify-center gap-2">
-                   <MessageSquare className="w-5 h-5" />
-                   {t('leadForm.title')}
-                 </h2>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-msc-primary/40 p-4 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="lead-form-title"
+        onClick={e => e.stopPropagation()}
+        className="relative max-h-[calc(100dvh-2rem)] w-full max-w-md overflow-y-auto rounded-3xl border border-msc-primary/10 bg-white shadow-[0_40px_90px_-30px_rgba(12,17,57,0.5)] animate-in fade-in zoom-in-95 duration-200 motion-reduce:animate-none"
+      >
+        <button
+          onClick={onClose}
+          aria-label={t('leadForm.success.close')}
+          className="absolute right-4 top-4 z-10 rounded-lg p-1.5 text-msc-text-light transition-colors hover:bg-msc-primary/5 hover:text-msc-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-msc-primary/40"
+        >
+          <X className="h-5 w-5" />
+        </button>
 
-                 <p className="text-white/80 text-xs">{t('leadForm.description')}</p>
-               </div>
-          </div>
-
-          {/* Trust Elements */}
-          <div className="bg-gradient-to-r from-msc-primary/10 to-msc-accent/10 p-3 border-b animate-fade-in">
-            <div className="text-center">
-              <h3 className="text-sm font-semibold text-msc-text">
-                Получите консультацию на тему<br />
-                <span className="text-msc-primary font-bold">
-                  "Как эффективно окупить оборудование в 2025 году?"
-                </span>
-              </h3>
+        {isSent ? (
+          /* ── Успех ─────────────────────────────────────────────── */
+          <div className="px-7 py-10 text-center sm:px-9">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-[#2563eb]/15 bg-gradient-to-br from-[#f3f7fe] to-[#eaf0fd]">
+              <Check className="h-7 w-7 text-[#2563eb]" />
+            </div>
+            <h2 id="lead-form-title" className="mt-5 font-display text-2xl font-semibold text-msc-primary">
+              {t('leadForm.success.title')}
+            </h2>
+            <p className="mx-auto mt-2 max-w-xs text-sm leading-relaxed text-msc-text-light">
+              {t('leadForm.success.description')}
+            </p>
+            <div className="mt-7 space-y-3">
+              <a
+                href={TELEGRAM_CHANNEL_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-msc-primary/20 bg-white px-6 py-3 text-sm font-semibold text-msc-primary transition-colors hover:border-msc-primary/40 hover:bg-msc-primary/[0.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-msc-primary/40"
+              >
+                <Send className="h-4 w-4" />
+                {t('leadForm.success.telegram')}
+              </a>
+              <button
+                onClick={onClose}
+                className="inline-flex w-full items-center justify-center rounded-xl bg-msc-primary px-6 py-3 text-sm font-semibold text-white shadow-[0_12px_32px_-14px_rgba(12,17,57,0.5)] transition-colors hover:bg-msc-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-msc-primary focus-visible:ring-offset-2"
+              >
+                {t('leadForm.success.close')}
+              </button>
             </div>
           </div>
+        ) : (
+          /* ── Форма ─────────────────────────────────────────────── */
+          <div className="px-7 pb-7 pt-8 sm:px-9 sm:pb-8">
+            {/* Обещание перезвона — то, что раньше было второй кнопкой CTA */}
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#2563eb]/15 bg-gradient-to-r from-[#f3f7fe] to-[#eaf0fd] py-1.5 pl-3 pr-3.5 text-xs font-medium text-msc-primary">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#2563eb] opacity-60 motion-reduce:animate-none" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-[#2563eb]" />
+              </span>
+              {t('leadForm.callbackPromise')}
+            </div>
 
-          {/* Form */}
-          <div className="p-5">
-            <form onSubmit={handleSubmit} className="space-y-3">
-              {/* Name */}
-              <div className="space-y-1">
-                <Label htmlFor="name" className="flex items-center gap-2 text-msc-text font-medium text-sm">
-                  <User className="w-4 h-4" />
-                  {t('leadForm.name')} *
-                </Label>
-                <Input
-                  id="name"
+            <h2 id="lead-form-title" className="mt-4 font-display text-[26px] font-semibold leading-tight text-msc-primary">
+              {t('leadForm.title')}
+            </h2>
+            <p className="mt-1.5 text-sm text-msc-text-light">{t('leadForm.description')}</p>
+
+            <form onSubmit={handleSubmit} noValidate className="mt-6 space-y-4">
+              <div>
+                <label htmlFor="lead-name" className={LABEL}>
+                  {t('leadForm.name')} <span className="text-[#2563eb]">*</span>
+                </label>
+                <input
+                  id="lead-name"
+                  ref={nameRef}
                   value={formData.name}
                   onChange={e => handleInputChange('name', e.target.value)}
-                  required
-                  className={`border-msc-primary/20 focus:border-msc-accent transition-all duration-200 h-10 ${validationErrors.name ? 'border-red-500' : ''}`}
                   placeholder={t('leadForm.name')}
+                  autoComplete="name"
+                  className={`${FIELD} ${validationErrors.name ? FIELD_ERR : FIELD_OK}`}
                 />
-                {validationErrors.name && <p className="text-red-500 text-xs mt-1 animate-in slide-in-from-top-1 duration-200">{validationErrors.name}</p>}
+                {validationErrors.name && <p className={ERROR_TEXT}>{t(validationErrors.name)}</p>}
               </div>
 
-              {/* Phone */}
-              <div className="space-y-1">
-                <Label htmlFor="phone" className="flex items-center gap-2 text-msc-text font-medium text-sm">
-                  <Phone className="w-4 h-4" />
-                  {t('leadForm.phone')} *
-                </Label>
+              <div>
+                <label htmlFor="lead-phone" className={LABEL}>
+                  {t('leadForm.phone')} <span className="text-[#2563eb]">*</span>
+                </label>
                 <div className="relative">
-                  <div className="absolute left-3 top-2.5 flex items-center gap-1.5 pointer-events-none">
-                    <span className="text-base">🇺🇿</span>
-                    <span className="text-msc-text font-medium text-sm">+998</span>
-                    <div className="w-px h-3 bg-msc-primary/20 mx-1"></div>
-                  </div>
-                  <Input id="phone" type="tel" value={formData.phone} onChange={e => handleInputChange('phone', e.target.value)} required className={`border-msc-primary/20 focus:border-msc-accent transition-all duration-200 pl-20 h-10 ${phoneError ? 'border-red-500' : ''}`} placeholder="XX XXX XX XX" maxLength={12} />
-                  {phoneError && <p className="text-red-500 text-xs mt-1 animate-in slide-in-from-top-1 duration-200">
-                      {phoneError}
-                    </p>}
+                  <span className="pointer-events-none absolute inset-y-0 left-4 flex items-center gap-2.5">
+                    <span className="text-[15px] font-semibold text-msc-primary">+998</span>
+                    <span className="h-4 w-px bg-msc-primary/15" />
+                  </span>
+                  <input
+                    id="lead-phone"
+                    type="tel"
+                    inputMode="numeric"
+                    value={formData.phone}
+                    onChange={e => handleInputChange('phone', e.target.value)}
+                    placeholder="XX XXX XX XX"
+                    maxLength={12}
+                    autoComplete="tel-national"
+                    className={`${FIELD} pl-[4.75rem] ${phoneError || validationErrors.phone ? FIELD_ERR : FIELD_OK}`}
+                  />
                 </div>
+                {(phoneError || validationErrors.phone) && (
+                  <p className={ERROR_TEXT}>{t(phoneError || validationErrors.phone)}</p>
+                )}
               </div>
 
-              {/* Equipment Type */}
-              <div className="space-y-1">
-                <Label className="flex items-center gap-2 text-msc-text font-medium text-sm">
-                  <Settings className="w-4 h-4" />
-                  {t('leadForm.equipmentType')} *
-                </Label>
-                <Select value={formData.equipmentType} onValueChange={value => handleInputChange('equipmentType', value)} required>
-                   <SelectTrigger className="border-msc-primary/20 focus:border-msc-accent h-10 transition-all duration-200">
-                     <SelectValue placeholder={t('leadForm.equipmentType')} />
-                   </SelectTrigger>
-                   <SelectContent>
-                     {['ultrasound', 'xray', 'mri', 'ct', 'lab', 'other'].map((key) =>
-                       <SelectItem key={key} value={key}>{t(`leadForm.equipmentTypes.${key}`)}</SelectItem>
-                     )}
-                   </SelectContent>
-                 </Select>
+              <div>
+                <label className={LABEL}>
+                  {t('leadForm.equipmentType')} <span className="text-[#2563eb]">*</span>
+                </label>
+                <Select value={formData.equipmentType} onValueChange={value => handleInputChange('equipmentType', value)}>
+                  <SelectTrigger
+                    className={`${FIELD} data-[placeholder]:text-msc-text-light/60 ${validationErrors.equipmentType ? FIELD_ERR : FIELD_OK}`}
+                  >
+                    <SelectValue placeholder={t('leadForm.equipmentType')} />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl border-msc-primary/10">
+                    {['ultrasound', 'xray', 'mri', 'ct', 'lab', 'other'].map((key) =>
+                      <SelectItem key={key} value={key} className="rounded-lg">{t(`leadForm.equipmentTypes.${key}`)}</SelectItem>
+                    )}
+                  </SelectContent>
+                </Select>
+                {validationErrors.equipmentType && <p className={ERROR_TEXT}>{t(validationErrors.equipmentType)}</p>}
               </div>
 
-              {/* Submit Button */}
-              <Button type="submit" disabled={isSubmitting} className="w-full bg-msc-primary hover:bg-msc-primary/90 text-white font-semibold py-5 text-base transition-colors duration-300 shadow-lg mt-4">
-                {isSubmitting ? <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    {language === 'ru' ? 'Отправка...' : language === 'en' ? 'Sending...' : 'Jo\'natilmoqda...'}
-                   </div> : <div className="flex items-center gap-2">
-                     <Send className="w-4 h-4" />
-                     {t('leadForm.submit')}
-                   </div>}
-              </Button>
+              {submitError && (
+                <div className="rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-700">
+                  {t('leadForm.submitError')}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="!mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-msc-primary px-7 py-3.5 text-base font-semibold text-white shadow-[0_12px_32px_-14px_rgba(12,17,57,0.5)] transition-colors hover:bg-msc-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-msc-primary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-60"
+              >
+                {isSubmitting ? (
+                  <>
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white motion-reduce:animate-none" />
+                    {t('leadForm.sending')}
+                  </>
+                ) : (
+                  <>
+                    <Send className="h-4 w-4" />
+                    {t('leadForm.submit')}
+                  </>
+                )}
+              </button>
             </form>
           </div>
-        </div>
+        )}
       </div>
-
-      {/* Telegram Popup */}
-      {showTelegramPopup && (
-        <TelegramPopup
-          onClose={handleTelegramPopupClose}
-        />
-      )}
-    </>
+    </div>
   );
 }

@@ -783,6 +783,31 @@
     "phone": "Telefon",
     "equipmentType": "Uskuna turi",
     "submit": "Soʻrov yuborish",
+    "sending": "Yuborilmoqda...",
+    "callbackPromise": "Menejer 15 daqiqa ichida qayta qoʻngʻiroq qiladi",
+    "submitError": "Soʻrovni yuborib boʻlmadi. Qaytadan urinib koʻring.",
+    "success": {
+      "title": "Soʻrov yuborildi!",
+      "description": "Soʻrovingizni qabul qildik — menejer 15 daqiqa ichida qayta qoʻngʻiroq qiladi.",
+      "telegram": "Kutish davomida — bizning Telegram kanalimiz",
+      "close": "Yopish"
+    },
+    "validation": {
+      "nameRequired": "Ismingizni kiriting",
+      "nameMin": "Ism kamida 2 ta belgidan iborat boʻlishi kerak",
+      "nameMax": "Ism 50 ta belgidan oshmasligi kerak",
+      "nameChars": "Ismda faqat harflar, probel va defis boʻlishi mumkin",
+      "phoneRequired": "Telefon raqamingizni kiriting",
+      "phoneIncomplete": "Raqam 9 ta raqamdan iborat boʻlishi kerak",
+      "phoneInvalid": "Notoʻgʻri telefon formati",
+      "equipmentRequired": "Uskuna turini tanlang",
+      "equipmentInvalid": "Toʻgʻri uskuna turini tanlang",
+      "emailInvalid": "Notoʻgʻri email formati",
+      "messageRequired": "Xabar yozing",
+      "companyMin": "Kompaniya nomi kamida 2 ta belgidan iborat boʻlishi kerak",
+      "companyMax": "Kompaniya nomi 100 ta belgidan oshmasligi kerak",
+      "messageMax": "Xabar 500 ta belgidan oshmasligi kerak"
+    },
     "trust1": "Bir soat ichida javob",
     "trust2": "Sogʻliqni saqlash vazirligi litsenziyasi",
     "equipmentTypes": {
@@ -937,8 +962,7 @@
     "finalCta": {
       "title": "Tibbiy muassasangizni modernizatsiya qilishga tayyormisiz?",
       "description": "Bizning mutaxassislar sizning ehtiyojlaringiz va byudjetingiz uchun optimal echimni topishga yordam beradi",
-      "requestButton": "So'rov yuborish",
-      "managerButton": "Menejer 15 daqiqa ichida qayta qo'ng'iroq qiladi"
+      "requestButton": "So'rov yuborish"
     },
     "faq": {
       "title": "Tez-tez soʻraladigan savollar",
@@ -976,6 +1000,7 @@
     "services": "Xizmatlar",
     "address": "Oʻzbekiston, Toshkent, Asaka koʻchasi, 32",
     "rights": "Barcha huquqlar himoyalangan",
+    "privacyPolicy": "Maxfiylik siyosati",
     "links": [
       {
         "name": "Katalog",

@@ -5,7 +5,7 @@ import { dbSelect } from "~/shared/api/http";
 export interface SiteContacts {
   id?: string;
   email: string | null;
-  telegram: string | null; // handle, e.g. "@medservice_centre"
+  telegram: string | null; // handle, e.g. "@medsc_uz"
   telegram_url: string | null;
   phone: string | null;
   country: string | null;
@@ -15,8 +15,8 @@ export interface SiteContacts {
 
 export const FALLBACK_CONTACTS: SiteContacts = {
   email: "info@medsc.uz",
-  telegram: "@medservice_centre",
-  telegram_url: "https://t.me/medservice_centre",
+  telegram: "@medsc_uz",
+  telegram_url: "https://t.me/medsc_uz",
   phone: null,
   country: "Узбекистан",
   city: "Ташкент",
@@ -26,9 +26,12 @@ export const FALLBACK_CONTACTS: SiteContacts = {
 /** Fetch the single site_contacts row, merged over static fallbacks. */
 export async function getSiteContacts(revalidate = 600): Promise<SiteContacts> {
   try {
+    // В таблице бывает несколько строк (в т.ч. тестовый мусор) — без сортировки
+    // Postgres отдаёт произвольную первую, и сайт показывал устаревшие контакты.
+    // Берём последнюю отредактированную: именно её правит админка.
     const { data } = await dbSelect<Partial<SiteContacts> | null>(
       "site_contacts",
-      { single: true },
+      { order: { col: "updated_at", ascending: false }, single: true },
       { revalidate },
     );
     if (!data) return FALLBACK_CONTACTS;
