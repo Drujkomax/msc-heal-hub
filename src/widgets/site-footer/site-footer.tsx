@@ -7,7 +7,7 @@ import { useT } from "~/shared/i18n/i18n-provider";
 export function SiteFooter() {
   const t = useT();
   const links = t('footer.links', { returnObjects: true }) as { name: string; href: string }[];
-  const servicesList = t('footer.servicesList', { returnObjects: true }) as string[];
+  const servicesList = t('footer.servicesList', { returnObjects: true }) as { name: string; href: string }[];
   const currentYear = new Date().getFullYear();
 
   return (
@@ -100,17 +100,17 @@ export function SiteFooter() {
             </ul>
           </div>
 
-          {/* Services */}
+          {/* Services — актуальный список с якорями на разделы /services */}
           <div>
             <h4 className="font-semibold text-lg mb-4">{t('footer.services')}</h4>
             <ul className="space-y-2">
-              {servicesList.map((service, index) => (
-                <li key={index}>
+              {servicesList.map((service) => (
+                <li key={service.href}>
                   <a
-                    href="/services"
+                    href={service.href}
                     className="text-white/80 text-sm hover:text-msc-accent transition-colors block"
                   >
-                    {service}
+                    {service.name}
                   </a>
                 </li>
               ))}

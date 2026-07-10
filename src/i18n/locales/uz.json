@@ -28,6 +28,7 @@
     "services": "Xizmatlar",
     "catalog": "Katalog",
     "contacts": "Aloqa",
+    "about": "Biz haqimizda",
     "admin": "Admin panel"
   },
   "admin": {
@@ -1020,10 +1021,10 @@
       }
     ],
     "servicesList": [
-      "Uskunani yetkazib berish",
-      "Oʻrnatish va sozlash",
-      "Personal tayyorlash",
-      "Texnik qoʻllab-quvvatlash"
+      { "name": "O'rnatish va ishga tushirish", "href": "/services#installation" },
+      { "name": "Xodimlarni o'qitish", "href": "/services#training" },
+      { "name": "24/7 servis", "href": "/services#service-24-7" },
+      { "name": "Uskunalar ijarasi", "href": "/services#rent" }
     ],
     "downloads": {
       "terms": "Foydalanish shartlari",

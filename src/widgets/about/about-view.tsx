@@ -1,9 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ArrowRight, Check, GraduationCap, Package, Wrench } from "lucide-react";
 import { useLang } from "~/shared/i18n/i18n-provider";
+
+// Стили из дизайн-системы главной (см. home-view): спокойный светлый премиум
+const PRIMARY_BTN =
+  'inline-flex items-center justify-center gap-2 rounded-xl bg-msc-primary px-7 py-3.5 text-base font-semibold text-white shadow-[0_12px_32px_-14px_rgba(12,17,57,0.5)] transition-colors hover:bg-msc-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-msc-primary focus-visible:ring-offset-2';
+const OUTLINE_BTN =
+  'inline-flex items-center justify-center gap-2 rounded-xl border border-msc-primary/20 bg-white px-7 py-3.5 text-base font-semibold text-msc-primary transition-colors hover:border-msc-primary/40 hover:bg-msc-primary/[0.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-msc-primary/40';
+
+const HIGHLIGHT_ICONS = [Package, Wrench, GraduationCap];
 
 export function AboutView() {
   const language = useLang();
@@ -13,6 +20,11 @@ export function AboutView() {
       title: "О компании Med Service Centre",
       intro:
         "Med Service Centre — поставщик медицинского оборудования в Узбекистане. Мы подбираем решения для клиник и лабораторий, организуем поставку, ввод в эксплуатацию и сервисное сопровождение.",
+      stats: [
+        { value: "8+", label: "лет на рынке" },
+        { value: "300+", label: "выполненных проектов" },
+        { value: "24/7", label: "сервисная поддержка" },
+      ],
       highlightsTitle: "Что мы делаем",
       highlights: [
         {
@@ -61,6 +73,11 @@ export function AboutView() {
       title: "About Med Service Centre",
       intro:
         "Med Service Centre supplies medical equipment in Uzbekistan. We select solutions for clinics and labs, manage delivery, commissioning, and ongoing service support.",
+      stats: [
+        { value: "8+", label: "years in the market" },
+        { value: "300+", label: "completed projects" },
+        { value: "24/7", label: "service support" },
+      ],
       highlightsTitle: "What we do",
       highlights: [
         {
@@ -109,6 +126,11 @@ export function AboutView() {
       title: "Med Service Centre haqida",
       intro:
         "Med Service Centre O'zbekistonda tibbiy uskunalar yetkazib beradi. Biz klinikalar va laboratoriyalar uchun yechim tanlaymiz, yetkazib berish va servisni tashkil qilamiz.",
+      stats: [
+        { value: "8+", label: "yillik tajriba" },
+        { value: "300+", label: "bajarilgan loyihalar" },
+        { value: "24/7", label: "servis xizmati" },
+      ],
       highlightsTitle: "Biz nima qilamiz",
       highlights: [
         {
@@ -159,51 +181,66 @@ export function AboutView() {
 
   return (
     <div className="min-h-screen bg-background py-20">
-      <div className="container mx-auto px-4">
-        <header className="text-center max-w-3xl mx-auto mb-12">
-          <h1 className="text-4xl md:text-5xl font-heading font-bold text-foreground mb-4">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <header className="mx-auto mb-10 max-w-3xl text-center">
+          <h1 className="mb-4 font-display text-4xl font-semibold text-msc-primary md:text-5xl">
             {currentContent.title}
           </h1>
-          <p className="text-lg text-muted-foreground">
+          <p className="text-lg leading-relaxed text-msc-text-light">
             {currentContent.intro}
           </p>
         </header>
 
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          {currentContent.highlights.map((item, index) => (
-            <Card key={index} className="bg-card/60 border-primary/20">
-              <CardHeader>
-                <CardTitle className="text-xl">{item.title}</CardTitle>
-              </CardHeader>
-              <CardContent className="text-muted-foreground">
-                {item.text}
-              </CardContent>
-            </Card>
+        {/* Цифры компании */}
+        <section className="mx-auto mb-14 grid max-w-3xl grid-cols-3 gap-4">
+          {currentContent.stats.map((s) => (
+            <div key={s.value} className="text-center">
+              <div className="font-display text-3xl font-semibold text-msc-primary md:text-4xl">{s.value}</div>
+              <div className="mt-1 text-sm text-msc-text-light">{s.label}</div>
+            </div>
           ))}
         </section>
 
-        <section className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-12">
+        <section className="mb-14 grid grid-cols-1 gap-6 md:grid-cols-3">
+          {currentContent.highlights.map((item, index) => {
+            const Icon = HIGHLIGHT_ICONS[index] ?? Package;
+            return (
+              <div
+                key={item.title}
+                className="rounded-2xl border border-msc-primary/10 bg-white p-6 shadow-[0_16px_48px_-30px_rgba(12,17,57,0.35)]"
+              >
+                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-[#2563eb]/[0.08]">
+                  <Icon className="h-5 w-5 text-[#2563eb]" />
+                </div>
+                <h3 className="mb-2 text-lg font-semibold text-msc-primary">{item.title}</h3>
+                <p className="text-sm leading-relaxed text-msc-text-light">{item.text}</p>
+              </div>
+            );
+          })}
+        </section>
+
+        <section className="mb-14 grid grid-cols-1 gap-10 lg:grid-cols-2">
           <div>
-            <h2 className="text-2xl font-heading font-semibold mb-4">
+            <h2 className="mb-5 font-display text-2xl font-semibold text-msc-primary">
               {currentContent.directionsTitle}
             </h2>
-            <ul className="space-y-2 text-muted-foreground">
-              {currentContent.directions.map((item, index) => (
-                <li key={index} className="flex items-start gap-2">
-                  <span className="mt-2 h-2 w-2 rounded-full bg-primary"></span>
+            <ul className="space-y-3">
+              {currentContent.directions.map((item) => (
+                <li key={item} className="flex items-start gap-3 text-msc-text-light">
+                  <Check className="mt-0.5 h-5 w-5 shrink-0 text-[#2563eb]" />
                   <span>{item}</span>
                 </li>
               ))}
             </ul>
           </div>
           <div>
-            <h2 className="text-2xl font-heading font-semibold mb-4">
+            <h2 className="mb-5 font-display text-2xl font-semibold text-msc-primary">
               {currentContent.advantagesTitle}
             </h2>
-            <ul className="space-y-2 text-muted-foreground">
-              {currentContent.advantages.map((item, index) => (
-                <li key={index} className="flex items-start gap-2">
-                  <span className="mt-2 h-2 w-2 rounded-full bg-primary"></span>
+            <ul className="space-y-3">
+              {currentContent.advantages.map((item) => (
+                <li key={item} className="flex items-start gap-3 text-msc-text-light">
+                  <Check className="mt-0.5 h-5 w-5 shrink-0 text-[#2563eb]" />
                   <span>{item}</span>
                 </li>
               ))}
@@ -211,27 +248,31 @@ export function AboutView() {
           </div>
         </section>
 
-        <section className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center mb-16">
+        {/* items-start: раньше items-center «ронял» левую колонку относительно
+            более высокой CTA-карточки, и секция выглядела съехавшей */}
+        <section className="grid grid-cols-1 items-start gap-10 lg:grid-cols-2">
           <div>
-            <h2 className="text-2xl font-heading font-semibold mb-4">
+            <h2 className="mb-4 font-display text-2xl font-semibold text-msc-primary">
               {currentContent.geographyTitle}
             </h2>
-            <p className="text-muted-foreground">{currentContent.geographyText}</p>
+            <p className="leading-relaxed text-msc-text-light">{currentContent.geographyText}</p>
           </div>
-          <div className="bg-msc-primary/5 rounded-xl p-6 border border-msc-primary/10">
-            <h3 className="text-xl font-semibold mb-3">
+          <div className="relative overflow-hidden rounded-3xl border border-msc-primary/10 bg-gradient-to-br from-[#f3f7fe] to-[#eaf0fd] p-8 shadow-[0_30px_80px_-40px_rgba(12,17,57,0.35)]">
+            <div className="pointer-events-none absolute -right-12 -top-12 h-48 w-48 rounded-full bg-[#2563eb]/10 blur-[70px]" />
+            <h3 className="relative mb-3 font-display text-xl font-semibold text-msc-primary">
               {currentContent.ctaTitle}
             </h3>
-            <p className="text-muted-foreground mb-6">
+            <p className="relative mb-6 text-sm leading-relaxed text-msc-text-light">
               {currentContent.ctaText}
             </p>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Button asChild>
-                <Link href="/catalog">{currentContent.ctaCatalog}</Link>
-              </Button>
-              <Button asChild variant="outline">
-                <Link href="/contacts">{currentContent.ctaContact}</Link>
-              </Button>
+            <div className="relative flex flex-col gap-3 sm:flex-row">
+              <Link href="/catalog" className={PRIMARY_BTN}>
+                {currentContent.ctaCatalog}
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link href="/contacts" className={OUTLINE_BTN}>
+                {currentContent.ctaContact}
+              </Link>
             </div>
           </div>
         </section>

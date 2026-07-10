@@ -28,6 +28,7 @@
     "services": "Services",
     "catalog": "Catalog",
     "contacts": "Contacts",
+    "about": "About us",
     "admin": "Admin Panel"
   },
   "admin": {
@@ -1019,7 +1020,12 @@
         "href": "/about"
       }
     ],
-    "servicesList": ["Equipment Supply", "Installation & Setup", "Staff Training", "Technical Support"],
+    "servicesList": [
+      { "name": "Installation & commissioning", "href": "/services#installation" },
+      { "name": "Staff training", "href": "/services#training" },
+      { "name": "24/7 service", "href": "/services#service-24-7" },
+      { "name": "Equipment rental", "href": "/services#rent" }
+    ],
     "downloads": {
       "terms": "Terms of Use",
       "catalog": "MSC Catalog"
