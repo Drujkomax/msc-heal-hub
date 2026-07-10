@@ -1,7 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Check, GraduationCap, Package, Wrench } from "lucide-react";
+import { LeadForm } from "~/features/lead-form/lead-form";
 import { useLang } from "~/shared/i18n/i18n-provider";
 
 // Стили из дизайн-системы главной (см. home-view): спокойный светлый премиум
@@ -14,6 +16,7 @@ const HIGHLIGHT_ICONS = [Package, Wrench, GraduationCap];
 
 export function AboutView() {
   const language = useLang();
+  const [showConsultationForm, setShowConsultationForm] = useState(false);
 
   const content = {
     ru: {
@@ -63,7 +66,7 @@ export function AboutView() {
       ctaText:
         "Расскажите о задаче, и мы подготовим коммерческое предложение под ваш бюджет и сроки.",
       ctaCatalog: "Перейти в каталог",
-      ctaContact: "Связаться с нами",
+      ctaContact: "Получить консультацию",
       seoDescription:
         "Med Service Centre — поставщик медицинского оборудования в Узбекистане. Поставка, аренда, сервис, обучение персонала и подбор техники для клиник.",
       seoKeywords:
@@ -116,7 +119,7 @@ export function AboutView() {
       ctaText:
         "Share your requirements, and we will prepare a tailored offer with the right equipment and timelines.",
       ctaCatalog: "Open catalog",
-      ctaContact: "Contact us",
+      ctaContact: "Get a consultation",
       seoDescription:
         "Med Service Centre supplies medical equipment in Uzbekistan. Sales, rental, service, staff training, and procurement support for clinics.",
       seoKeywords:
@@ -169,7 +172,7 @@ export function AboutView() {
       ctaText:
         "Talablaringizni yuboring, biz sizga mos tijorat taklifini tayyorlaymiz.",
       ctaCatalog: "Katalogga o'tish",
-      ctaContact: "Biz bilan bog'lanish",
+      ctaContact: "Konsultatsiya olish",
       seoDescription:
         "Med Service Centre — O'zbekistonda tibbiy uskunalar yetkazib beruvchi. Sotuv, ijara, servis va xodimlarni o'qitish.",
       seoKeywords:
@@ -270,13 +273,17 @@ export function AboutView() {
                 {currentContent.ctaCatalog}
                 <ArrowRight className="h-4 w-4" />
               </Link>
-              <Link href="/contacts" className={OUTLINE_BTN}>
+              <button onClick={() => setShowConsultationForm(true)} className={OUTLINE_BTN}>
                 {currentContent.ctaContact}
-              </Link>
+              </button>
             </div>
           </div>
         </section>
       </div>
+
+      {showConsultationForm && (
+        <LeadForm onClose={() => setShowConsultationForm(false)} />
+      )}
     </div>
   );
 }
