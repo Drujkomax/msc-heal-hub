@@ -87,9 +87,10 @@ const MonitoringDashboard: React.FC = () => {
         p_end_date: new Date().toISOString().split("T")[0],
       });
 
-      setLogs(logsData || []);
-      setAlerts(alertsData || []);
-      setStatistics(statsData || []);
+      // защита от не-массивов: старый ответ-объект ронял всю вкладку
+      setLogs(Array.isArray(logsData) ? logsData : []);
+      setAlerts(Array.isArray(alertsData) ? alertsData : []);
+      setStatistics(Array.isArray(statsData) ? statsData : []);
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
     } finally {
