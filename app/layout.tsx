@@ -22,6 +22,9 @@ const omniglot = localFont({
 
 const OG_IMAGE = "/images/og-image.png";
 const LOGO = "/images/logo-round.png";
+// В вкладке браузера — сам орнамент без белого круга (как просил заказчик);
+// круглая версия остаётся для apple-icon/схемы/манифеста
+const TAB_ICON = "/images/logo-tab.png";
 
 const DESCRIPTION =
   "Med Service Centre — поставка, сервис и аренда медицинского оборудования в Узбекистане: УЗИ, анализаторы, лабораторные системы. 8 лет опыта, 300+ проектов.";
@@ -64,7 +67,7 @@ export const metadata: Metadata = {
     description: DESCRIPTION,
     images: [OG_IMAGE],
   },
-  icons: { icon: LOGO, shortcut: LOGO, apple: LOGO },
+  icons: { icon: TAB_ICON, shortcut: TAB_ICON, apple: LOGO },
   robots: {
     index: true,
     follow: true,
