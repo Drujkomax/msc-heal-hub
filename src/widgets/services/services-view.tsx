@@ -20,12 +20,6 @@ export function ServicesView() {
       subtitle: "Комплексное сервисное обслуживание медицинского оборудования",
       heroNote:
         "Монтаж, пуско-наладка, сервис 24/7 и аренда медоборудования в Ташкенте и по Узбекистану.",
-      nav: [
-        { id: "installation", label: "Монтаж и ввод" },
-        { id: "training", label: "Обучение" },
-        { id: "service-24-7", label: "Сервис 24/7" },
-        { id: "rent", label: "Аренда" },
-      ],
       seo: {
         title:
           "Услуги по монтажу, сервису 24/7 и аренде медоборудования — Ташкент, Узбекистан",
@@ -180,12 +174,6 @@ export function ServicesView() {
       subtitle: "Comprehensive service for medical equipment",
       heroNote:
         "Installation, commissioning, 24/7 service, and rental in Tashkent and across Uzbekistan.",
-      nav: [
-        { id: "installation", label: "Installation" },
-        { id: "training", label: "Training" },
-        { id: "service-24-7", label: "24/7 Service" },
-        { id: "rent", label: "Rental" },
-      ],
       seo: {
         title:
           "Medical Equipment Installation, 24/7 Service, and Rental — Tashkent, Uzbekistan",
@@ -340,12 +328,6 @@ export function ServicesView() {
       subtitle: "Tibbiy asbob-uskunalar uchun keng qamrovli servis",
       heroNote:
         "Toshkent va O‘zbekiston bo‘ylab o‘rnatish, 24/7 servis va ijara.",
-      nav: [
-        { id: "installation", label: "O‘rnatish" },
-        { id: "training", label: "O‘qitish" },
-        { id: "service-24-7", label: "24/7 servis" },
-        { id: "rent", label: "Ijara" },
-      ],
       seo: {
         title:
           "Tibbiy uskunalarni o‘rnatish, 24/7 servis va ijara — Toshkent, O‘zbekiston",
@@ -520,18 +502,6 @@ export function ServicesView() {
           <p className="text-sm text-muted-foreground max-w-3xl mx-auto mt-3">
             {currentContent.heroNote}
           </p>
-        </div>
-
-        <div className="flex flex-wrap justify-center gap-3 mb-10">
-          {currentContent.nav.map((item) => (
-            <a
-              key={item.id}
-              href={`#${item.id}`}
-              className="px-4 py-2 rounded-full border border-primary/30 text-primary hover:bg-primary hover:text-primary-foreground transition-colors"
-            >
-              {item.label}
-            </a>
-          ))}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-7xl mx-auto">
