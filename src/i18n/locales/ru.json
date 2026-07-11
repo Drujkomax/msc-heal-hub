@@ -1422,10 +1422,10 @@
       }
     ],
     "servicesList": [
-      { "name": "Монтаж и ввод в эксплуатацию", "href": "/services#installation" },
-      { "name": "Обучение персонала", "href": "/services#training" },
-      { "name": "Сервис 24/7", "href": "/services#service-24-7" },
-      { "name": "Аренда оборудования", "href": "/services#rent" }
+      { "name": "Монтаж, пуско-наладка и ввод в эксплуатацию медоборудования", "href": "/services#installation" },
+      { "name": "Обучение медперсонала работе с оборудованием", "href": "/services#training" },
+      { "name": "Сервисное обслуживание и ремонт медоборудования 24/7", "href": "/services#service-24-7" },
+      { "name": "Аренда медицинского оборудования", "href": "/services#rent" }
     ],
     "downloads": {
       "terms": "Условия использования",

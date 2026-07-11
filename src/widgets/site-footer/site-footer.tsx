@@ -103,12 +103,12 @@ export function SiteFooter() {
           {/* Services — актуальный список с якорями на разделы /services */}
           <div>
             <h4 className="font-semibold text-lg mb-4">{t('footer.services')}</h4>
-            <ul className="space-y-2">
+            <ul className="space-y-2.5">
               {servicesList.map((service) => (
                 <li key={service.href}>
                   <a
                     href={service.href}
-                    className="text-white/80 text-sm hover:text-msc-accent transition-colors block"
+                    className="text-white/80 text-sm leading-snug text-pretty hover:text-msc-accent transition-colors block"
                   >
                     {service.name}
                   </a>
