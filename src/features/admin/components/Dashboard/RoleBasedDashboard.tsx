@@ -272,14 +272,7 @@ const RoleBasedDashboard = () => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-3xl font-bold">{t('dashboard.title', 'Дашборд')}</h2>
-        <div className="flex items-center space-x-2">
-          <p className="text-muted-foreground">{t('dashboard.analytics', 'Аналитика и статистика')}</p>
-          <Badge variant="secondary">{getRoleTranslation(role || '', i18n.language)}</Badge>
-        </div>
-      </div>
-
+      {/* Дублирующий заголовок «Дашборд» убран: имя страницы уже в шапке админки */}
       {role === 'admin' && renderAdminDashboard()}
       {role === 'director' && renderDirectorDashboard()}
       {role === 'sales_manager' && renderSalesManagerDashboard()}

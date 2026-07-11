@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 
-const LOGO = "/images/logo-icon.png";
+const LOGO = "/images/logo-round.png";
+const LOGO_192 = "/images/logo-round-192.png";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
@@ -14,7 +15,7 @@ export default function manifest(): MetadataRoute.Manifest {
     theme_color: "#0C1139",
     lang: "ru",
     icons: [
-      { src: LOGO, sizes: "192x192", type: "image/png", purpose: "any" },
+      { src: LOGO_192, sizes: "192x192", type: "image/png", purpose: "any" },
       { src: LOGO, sizes: "512x512", type: "image/png", purpose: "any" },
       { src: LOGO, sizes: "512x512", type: "image/png", purpose: "maskable" },
     ],

@@ -9,7 +9,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { RoiCalculator } from '~/features/roi-calculator/roi-calculator';
-import { LeadForm } from '~/features/lead-form/lead-form';
+import dynamic from 'next/dynamic';
+const LeadForm = dynamic(() => import('~/features/lead-form/lead-form').then(m => m.LeadForm), { ssr: false });
 import { useT, useLang } from '~/shared/i18n/i18n-provider';
 import { toUrlSlug } from '@/lib/slugify';
 
@@ -21,6 +22,17 @@ const OUTLINE_BTN =
   'inline-flex items-center justify-center gap-2 rounded-xl border border-msc-primary/20 bg-white px-7 py-3.5 text-base font-semibold text-msc-primary transition-colors hover:border-msc-primary/40 hover:bg-msc-primary/[0.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-msc-primary/40';
 const CARD =
   'group flex h-full flex-col rounded-2xl border border-msc-primary/10 bg-white shadow-[0_16px_48px_-30px_rgba(12,17,57,0.35)] transition-shadow duration-200 hover:shadow-[0_22px_56px_-30px_rgba(12,17,57,0.42)]';
+
+// Иконки для известных категорий из БД; для остальных — Package
+const CATEGORY_ICONS: Record<string, typeof Stethoscope> = {
+  diagnostic: Stethoscope,
+  laboratory: TestTube,
+  dental: Smile,
+  resuscitation: Heart,
+  'Operating unit': Scissors,
+  'Digital surgery': Scissors,
+  Ophthalmology: Eye,
+};
 
 export function HomeView({ products, categories, manufacturers }: { products: any[]; categories: any[]; manufacturers: any[] }) {
   const [showConsultationForm, setShowConsultationForm] = useState(false);
@@ -267,7 +279,8 @@ export function HomeView({ products, categories, manufacturers }: { products: an
                     </a>{' '}
                     {t('home.equipment.cards.surgical.bodySuffix')}
                   </p>
-                  <Link href="/catalog/category/surgical" className="inline-flex items-center font-medium text-[#2563eb] hover:text-[#1e54d6]">{t('home.equipment.cards.surgical.link')} <ArrowRight className="ml-1 h-4 w-4" />
+                  {/* категории surgical нет в БД — ведём в общий каталог */}
+                  <Link href="/catalog" className="inline-flex items-center font-medium text-[#2563eb] hover:text-[#1e54d6]">{t('home.equipment.cards.surgical.link')} <ArrowRight className="ml-1 h-4 w-4" />
                   </Link>
                 </div>
               </div>
@@ -352,26 +365,25 @@ export function HomeView({ products, categories, manufacturers }: { products: an
             </p>
           </div>
 
+          {/* Категории из БД: хардкод-список содержал surgical/rehabilitation/
+              ophthalmology, которых нет в product_categories, — 3 из 6 ссылок вели на 404 */}
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {[
-              { name: t('home.categories.diagnostic'), icon: Stethoscope, category: 'diagnostic' },
-              { name: t('home.categories.surgical'), icon: Scissors, category: 'surgical' },
-              { name: t('home.categories.rehabilitation'), icon: Heart, category: 'rehabilitation' },
-              { name: t('home.categories.laboratory'), icon: TestTube, category: 'laboratory' },
-              { name: t('home.categories.dental'), icon: Smile, category: 'dental' },
-              { name: t('home.categories.ophthalmology'), icon: Eye, category: 'ophthalmology' },
-            ].map((category, index) => (
-              <Link key={index} href={`/catalog/category/${category.category}`} className="block">
-                <Card className={`${CARD} cursor-pointer`}>
-                  <CardContent className="flex items-center gap-4 p-6">
-                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#2563eb]/10 text-[#2563eb]">
-                      <category.icon className="h-7 w-7" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-msc-primary">{category.name}</h3>
-                  </CardContent>
-                </Card>
-              </Link>
-            ))}
+            {dbCategories.slice(0, 6).map((cat) => {
+              const Icon = CATEGORY_ICONS[cat.value] ?? Package;
+              const name = cat.name?.[currentLanguage] || cat.name?.ru || cat.value;
+              return (
+                <Link key={cat.value} href={`/catalog/category/${encodeURIComponent(cat.value)}`} className="block">
+                  <Card className={`${CARD} cursor-pointer`}>
+                    <CardContent className="flex items-center gap-4 p-6">
+                      <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#2563eb]/10 text-[#2563eb]">
+                        <Icon className="h-7 w-7" />
+                      </div>
+                      <h3 className="text-lg font-semibold text-msc-primary">{name}</h3>
+                    </CardContent>
+                  </Card>
+                </Link>
+              );
+            })}
           </div>
 
           <div className="mt-10 text-center">

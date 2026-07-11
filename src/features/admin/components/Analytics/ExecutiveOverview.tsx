@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { useLeads } from "@/hooks/useLeads";
+import { useDeals } from "@/hooks/useDeals";
 import { useProducts } from "@/hooks/useProducts";
 import { format, subDays } from "date-fns";
 import { ru } from "date-fns/locale";
@@ -31,6 +32,7 @@ const ExecutiveOverview = () => {
   } = useAnalytics();
 
   const { leads, loading: leadsLoading } = useLeads();
+  const { deals } = useDeals();
   const { products, loading: productsLoading } = useProducts();
 
   const [analytics, setAnalytics] = useState<any[]>([]);
@@ -62,11 +64,26 @@ const ExecutiveOverview = () => {
 
   // Вычисляем ключевые метрики
   const getExecutiveMetrics = () => {
-    // Метрики по продажам
-    const totalViews = analytics.reduce((sum, item) => sum + item.views_count, 0);
-    const totalQuotes = analytics.reduce((sum, item) => sum + item.quote_requests_count, 0);
+    // Конверсия товаров: дневные снимки analytics; если их ещё нет —
+    // фолбэк на суммарные счётчики из products (за всё время)
+    let totalViews = analytics.reduce((sum, item) => sum + item.views_count, 0);
+    let totalQuotes = analytics.reduce((sum, item) => sum + item.quote_requests_count, 0);
+    if (totalViews === 0 && totalQuotes === 0) {
+      totalViews = products.reduce((sum, p: any) => sum + (p.views_count || 0), 0);
+      totalQuotes = products.reduce((sum, p: any) => sum + (p.quote_requests_count || 0), 0);
+    }
     const conversionRate = totalViews > 0 ? (totalQuotes / totalViews) * 100 : 0;
-    const totalRevenue = analytics.reduce((sum, item) => sum + Number(item.revenue || 0), 0);
+
+    // Выручка и пайплайн — из реальных СДЕЛОК (таблица conversion_analytics.revenue
+    // никем не заполнялась, поэтому старая «выручка» всегда была $0)
+    const periodStart = subDays(new Date(), parseInt(dateRange));
+    const closedDeals = deals.filter((d: any) => d.stage === 'closed');
+    const closedRevenue = closedDeals
+      .filter((d: any) => new Date(d.close_date || d.created_at) >= periodStart)
+      .reduce((sum: number, d: any) => sum + Number(d.amount || 0), 0);
+    const openDeals = deals.filter((d: any) => d.stage !== 'closed' && d.stage !== 'lost');
+    const pipelineValue = openDeals.reduce((sum: number, d: any) => sum + Number(d.amount || 0), 0);
+    const totalRevenue = closedRevenue;
 
     // Метрики по лидам
     const totalLeads = leads.length;
@@ -89,11 +106,18 @@ const ExecutiveOverview = () => {
     const totalActions = employeeActivity.length;
     const avgActionsPerEmployee = uniqueEmployees > 0 ? totalActions / uniqueEmployees : 0;
 
+    const unassignedLeads = leads.filter(
+      (l) => !l.assigned_to && l.stage !== 'closed' && l.stage !== 'lost',
+    ).length;
+
     return {
       totalViews,
       totalQuotes,
       conversionRate,
       totalRevenue,
+      pipelineValue,
+      pipelineCount: openDeals.length,
+      unassignedLeads,
       totalLeads,
       newLeads,
       leadConversionRate,
@@ -111,7 +135,16 @@ const ExecutiveOverview = () => {
   const getCriticalAlerts = () => {
     const alerts = [];
 
-    if (metrics.conversionRate < 2) {
+    if (metrics.unassignedLeads > 0) {
+      alerts.push({
+        type: "danger",
+        message: t("dashboard.executive.alerts.unassignedLeads", "Лиды без ответственного"),
+        value: `${metrics.unassignedLeads}`,
+        action: t("dashboard.executive.alerts.assignLeads", "Назначьте менеджера в разделе «Лиды»"),
+      });
+    }
+
+    if (metrics.totalViews > 0 && metrics.conversionRate < 2) {
       alerts.push({
         type: "warning",
         message: t("dashboard.executive.alerts.lowProductConversion", "Низкая конверсия товаров"),
@@ -194,19 +227,37 @@ const ExecutiveOverview = () => {
           </CardContent>
         </Card>
       )}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-5">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              {t("dashboard.executive.metrics.totalRevenue", "Общая выручка")}
+              {t("dashboard.executive.metrics.pipeline", "Сделки в работе")}
             </CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100">
+              <BarChart3 className="h-4 w-4 text-blue-700" />
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">${metrics.pipelineValue.toLocaleString()}</div>
+            <div className="flex items-center text-xs text-muted-foreground">
+              {metrics.pipelineCount} {t("dashboard.executive.metrics.openDeals", "открытых сделок")}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              {t("dashboard.executive.metrics.totalRevenue", "Закрытая выручка")}
+            </CardTitle>
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-green-100">
+              <DollarSign className="h-4 w-4 text-green-700" />
+            </div>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">${metrics.totalRevenue.toLocaleString()}</div>
             <div className="flex items-center text-xs text-muted-foreground">
-              <TrendingUp className="h-3 w-3 mr-1 text-green-500" />
-              {t("common.for", "За")} {dateRange} {t("common.days", "дней")}
+              {t("dashboard.executive.metrics.closedFor", "Закрытые сделки за")} {dateRange} {t("common.days", "дней")}
             </div>
           </CardContent>
         </Card>
@@ -216,17 +267,18 @@ const ExecutiveOverview = () => {
             <CardTitle className="text-sm font-medium">
               {t("dashboard.executive.metrics.productConversion", "Конверсия товаров")}
             </CardTitle>
-            <BarChart3 className="h-4 w-4 text-muted-foreground" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-100">
+              <Package className="h-4 w-4 text-violet-700" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{metrics.conversionRate.toFixed(1)}%</div>
+            <div className="text-2xl font-bold">
+              {metrics.totalViews > 0 ? `${metrics.conversionRate.toFixed(1)}%` : "—"}
+            </div>
             <div className="flex items-center text-xs text-muted-foreground">
-              {metrics.conversionRate >= 2 ? (
-                <TrendingUp className="h-3 w-3 mr-1 text-green-500" />
-              ) : (
-                <TrendingDown className="h-3 w-3 mr-1 text-red-500" />
-              )}
-              {t("dashboard.executive.metrics.viewsToQuotes", "Просмотры → КП")}
+              {metrics.totalViews > 0
+                ? `${t("dashboard.executive.metrics.viewsToQuotes", "Просмотры → КП")} (${metrics.totalViews.toLocaleString()})`
+                : t("dashboard.executive.metrics.noViewData", "Просмотры начнут считаться после деплоя")}
             </div>
           </CardContent>
         </Card>
@@ -236,7 +288,9 @@ const ExecutiveOverview = () => {
             <CardTitle className="text-sm font-medium">
               {t("dashboard.executive.metrics.leadConversion", "Конверсия лидов")}
             </CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-100">
+              <Users className="h-4 w-4 text-amber-700" />
+            </div>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{metrics.leadConversionRate.toFixed(1)}%</div>
@@ -256,7 +310,9 @@ const ExecutiveOverview = () => {
             <CardTitle className="text-sm font-medium">
               {t("dashboard.executive.metrics.teamActivity", "Активность команды")}
             </CardTitle>
-            <Activity className="h-4 w-4 text-muted-foreground" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-100">
+              <Activity className="h-4 w-4 text-sky-700" />
+            </div>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{metrics.avgActionsPerEmployee.toFixed(1)}</div>

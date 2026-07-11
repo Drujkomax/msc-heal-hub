@@ -2,14 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* OmniglotFont */
-@font-face {
-  font-family: 'OmniglotFont';
-  src: url('/fonts/OmniglotFont.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
+/* Основной шрифт подключён через next/font/local в app/layout.tsx (--font-omniglot) */
 
 /* PUBLIC SITE - MSC Design System - Med Service Centre Brand Colors & Typography */
 

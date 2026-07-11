@@ -145,9 +145,11 @@ export function AdminSidebar() {
       <SidebarHeader className="border-b border-border p-4">
         <div className="space-y-2">
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-primary rounded flex items-center justify-center">
-              <span className="text-primary-foreground font-bold">MSC</span>
-            </div>
+            <img
+              src="/images/logo-round.png"
+              alt="Med Service Centre"
+              className="h-9 w-9 shrink-0 rounded-full"
+            />
             <span className="font-semibold text-lg">{t('navigation2.adminPanel')}</span>
           </div>
           {user?.email && (
@@ -196,12 +198,14 @@ export function AdminSidebar() {
           <div className="flex items-center justify-center">
             <LanguageSwitcher />
           </div>
-          <Link href="/">
+          {/* Абсолютная ссылка: с admin.medsc.uz относительный "/" редиректится
+              обратно в админку (см. proxy.ts) — на сайт ведём по полному адресу */}
+          <a href="https://medsc.uz" target="_blank" rel="noopener">
             <Button variant="outline" className="w-full justify-start" size="sm">
               <Home className="w-4 h-4 mr-2" />
               {t('admin.toWebsite')}
             </Button>
-          </Link>
+          </a>
           <LogoutButton />
         </div>
       </SidebarFooter>

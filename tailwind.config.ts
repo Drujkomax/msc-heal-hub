@@ -17,9 +17,9 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				'heading': ['OmniglotFont', 'Inter', 'sans-serif'],
-				'body': ['OmniglotFont', 'Inter', 'sans-serif'],
-				'sans': ['OmniglotFont', 'Inter', 'system-ui', 'sans-serif'],
+				'heading': ['var(--font-omniglot)', 'Inter', 'sans-serif'],
+				'body': ['var(--font-omniglot)', 'Inter', 'sans-serif'],
+				'sans': ['var(--font-omniglot)', 'Inter', 'system-ui', 'sans-serif'],
 				'display': ['var(--font-display)', 'Georgia', 'serif'],
 			},
 			colors: {

@@ -3,7 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Check, GraduationCap, Package, Wrench } from "lucide-react";
-import { LeadForm } from "~/features/lead-form/lead-form";
+import dynamic from "next/dynamic";
+const LeadForm = dynamic(() => import("~/features/lead-form/lead-form").then(m => m.LeadForm), { ssr: false });
 import { useLang } from "~/shared/i18n/i18n-provider";
 
 // Стили из дизайн-системы главной (см. home-view): спокойный светлый премиум

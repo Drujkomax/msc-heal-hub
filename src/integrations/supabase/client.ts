@@ -1,7 +1,7 @@
 // Supabase-compatible shim → our own Express backend (NO Supabase).
 // Lets the entire ported frontend keep its supabase.from()/.rpc()/.auth/.storage calls
 // unchanged while talking to test-msc/server.
-const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:6001";
 const TOKEN_KEY = "msc_token";
 
 const tok = () => (typeof localStorage !== "undefined" ? localStorage.getItem(TOKEN_KEY) : null);

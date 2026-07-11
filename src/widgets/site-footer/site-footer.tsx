@@ -131,20 +131,9 @@ export function SiteFooter() {
               >
                 {t('footer.privacyPolicy')}
               </a>
-              <a
-                href="/Условия использования и дисклеймер Med Service Centre.docx"
-                download
-                className="text-white/60 hover:text-msc-accent transition-colors"
-              >
-                {t('footer.downloads.terms')}
-              </a>
-              <a
-                href="/Каталог (1).pdf"
-                download
-                className="text-white/60 hover:text-msc-accent transition-colors"
-              >
-                {t('footer.downloads.catalog')}
-              </a>
+              {/* Ссылки «Условия использования» (.docx) и «Каталог MSC» (.pdf)
+                  убраны: файлов нет ни в репо, ни на сервере — обе вели на 404.
+                  Вернуть, когда появятся реальные файлы в public/. */}
             </div>
           </div>
         </div>

@@ -5,7 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Wrench, GraduationCap, Zap, Calendar, Check, Phone } from "lucide-react";
 import { useLang } from "~/shared/i18n/i18n-provider";
-import { ServiceOrderForm } from "~/features/service-order-form/service-order-form";
+import dynamic from "next/dynamic";
+const ServiceOrderForm = dynamic(() => import("~/features/service-order-form/service-order-form").then(m => m.ServiceOrderForm), { ssr: false });
 
 export function ServicesView() {
   const [isOrderDialogOpen, setIsOrderDialogOpen] = useState(false);

@@ -12,7 +12,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE}/`, changeFrequency: "weekly", priority: 1 },
     { url: `${SITE}/catalog`, changeFrequency: "weekly", priority: 0.8 },
     { url: `${SITE}/services`, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${SITE}/cases`, changeFrequency: "monthly", priority: 0.6 },
+    // /cases — страница-заглушка без контента, из sitemap исключена до наполнения
     { url: `${SITE}/about`, changeFrequency: "monthly", priority: 0.6 },
     { url: `${SITE}/contacts`, changeFrequency: "monthly", priority: 0.6 },
     { url: `${SITE}/privacy-policy`, changeFrequency: "yearly", priority: 0.3 },

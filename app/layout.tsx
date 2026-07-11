@@ -1,6 +1,7 @@
 import "../src/index.css";
 import type { Metadata, Viewport } from "next";
 import { Source_Serif_4 } from "next/font/google";
+import localFont from "next/font/local";
 import { SITE_URL, SITE_NAME } from "~/shared/config/site";
 
 // Display serif for headlines (Latin + Cyrillic), self-hosted via next/font.
@@ -11,8 +12,16 @@ const display = Source_Serif_4({
   display: "swap",
 });
 
+// Основной шрифт сайта. Через next/font: hashed-URL + immutable-кэш + preload.
+// Раньше это был 374KB TTF из public с max-age=0 — качался каждым визитом заново.
+const omniglot = localFont({
+  src: "../public/fonts/OmniglotFont.woff2",
+  variable: "--font-omniglot",
+  display: "swap",
+});
+
 const OG_IMAGE = "/images/og-image.png";
-const LOGO = "/images/logo-icon.png";
+const LOGO = "/images/logo-round.png";
 
 const DESCRIPTION =
   "Med Service Centre — поставка, сервис и аренда медицинского оборудования в Узбекистане: УЗИ, анализаторы, лабораторные системы. 8 лет опыта, 300+ проектов.";
@@ -136,7 +145,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   // hydration based on the `lang` cookie. Not reading cookies() here is what keeps
   // every page statically prerenderable / CDN-cacheable.
   return (
-    <html lang="ru" className={display.variable}>
+    <html lang="ru" className={`${display.variable} ${omniglot.variable}`}>
       <body>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />
         {children}

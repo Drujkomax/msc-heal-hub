@@ -64,6 +64,104 @@ const ACTION_LABELS: Record<string, { label: string; className: string }> = {
 const targetLabel = (t: string | null) =>
   TARGET_TYPES.find((x) => x.value === t)?.label ?? t ?? '—';
 
+// ── Человекочитаемые детали вместо сырого JSON ──────────────────────────────
+const FIELD_LABELS: Record<string, string> = {
+  name: 'Название / имя', full_name: 'ФИО', email: 'Email', phone: 'Телефон',
+  role: 'Роль', used: 'Использовано', company: 'Организация', city: 'Город',
+  stage: 'Этап', status: 'Статус', source: 'Источник', notes: 'Заметки',
+  value: 'Сумма', price: 'Цена', currency: 'Валюта', quantity: 'Количество',
+  title: 'Заголовок', description: 'Описание', category: 'Категория',
+  manufacturer_id: 'Производитель', assigned_to: 'Назначен', created_by: 'Кем создано',
+  created_at: 'Создано', updated_at: 'Обновлено', expires_at: 'Истекает',
+  closed_at: 'Закрыто', due_date: 'Срок', slug: 'Слаг (URL)', images: 'Изображения',
+  features: 'Характеристики', archived: 'В архиве', is_active: 'Активен',
+  equipment_interest: 'Тип оборудования', lead_quality: 'Качество лида',
+  budget_range: 'Бюджет', timeline: 'Сроки', position: 'Должность',
+  permission: 'Право', message: 'Сообщение', address: 'Адрес',
+};
+
+const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/;
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+const formatValue = (v: unknown): string => {
+  if (v === null || v === undefined || v === '') return '—';
+  if (typeof v === 'boolean') return v ? 'Да' : 'Нет';
+  if (typeof v === 'number') return v.toLocaleString('ru-RU');
+  if (typeof v === 'string') {
+    if (ISO_DATE_RE.test(v)) {
+      try { return format(new Date(v), 'dd.MM.yyyy HH:mm', { locale: ru }); } catch { /* как есть */ }
+    }
+    if (UUID_RE.test(v)) return v.slice(0, 8) + '…';
+    return v.length > 140 ? v.slice(0, 140) + '…' : v;
+  }
+  if (Array.isArray(v)) return v.length ? `${v.length} эл.` : '—';
+  if (typeof v === 'object') {
+    const o = v as Record<string, unknown>;
+    // трёхъязычные поля: показываем русский вариант
+    if (typeof o.ru === 'string') return o.ru as string;
+    if ('cover' in o) return o.cover ? 'обложка + галерея' : '—';
+    const s = JSON.stringify(o);
+    return s.length > 140 ? s.slice(0, 140) + '…' : s;
+  }
+  return String(v);
+};
+
+const fieldLabel = (key: string) => FIELD_LABELS[key] ?? key;
+// id уже показан в колонке «ID записи»; служебные поля не дублируем
+const HIDDEN_KEYS = new Set(['id']);
+
+const DetailsView = ({ details, action }: { details: unknown; action: string }) => {
+  if (!details || typeof details !== 'object') {
+    return <span className="text-xs text-muted-foreground">Нет данных</span>;
+  }
+  const d = details as Record<string, unknown>;
+
+  // UPDATE со снимками old/new → показываем только изменённые поля
+  if (action === 'UPDATE' && d.old && d.new && typeof d.old === 'object' && typeof d.new === 'object') {
+    const oldObj = d.old as Record<string, unknown>;
+    const newObj = d.new as Record<string, unknown>;
+    const changed = Array.from(new Set([...Object.keys(oldObj), ...Object.keys(newObj)]))
+      .filter((k) => !HIDDEN_KEYS.has(k) && k !== 'updated_at') // updated_at меняется всегда — шум
+      .filter((k) => JSON.stringify(oldObj[k]) !== JSON.stringify(newObj[k]));
+
+    if (changed.length === 0) {
+      return <span className="text-xs text-muted-foreground">Изменений по полям нет</span>;
+    }
+    return (
+      <div className="space-y-1.5">
+        <div className="text-xs font-medium text-muted-foreground">Изменённые поля:</div>
+        {changed.map((k) => (
+          <div key={k} className="flex flex-wrap items-baseline gap-x-2 text-sm">
+            <span className="font-medium text-foreground">{fieldLabel(k)}:</span>
+            <span className="text-red-600 line-through decoration-red-300">{formatValue(oldObj[k])}</span>
+            <span className="text-muted-foreground">→</span>
+            <span className="text-green-700">{formatValue(newObj[k])}</span>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  // INSERT / DELETE — снимок записи построчно
+  const snapshot = (d.new && typeof d.new === 'object' ? (d.new as Record<string, unknown>) : d);
+  const entries = Object.entries(snapshot).filter(
+    ([k, v]) => !HIDDEN_KEYS.has(k) && v !== null && v !== undefined && v !== '',
+  );
+  if (entries.length === 0) {
+    return <span className="text-xs text-muted-foreground">Нет данных</span>;
+  }
+  return (
+    <div className="grid grid-cols-1 gap-x-8 gap-y-1.5 sm:grid-cols-2">
+      {entries.map(([k, v]) => (
+        <div key={k} className="flex items-baseline gap-2 text-sm">
+          <span className="shrink-0 font-medium text-foreground">{fieldLabel(k)}:</span>
+          <span className="min-w-0 break-words text-muted-foreground">{formatValue(v)}</span>
+        </div>
+      ))}
+    </div>
+  );
+};
+
 const ActivityRow = ({ row }: { row: ActivityLogRow }) => {
   const [open, setOpen] = useState(false);
   const action = ACTION_LABELS[row.action] ?? {
@@ -116,9 +214,9 @@ const ActivityRow = ({ row }: { row: ActivityLogRow }) => {
       {open && (
         <TableRow>
           <TableCell colSpan={7} className="bg-muted/40">
-            <pre className="text-xs whitespace-pre-wrap break-all max-h-80 overflow-auto">
-              {JSON.stringify(row.details ?? {}, null, 2)}
-            </pre>
+            <div className="max-h-80 overflow-auto py-1">
+              <DetailsView details={row.details} action={row.action} />
+            </div>
           </TableCell>
         </TableRow>
       )}

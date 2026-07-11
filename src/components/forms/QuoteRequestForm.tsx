@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useLeads } from '@/hooks/useLeads';
+import { supabase } from '@/integrations/supabase/client';
 import { formatUzbekPhoneNumber, validateUzbekPhoneNumber, getFullUzbekPhoneNumber, isValidUzbekPhoneLength, isCompleteUzbekPhone } from '@/lib/phoneValidation';
 import { validateLeadForm, sanitizeInput } from '@/lib/formValidation';
 import { Check, Send, X } from 'lucide-react';
@@ -237,6 +238,14 @@ const QuoteRequestForm: React.FC<QuoteRequestFormProps> = ({
         source: 'website_form'
       });
       setIsSent(true);
+      // счётчик «запросов КП» по товару — для конверсии в админ-дашборде
+      if (product?.id) {
+        supabase.rpc('increment_product_quote_requests', { product_id: product.id }).catch(() => {});
+        supabase.rpc('update_conversion_analytics', {
+          p_product_id: product.id,
+          p_date: new Date().toISOString().slice(0, 10),
+        }).catch(() => {});
+      }
     } catch (error) {
       setSubmitError(true);
     } finally {

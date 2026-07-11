@@ -12,32 +12,48 @@ export const useCurrencyRates = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // Кэш в localStorage на 6 часов: раньше КАЖДЫЙ визит каталога/карточки тянул
+    // полный архив курсов ЦБ РУз (~25KB gzip, внешний домен) и блокировал цены.
+    const CACHE_KEY = 'msc_cbu_rates_v1';
+    const CACHE_TTL = 6 * 60 * 60 * 1000;
+
+    const readCache = (): CurrencyRate | null => {
+      try {
+        const raw = localStorage.getItem(CACHE_KEY);
+        if (!raw) return null;
+        const cached = JSON.parse(raw) as CurrencyRate;
+        if (Date.now() - new Date(cached.lastUpdated).getTime() > CACHE_TTL) return null;
+        return cached;
+      } catch {
+        return null;
+      }
+    };
+
     const fetchRates = async () => {
+      const cached = readCache();
+      if (cached) {
+        setRates(cached);
+        setError(null);
+        setLoading(false);
+        return;
+      }
       try {
         setLoading(true);
-        // Fetch from Central Bank of Uzbekistan API
-        const response = await fetch('https://cbu.uz/oz/arkhiv-kursov-valyut/json/');
-        
-        if (!response.ok) {
-          throw new Error('Failed to fetch rates');
-        }
+        // Точечные запросы вместо полного архива (два ответа по ~300 байт)
+        const [usdRes, eurRes] = await Promise.all([
+          fetch('https://cbu.uz/oz/arkhiv-kursov-valyut/json/USD/'),
+          fetch('https://cbu.uz/oz/arkhiv-kursov-valyut/json/EUR/'),
+        ]);
+        if (!usdRes.ok || !eurRes.ok) throw new Error('Failed to fetch rates');
+        const [usdData, eurData] = await Promise.all([usdRes.json(), eurRes.json()]);
+        const usd = parseFloat(usdData?.[0]?.Rate);
+        const eur = parseFloat(eurData?.[0]?.Rate);
+        if (!usd || !eur) throw new Error('Currency rates not found');
 
-        const data = await response.json();
-        
-        // Parse rates from CBU API
-        const usdRate = data.find((item: any) => item.Ccy === 'USD');
-        const eurRate = data.find((item: any) => item.Ccy === 'EUR');
-
-        if (usdRate && eurRate) {
-          setRates({
-            USD: parseFloat(usdRate.Rate),
-            EUR: parseFloat(eurRate.Rate),
-            lastUpdated: new Date().toISOString()
-          });
-          setError(null);
-        } else {
-          throw new Error('Currency rates not found');
-        }
+        const fresh: CurrencyRate = { USD: usd, EUR: eur, lastUpdated: new Date().toISOString() };
+        try { localStorage.setItem(CACHE_KEY, JSON.stringify(fresh)); } catch { /* private mode */ }
+        setRates(fresh);
+        setError(null);
       } catch (err) {
         console.error('Error fetching currency rates:', err);
         // Fallback rates if API fails
@@ -53,7 +69,7 @@ export const useCurrencyRates = () => {
     };
 
     fetchRates();
-    // Refresh rates every hour
+    // Refresh rates every hour (кэш сам истечёт через TTL)
     const interval = setInterval(fetchRates, 60 * 60 * 1000);
 
     return () => clearInterval(interval);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,16 +8,17 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
   ArrowLeft,
-  Heart,
   FileText,
   Package,
   Globe,
 } from "lucide-react";
-import QuoteRequestForm from "@/components/forms/QuoteRequestForm";
+import dynamic from "next/dynamic";
+const QuoteRequestForm = dynamic(() => import("@/components/forms/QuoteRequestForm"), { ssr: false });
 import { useT, useLang } from "~/shared/i18n/i18n-provider";
 import { getCountryName, getCountryFlag } from "@/utils/countries";
 import { useCurrencyRates } from "@/hooks/useCurrencyRates";
 import { toUrlSlug } from "@/lib/slugify";
+import { supabase } from "@/integrations/supabase/client";
 import Image from "next/image";
 import { imageSrc, imageUrl, BLUR_DATA_URL } from "~/shared/config/site";
 
@@ -138,11 +139,27 @@ export function ProductDetailView({
   const t = useT();
   const language = (useLang() as "ru" | "en" | "uz") || "ru";
   const router = useRouter();
-  const [isFavorite, setIsFavorite] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const { convertToUZS, formatPrice } = useCurrencyRates();
+
+  // Счётчик просмотров для «Конверсии товаров» в админ-дашборде. Механизм
+  // (rpc + таблица conversion_analytics) существовал, но с сайта не вызывался —
+  // из-за этого метрика всегда была 0. Один визит = один просмотр (sessionStorage).
+  useEffect(() => {
+    if (!product?.id) return;
+    const key = `msc_viewed_${product.id}`;
+    try {
+      if (sessionStorage.getItem(key)) return;
+      sessionStorage.setItem(key, '1');
+    } catch { /* private mode — считаем каждый раз */ }
+    supabase.rpc('increment_product_views', { product_id: product.id }).catch(() => {});
+    supabase.rpc('update_conversion_analytics', {
+      p_product_id: product.id,
+      p_date: new Date().toISOString().slice(0, 10),
+    }).catch(() => {});
+  }, [product?.id]);
 
   const manufacturer = manufacturers.find(
     (m) => m.id === product?.manufacturer_id,
@@ -290,20 +307,8 @@ export function ProductDetailView({
                   <Package className="w-24 h-24 text-muted-foreground" />
                 </div>
               )}
-              <div className="absolute top-4 right-4 flex gap-2">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="bg-background/80 backdrop-blur-sm"
-                  aria-label={isFavorite ? "Убрать из избранного" : "Добавить в избранное"}
-                  aria-pressed={isFavorite}
-                  onClick={() => setIsFavorite(!isFavorite)}
-                >
-                  <Heart
-                    className={`h-4 w-4 ${isFavorite ? "fill-red-500 text-red-500" : ""}`}
-                  />
-                </Button>
-              </div>
+              {/* Кнопка «В избранное» убрана: была заглушкой (локальный стейт
+                  без сохранения и без страницы избранного) */}
             </div>
 
             {/* Gallery */}

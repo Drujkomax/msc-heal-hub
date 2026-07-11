@@ -33,16 +33,15 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
   Search,
-  Filter,
-  Heart,
   Eye,
-  Loader2,
   Package,
   Menu,
 } from "lucide-react";
 import type { Product } from "@/hooks/useProducts";
 import { getCountryFlag, getCountryName } from "@/utils/countries";
-import QuoteRequestForm from "@/components/forms/QuoteRequestForm";
+import dynamic from "next/dynamic";
+// Форма КП открывается только по клику — не тащим её в первый бандл каталога
+const QuoteRequestForm = dynamic(() => import("@/components/forms/QuoteRequestForm"), { ssr: false });
 import { useT, useLang } from "~/shared/i18n/i18n-provider";
 import { useCurrencyRates } from "@/hooks/useCurrencyRates";
 import { toUrlSlug } from "@/lib/slugify";

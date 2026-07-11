@@ -59,7 +59,8 @@ export const useLeads = (options?: { autoFetch?: boolean }) => {
         .range(0, 4999);
 
       if (error) throw error;
-      setLeads((data || []) as Lead[]);
+      // защита от неожиданной формы ответа: не-массив ронял страницу лидов
+      setLeads((Array.isArray(data) ? data : []) as Lead[]);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Произошла ошибка');
     } finally {
