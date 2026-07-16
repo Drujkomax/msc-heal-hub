@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { SITE_URL } from "~/shared/config/site";
 import { socialMeta } from "~/shared/config/seo";
-import { PrivacyPolicyView } from "~/widgets/privacy-policy/privacy-policy-view";
+import { LegalDocView } from "~/widgets/legal/legal-doc-view";
+import { PRIVACY_DOCS } from "~/widgets/legal/legal-content";
 
 // Метаданные — на языке по умолчанию (RU): страница пререндерится статически,
 // перевод контента применяет клиентский PrivacyPolicyView (как на всём сайте).
@@ -46,7 +47,11 @@ export default function PrivacyPolicyPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
-      <PrivacyPolicyView />
+      <LegalDocView
+        docs={PRIVACY_DOCS}
+        pdfHref="/documents/medsc-privacy-policy.pdf"
+        pdfFileName="MEDSC — Политика конфиденциальности.pdf"
+      />
     </div>
   );
 }

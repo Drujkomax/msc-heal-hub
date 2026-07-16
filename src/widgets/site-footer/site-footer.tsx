@@ -131,9 +131,12 @@ export function SiteFooter() {
               >
                 {t('footer.privacyPolicy')}
               </a>
-              {/* Ссылки «Условия использования» (.docx) и «Каталог MSC» (.pdf)
-                  убраны: файлов нет ни в репо, ни на сервере — обе вели на 404.
-                  Вернуть, когда появятся реальные файлы в public/. */}
+              <a
+                href="/terms-of-use"
+                className="text-white/60 hover:text-msc-accent transition-colors"
+              >
+                {t('footer.downloads.terms')}
+              </a>
             </div>
           </div>
         </div>
