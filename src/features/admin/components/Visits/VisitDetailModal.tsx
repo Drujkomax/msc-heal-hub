@@ -37,9 +37,11 @@ const STATUS_OPTIONS: Array<[string, string]> = [
 ];
 const OUTCOME_LABEL: Record<string, string> = {
   success: 'Успех', interested: 'Интерес', rejected: 'Отказ', postponed: 'Перенос',
+  not_closed: 'Менеджер не успел закрыть заявку',
 };
 const OUTCOME_OPTIONS: Array<[string, string]> = [
   ['success', 'Успех'], ['interested', 'Интерес'], ['rejected', 'Отказ'], ['postponed', 'Перенос'],
+  ['not_closed', 'Не успел закрыть'],
 ];
 
 const STAGE_LABELS: Record<string, string> = {

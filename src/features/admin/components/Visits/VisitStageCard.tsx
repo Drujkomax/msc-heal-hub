@@ -17,6 +17,7 @@ const OUTCOME_LABEL: Record<string, string> = {
   interested: 'Интерес',
   rejected: 'Отказ',
   postponed: 'Перенос',
+  not_closed: 'Менеджер не успел закрыть заявку',
 };
 
 const BRIEFING_CATEGORY_LABEL: Record<string, string> = {

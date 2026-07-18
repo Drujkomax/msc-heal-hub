@@ -1,5 +1,5 @@
 export type VisitStatus = 'in_progress' | 'completed' | 'abandoned';
-export type VisitOutcome = 'success' | 'interested' | 'rejected' | 'postponed';
+export type VisitOutcome = 'success' | 'interested' | 'rejected' | 'postponed' | 'not_closed';
 export type StageType = 'arrival' | 'specialist' | 'briefing' | 'completion';
 
 export interface Visit {

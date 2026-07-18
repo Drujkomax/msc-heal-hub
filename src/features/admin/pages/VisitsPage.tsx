@@ -19,6 +19,7 @@ const OUTCOME_LABEL: Record<string, { label: string; emoji: string }> = {
   interested: { label: 'Интерес', emoji: '🤔' },
   rejected:   { label: 'Отказ',   emoji: '❌' },
   postponed:  { label: 'Перенос', emoji: '📅' },
+  not_closed: { label: 'Менеджер не успел закрыть заявку', emoji: '⌛' },
 };
 
 function StagesDots({ done }: { done: number }) {

@@ -70,6 +70,7 @@ export default function VisitsFilters({ value, onChange }: Props) {
             <SelectItem value="interested">Интерес</SelectItem>
             <SelectItem value="rejected">Отказ</SelectItem>
             <SelectItem value="postponed">Перенос</SelectItem>
+            <SelectItem value="not_closed">Не успел закрыть</SelectItem>
           </SelectContent>
         </Select>
 
