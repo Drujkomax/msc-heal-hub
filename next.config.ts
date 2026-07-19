@@ -31,6 +31,10 @@ const nextConfig: NextConfig = {
   // Preserve the legacy SPA routes after the [...slug] fallback is removed.
   async redirects() {
     return [
+      // Фасетные /catalog?category=…/?manufacturer=… редиректим не здесь, а в
+      // proxy.ts: redirects() дописывает исходный query к цели и получается
+      // /catalog/manufacturer/aksion?manufacturer=aksion — второй URL той же
+      // страницы, ровно тот дубль, который мы и убираем.
       { source: "/product/:id", destination: "/catalog/:id", permanent: true },
       { source: "/products/:id", destination: "/catalog/:id", permanent: true },
       { source: "/catalog/products/:slug", destination: "/catalog/:slug", permanent: true },

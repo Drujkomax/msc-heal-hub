@@ -7,7 +7,7 @@ import { PRIVACY_DOCS } from "~/widgets/legal/legal-content";
 // Метаданные — на языке по умолчанию (RU): страница пререндерится статически,
 // перевод контента применяет клиентский PrivacyPolicyView (как на всём сайте).
 export const metadata: Metadata = {
-  title: "Политика конфиденциальности — Med Service Centre",
+  title: "Политика конфиденциальности",
   description:
     "Политика конфиденциальности Med Service Centre. Информация о сборе, обработке и защите персональных данных пользователей.",
   alternates: { canonical: `${SITE_URL}/privacy-policy` },

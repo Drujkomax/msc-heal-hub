@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getActiveProducts } from "~/entities/product/api";
 import { getCategories } from "~/entities/category/api";
@@ -35,10 +34,11 @@ export async function generateMetadata({
   const slug = decodeParam(rawSlug);
   const m = await findManufacturer(slug);
   if (!m) {
-    return { title: "Производитель не найден | Med Service Centre", robots: { index: false, follow: true } };
+    return { title: "Производитель не найден", robots: { index: false, follow: true } };
   }
   const canonical = `${SITE_URL}/catalog/manufacturer/${encodeURIComponent(slug)}`;
-  const title = `${m.name} — медицинское оборудование | ${SITE_NAME}`;
+  // Бренд добавляет title.template в корневом layout — здесь его НЕ дублируем.
+  const title = `${m.name} — медицинское оборудование`;
   const description = `${m.name}: продажа, аренда и сервис медицинского оборудования в Узбекистане от официального партнёра Med Service Centre. Поставка по Ташкенту и регионам.`;
 
   return {
@@ -142,14 +142,12 @@ export default async function ManufacturerPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas) }}
       />
-      <Suspense fallback={null}>
-        <CatalogView
-          products={products}
-          categories={categories}
-          manufacturers={manufacturers}
-          initialManufacturer={slug}
-        />
-      </Suspense>
+      <CatalogView
+        products={products}
+        categories={categories}
+        manufacturers={manufacturers}
+        initialManufacturer={slug}
+      />
     </>
   );
 }

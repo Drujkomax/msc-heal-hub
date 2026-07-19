@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
 import { imageSrc, imageUrl, BLUR_DATA_URL } from "~/shared/config/site";
 import {
   Card,
@@ -45,6 +44,65 @@ const QuoteRequestForm = dynamic(() => import("@/components/forms/QuoteRequestFo
 import { useT, useLang } from "~/shared/i18n/i18n-provider";
 import { useCurrencyRates } from "@/hooks/useCurrencyRates";
 import { toUrlSlug } from "@/lib/slugify";
+
+// Query-параметры читаем ТОЛЬКО после монтирования, а не через useSearchParams()
+// в теле компонента. useSearchParams() помечает поддерево как зависящее от запроса,
+// и при пререндере Next.js отдаёт вместо него Suspense-fallback — в HTML не попадали
+// ни <h1>, ни карточки товаров. Из-за этого все категорийные страницы висели в
+// Search Console как «Обнаружена, не проиндексирована», а /catalog отдавал 0 ссылок
+// на товары. Первый рендер теперь совпадает с серверным (фильтры из props), а URL
+// применяется уже на клиенте — фильтрация для посетителя работает как раньше.
+// Выбор формы числительного: 1 позиция, 2 позиции, 5 позиций, 11 позиций, 21 позиция.
+function plural(n: number, forms: readonly [string, string, string]): string {
+  const mod100 = n % 100;
+  if (mod100 >= 11 && mod100 <= 14) return forms[2];
+  const mod10 = n % 10;
+  if (mod10 === 1) return forms[0];
+  if (mod10 >= 2 && mod10 <= 4) return forms[1];
+  return forms[2];
+}
+
+// Клиентская навигация Next (<Link href="/catalog?category=X">) меняет адрес через
+// history.pushState, а он, в отличие от кнопки «назад», НЕ порождает popstate.
+// Поэтому одного popstate мало: переход по ссылке со страницы, где виджет уже
+// смонтирован, менял URL, но не фильтр. Патчим history один раз на всё приложение
+// и рассылаем собственное событие.
+const URL_CHANGE = "medsc:urlchange";
+
+function patchHistoryOnce() {
+  const w = window as Window & { __medscHistoryPatched?: boolean };
+  if (w.__medscHistoryPatched) return;
+  w.__medscHistoryPatched = true;
+  for (const method of ["pushState", "replaceState"] as const) {
+    const original = history[method];
+    history[method] = function (this: History, ...args: Parameters<History["pushState"]>) {
+      const result = original.apply(this, args);
+      window.dispatchEvent(new Event(URL_CHANGE));
+      return result;
+    };
+  }
+}
+
+function useUrlQuery() {
+  // Храним строку, а не URLSearchParams: новый объект на каждое событие заставлял бы
+  // эффекты ниже перезапускаться даже когда адрес не менялся.
+  const [search, setSearch] = useState<string | null>(null);
+  useEffect(() => {
+    patchHistoryOnce();
+    const read = () => setSearch(window.location.search);
+    read();
+    window.addEventListener("popstate", read);
+    window.addEventListener(URL_CHANGE, read);
+    return () => {
+      window.removeEventListener("popstate", read);
+      window.removeEventListener(URL_CHANGE, read);
+    };
+  }, []);
+  return useMemo(
+    () => (search === null ? null : new URLSearchParams(search)),
+    [search],
+  );
+}
 
 // Function to get category display name
 const getCategoryTag = (
@@ -89,6 +147,14 @@ const translations = {
     en: "No products found",
     uz: "Mahsulotlar topilmadi",
   },
+  // Для sr-only заголовка сетки: «Диагностическое оборудование — 20 позиций».
+  // В русском форма зависит от числа (1 позиция / 2 позиции / 5 позиций),
+  // поэтому три варианта; в en/uz склонения нет — повторяем одну форму.
+  positions: {
+    ru: ["позиция", "позиции", "позиций"],
+    en: ["item", "items", "items"],
+    uz: ["ta mahsulot", "ta mahsulot", "ta mahsulot"],
+  },
   loading: {
     ru: "Загружаем каталог...",
     en: "Loading catalog...",
@@ -109,16 +175,15 @@ export function CatalogView({
   initialCategory?: string;
   initialManufacturer?: string;
 }) {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const [searchTerm, setSearchTerm] = useState(
-    searchParams.get("search") || "",
-  );
+  const searchParams = useUrlQuery();
+  // Начальное состояние — только из props, чтобы серверный и первый клиентский
+  // рендер совпадали. Значения из URL подхватываются эффектами ниже.
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(
-    initialCategory ?? searchParams.get("category") ?? "all",
+    initialCategory ?? "all",
   );
   const [selectedManufacturer, setSelectedManufacturer] = useState(
-    initialManufacturer ?? searchParams.get("manufacturer") ?? "all",
+    initialManufacturer ?? "all",
   );
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -149,6 +214,7 @@ export function CatalogView({
 
   // Update selected category when URL changes
   useEffect(() => {
+    if (!searchParams) return; // до монтирования query ещё не прочитан
     if (initialCategory) return; // dedicated /catalog/category/[slug] page owns the filter
     const categoryFromUrl = searchParams.get("category") || "all";
     if (categoryFromUrl !== selectedCategory) {
@@ -157,11 +223,13 @@ export function CatalogView({
   }, [searchParams, selectedCategory, initialCategory]);
 
   useEffect(() => {
+    if (!searchParams) return;
     const searchFromUrl = searchParams.get("search") || "";
     setSearchTerm((prev) => (prev === searchFromUrl ? prev : searchFromUrl));
   }, [searchParams]);
 
   useEffect(() => {
+    if (!searchParams) return;
     if (initialManufacturer) return; // dedicated /catalog/manufacturer/[slug] page owns the filter
     const manufacturerFromUrl = searchParams.get("manufacturer") || "all";
     if (manufacturerFromUrl !== selectedManufacturer) {
@@ -362,9 +430,11 @@ export function CatalogView({
           {/* Desktop Sidebar */}
           <aside className="hidden lg:block w-64 flex-shrink-0">
             <div className="bg-card rounded-lg border p-6 sticky top-8">
-              <h3 className="font-semibold text-lg mb-4">
+              {/* h2, а не h3: заголовки карточек товаров — это h3, и без этого
+                  уровня структура шла h1 → h3 с пропуском ступени. */}
+              <h2 className="font-semibold text-lg mb-4">
                 {translations.category[language]}
-              </h3>
+              </h2>
               <nav aria-label="Категории оборудования" className="space-y-2">
                 {(
                   Object.entries(allCategories) as [
@@ -419,9 +489,9 @@ export function CatalogView({
                   </SheetTrigger>
                   <SheetContent side="left" className="w-80">
                     <div className="py-6">
-                      <h3 className="font-semibold text-lg mb-4">
+                      <h2 className="font-semibold text-lg mb-4">
                         {translations.category[language]}
-                      </h3>
+                      </h2>
                       <nav aria-label="Категории оборудования" className="space-y-2">
                         {(
                   Object.entries(allCategories) as [
@@ -465,6 +535,22 @@ export function CatalogView({
               </div>
             ) : (
               <>
+                {/* Заголовок самой выдачи: карточки — h3, и без него сетка висела
+                    в структуре без родителя. Видимого заголовка в макете нет,
+                    поэтому только для скринридеров и поисковика. */}
+                <h2 className="sr-only">
+                  {selectedCategory !== "all" && manufacturerName
+                    ? `${categoryName} ${manufacturerName}`
+                    : selectedCategory !== "all"
+                      ? categoryName
+                      : manufacturerName
+                        ? manufacturerName
+                        : translations.title[language]}
+                  {` — ${totalItems} ${plural(
+                    totalItems,
+                    translations.positions[language] as [string, string, string],
+                  )}`}
+                </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                   {currentProducts.map((product) => {
                     const productUrl = buildProductPath(product);

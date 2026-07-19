@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getActiveProducts } from "~/entities/product/api";
 import { getCategories } from "~/entities/category/api";
 import { getManufacturers } from "~/entities/manufacturer/api";
-import { getCategoryLabel, categoryIntro } from "~/entities/category/labels";
+import { categoryPhrase, categoryIntro } from "~/entities/category/labels";
 import { getLang } from "~/shared/i18n/lang";
 import { SITE_URL, SITE_NAME, type Lang } from "~/shared/config/site";
 import { toUrlSlug, decodeParam } from "@/lib/slugify";
@@ -35,20 +34,24 @@ export async function generateMetadata({
   const slug = decodeParam(rawSlug);
   const category = await findCategory(slug);
   if (!category) {
-    return { title: "Категория не найдена | Med Service Centre", robots: { index: false, follow: true } };
+    return { title: "Категория не найдена", robots: { index: false, follow: true } };
   }
   const lang = (await getLang()) as Lang;
-  const label = getCategoryLabel(slug, lang) || category.name?.ru || slug;
+  // Готовая именная группа: «Гинекологическое оборудование», «Оборудование для
+  // гемодиализа». Дописывать « оборудование» шаблоном нельзя — часть названий
+  // это слово уже содержит, а часть является существительным.
+  const phrase = categoryPhrase(slug, lang, category.name?.[lang] || category.name?.ru);
   const canonical = `${SITE_URL}/catalog/category/${encodeURIComponent(slug)}`;
-  const title = `${label} оборудование в Узбекистане | ${SITE_NAME}`;
-  const description = `${label} медицинское оборудование: продажа, аренда и сервис от Med Service Centre. Поставка по Ташкенту и всему Узбекистану.`;
+  // Бренд добавляет title.template в корневом layout — здесь его НЕ дублируем.
+  const title = `${phrase} в Узбекистане`;
+  const description = `${phrase}: продажа, аренда и сервис от Med Service Centre. Поставка по Ташкенту и всему Узбекистану.`;
 
   return {
     title,
     description,
     keywords: [
-      `${label} оборудование`,
-      `${label} оборудование Ташкент`,
+      phrase,
+      `${phrase} Ташкент`,
       "медицинское оборудование Узбекистан",
       "купить медоборудование",
       SITE_NAME,
@@ -61,7 +64,7 @@ export async function generateMetadata({
       type: "website",
       siteName: SITE_NAME,
       locale: "ru_RU",
-      images: [{ url: OG_IMAGE, width: 770, height: 820, alt: `${label} — ${SITE_NAME}` }],
+      images: [{ url: OG_IMAGE, width: 770, height: 820, alt: `${phrase} — ${SITE_NAME}` }],
     },
     twitter: {
       card: "summary_large_image",
@@ -88,7 +91,10 @@ export default async function CategoryPage({
   if (!category) notFound();
 
   const lang = (await getLang()) as Lang;
-  const label = getCategoryLabel(slug, lang) || category.name?.ru || slug;
+  const phrase = categoryPhrase(slug, lang, category.name?.[lang] || category.name?.ru);
+  // Schema.org отдаём по-русски независимо от языка интерфейса — это индексируемый
+  // язык сайта, поэтому фразу для неё разрешаем отдельно, в ru.
+  const phraseRu = categoryPhrase(slug, "ru", category.name?.ru);
   const canonical = `${SITE_URL}/catalog/category/${encodeURIComponent(slug)}`;
   const inCategory = products.filter((p) => p.category === slug);
 
@@ -104,8 +110,8 @@ export default async function CategoryPage({
   const collectionSchema = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    name: `${label} оборудование`,
-    description: categoryIntro(slug, "ru"),
+    name: phraseRu,
+    description: categoryIntro(phraseRu, "ru"),
     url: canonical,
     numberOfItems: inCategory.length,
     isPartOf: { "@type": "WebSite", name: SITE_NAME, url: SITE_URL },
@@ -116,7 +122,7 @@ export default async function CategoryPage({
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "Главная", item: SITE_URL },
       { "@type": "ListItem", position: 2, name: "Каталог", item: `${SITE_URL}/catalog` },
-      { "@type": "ListItem", position: 3, name: label, item: canonical },
+      { "@type": "ListItem", position: 3, name: phrase, item: canonical },
     ],
   };
   const itemListSchema = inCategory.length
@@ -131,7 +137,7 @@ export default async function CategoryPage({
             name: p.name?.ru || p.name,
             url: `${SITE_URL}${pathOf(p)}`,
             image: abs(p.images?.cover),
-            category: label,
+            category: phrase,
           },
         })),
       }
@@ -145,14 +151,12 @@ export default async function CategoryPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas) }}
       />
-      <Suspense fallback={null}>
-        <CatalogView
-          products={products}
-          categories={categories}
-          manufacturers={manufacturers}
-          initialCategory={slug}
-        />
-      </Suspense>
+      <CatalogView
+        products={products}
+        categories={categories}
+        manufacturers={manufacturers}
+        initialCategory={slug}
+      />
     </>
   );
 }

@@ -72,6 +72,19 @@ function localized(
   return field ? String(field) : fallback;
 }
 
+// Обрезаем description ПО ГРАНИЦЕ СЛОВА и только если он реально длинный.
+// Раньше был slice(0, 149) + «…», который рубил посреди слова — в выдаче сниппеты
+// выглядели как «…от оф…». 160 символов — то, что Google показывает на десктопе.
+const DESCRIPTION_LIMIT = 160;
+function clampDescription(text: string): string {
+  const clean = text.replace(/\s+/g, " ").trim();
+  if (clean.length <= DESCRIPTION_LIMIT) return clean;
+  const cut = clean.slice(0, DESCRIPTION_LIMIT);
+  const lastSpace = cut.lastIndexOf(" ");
+  // Точку/запятую в конце обрезка убираем, чтобы не получилось «слово,…»
+  return `${(lastSpace > 80 ? cut.slice(0, lastSpace) : cut).replace(/[.,;:—-]+$/, "")}…`;
+}
+
 function ogImage(cover: string | null | undefined): string {
   if (!cover) return FALLBACK_IMAGE;
   return cover.startsWith("http") ? cover : `https://medsc.uz${cover}`;
@@ -89,7 +102,7 @@ export async function generateMetadata({
 
   if (!product) {
     return {
-      title: "Товар не найден - Med Service Centre",
+      title: "Товар не найден",
       description:
         "Карточка медицинского оборудования не найдена. Вернитесь в каталог Med Service Centre, чтобы подобрать подходящее решение и сервис аренды для клиники.",
       keywords:
@@ -110,11 +123,14 @@ export async function generateMetadata({
   const manufacturerName = localized(manufacturer?.name, lang);
   const categoryLabel = getCategoryLabel(product.category, lang);
 
-  const rawDescription = `${productName} — ${categoryLabel} оборудование Med Service Centre для клиник Узбекистана с поддержкой сервиса, аренды и поставки от официального партнёра.`;
-  const metaDescription =
-    rawDescription.length > 150
-      ? `${rawDescription.slice(0, 149)}…`
-      : rawDescription;
+  // Описание берём СВОЁ у товара, а шаблон оставляем только как запасной вариант:
+  // раньше шаблон применялся всегда, и все 100+ карточек уходили в индекс с почти
+  // одинаковым description (менялось лишь название) — для Google это дубли сниппетов.
+  const ownDescription = localized(product.description, lang).trim();
+  const templateDescription = `${productName} — ${categoryLabel.toLowerCase()} оборудование${
+    manufacturerName ? ` ${manufacturerName}` : ""
+  }. Поставка, сервис и аренда для клиник Узбекистана, официальный партнёр в Ташкенте.`;
+  const metaDescription = clampDescription(ownDescription || templateDescription);
 
   const metaKeywords = [
     productName,
@@ -142,7 +158,8 @@ export async function generateMetadata({
     : { width: 770, height: 820 };
 
   return {
-    title: `${productName} — купить в Узбекистане | Med Service Centre`,
+    // Бренд добавляет title.template в корневом layout — здесь его НЕ дублируем.
+    title: `${productName} — купить в Узбекистане`,
     description: metaDescription,
     keywords: metaKeywords,
     alternates: { canonical: canonicalUrl },

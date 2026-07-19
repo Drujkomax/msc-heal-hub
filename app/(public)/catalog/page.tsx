@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
 import { getActiveProducts } from "~/entities/product/api";
 import { getCategories } from "~/entities/category/api";
 import { getManufacturers } from "~/entities/manufacturer/api";
@@ -9,13 +8,14 @@ import { toUrlSlug } from "@/lib/slugify";
 import { CatalogView } from "~/widgets/catalog/catalog-view";
 
 // Public catalog: prerendered + revalidated (ISR) so it is CDN/browser cacheable.
-// Search, category/manufacturer filtering and pagination all run on the client
-// (CatalogView reads the URL query via useSearchParams), so the page itself does
-// NOT depend on searchParams and stays static. SEO copy is the default (Russian)
-// catalog text — the language a crawler sees, applied client-side for visitors.
+// Search, category/manufacturer filtering and pagination all run on the client, но
+// первый рендер CatalogView попадает в HTML вместе с сеткой товаров и <h1> — query
+// читается только после монтирования (см. useUrlQuery в catalog-view). SEO copy is
+// the default (Russian) catalog text — the language a crawler sees.
 export const revalidate = 300;
 
-const SEO_TITLE = "Каталог медицинского оборудования — Med Service Centre";
+// Бренд добавляет title.template в корневом layout — здесь его НЕ дублируем.
+const SEO_TITLE = "Каталог медицинского оборудования";
 const SEO_DESCRIPTION =
   "Продажа и аренда медицинского оборудования: УЗИ, анализаторы, хирургические системы. Поставка по Узбекистану и Ташкенту.";
 const SEO_KEYWORDS = [
@@ -108,13 +108,11 @@ export default async function CatalogPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas) }}
       />
-      <Suspense fallback={null}>
-        <CatalogView
-          products={products}
-          categories={categories}
-          manufacturers={manufacturers}
-        />
-      </Suspense>
+      <CatalogView
+        products={products}
+        categories={categories}
+        manufacturers={manufacturers}
+      />
     </>
   );
 }

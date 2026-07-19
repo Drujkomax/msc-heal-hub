@@ -5,7 +5,7 @@ import { AdminShell } from "~/admin/admin-shell";
 // The admin panel must never be indexed.
 export const metadata: Metadata = {
   robots: { index: false, follow: false },
-  title: "Админка — Med Service Centre",
+  title: "Админка",
 };
 
 export default function AdminRootLayout({ children }: { children: ReactNode }) {

@@ -10,7 +10,7 @@ const canonicalUrl = `${baseUrl}/services`;
 // SEO source strings copied verbatim from the original Services page's <SEOHead>.
 const SEO: Record<Lang, { title: string; description: string; keywords: string }> = {
   ru: {
-    title: "Сервис, монтаж и аренда медоборудования — Med Service Centre",
+    title: "Сервис, монтаж и аренда медоборудования",
     description:
       "Монтаж и пуско-наладка, обучение персонала, сервис 24/7 и аренда медоборудования для клиник. Выезд по Ташкенту и регионам Узбекистана.",
     keywords:

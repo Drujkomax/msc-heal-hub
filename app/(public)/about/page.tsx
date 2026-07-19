@@ -10,21 +10,21 @@ const canonicalUrl = `${baseUrl}/about`;
 // SEO source strings copied verbatim from the original About page's <SEOHead>.
 const SEO: Record<Lang, { title: string; description: string; keywords: string }> = {
   ru: {
-    title: "О компании Med Service Centre — 8 лет на рынке Узбекистана",
+    title: "О компании — 8 лет на рынке Узбекистана",
     description:
       "Med Service Centre — поставщик медицинского оборудования в Узбекистане. Поставка, аренда, сервис, обучение персонала и подбор техники для клиник.",
     keywords:
       "о компании Med Service Centre, медицинское оборудование Узбекистан, поставка медтехники Ташкент, аренда медоборудования, сервис медтехники",
   },
   en: {
-    title: "About Med Service Centre",
+    title: "About the company — 8 years in Uzbekistan",
     description:
       "Med Service Centre supplies medical equipment in Uzbekistan. Sales, rental, service, staff training, and procurement support for clinics.",
     keywords:
       "Med Service Centre, medical equipment Uzbekistan, supply in Tashkent, rental, service and training",
   },
   uz: {
-    title: "Med Service Centre haqida",
+    title: "Kompaniya haqida — O‘zbekistonda 8 yil",
     description:
       "Med Service Centre — O'zbekistonda tibbiy uskunalar yetkazib beruvchi. Sotuv, ijara, servis va xodimlarni o'qitish.",
     keywords:
