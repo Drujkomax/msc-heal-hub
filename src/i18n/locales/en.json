@@ -870,7 +870,12 @@
       "clients": "Satisfied clients",
       "getConsultation": "Get Consultation",
       "eyebrow": "Medical equipment · Uzbekistan",
-      "tags": ["Supply", "Installation", "Staff training", "Maintenance"]
+      "tags": [
+        "Supply",
+        "Installation",
+        "Staff training",
+        "Maintenance"
+      ]
     },
     "seo": {
       "title": "Medical equipment in Uzbekistan — supply and service",
@@ -1008,6 +1013,10 @@
         "href": "/catalog"
       },
       {
+        "name": "Brands",
+        "href": "/catalog/manufacturer"
+      },
+      {
         "name": "Services",
         "href": "/services"
       },
@@ -1021,10 +1030,22 @@
       }
     ],
     "servicesList": [
-      { "name": "Medical equipment installation and commissioning", "href": "/services#installation" },
-      { "name": "Medical staff training for equipment", "href": "/services#training" },
-      { "name": "24/7 medical equipment service and repair", "href": "/services#service-24-7" },
-      { "name": "Medical equipment rental", "href": "/services#rent" }
+      {
+        "name": "Medical equipment installation and commissioning",
+        "href": "/services#installation"
+      },
+      {
+        "name": "Medical staff training for equipment",
+        "href": "/services#training"
+      },
+      {
+        "name": "24/7 medical equipment service and repair",
+        "href": "/services#service-24-7"
+      },
+      {
+        "name": "Medical equipment rental",
+        "href": "/services#rent"
+      }
     ],
     "downloads": {
       "terms": "Terms of Use",

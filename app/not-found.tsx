@@ -1,4 +1,14 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+
+// Без этого 404 наследует alternates.canonical:"/" из корневого layout и говорит
+// Google «меня нет, но считай меня главной» — так любой битый URL склеивается с «/».
+// canonical:null убирает наследование, noindex держит 404 вне индекса.
+export const metadata: Metadata = {
+  title: "Страница не найдена",
+  alternates: { canonical: null },
+  robots: { index: false, follow: true },
+};
 
 export default function NotFound() {
   return (

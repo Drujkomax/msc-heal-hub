@@ -11,6 +11,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const statics: MetadataRoute.Sitemap = [
     { url: `${SITE}/`, changeFrequency: "weekly", priority: 1 },
     { url: `${SITE}/catalog`, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${SITE}/catalog/manufacturer`, changeFrequency: "weekly", priority: 0.7 },
     { url: `${SITE}/services`, changeFrequency: "monthly", priority: 0.6 },
     // /cases — страница-заглушка без контента, из sitemap исключена до наполнения
     { url: `${SITE}/about`, changeFrequency: "monthly", priority: 0.6 },
@@ -35,14 +36,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "weekly" as const,
       priority: 0.7,
     }));
-
-    manufacturerPages = manufacturers
-      .filter((m) => m.slug)
-      .map((m) => ({
-        url: `${SITE}/catalog/manufacturer/${toUrlSlug(m.slug)}`,
-        changeFrequency: "weekly" as const,
-        priority: 0.6,
-      }));
 
     // Products: URLs match the canonical (manufacturer-prefixed when available).
     const r = await fetch(`${API}/db/products`, {
@@ -73,6 +66,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           priority: 0.7,
         };
       });
+
+    // Бренды без активных товаров в карту НЕ кладём. Такая страница показывает
+    // пустую сетку, Google размечает её «Обнаружена, не проиндексирована» и
+    // заодно хуже думает о соседних страницах того же шаблона.
+    const withProducts = new Set<string>(
+      (j?.data || []).map((p: any) => p?.manufacturer_id).filter(Boolean),
+    );
+    manufacturerPages = manufacturers
+      .filter((m) => m.slug && toUrlSlug(m.slug) !== "unknown" && withProducts.has(m.id))
+      .map((m) => ({
+        url: `${SITE}/catalog/manufacturer/${toUrlSlug(m.slug)}`,
+        changeFrequency: "weekly" as const,
+        priority: 0.6,
+      }));
   } catch {
     // API unreachable at build → ship the static sitemap only
   }

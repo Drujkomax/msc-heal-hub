@@ -870,7 +870,12 @@
       "clients": "Mamnun mijozlar",
       "getConsultation": "Konsultatsiya oling",
       "eyebrow": "Tibbiy uskunalar · Oʻzbekiston",
-      "tags": ["Yetkazib berish", "Oʻrnatish", "Xodimlarni oʻqitish", "Texnik xizmat"]
+      "tags": [
+        "Yetkazib berish",
+        "Oʻrnatish",
+        "Xodimlarni oʻqitish",
+        "Texnik xizmat"
+      ]
     },
     "seo": {
       "title": "Oʻzbekistonda tibbiy uskunalar — yetkazib berish va servis",
@@ -1008,6 +1013,10 @@
         "href": "/catalog"
       },
       {
+        "name": "Brendlar",
+        "href": "/catalog/manufacturer"
+      },
+      {
         "name": "Xizmatlar",
         "href": "/services"
       },
@@ -1021,10 +1030,22 @@
       }
     ],
     "servicesList": [
-      { "name": "Tibbiy uskunalarni o‘rnatish va ishga tushirish", "href": "/services#installation" },
-      { "name": "Tibbiy xodimlarni uskunada ishlashga o‘qitish", "href": "/services#training" },
-      { "name": "Tibbiy uskunalar uchun 24/7 texnik xizmat", "href": "/services#service-24-7" },
-      { "name": "Tibbiy uskunalarni ijaraga berish", "href": "/services#rent" }
+      {
+        "name": "Tibbiy uskunalarni o‘rnatish va ishga tushirish",
+        "href": "/services#installation"
+      },
+      {
+        "name": "Tibbiy xodimlarni uskunada ishlashga o‘qitish",
+        "href": "/services#training"
+      },
+      {
+        "name": "Tibbiy uskunalar uchun 24/7 texnik xizmat",
+        "href": "/services#service-24-7"
+      },
+      {
+        "name": "Tibbiy uskunalarni ijaraga berish",
+        "href": "/services#rent"
+      }
     ],
     "downloads": {
       "terms": "Foydalanish shartlari",
