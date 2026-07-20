@@ -49,11 +49,24 @@ export async function getActiveProducts(revalidate = 300): Promise<Product[]> {
   }
 }
 
+/**
+ * Один товар для публичной страницы. Фильтры по status/archived здесь
+ * обязательны: без них снятый с продажи товар продолжал отдавать 200 и висел в
+ * поиске, хотя из каталога и из sitemap он уже исчез. Теперь такой URL уходит в
+ * notFound() → 404, и Google выводит его из индекса штатно.
+ */
 export async function getProductBySlug(slug: string, revalidate = 300): Promise<Product | null> {
   try {
     const { data } = await dbSelect<Product | null>(
       "products",
-      { filters: [{ col: "slug", op: "eq", val: slug }], single: true },
+      {
+        filters: [
+          { col: "slug", op: "eq", val: slug },
+          { col: "status", op: "eq", val: "active" },
+          { col: "archived", op: "eq", val: false },
+        ],
+        single: true,
+      },
       { revalidate },
     );
     return data ? (stripAdminFields(data as Record<string, unknown>) as Product) : null;

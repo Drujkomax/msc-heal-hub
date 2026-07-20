@@ -36,6 +36,11 @@ export async function generateMetadata({
   if (!m) {
     return { title: "Производитель не найден", robots: { index: false, follow: true } };
   }
+  // Бренд, у которого все товары сняты с продажи, отдаёт пустую сетку. Такую
+  // страницу в индекс не пускаем: она тонкая и тянет вниз оценку соседних
+  // страниц того же шаблона. Появятся товары — ISR вернёт её в индекс сам.
+  const products = await getActiveProducts();
+  const hasProducts = products.some((p) => p.manufacturer_id === m.id);
   const canonical = `${SITE_URL}/catalog/manufacturer/${encodeURIComponent(slug)}`;
   // Бренд добавляет title.template в корневом layout — здесь его НЕ дублируем.
   const title = `${m.name} — медицинское оборудование`;
@@ -52,6 +57,7 @@ export async function generateMetadata({
       SITE_NAME,
     ].join(", "),
     alternates: { canonical },
+    robots: hasProducts ? undefined : { index: false, follow: true },
     openGraph: {
       title,
       description,

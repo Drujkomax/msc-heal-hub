@@ -41,6 +41,9 @@ export async function generateMetadata({
   // гемодиализа». Дописывать « оборудование» шаблоном нельзя — часть названий
   // это слово уже содержит, а часть является существительным.
   const phrase = categoryPhrase(slug, lang, category.name?.[lang] || category.name?.ru);
+  // Пустую категорию в индекс не пускаем — см. тот же приём на странице бренда.
+  const products = await getActiveProducts();
+  const hasProducts = products.some((p) => p.category === slug);
   const canonical = `${SITE_URL}/catalog/category/${encodeURIComponent(slug)}`;
   // Бренд добавляет title.template в корневом layout — здесь его НЕ дублируем.
   const title = `${phrase} в Узбекистане`;
@@ -57,6 +60,7 @@ export async function generateMetadata({
       SITE_NAME,
     ].join(", "),
     alternates: { canonical },
+    robots: hasProducts ? undefined : { index: false, follow: true },
     openGraph: {
       title,
       description,

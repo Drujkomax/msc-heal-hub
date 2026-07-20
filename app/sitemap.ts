@@ -11,6 +11,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const statics: MetadataRoute.Sitemap = [
     { url: `${SITE}/`, changeFrequency: "weekly", priority: 1 },
     { url: `${SITE}/catalog`, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${SITE}/catalog/category`, changeFrequency: "weekly", priority: 0.7 },
     { url: `${SITE}/catalog/manufacturer`, changeFrequency: "weekly", priority: 0.7 },
     { url: `${SITE}/services`, changeFrequency: "monthly", priority: 0.6 },
     // /cases — страница-заглушка без контента, из sitemap исключена до наполнения
@@ -31,11 +32,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ]);
     const slugById = new Map(manufacturers.map((m) => [m.id, toUrlSlug(m.slug)]));
 
-    categoryPages = categories.map((c) => ({
-      url: `${SITE}/catalog/category/${encodeURIComponent(c.value)}`,
-      changeFrequency: "weekly" as const,
-      priority: 0.7,
-    }));
 
     // Products: URLs match the canonical (manufacturer-prefixed when available).
     const r = await fetch(`${API}/db/products`, {
@@ -67,12 +63,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         };
       });
 
-    // Бренды без активных товаров в карту НЕ кладём. Такая страница показывает
-    // пустую сетку, Google размечает её «Обнаружена, не проиндексирована» и
-    // заодно хуже думает о соседних страницах того же шаблона.
+    // Бренды и категории без активных товаров в карту НЕ кладём. Такая страница
+    // показывает пустую сетку, Google размечает её «Обнаружена, не
+    // проиндексирована» и заодно хуже думает о соседних страницах шаблона.
     const withProducts = new Set<string>(
       (j?.data || []).map((p: any) => p?.manufacturer_id).filter(Boolean),
     );
+    const usedCategories = new Set<string>(
+      (j?.data || []).map((p: any) => p?.category).filter(Boolean),
+    );
+    categoryPages = categories
+      .filter((c) => usedCategories.has(c.value))
+      .map((c) => ({
+        url: `${SITE}/catalog/category/${encodeURIComponent(c.value)}`,
+        changeFrequency: "weekly" as const,
+        priority: 0.7,
+      }));
     manufacturerPages = manufacturers
       .filter((m) => m.slug && toUrlSlug(m.slug) !== "unknown" && withProducts.has(m.id))
       .map((m) => ({

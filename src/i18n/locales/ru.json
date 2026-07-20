@@ -1414,6 +1414,10 @@
         "href": "/catalog"
       },
       {
+        "name": "Категории",
+        "href": "/catalog/category"
+      },
+      {
         "name": "Бренды",
         "href": "/catalog/manufacturer"
       },

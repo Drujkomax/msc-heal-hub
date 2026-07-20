@@ -1013,6 +1013,10 @@
         "href": "/catalog"
       },
       {
+        "name": "Kategoriyalar",
+        "href": "/catalog/category"
+      },
+      {
         "name": "Brendlar",
         "href": "/catalog/manufacturer"
       },

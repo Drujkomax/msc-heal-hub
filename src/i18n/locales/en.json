@@ -1013,6 +1013,10 @@
         "href": "/catalog"
       },
       {
+        "name": "Categories",
+        "href": "/catalog/category"
+      },
+      {
         "name": "Brands",
         "href": "/catalog/manufacturer"
       },
