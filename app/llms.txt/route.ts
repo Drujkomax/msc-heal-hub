@@ -1,4 +1,5 @@
 import { getCategories } from "~/entities/category/api";
+import { getActiveProducts } from "~/entities/product/api";
 import { getManufacturers } from "~/entities/manufacturer/api";
 import { SITE_URL, SITE_NAME } from "~/shared/config/site";
 import { toUrlSlug } from "@/lib/slugify";
@@ -14,18 +15,26 @@ export async function GET() {
   let manufacturerLines: string[] = [];
 
   try {
-    const [categories, manufacturers] = await Promise.all([
+    const [categories, manufacturers, products] = await Promise.all([
       getCategories(),
       getManufacturers(),
+      getActiveProducts(),
     ]);
 
-    categoryLines = categories.map((c) => {
-      const label = c.name?.ru || c.value;
-      return `- [${label}](${SITE_URL}/catalog/category/${encodeURIComponent(c.value)})`;
-    });
+    // Тот же фильтр, что в sitemap.ts: пустые категории и бренды закрыты noindex,
+    // и звать на них ИИ-краулеров смысла нет — llms.txt не должен расходиться с картой.
+    const usedCategories = new Set(products.map((p) => p.category).filter(Boolean));
+    const withProducts = new Set(products.map((p) => p.manufacturer_id).filter(Boolean));
+
+    categoryLines = categories
+      .filter((c) => usedCategories.has(c.value))
+      .map((c) => {
+        const label = c.name?.ru || c.value;
+        return `- [${label}](${SITE_URL}/catalog/category/${encodeURIComponent(c.value)})`;
+      });
 
     manufacturerLines = manufacturers
-      .filter((m) => m.slug)
+      .filter((m) => m.slug && withProducts.has(m.id))
       .map((m) => {
         const name = typeof m.name === "object" ? m.name?.ru || m.slug : m.name;
         return `- [${name}](${SITE_URL}/catalog/manufacturer/${toUrlSlug(m.slug)})`;
@@ -44,6 +53,8 @@ export async function GET() {
 
 - [Главная](${SITE_URL}/)
 - [Каталог оборудования](${SITE_URL}/catalog)
+- [Категории оборудования](${SITE_URL}/catalog/category)
+- [Бренды и производители](${SITE_URL}/catalog/manufacturer)
 - [Услуги: монтаж, сервис 24/7, аренда](${SITE_URL}/services)
 - [О компании](${SITE_URL}/about)
 - [Контакты](${SITE_URL}/contacts)

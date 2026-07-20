@@ -15,6 +15,11 @@ export async function generateMetadata(): Promise<Metadata> {
     description: t("pages.cases.seo.description"),
     keywords: t("pages.cases.seo.keywords"),
     alternates: { canonical },
+    // Кейсов на странице пока нет — только вводный текст и две кнопки. Из sitemap
+    // она уже исключена «до наполнения», но оставалась открытой к индексации и в
+    // индекс попала. Держим её noindex по тому же правилу, что пустые категории и
+    // бренды; появятся реальные кейсы — снять вместе с возвратом в sitemap.
+    robots: { index: false, follow: true },
     ...socialMeta({
       title: t("pages.cases.seo.title"),
       description: t("pages.cases.seo.description"),
