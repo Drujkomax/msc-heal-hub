@@ -51,6 +51,12 @@ export default async function HomePage() {
   const t = createT(dict);
   const faqItems = (t("home.faq.items", { returnObjects: true }) as Array<{ question: string; answer: string }>) || [];
   const featured = products.slice(0, 3);
+  // Блок категорий на главной показывает первые 6 — среди них не должно быть
+  // пустых: такая страница уходит под noindex, и ссылка с главной тратит вес
+  // впустую. Считаем наполнение здесь, по полному каталогу: в HomeView уезжают
+  // только 3 избранных товара, по ним наполнение не определить.
+  const usedCategories = new Set(products.map((p) => p.category).filter(Boolean));
+  const filledCategories = categories.filter((c) => usedCategories.has(c.value));
   const slugOf = (mid: string | null) => manufacturers.find((m) => m.id === mid)?.slug || "";
   const pathOf = (p: (typeof products)[number]) => {
     const ms = slugOf(p.manufacturer_id);
@@ -110,7 +116,7 @@ export default async function HomePage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
       {/* Pass only the 3 featured products the view renders — not the full catalog —
           so the RSC flight payload stays tiny instead of serializing every product. */}
-      <HomeView products={featured} categories={categories} manufacturers={manufacturers} />
+      <HomeView products={featured} categories={filledCategories} manufacturers={manufacturers} />
     </>
   );
 }
