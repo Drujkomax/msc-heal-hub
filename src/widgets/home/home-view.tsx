@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { imageSrc, BLUR_DATA_URL } from "~/shared/config/site";
 import Link from 'next/link';
 import Image from 'next/image';
@@ -41,6 +41,11 @@ export function HomeView({ products, categories, manufacturers }: { products: an
 
   const currentLanguage = useLang();
   const dbCategories = categories;
+  // Только категории, в которых реально есть активные товары.
+  const filledCategories = useMemo(() => {
+    const used = new Set(products.map((p) => p?.category).filter(Boolean));
+    return dbCategories.filter((c) => used.has(c.value));
+  }, [dbCategories, products]);
 
   const faqItems = t('home.faq.items', { returnObjects: true }) as Array<{
     question: string;
@@ -366,9 +371,11 @@ export function HomeView({ products, categories, manufacturers }: { products: an
           </div>
 
           {/* Категории из БД: хардкод-список содержал surgical/rehabilitation/
-              ophthalmology, которых нет в product_categories, — 3 из 6 ссылок вели на 404 */}
+              ophthalmology, которых нет в product_categories, — 3 из 6 ссылок вели на 404.
+              Пустые категории тоже отсеиваем: главная вела на «ЛОР-комбайны» без единого
+              товара, а сама страница теперь под noindex — ссылка расходовала вес впустую. */}
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {dbCategories.slice(0, 6).map((cat) => {
+            {filledCategories.slice(0, 6).map((cat) => {
               const Icon = CATEGORY_ICONS[cat.value] ?? Package;
               const name = cat.name?.[currentLanguage] || cat.name?.ru || cat.value;
               return (
