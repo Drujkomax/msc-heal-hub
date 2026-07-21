@@ -42,11 +42,11 @@ export function SiteFooter() {
               <div className="flex items-center justify-center md:justify-start space-x-3">
                 <Mail className="w-5 h-5 text-msc-accent" />
                 <a
-                  href="mailto:info@medsc.uz"
+                  href="mailto:kamilov.tolib@medsc.uz"
                   className="hover:text-msc-accent transition-colors"
                   itemProp="email"
                 >
-                  info@medsc.uz
+                  kamilov.tolib@medsc.uz
                 </a>
               </div>
               <div

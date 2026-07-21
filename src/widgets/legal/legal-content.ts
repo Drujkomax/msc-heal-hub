@@ -32,7 +32,7 @@ export const PRIVACY_DOCS: Record<Lang, LegalDoc> = {
       },
       {
         "label": "E-mail",
-        "value": "info@medsc.uz"
+        "value": "kamilov.tolib@medsc.uz"
       },
       {
         "label": "Сайт",
@@ -157,7 +157,7 @@ export const PRIVACY_DOCS: Record<Lang, LegalDoc> = {
           },
           {
             "type": "p",
-            "text": "5.3. Пользователь вправе отозвать согласие в любой момент, направив запрос на info@medsc.uz (см. раздел 9)."
+            "text": "5.3. Пользователь вправе отозвать согласие в любой момент, направив запрос на kamilov.tolib@medsc.uz (см. раздел 9)."
           }
         ]
       },
@@ -233,7 +233,7 @@ export const PRIVACY_DOCS: Record<Lang, LegalDoc> = {
           },
           {
             "type": "p",
-            "text": "Для реализации прав Пользователь направляет запрос на info@medsc.uz. Оператор рассматривает запрос в срок, установленный законодательством."
+            "text": "Для реализации прав Пользователь направляет запрос на kamilov.tolib@medsc.uz. Оператор рассматривает запрос в срок, установленный законодательством."
           }
         ]
       },
@@ -314,8 +314,8 @@ export const PRIVACY_DOCS: Record<Lang, LegalDoc> = {
               },
               {
                 "label": "E-mail",
-                "value": "info@medsc.uz",
-                "href": "mailto:info@medsc.uz"
+                "value": "kamilov.tolib@medsc.uz",
+                "href": "mailto:kamilov.tolib@medsc.uz"
               },
               {
                 "label": "Telegram",
@@ -367,7 +367,7 @@ export const PRIVACY_DOCS: Record<Lang, LegalDoc> = {
       },
       {
         "label": "E-mail",
-        "value": "info@medsc.uz"
+        "value": "kamilov.tolib@medsc.uz"
       },
       {
         "label": "Website",
@@ -492,7 +492,7 @@ export const PRIVACY_DOCS: Record<Lang, LegalDoc> = {
           },
           {
             "type": "p",
-            "text": "5.3. The User has the right to withdraw consent at any time by sending a request to info@medsc.uz (see Section 9)."
+            "text": "5.3. The User has the right to withdraw consent at any time by sending a request to kamilov.tolib@medsc.uz (see Section 9)."
           }
         ]
       },
@@ -568,7 +568,7 @@ export const PRIVACY_DOCS: Record<Lang, LegalDoc> = {
           },
           {
             "type": "p",
-            "text": "To exercise their rights, the User sends a request to info@medsc.uz. The Operator reviews the request within the period established by law."
+            "text": "To exercise their rights, the User sends a request to kamilov.tolib@medsc.uz. The Operator reviews the request within the period established by law."
           }
         ]
       },
@@ -649,8 +649,8 @@ export const PRIVACY_DOCS: Record<Lang, LegalDoc> = {
               },
               {
                 "label": "E-mail",
-                "value": "info@medsc.uz",
-                "href": "mailto:info@medsc.uz"
+                "value": "kamilov.tolib@medsc.uz",
+                "href": "mailto:kamilov.tolib@medsc.uz"
               },
               {
                 "label": "Telegram",
@@ -702,7 +702,7 @@ export const PRIVACY_DOCS: Record<Lang, LegalDoc> = {
       },
       {
         "label": "E-mail",
-        "value": "info@medsc.uz"
+        "value": "kamilov.tolib@medsc.uz"
       },
       {
         "label": "Sayt",
@@ -827,7 +827,7 @@ export const PRIVACY_DOCS: Record<Lang, LegalDoc> = {
           },
           {
             "type": "p",
-            "text": "5.3. Foydalanuvchi istalgan vaqtda info@medsc.uz manziliga so‘rov yuborib, rozilikni qaytarib olishga haqli (9-bo‘limga qarang)."
+            "text": "5.3. Foydalanuvchi istalgan vaqtda kamilov.tolib@medsc.uz manziliga so‘rov yuborib, rozilikni qaytarib olishga haqli (9-bo‘limga qarang)."
           }
         ]
       },
@@ -903,7 +903,7 @@ export const PRIVACY_DOCS: Record<Lang, LegalDoc> = {
           },
           {
             "type": "p",
-            "text": "Huquqlarni amalga oshirish uchun Foydalanuvchi info@medsc.uz manziliga so‘rov yuboradi. Operator so‘rovni qonunchilikda belgilangan muddatda ko‘rib chiqadi."
+            "text": "Huquqlarni amalga oshirish uchun Foydalanuvchi kamilov.tolib@medsc.uz manziliga so‘rov yuboradi. Operator so‘rovni qonunchilikda belgilangan muddatda ko‘rib chiqadi."
           }
         ]
       },
@@ -984,8 +984,8 @@ export const PRIVACY_DOCS: Record<Lang, LegalDoc> = {
               },
               {
                 "label": "E-mail",
-                "value": "info@medsc.uz",
-                "href": "mailto:info@medsc.uz"
+                "value": "kamilov.tolib@medsc.uz",
+                "href": "mailto:kamilov.tolib@medsc.uz"
               },
               {
                 "label": "Telegram",
@@ -1040,7 +1040,7 @@ export const TERMS_DOCS: Record<Lang, LegalDoc> = {
       },
       {
         "label": "E-mail",
-        "value": "info@medsc.uz"
+        "value": "kamilov.tolib@medsc.uz"
       },
       {
         "label": "Сайт",
@@ -1224,8 +1224,8 @@ export const TERMS_DOCS: Record<Lang, LegalDoc> = {
               },
               {
                 "label": "E-mail",
-                "value": "info@medsc.uz",
-                "href": "mailto:info@medsc.uz"
+                "value": "kamilov.tolib@medsc.uz",
+                "href": "mailto:kamilov.tolib@medsc.uz"
               },
               {
                 "label": "Telegram",
@@ -1264,7 +1264,7 @@ export const TERMS_DOCS: Record<Lang, LegalDoc> = {
       },
       {
         "label": "E-mail",
-        "value": "info@medsc.uz"
+        "value": "kamilov.tolib@medsc.uz"
       },
       {
         "label": "Website",
@@ -1448,8 +1448,8 @@ export const TERMS_DOCS: Record<Lang, LegalDoc> = {
               },
               {
                 "label": "E-mail",
-                "value": "info@medsc.uz",
-                "href": "mailto:info@medsc.uz"
+                "value": "kamilov.tolib@medsc.uz",
+                "href": "mailto:kamilov.tolib@medsc.uz"
               },
               {
                 "label": "Telegram",
@@ -1488,7 +1488,7 @@ export const TERMS_DOCS: Record<Lang, LegalDoc> = {
       },
       {
         "label": "E-mail",
-        "value": "info@medsc.uz"
+        "value": "kamilov.tolib@medsc.uz"
       },
       {
         "label": "Sayt",
@@ -1672,8 +1672,8 @@ export const TERMS_DOCS: Record<Lang, LegalDoc> = {
               },
               {
                 "label": "E-mail",
-                "value": "info@medsc.uz",
-                "href": "mailto:info@medsc.uz"
+                "value": "kamilov.tolib@medsc.uz",
+                "href": "mailto:kamilov.tolib@medsc.uz"
               },
               {
                 "label": "Telegram",

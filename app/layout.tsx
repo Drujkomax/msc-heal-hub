@@ -99,7 +99,7 @@ const orgJsonLd = {
   logo: `${SITE_URL}${LOGO}`,
   image: `${SITE_URL}${OG_IMAGE}`,
   description: DESCRIPTION,
-  email: "info@medsc.uz",
+  email: "kamilov.tolib@medsc.uz",
   telephone: "+998909443482",
   foundingDate: "2016",
   priceRange: "$$$",
@@ -123,7 +123,7 @@ const orgJsonLd = {
   contactPoint: {
     "@type": "ContactPoint",
     contactType: "sales",
-    email: "info@medsc.uz",
+    email: "kamilov.tolib@medsc.uz",
     telephone: "+998909443482",
     areaServed: "UZ",
     availableLanguage: ["ru", "uz", "en"],

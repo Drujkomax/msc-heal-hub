@@ -186,8 +186,8 @@ export function PrivacyPolicyView() {
                 {section.contactEmail && (
                   <>
                     {" "}
-                    <a href="mailto:info@medsc.uz" className="font-medium text-primary hover:underline">
-                      info@medsc.uz
+                    <a href="mailto:kamilov.tolib@medsc.uz" className="font-medium text-primary hover:underline">
+                      kamilov.tolib@medsc.uz
                     </a>
                   </>
                 )}

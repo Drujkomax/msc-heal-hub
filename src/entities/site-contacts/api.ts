@@ -14,7 +14,7 @@ export interface SiteContacts {
 }
 
 export const FALLBACK_CONTACTS: SiteContacts = {
-  email: "info@medsc.uz",
+  email: "kamilov.tolib@medsc.uz",
   telegram: "@medsc_uz",
   telegram_url: "https://t.me/medsc_uz",
   phone: null,

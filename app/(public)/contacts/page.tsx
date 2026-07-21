@@ -56,7 +56,7 @@ export default async function ContactsPage() {
   // Mirror the original contactData defaults so the structured data is identical.
   const contactData = {
     phone: siteContacts?.phone || "",
-    email: siteContacts?.email || "info@medsc.uz",
+    email: siteContacts?.email || "kamilov.tolib@medsc.uz",
     address: siteContacts?.address || "",
     telegram: siteContacts?.telegram || "@medsc_uz",
     whatsapp: siteContacts?.whatsapp || "+998 90 944 34 82",

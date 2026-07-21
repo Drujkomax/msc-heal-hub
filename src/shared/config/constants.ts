@@ -12,7 +12,7 @@ export const PUBLIC_CONFIG = {
   TELEGRAM_BOT_USERNAME: '@medsc_bot',
   
   // Support contact
-  SUPPORT_EMAIL: 'support@medsc.uz',
+  SUPPORT_EMAIL: 'kamilov.tolib@medsc.uz',
   
   // Application metadata
   APP_NAME: 'Med Service Centre',
