@@ -6,8 +6,9 @@ import { getManufacturers } from "~/entities/manufacturer/api";
 import { categoryPhrase, categoryIntro } from "~/entities/category/labels";
 import { getLang } from "~/shared/i18n/lang";
 import { SITE_URL, SITE_NAME, type Lang } from "~/shared/config/site";
-import { toUrlSlug, decodeParam } from "@/lib/slugify";
+import { toUrlSlug, decodeParam, categorySlug, matchCategorySlug } from "@/lib/slugify";
 import { CatalogView } from "~/widgets/catalog/catalog-view";
+import { CrossLinks } from "~/widgets/catalog/cross-links";
 
 const OG_IMAGE = "https://medsc.uz/images/og-image.png";
 
@@ -17,12 +18,15 @@ export const dynamicParams = true;
 
 export async function generateStaticParams() {
   const categories = await getCategories();
-  return categories.map((c) => ({ slug: c.value }));
+  // URL = чистый ASCII-slug (как у товаров и брендов), больше никаких %20.
+  return categories.map((c) => ({ slug: categorySlug(c.value) }));
 }
 
+// Матч и по новому slug, и по старому сырому value — старые ссылки Google
+// продолжают резолвиться (200), а canonical уводит их на чистый URL.
 async function findCategory(slug: string) {
   const categories = await getCategories();
-  return categories.find((c) => c.value === slug) || null;
+  return matchCategorySlug(slug, categories);
 }
 
 export async function generateMetadata({
@@ -40,11 +44,13 @@ export async function generateMetadata({
   // Готовая именная группа: «Гинекологическое оборудование», «Оборудование для
   // гемодиализа». Дописывать « оборудование» шаблоном нельзя — часть названий
   // это слово уже содержит, а часть является существительным.
-  const phrase = categoryPhrase(slug, lang, category.name?.[lang] || category.name?.ru);
+  // Матч-ключ для фраз/фильтра — сырой value из БД; URL — чистый slug.
+  const value = category.value;
+  const phrase = categoryPhrase(value, lang, category.name?.[lang] || category.name?.ru);
   // Пустую категорию в индекс не пускаем — см. тот же приём на странице бренда.
   const products = await getActiveProducts();
-  const hasProducts = products.some((p) => p.category === slug);
-  const canonical = `${SITE_URL}/catalog/category/${encodeURIComponent(slug)}`;
+  const hasProducts = products.some((p) => p.category === value);
+  const canonical = `${SITE_URL}/catalog/category/${categorySlug(value)}`;
   // Бренд добавляет title.template в корневом layout — здесь его НЕ дублируем.
   const title = `${phrase} в Узбекистане`;
   const description = `${phrase}: продажа, аренда и сервис от Med Service Centre. Поставка по Ташкенту и всему Узбекистану.`;
@@ -94,13 +100,15 @@ export default async function CategoryPage({
   ]);
   if (!category) notFound();
 
+  // Матч-ключ (фильтр товаров, фразы) — сырой value из БД; URL/canonical — slug.
+  const value = category.value;
   const lang = (await getLang()) as Lang;
-  const phrase = categoryPhrase(slug, lang, category.name?.[lang] || category.name?.ru);
+  const phrase = categoryPhrase(value, lang, category.name?.[lang] || category.name?.ru);
   // Schema.org отдаём по-русски независимо от языка интерфейса — это индексируемый
   // язык сайта, поэтому фразу для неё разрешаем отдельно, в ru.
-  const phraseRu = categoryPhrase(slug, "ru", category.name?.ru);
-  const canonical = `${SITE_URL}/catalog/category/${encodeURIComponent(slug)}`;
-  const inCategory = products.filter((p) => p.category === slug);
+  const phraseRu = categoryPhrase(value, "ru", category.name?.ru);
+  const canonical = `${SITE_URL}/catalog/category/${categorySlug(value)}`;
+  const inCategory = products.filter((p) => p.category === value);
 
   const slugOf = (mid: string | null) => manufacturers.find((m) => m.id === mid)?.slug;
   const pathOf = (p: (typeof products)[number]) => {
@@ -149,6 +157,20 @@ export default async function CategoryPage({
 
   const schemas = [collectionSchema, breadcrumbSchema, ...(itemListSchema ? [itemListSchema] : [])];
 
+  // Перелинковка: бренды, у которых есть товары в этой категории. Даёт входящую
+  // ссылку каждому такому бренду и раздаёт вес соседним листингам.
+  const brandLinks = manufacturers
+    .filter(
+      (m) =>
+        m.slug &&
+        toUrlSlug(m.slug) !== "unknown" &&
+        inCategory.some((p) => p.manufacturer_id === m.id),
+    )
+    .map((m) => ({
+      href: `/catalog/manufacturer/${toUrlSlug(m.slug)}`,
+      label: m.name,
+    }));
+
   return (
     <>
       <script
@@ -159,8 +181,9 @@ export default async function CategoryPage({
         products={products}
         categories={categories}
         manufacturers={manufacturers}
-        initialCategory={slug}
+        initialCategory={value}
       />
+      <CrossLinks title={`Бренды в категории «${phrase}»`} links={brandLinks} />
     </>
   );
 }

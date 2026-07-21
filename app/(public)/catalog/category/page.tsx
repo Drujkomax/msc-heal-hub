@@ -5,6 +5,7 @@ import { getCategories } from "~/entities/category/api";
 import { categoryPhrase } from "~/entities/category/labels";
 import { SITE_URL, SITE_NAME } from "~/shared/config/site";
 import { socialMeta } from "~/shared/config/seo";
+import { categorySlug } from "@/lib/slugify";
 
 // Хаб категорий — парный к /catalog/manufacturer. Раньше /catalog/category отдавал
 // 404, а ссылки на категории были только на главной (6 из 17) и в каталоге (15).
@@ -43,7 +44,7 @@ export default async function CategoryIndexPage() {
     .filter((c) => (counts.get(c.value) || 0) > 0)
     .map((c) => ({
       phrase: categoryPhrase(c.value, "ru", c.name?.ru),
-      href: `/catalog/category/${encodeURIComponent(c.value)}`,
+      href: `/catalog/category/${categorySlug(c.value)}`,
       count: counts.get(c.value) || 0,
     }))
     .sort((a, b) => b.count - a.count);

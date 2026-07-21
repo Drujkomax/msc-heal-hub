@@ -4,8 +4,10 @@ import { getActiveProducts } from "~/entities/product/api";
 import { getCategories } from "~/entities/category/api";
 import { getManufacturers } from "~/entities/manufacturer/api";
 import { SITE_URL, SITE_NAME } from "~/shared/config/site";
-import { toUrlSlug, decodeParam } from "@/lib/slugify";
+import { toUrlSlug, decodeParam, categorySlug } from "@/lib/slugify";
+import { categoryPhrase } from "~/entities/category/labels";
 import { CatalogView } from "~/widgets/catalog/catalog-view";
+import { CrossLinks } from "~/widgets/catalog/cross-links";
 
 const OG_IMAGE = "https://medsc.uz/images/og-image.png";
 
@@ -41,7 +43,7 @@ export async function generateMetadata({
   // страниц того же шаблона. Появятся товары — ISR вернёт её в индекс сам.
   const products = await getActiveProducts();
   const hasProducts = products.some((p) => p.manufacturer_id === m.id);
-  const canonical = `${SITE_URL}/catalog/manufacturer/${encodeURIComponent(slug)}`;
+  const canonical = `${SITE_URL}/catalog/manufacturer/${slug}`;
   // Бренд добавляет title.template в корневом layout — здесь его НЕ дублируем.
   const title = `${m.name} — медицинское оборудование`;
   const description = `${m.name}: продажа, аренда и сервис медицинского оборудования в Узбекистане от официального партнёра Med Service Centre. Поставка по Ташкенту и регионам.`;
@@ -86,7 +88,7 @@ export default async function ManufacturerPage({
   ]);
   if (!manufacturer) notFound();
 
-  const canonical = `${SITE_URL}/catalog/manufacturer/${encodeURIComponent(slug)}`;
+  const canonical = `${SITE_URL}/catalog/manufacturer/${slug}`;
   const byManufacturer = products.filter((p) => p.manufacturer_id === manufacturer.id);
 
   const pathOf = (p: (typeof products)[number]) => {
@@ -142,6 +144,16 @@ export default async function ManufacturerPage({
 
   const schemas = [collectionSchema, breadcrumbSchema, ...(itemListSchema ? [itemListSchema] : [])];
 
+  // Перелинковка: категории оборудования, где у бренда есть товары. Каждая ссылка
+  // ведёт на чистый ЧПУ-slug категории.
+  const catValues = new Set(byManufacturer.map((p) => p.category).filter(Boolean));
+  const categoryLinks = categories
+    .filter((c) => catValues.has(c.value))
+    .map((c) => ({
+      href: `/catalog/category/${categorySlug(c.value)}`,
+      label: categoryPhrase(c.value, "ru", c.name?.ru),
+    }));
+
   return (
     <>
       <script
@@ -153,6 +165,10 @@ export default async function ManufacturerPage({
         categories={categories}
         manufacturers={manufacturers}
         initialManufacturer={slug}
+      />
+      <CrossLinks
+        title={`Категории оборудования ${manufacturer.name}`}
+        links={categoryLinks}
       />
     </>
   );

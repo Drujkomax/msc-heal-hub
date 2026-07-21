@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { toUrlSlug } from "@/lib/slugify";
+import { toUrlSlug, categorySlug } from "@/lib/slugify";
 
 // Разводим админку и публичный сайт по хостам:
 //   admin.medsc.uz → только /admin/* (всё остальное уводим на /admin,
@@ -19,30 +19,48 @@ const MAIN_HOSTS = new Set(["medsc.uz", "www.medsc.uz"]);
 // ?manufacturer=aksion — тот самый дубль, ради устранения которого всё затевалось.
 // manufacturer проверяем раньше category: у комбинированного URL приоритет у
 // карточки бренда, иначе редирект увёл бы на категорию и потерял фильтр.
-// Бренд и категория адресуются по-разному, и это НЕ описка:
-//   /catalog/manufacturer/[slug] ищет через toUrlSlug(m.slug) === slug, то есть
-//     ждёт канонический ascii-слаг («aksion»). Значение из старого query
-//     канонизированным не бывает — сам виджет каталога сравнивает его через
-//     toUrlSlug(), — поэтому здесь нормализуем, иначе ?manufacturer=Aksion
-//     дал бы 308 на /catalog/manufacturer/Aksion и 404 в конце.
-//   /catalog/category/[slug] сравнивает с сырым value из БД («Hemodialysis
-//     equipment», с пробелом и заглавной), так что его только кодируем.
+// И бренд, и категория адресуются каноническим ascii-slug (единый хелпер slug на
+// все сущности): manufacturer → toUrlSlug, category → categorySlug. Значение из
+// старого query канонизированным не бывает («Aksion», «Hemodialysis equipment» с
+// пробелом), поэтому нормализуем — иначе 308 увёл бы на /…/Aksion или /…%20 и 404.
 function facetRedirect(req: NextRequest): URL | null {
   if (req.nextUrl.pathname !== "/catalog") return null;
   const q = req.nextUrl.searchParams;
 
   const mfr = toUrlSlug(q.get("manufacturer")?.trim());
-  const cat = q.get("category")?.trim();
+  const cat = categorySlug(q.get("category")?.trim());
   const target = mfr
-    ? `/catalog/manufacturer/${encodeURIComponent(mfr)}`
+    ? `/catalog/manufacturer/${mfr}`
     : cat
-      ? `/catalog/category/${encodeURIComponent(cat)}`
+      ? `/catalog/category/${cat}`
       : null;
   if (!target) return null;
 
   const url = req.nextUrl.clone();
   url.pathname = target;
   url.search = ""; // именно ради этого редирект живёт в proxy, а не в next.config
+  return url;
+}
+
+// Старые категорийные URL со сырым value из БД (пробелы → %20, заглавные,
+// CamelCase) Google краулит плохо и половину нормализует в 404. Один 301 на
+// канонический ЧПУ-slug склеивает накопленный вес и убирает дубли. Проверка чисто
+// строковая: categorySlug детерминирован и совпадает с generateStaticParams
+// категорийной страницы, поэтому БД тут не нужна. Уже-чистый slug не трогаем.
+function categoryRedirect(req: NextRequest): URL | null {
+  const m = req.nextUrl.pathname.match(/^\/catalog\/category\/([^/]+)\/?$/);
+  if (!m) return null;
+  let decoded: string;
+  try {
+    decoded = decodeURIComponent(m[1]);
+  } catch {
+    decoded = m[1];
+  }
+  const clean = categorySlug(decoded);
+  if (!clean || clean === m[1]) return null;
+  const url = req.nextUrl.clone();
+  url.pathname = `/catalog/category/${clean}`;
+  url.search = "";
   return url;
 }
 
@@ -75,6 +93,10 @@ export function proxy(req: NextRequest) {
   // уходит на /admin, и фасетный редирект добавлял бы туда лишний прыжок.
   const facet = facetRedirect(req);
   if (facet) return NextResponse.redirect(facet, 308);
+
+  // Склейка старых %20/CamelCase категорий на чистый ЧПУ-slug — постоянный 301.
+  const cat = categoryRedirect(req);
+  if (cat) return NextResponse.redirect(cat, 301);
 
   return NextResponse.next();
 }

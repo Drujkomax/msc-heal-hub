@@ -17,7 +17,7 @@ const QuoteRequestForm = dynamic(() => import("@/components/forms/QuoteRequestFo
 import { useT, useLang } from "~/shared/i18n/i18n-provider";
 import { getCountryName, getCountryFlag } from "@/utils/countries";
 import { useCurrencyRates } from "@/hooks/useCurrencyRates";
-import { toUrlSlug } from "@/lib/slugify";
+import { toUrlSlug, categorySlug } from "@/lib/slugify";
 import { supabase } from "@/integrations/supabase/client";
 import Image from "next/image";
 import { imageSrc, imageUrl, BLUR_DATA_URL } from "~/shared/config/site";
@@ -192,9 +192,7 @@ export function ProductDetailView({
 
   const manufacturerSlugSafe = toUrlSlug(manufacturer?.slug);
   const categoryLabel = getCategoryLabel(product.category, language);
-  const categoryPath = `/catalog/category/${encodeURIComponent(
-    product.category,
-  )}`;
+  const categoryPath = `/catalog/category/${categorySlug(product.category)}`;
 
   const seoBlurb =
     language === "ru"

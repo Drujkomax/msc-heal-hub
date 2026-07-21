@@ -2,7 +2,7 @@ import { getCategories } from "~/entities/category/api";
 import { getActiveProducts } from "~/entities/product/api";
 import { getManufacturers } from "~/entities/manufacturer/api";
 import { SITE_URL, SITE_NAME } from "~/shared/config/site";
-import { toUrlSlug } from "@/lib/slugify";
+import { toUrlSlug, categorySlug } from "@/lib/slugify";
 
 // llms.txt — карта сайта для ИИ-ассистентов (ChatGPT, Perplexity, Claude и т.д.).
 // Отдаём тем же набором сущностей, что и sitemap.xml, но в человекочитаемом виде:
@@ -30,7 +30,7 @@ export async function GET() {
       .filter((c) => usedCategories.has(c.value))
       .map((c) => {
         const label = c.name?.ru || c.value;
-        return `- [${label}](${SITE_URL}/catalog/category/${encodeURIComponent(c.value)})`;
+        return `- [${label}](${SITE_URL}/catalog/category/${categorySlug(c.value)})`;
       });
 
     manufacturerLines = manufacturers
@@ -68,7 +68,7 @@ ${manufacturerLines.length ? manufacturerLines.join("\n") : "- [Каталог](
 ## Контакты
 
 - Телефон: +998 90 944-34-82
-- E-mail: info@medsc.uz
+- E-mail: kamilov.tolib@medsc.uz
 - Адрес: Узбекистан, Ташкент, ул. Асака, 32
 - Telegram: https://t.me/medsc_uz
 

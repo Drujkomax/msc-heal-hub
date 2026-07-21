@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getCategories } from "~/entities/category/api";
 import { getManufacturers } from "~/entities/manufacturer/api";
-import { toUrlSlug } from "@/lib/slugify";
+import { toUrlSlug, categorySlug } from "@/lib/slugify";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:6001";
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://medsc.uz";
@@ -75,7 +75,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     categoryPages = categories
       .filter((c) => usedCategories.has(c.value))
       .map((c) => ({
-        url: `${SITE}/catalog/category/${encodeURIComponent(c.value)}`,
+        url: `${SITE}/catalog/category/${categorySlug(c.value)}`,
         changeFrequency: "weekly" as const,
         priority: 0.7,
       }));

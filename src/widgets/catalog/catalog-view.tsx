@@ -43,7 +43,7 @@ import dynamic from "next/dynamic";
 const QuoteRequestForm = dynamic(() => import("@/components/forms/QuoteRequestForm"), { ssr: false });
 import { useT, useLang } from "~/shared/i18n/i18n-provider";
 import { useCurrencyRates } from "@/hooks/useCurrencyRates";
-import { toUrlSlug } from "@/lib/slugify";
+import { toUrlSlug, categorySlug } from "@/lib/slugify";
 
 // Query-параметры читаем ТОЛЬКО после монтирования, а не через useSearchParams()
 // в теле компонента. useSearchParams() помечает поддерево как зависящее от запроса,
@@ -447,7 +447,7 @@ export function CatalogView({
                     href={
                       key === "all"
                         ? "/catalog"
-                        : `/catalog/category/${encodeURIComponent(key)}`
+                        : `/catalog/category/${categorySlug(key)}`
                     }
                     onClick={() => setSelectedCategory(key)}
                     className={`block w-full text-left px-3 py-2 rounded-md text-sm leading-snug transition-colors ${
@@ -504,7 +504,7 @@ export function CatalogView({
                             href={
                               key === "all"
                                 ? "/catalog"
-                                : `/catalog/category/${encodeURIComponent(key)}`
+                                : `/catalog/category/${categorySlug(key)}`
                             }
                             onClick={() => {
                               setSelectedCategory(key);

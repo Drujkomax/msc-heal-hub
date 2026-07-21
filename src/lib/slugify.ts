@@ -49,6 +49,36 @@ export const toUrlSlug = (slug: string | null | undefined): string => {
 };
 
 /**
+ * Канонический ASCII-slug категории для URL. Сырое значение из БД
+ * («Hemodialysis equipment», «Communication systems for hospitals») →
+ * «hemodialysis-equipment». Товары и бренды уже адресуются чистым slug; категории
+ * раньше шли через encodeURIComponent(value) → %20 в URL, что Google плохо
+ * краулит и наполовину нормализует в 404. Один хелпер slug на все сущности.
+ */
+export const categorySlug = (value: string | null | undefined): string => {
+  if (!value) return "";
+  return generateSlug(value);
+};
+
+/**
+ * Найти категорию по сегменту URL. Матчит и по новому чистому slug
+ * (categorySlug(value)), и по старому сырому value — обратная совместимость со
+ * ссылками, которые Google уже проиндексировал до перехода на ЧПУ. URL остаётся
+ * чистым, а матч-ключ для фильтра товаров — сырой value из БД.
+ */
+export const matchCategorySlug = <T extends { value: string }>(
+  slug: string,
+  categories: readonly T[],
+): T | null => {
+  const s = slug.trim();
+  return (
+    categories.find((c) => c.value === s) ||
+    categories.find((c) => categorySlug(c.value) === s.toLowerCase()) ||
+    null
+  );
+};
+
+/**
  * Decode a dynamic-route param. App Router передаёт сегменты percent-encoded
  * («Hemodialysis%20equipment»), а в БД значения хранятся сырыми — без decode
  * сравнение падает и страница уходит в 404.
