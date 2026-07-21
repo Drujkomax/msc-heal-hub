@@ -258,23 +258,17 @@ export function ServiceOrderForm({ serviceName, onClose }: { serviceName: string
                 <label htmlFor="so-phone" className={LABEL}>
                   {t.phone} <span className="text-[#2563eb]">*</span>
                 </label>
-                <div className="relative">
-                  <span className="pointer-events-none absolute inset-y-0 left-4 flex items-center gap-2.5">
-                    <span className="text-[15px] font-semibold text-msc-primary">+998</span>
-                    <span className="h-4 w-px bg-msc-primary/15" />
-                  </span>
-                  <input
-                    id="so-phone"
-                    type="tel"
-                    inputMode="numeric"
-                    value={formData.phone}
-                    onChange={e => setField('phone', e.target.value)}
-                    placeholder="XX XXX XX XX"
-                    maxLength={12}
-                    autoComplete="tel-national"
-                    className={`${FIELD} pl-[4.75rem] ${errors.phone ? FIELD_ERR : FIELD_OK}`}
-                  />
-                </div>
+                <input
+                  id="so-phone"
+                  type="tel"
+                  inputMode="tel"
+                  value={formData.phone}
+                  onChange={e => setField('phone', e.target.value)}
+                  placeholder="+998 90 123 45 67"
+                  maxLength={16}
+                  autoComplete="tel"
+                  className={`${FIELD} ${errors.phone ? FIELD_ERR : FIELD_OK}`}
+                />
                 {errors.phone && <p className={ERROR_TEXT}>{errText(errors.phone)}</p>}
               </div>
 

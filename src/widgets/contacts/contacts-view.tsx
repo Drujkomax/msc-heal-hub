@@ -41,7 +41,7 @@ export function ContactsView({ siteContacts }: { siteContacts: any }) {
   // Contact data, seeded from the server-fetched site_contacts row (falls back to defaults).
   const contactData = {
     phone: siteContacts?.phone || '',
-    email: siteContacts?.email || 'info@medsc.uz',
+    email: siteContacts?.email || 'kamilov.tolib@medsc.uz',
     address: siteContacts?.address || '',
     telegram: siteContacts?.telegram || '@medsc_uz',
     whatsapp: siteContacts?.whatsapp || '+998 90 944 34 82',
@@ -429,24 +429,18 @@ export function ContactsView({ siteContacts }: { siteContacts: any }) {
                       <label htmlFor="cv-phone" className={FORM_LABEL}>
                         {currentContent.phoneField} <span className="text-[#2563eb]">*</span>
                       </label>
-                      <div className="relative">
-                        <span className="pointer-events-none absolute inset-y-0 left-4 flex items-center gap-2.5">
-                          <span className="text-[15px] font-semibold text-msc-primary">+998</span>
-                          <span className="h-4 w-px bg-msc-primary/15" />
-                        </span>
-                        <input
-                          id="cv-phone"
-                          type="tel"
-                          inputMode="numeric"
-                          name="phone"
-                          value={formData.phone}
-                          onChange={handleInputChange}
-                          placeholder="XX XXX XX XX"
-                          maxLength={12}
-                          autoComplete="tel-national"
-                          className={`${FIELD} pl-[4.75rem] ${formErrors.phone ? FIELD_ERR : FIELD_OK}`}
-                        />
-                      </div>
+                      <input
+                        id="cv-phone"
+                        type="tel"
+                        inputMode="tel"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                        placeholder="+998 90 123 45 67"
+                        maxLength={16}
+                        autoComplete="tel"
+                        className={`${FIELD} ${formErrors.phone ? FIELD_ERR : FIELD_OK}`}
+                      />
                       {formErrors.phone && <p className={ERROR_TEXT}>{tr(formErrors.phone)}</p>}
                     </div>
                   </div>

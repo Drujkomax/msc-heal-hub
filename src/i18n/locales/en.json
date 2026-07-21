@@ -799,7 +799,7 @@
       "nameMax": "Name must not exceed 50 characters",
       "nameChars": "Name may contain only letters, spaces and hyphens",
       "phoneRequired": "Enter your phone number",
-      "phoneIncomplete": "Number must contain 9 digits",
+      "phoneIncomplete": "Enter the number with country code (e.g. +998 90 123 45 67)",
       "phoneInvalid": "Invalid phone format",
       "equipmentRequired": "Select equipment type",
       "equipmentInvalid": "Select a valid equipment type",

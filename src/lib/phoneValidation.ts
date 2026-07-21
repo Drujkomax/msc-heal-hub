@@ -1,48 +1,36 @@
-// Utility functions for Uzbekistan phone number validation and formatting
+// Phone helpers for the public feedback forms.
+//
+// The forms let the visitor type the FULL number INCLUDING the country code
+// (по умолчанию +998, но код можно поменять на любой). Поэтому здесь больше нет
+// жёсткой привязки к Узбекистану — номер нормализуется к E.164: "+" и до 15
+// цифр. Имена функций оставлены прежними, чтобы не трогать логику форм.
 
+const MAX_DIGITS = 15; // E.164 maximum
+const MIN_DIGITS = 8; // код страны + номер — мягкий минимум под разные регионы
+
+// Оставляем один ведущий "+" и введённые цифры (не больше 15).
 export const formatUzbekPhoneNumber = (value: string): string => {
-  // Remove all non-digits
-  const digits = value.replace(/\D/g, '');
-  
-  // Remove leading +998 if present
-  const cleaned = digits.startsWith('998') ? digits.slice(3) : digits;
-  
-  // Limit to 9 digits (Uzbekistan mobile number format)
-  const limited = cleaned.slice(0, 9);
-  
-  // Format as XX XXX XX XX
-  if (limited.length <= 2) return limited;
-  if (limited.length <= 5) return `${limited.slice(0, 2)} ${limited.slice(2)}`;
-  if (limited.length <= 7) return `${limited.slice(0, 2)} ${limited.slice(2, 5)} ${limited.slice(5)}`;
-  return `${limited.slice(0, 2)} ${limited.slice(2, 5)} ${limited.slice(5, 7)} ${limited.slice(7)}`;
+  const digits = value.replace(/\D/g, '').slice(0, MAX_DIGITS);
+  return digits ? `+${digits}` : '';
 };
 
+// Guard на каждый ввод: пускаем печатать, пока не упёрлись в лимит E.164.
+export const isValidUzbekPhoneLength = (value: string): boolean => {
+  return value.replace(/\D/g, '').length <= MAX_DIGITS;
+};
+
+// Пригодный международный номер: 9–15 цифр.
 export const validateUzbekPhoneNumber = (phone: string): boolean => {
-  // Remove all non-digits
-  const digits = phone.replace(/\D/g, '');
-  
-  // Check if it's exactly 9 digits (excluding +998)
-  const phoneDigits = digits.startsWith('998') ? digits.slice(3) : digits;
-  
-  // Must be exactly 9 digits
-  return phoneDigits.length === 9;
+  const len = phone.replace(/\D/g, '').length;
+  return len >= MIN_DIGITS && len <= MAX_DIGITS;
 };
 
+// Полный номер для отправки: "+" и только цифры.
 export const getFullUzbekPhoneNumber = (phone: string): string => {
-  const digits = phone.replace(/\D/g, '');
-  const phoneDigits = digits.startsWith('998') ? digits.slice(3) : digits;
-  return `+998${phoneDigits}`;
+  return `+${phone.replace(/\D/g, '')}`;
 };
 
-export const isValidUzbekPhoneLength = (phone: string): boolean => {
-  const digits = phone.replace(/\D/g, '');
-  const phoneDigits = digits.startsWith('998') ? digits.slice(3) : digits;
-  return phoneDigits.length <= 9;
-};
-
-// Проверяет, является ли номер полным (9 цифр)
+// Номер завершён, когда в нём достаточно цифр.
 export const isCompleteUzbekPhone = (phone: string): boolean => {
-  const digits = phone.replace(/\D/g, '');
-  const phoneDigits = digits.startsWith('998') ? digits.slice(3) : digits;
-  return phoneDigits.length === 9;
+  return validateUzbekPhoneNumber(phone);
 };

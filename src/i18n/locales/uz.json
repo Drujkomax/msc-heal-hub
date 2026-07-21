@@ -799,7 +799,7 @@
       "nameMax": "Ism 50 ta belgidan oshmasligi kerak",
       "nameChars": "Ismda faqat harflar, probel va defis boʻlishi mumkin",
       "phoneRequired": "Telefon raqamingizni kiriting",
-      "phoneIncomplete": "Raqam 9 ta raqamdan iborat boʻlishi kerak",
+      "phoneIncomplete": "Raqamni mamlakat kodi bilan kiriting (masalan, +998 90 123 45 67)",
       "phoneInvalid": "Notoʻgʻri telefon formati",
       "equipmentRequired": "Uskuna turini tanlang",
       "equipmentInvalid": "Toʻgʻri uskuna turini tanlang",

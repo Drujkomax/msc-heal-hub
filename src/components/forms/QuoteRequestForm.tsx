@@ -341,23 +341,17 @@ const QuoteRequestForm: React.FC<QuoteRequestFormProps> = ({
                 <label htmlFor="quote-phone" className={LABEL}>
                   {t.phone} <span className="text-[#2563eb]">*</span>
                 </label>
-                <div className="relative">
-                  <span className="pointer-events-none absolute inset-y-0 left-4 flex items-center gap-2.5">
-                    <span className="text-[15px] font-semibold text-msc-primary">+998</span>
-                    <span className="h-4 w-px bg-msc-primary/15" />
-                  </span>
-                  <input
-                    id="quote-phone"
-                    type="tel"
-                    inputMode="numeric"
-                    value={formData.phone}
-                    onChange={e => handleInputChange('phone', e.target.value)}
-                    placeholder="XX XXX XX XX"
-                    maxLength={12}
-                    autoComplete="tel-national"
-                    className={`${FIELD} pl-[4.75rem] ${phoneError || validationErrors.phone ? FIELD_ERR : FIELD_OK}`}
-                  />
-                </div>
+                <input
+                  id="quote-phone"
+                  type="tel"
+                  inputMode="tel"
+                  value={formData.phone}
+                  onChange={e => handleInputChange('phone', e.target.value)}
+                  placeholder="+998 90 123 45 67"
+                  maxLength={16}
+                  autoComplete="tel"
+                  className={`${FIELD} ${phoneError || validationErrors.phone ? FIELD_ERR : FIELD_OK}`}
+                />
                 {(phoneError || validationErrors.phone) && (
                   <p className={ERROR_TEXT}>{tr(phoneError || validationErrors.phone)}</p>
                 )}
