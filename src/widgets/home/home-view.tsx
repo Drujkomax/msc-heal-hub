@@ -13,7 +13,6 @@ import dynamic from 'next/dynamic';
 const LeadForm = dynamic(() => import('~/features/lead-form/lead-form').then(m => m.LeadForm), { ssr: false });
 import { useT, useLang } from '~/shared/i18n/i18n-provider';
 import { toUrlSlug, categorySlug } from '@/lib/slugify';
-import { BrandMarquee } from '~/widgets/home/brand-marquee';
 
 // Shared button/card styles derived from the hero. Calm UI: only subtle color/shadow
 // feedback on hover — no entrance, float, lift or slide animations.
@@ -185,9 +184,6 @@ export function HomeView({ products, categories, manufacturers }: { products: an
           </div>
         </div>
       </section>
-
-      {/* Brand marquee — бренды-производители, тёмная лента как «нам доверяют» */}
-      <BrandMarquee manufacturers={manufacturers} />
 
       {/* Equipment Section - SEO Content */}
       <section className="bg-white py-20 lg:py-24">
